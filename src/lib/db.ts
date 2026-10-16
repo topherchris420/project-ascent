@@ -4,6 +4,7 @@ import { mkdirSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { Pool, type PoolClient } from 'pg';
 import type { Actor, Workspace } from './types';
+import { databasePoolOptions } from './database-config';
 
 export class DatabaseConfigurationError extends Error {}
 
@@ -45,7 +46,7 @@ function pgPool() {
   if (!pool)
     pool = new Pool({
       connectionString: process.env.DATABASE_URL,
-      max: 8,
+      ...databasePoolOptions(),
       ...(process.env.PGSSL === 'require' ? { ssl: { rejectUnauthorized: true } } : {}),
     });
   return pool;

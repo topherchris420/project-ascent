@@ -1,0 +1,25 @@
+{
+  "at": "2026-10-16T21:19:16.059Z",
+  "environment": "Local optimized Next.js server without production account configuration",
+  "homeStatus": 200,
+  "setupMessageVisible": true,
+  "accountActionsDisabled": true,
+  "pricingExampleInteractive": true,
+  "browserApiRequests": 0,
+  "checks": [
+    {
+      "viewport": "desktop",
+      "violations": [],
+      "horizontalOverflow": false
+    },
+    {
+      "viewport": "mobile",
+      "violations": [],
+      "horizontalOverflow": false
+    }
+  ],
+  "pageErrors": [],
+  "liveVercelDeployment": false,
+  "productionDatabaseVerified": false,
+  "scope": "Public setup experience only; no accounts, database, property or inference calls"
+}

@@ -1,6 +1,9 @@
 import type { NextConfig } from 'next';
 const config: NextConfig = {
   serverExternalPackages: ['pg', 'node:sqlite', 'unpdf'],
+  outputFileTracingExcludes: {
+    '/*': ['./.data/**/*', './evidence/**/*', './tests/**/*', './test-results/**/*', './playwright-report/**/*'],
+  },
   poweredByHeader: false,
   devIndicators: false,
   async headers() {

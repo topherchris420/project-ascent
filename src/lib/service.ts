@@ -11,6 +11,7 @@ import { recordProductAction } from './product';
 import { evaluateSavedSearch } from './client-intelligence';
 import { analyzeContractDates, extractContractDates } from './contract-dates';
 import { readDocumentText } from './document-reader';
+import { documentSizeError } from './upload-limits';
 
 const id = z.string().min(1).max(100);
 const text = z.string().trim().min(1).max(5000);
@@ -718,8 +719,8 @@ export function runMonitor(workspace: Workspace) {
 }
 
 export function validateUpload(filename: string, mime: string, bytes: Buffer) {
-  if (!bytes.length || bytes.length > 5 * 1024 * 1024)
-    throw new HttpError(413, 'Upload a nonempty document of at most 5 MB.');
+  const sizeError = documentSizeError(bytes.length);
+  if (sizeError) throw new HttpError(413, sizeError);
   const extension = filename.toLowerCase().split('.').at(-1);
   const pdf = extension === 'pdf' && mime === 'application/pdf' && bytes.subarray(0, 5).toString() === '%PDF-';
   const txt = extension === 'txt' && (mime === 'text/plain' || mime === '') && !bytes.includes(0);

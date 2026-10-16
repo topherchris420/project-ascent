@@ -1,0 +1,7 @@
+{
+  "at": "2026-10-16T21:22:47.768Z",
+  "serverTracesInspected": 35,
+  "excludedLocalArtifactMatches": 0,
+  "findings": [],
+  "scope": "Next.js server trace manifests only; not a real Vercel function bundle or security certification"
+}

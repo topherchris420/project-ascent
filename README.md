@@ -1,8 +1,8 @@
 # Project Ascent
 
-An independent, working real estate decision workspace reconstructed from Homesolo's public evidence. It includes persistent private workspaces, pricing calculations, clients, offers, transactions, grounded assistance, progressive access, configurable plans, and a national property ingestion fabric.
+Ascent is an independent real estate decision workspace. It includes persistent private workspaces, pricing calculations, clients, offers, transactions, grounded assistance, progressive access, configurable plans, and a national property ingestion fabric.
 
-All bundled properties, people, offers, transactions, and outcomes are **fictional**. The default is a synthetic demonstration, not a live MLS application. Public demo appearance does not establish authenticated Homesolo behavior. Competitive accuracy superiority has not been established.
+All bundled properties, people, offers, transactions, and outcomes are **fictional**. The default is a synthetic demonstration, not a live MLS application. Demonstration results do not establish live-market accuracy.
 
 ## Run locally
 
@@ -56,7 +56,7 @@ Playwright uses an installed Chrome by default on this workstation. Set `CHROME_
 
 ## Engineering and evidence
 
-- [REA reconstruction specification](docs/reconstruction.md) and [evidence ledger](docs/evidence-ledger.md)
+- [Vercel Hobby setup](docs/vercel-hobby.md)
 - [Architecture, security, APIs and deployment](docs/engineering.md)
 - [Capability and limitation matrix](docs/capability-matrix.md)
 - [Progressive access and adoption economics](docs/adoption-economics.md)
@@ -66,6 +66,6 @@ Playwright uses an installed Chrome by default on this workstation. Set `CHROME_
 - [Groq-first inference architecture and privacy](docs/ai-architecture.md)
 - [RentCast property-provider integration](docs/rentcast-integration.md)
 - [Verification results](docs/verification-results.md)
-- Database migrations: `migrations/`; source: `src/`; tests: `tests/`; retained REA evidence and measured artifacts: `evidence/`
+- Database migrations: `migrations/`; source: `src/`; tests: `tests/`; measured Ascent artifacts: `evidence/`
 
-Source repository: [topherchris420/project-ascent](https://github.com/topherchris420/project-ascent) (private). Deployment credentials remain unconfigured, and nothing modifies Homesolo production. The bounded private local RentCast workflow is verified; production provider rights, payment settlement, license-provider automation and PostgreSQL deployment remain unverified. Groq responses have been tested on synthetic evidence; production privacy, reliability and semantic quality still require validation.
+Source repository: [topherchris420/project-ascent](https://github.com/topherchris420/project-ascent) (private). Deployment credentials remain unconfigured. The bounded private local RentCast workflow is verified; production provider rights, payment settlement, license-provider automation and PostgreSQL deployment remain unverified. Groq responses have been tested on synthetic evidence; production privacy, reliability and semantic quality still require validation.

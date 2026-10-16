@@ -1,4 +1,5 @@
 import WorkspaceApp from '@/components/workspace';
+import { workspaceIsAvailable } from '@/lib/deployment';
 export default function Page() {
-  return <WorkspaceApp />;
+  return <WorkspaceApp workspaceAvailable={workspaceIsAvailable()} />;
 }

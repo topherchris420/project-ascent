@@ -4,7 +4,7 @@ This extends the existing transaction/document workflow. It does not establish j
 
 ## Use the workflow
 
-1. Open **Transactions**, select a transaction and upload a PDF or UTF-8 text file (maximum 5 MB).
+1. Open **Transactions**, select a transaction and upload a PDF or UTF-8 text file (maximum 4 MB).
 2. Check text-extraction status and unresolved terms. Partial, unreadable and image-only files are identified. Download the preserved original when needed.
 3. Inspect each proposal's matched phrase, surrounding text, PDF page and, for relative arithmetic, named anchor and counting assumptions.
 4. Open **Edit title or correct proposed date** to change the date/title. A different date requires a reason. Computed proposals additionally require acknowledgment of the source and counting assumptions.

@@ -2,6 +2,7 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { ClientIntelligencePanel, SearchCriteriaFields } from './client-intelligence';
 import { DocumentDeadlineReview } from './document-deadline-review';
+import { DOCUMENT_LIMIT_LABEL, documentSizeError } from '@/lib/upload-limits';
 import { evaluateSavedSearch } from '@/lib/client-intelligence';
 import {
   Activity,
@@ -251,10 +252,10 @@ function HouseArt({ variant = 0, large = false }: { variant?: number; large?: bo
   );
 }
 
-export default function WorkspaceApp() {
+export default function WorkspaceApp({ workspaceAvailable = true }: { workspaceAvailable?: boolean }) {
   const [user, setUser] = useState<Actor | null>(null),
     [ws, setWs] = useState<Workspace | null>(null),
-    [loading, setLoading] = useState(true),
+    [loading, setLoading] = useState(workspaceAvailable),
     [busy, setBusy] = useState(false),
     [error, setError] = useState(''),
     [toast, setToast] = useState('');
@@ -317,6 +318,10 @@ export default function WorkspaceApp() {
     setTimeout(() => setToast(''), 4500);
   };
   useEffect(() => {
+    if (!workspaceAvailable) {
+      setLoading(false);
+      return;
+    }
     setInviteToken(new URLSearchParams(window.location.search).get('invite') || '');
     request<{ user: Actor; workspace: Workspace }>('/api/workspace?initialize=1')
       .then(d => {
@@ -327,7 +332,7 @@ export default function WorkspaceApp() {
         if (!/sign|session|auth|unauth/i.test(e.message)) setError(e.message);
       })
       .finally(() => setLoading(false));
-  }, []);
+  }, [workspaceAvailable]);
   useEffect(() => {
     const generation = ++sessionVersion.current;
     setConversation([]);
@@ -714,6 +719,7 @@ export default function WorkspaceApp() {
   if ((!user || !ws) && !showAuth)
     return (
       <Landing
+        workspaceAvailable={workspaceAvailable}
         busy={busy}
         error={error}
         onDemo={() => void authenticate('demo')}
@@ -2442,6 +2448,15 @@ export default function WorkspaceApp() {
                           e.preventDefault();
                           const form = e.currentTarget,
                             f = new FormData(form);
+                          const file = f.get('file');
+                          setError('');
+                          if (file instanceof File) {
+                            const sizeError = documentSizeError(file.size);
+                            if (sizeError) {
+                              setError(sizeError);
+                              return;
+                            }
+                          }
                           f.set('transactionId', transaction.id);
                           setBusy(true);
                           try {
@@ -2459,7 +2474,7 @@ export default function WorkspaceApp() {
                         <label className="upload-zone">
                           <Upload size={26} />
                           <strong>Choose a transaction document</strong>
-                          <span>PDF or text · Maximum 5 MB</span>
+                          <span>PDF or text · Maximum {DOCUMENT_LIMIT_LABEL}</span>
                           <input
                             name="file"
                             type="file"
@@ -2862,7 +2877,7 @@ export default function WorkspaceApp() {
                 <div className="method-note">
                   Pricing assumptions are transparent analyst inputs. Provider observations remain distinct from bundled
                   fictional clients and outcomes. No MLS completeness, inspected appraisal or verified transaction
-                  outcome is implied. Private Homesolo behavior remains unverified.
+                  outcome is implied. Consequential decisions require professional review.
                 </div>
               </>
             ) : (

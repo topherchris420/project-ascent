@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-10-16T03:20:55.680Z",
+  "generatedAt": "2026-10-16T21:09:57.221Z",
   "runtime": "v24.19.0",
   "platform": "win32-arm64",
   "datasetAsOf": "2026-10-15T12:00:00.000Z",
-  "scope": "Local in-process synthetic-fixture microbenchmarks only. No network, AI-provider, database, browser, or Homesolo measurements. Timing is machine-specific and is not a claim of competitive superiority.",
+  "scope": "Local in-process synthetic-fixture microbenchmarks only. No network, AI-provider, database or browser measurements. Timing is machine-specific and is not a claim of production performance.",
   "dataset": {
     "properties": 12,
     "comparables": 7,
@@ -19,27 +19,27 @@
   "timings": {
     "cma": {
       "trials": 200,
-      "medianMs": 0.4117,
-      "p95Ms": 0.7288,
-      "maxMs": 1.0381
+      "medianMs": 0.4174,
+      "p95Ms": 0.5474,
+      "maxMs": 0.8265
     },
     "market": {
       "trials": 200,
       "medianMs": 0.0163,
-      "p95Ms": 0.0387,
-      "maxMs": 0.6164
+      "p95Ms": 0.0242,
+      "maxMs": 0.1846
     },
     "scenario": {
       "trials": 200,
       "medianMs": 0.003,
-      "p95Ms": 0.0036,
-      "maxMs": 0.0119
+      "p95Ms": 0.0038,
+      "maxMs": 0.0155
     },
     "offers": {
       "trials": 200,
       "medianMs": 0.0043,
-      "p95Ms": 0.0052,
-      "maxMs": 0.0379
+      "p95Ms": 0.0051,
+      "maxMs": 0.0183
     }
   },
   "regionalBenchmarks": [
@@ -53,8 +53,8 @@
       "timing": {
         "trials": 200,
         "medianMs": 0.3289,
-        "p95Ms": 0.5647,
-        "maxMs": 0.9749
+        "p95Ms": 0.4829,
+        "maxMs": 0.7085
       }
     },
     {
@@ -66,9 +66,9 @@
       "checksum": "fnv1a32-fe12efca",
       "timing": {
         "trials": 200,
-        "medianMs": 0.413,
-        "p95Ms": 0.6311,
-        "maxMs": 1.3163
+        "medianMs": 0.4198,
+        "p95Ms": 0.6322,
+        "maxMs": 0.7662
       }
     }
   ],
@@ -117,7 +117,7 @@
   },
   "missingBenchmarks": [
     "Live-market accuracy/calibration and paired baseline",
-    "End-to-end task completion against Homesolo",
+    "End-to-end task completion against a fixed internal baseline",
     "AI factual grounding against a human-adjudicated question set",
     "Live integration freshness and error rates",
     "Database and storage performance under concurrent tenant load",

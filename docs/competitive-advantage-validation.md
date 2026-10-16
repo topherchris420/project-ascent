@@ -1,6 +1,6 @@
 # Domain intelligence: validation and limits
 
-The implementation adds a deterministic professional-practice layer, rather than claiming that a language model has acquired expert judgment. It does not establish competitive superiority over Homesolo. Original-product internals, real customer outcomes and independent expert agreement are unmeasured.
+The implementation adds a deterministic professional-practice layer, rather than claiming that a language model has acquired expert judgment. Real customer outcomes and independent expert agreement remain unmeasured.
 
 ## Working foundation
 
@@ -32,7 +32,7 @@ Run `npm exec -- tsx scripts/evaluate-domain.ts`. It writes [the measured artifa
 
 The recorded run achieved 32/32 expected triage outcomes. On this same fixture, a deliberately simple keyword-block baseline achieved 12/32 (37.5%) and allowed 2/10 legitimate requests (20%); the layered guard allowed all ten legitimate requests. The 11 built-in rules passed their positive/negative execution cases. Offer fixtures show interaction coverage that a price-minus-credit-only baseline does not attempt to supply.
 
-Those are **fixture-specific implementation results**. Labels were authored internally, the baseline is intentionally limited, and cases are not a blinded independent holdout. These numbers are not production error rates, legal accuracy, an estimate of discrimination risk, evidence of better transaction outcomes or a measurement of Homesolo. The artifact explicitly records expert agreement, actual outcome evaluation and customer task completion as unmeasured.
+Those are **fixture-specific implementation results**. Labels were authored internally, the baseline is intentionally limited, and cases are not a blinded independent holdout. These numbers are not production error rates, legal accuracy, an estimate of discrimination risk, evidence of better transaction outcomes or a measurement of external products. The artifact explicitly records expert agreement, actual outcome evaluation and customer task completion as unmeasured.
 
 Provider-record CMA inputs retain missing listing dates, asking prices, condition and days on market rather than fabricating them. Only provider-reported recorded sales with a positive closing price and eligible date can be used as closing evidence; AVM-selected listings remain listings. Unknown condition requires explicit `conditionValue=0` consent, which omits that adjustment and labels the limitation, or a separately disclosed analyst assumption. Frozen minimal observations retain source, valuation and recorded-sale graph edges. Observation IDs are evidence-bundle scoped; duplicate observations across requests remain possible, so this does not establish nationwide canonical entity resolution.
 
@@ -53,7 +53,7 @@ The following gates are the evaluation protocol for future professional/producti
 | Trust | Blinded review of explanation with hidden calculation details | At least 90% correct identification of facts, computations, assumptions, unknowns and required decisions in an independent professional task study | Five-part explanations implemented; user comprehension unmeasured |
 | Retention | Consenting professional cohort with declared eligible work | Pre-register voluntary cohort usage, successful-task and usefulness targets before an eight-week study; report churn, missing observations and support burden | No customers, retention outcomes or switching success invented |
 
-Homesolo comparisons require reliable equivalent datasets, workflows, access and timing conditions. Public demo visuals do not supply those conditions. Until then, competitive conclusions remain unverified and the internal baselines above are the comparison reference.
+Product improvements require reliable equivalent datasets, workflows and timing conditions. Use the transparent internal baselines above until independent professional studies are available.
 
 1. Obtain independent qualified reviewer participation, documented jurisdiction scope and blinded case adjudication.
 2. Build a separated, multilingual adversarial holdout and measure false positives/negatives by intent and surface.

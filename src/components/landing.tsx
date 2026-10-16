@@ -33,6 +33,7 @@ export type LandingProps = {
   onRegister: () => void;
   busy: boolean;
   error?: string;
+  workspaceAvailable?: boolean;
 };
 
 // Invented records for the hero sample. They run through the same engine as the workspace.
@@ -625,7 +626,7 @@ const faqs = [
   },
 ];
 
-export function Landing({ onDemo, onSignIn, onRegister, busy, error }: LandingProps) {
+export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAvailable = true }: LandingProps) {
   const demoLabel = (
     <>
       {busy ? (
@@ -655,10 +656,20 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error }: LandingPr
             <a href="#faq">FAQ</a>
           </nav>
           <div className="lp-nav-actions">
-            <button type="button" className="lp-btn lp-btn-ghost lp-nav-login" onClick={onSignIn}>
+            <button
+              type="button"
+              className="lp-btn lp-btn-ghost lp-nav-login"
+              onClick={onSignIn}
+              disabled={!workspaceAvailable}
+            >
               Log in
             </button>
-            <button type="button" className="lp-btn lp-btn-primary lp-btn-sm" onClick={onDemo} disabled={busy}>
+            <button
+              type="button"
+              className="lp-btn lp-btn-primary lp-btn-sm"
+              onClick={onDemo}
+              disabled={busy || !workspaceAvailable}
+            >
               Try the demo
             </button>
           </div>
@@ -682,23 +693,42 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error }: LandingPr
                 Ascent turns closed sales into three list positions you can defend line by line, then carries that
                 evidence through clients, offers and closing.
               </p>
-              <p className="lp-lede lp-lede-strong">No application. No waitlist. Try the real thing below.</p>
+              <p className="lp-lede lp-lede-strong">No application. No waitlist. Try the pricing example below.</p>
+              {!workspaceAvailable && (
+                <div role="status" className="lp-setup">
+                  <strong>Workspace setup is in progress.</strong>
+                  <p>
+                    Account access will be available after setup. You can still explore the fictional pricing example.
+                  </p>
+                  <a href="#pricing-example">Try the pricing example</a>
+                </div>
+              )}
               {error && (
                 <div role="alert" className="lp-error">
                   {error}
                 </div>
               )}
               <div className="lp-cta-row">
-                <button type="button" className="lp-btn lp-btn-primary lp-btn-lg" onClick={onDemo} disabled={busy}>
+                <button
+                  type="button"
+                  className="lp-btn lp-btn-primary lp-btn-lg"
+                  onClick={onDemo}
+                  disabled={busy || !workspaceAvailable}
+                >
                   {demoLabel}
                 </button>
-                <button type="button" className="lp-btn lp-btn-outline lp-btn-lg" onClick={onSignIn}>
+                <button
+                  type="button"
+                  className="lp-btn lp-btn-outline lp-btn-lg"
+                  onClick={onSignIn}
+                  disabled={!workspaceAvailable}
+                >
                   Sign in
                 </button>
               </div>
               <p className="lp-fine">
                 The demo opens a private workspace with fictional properties and clients.{' '}
-                <button type="button" className="lp-link" onClick={onRegister}>
+                <button type="button" className="lp-link" onClick={onRegister} disabled={!workspaceAvailable}>
                   Create an account
                 </button>{' '}
                 to start your own.
@@ -715,7 +745,7 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error }: LandingPr
                 </li>
               </ul>
             </div>
-            <div className="lp-hero-visual">
+            <div className="lp-hero-visual" id="pricing-example">
               <PricingCard />
             </div>
           </div>
@@ -953,7 +983,12 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error }: LandingPr
                 <p>Open a private workspace in seconds. Price a property, add a client, compare offers.</p>
               </div>
               <div className="lp-final-actions">
-                <button type="button" className="lp-btn lp-btn-light lp-btn-lg" onClick={onDemo} disabled={busy}>
+                <button
+                  type="button"
+                  className="lp-btn lp-btn-light lp-btn-lg"
+                  onClick={onDemo}
+                  disabled={busy || !workspaceAvailable}
+                >
                   {busy ? (
                     <LoaderCircle className="spin" size={18} aria-hidden="true" />
                   ) : (
@@ -961,7 +996,12 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error }: LandingPr
                   )}
                   Open a demo workspace
                 </button>
-                <button type="button" className="lp-btn lp-btn-onDark lp-btn-lg" onClick={onRegister}>
+                <button
+                  type="button"
+                  className="lp-btn lp-btn-onDark lp-btn-lg"
+                  onClick={onRegister}
+                  disabled={!workspaceAvailable}
+                >
                   Create an account <ArrowUpRight size={16} aria-hidden="true" />
                 </button>
               </div>

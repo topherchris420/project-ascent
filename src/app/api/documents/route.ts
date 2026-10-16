@@ -2,12 +2,14 @@ import { authorized, endpoint, json } from '@/lib/api';
 import { HttpError } from '@/lib/auth';
 import { uploadDocument } from '@/lib/service';
 import { scopeWorkspaceForAccess } from '@/lib/fabric';
+import { DOCUMENT_LIMIT_LABEL, MAX_MULTIPART_BYTES } from '@/lib/upload-limits';
 export const runtime = 'nodejs';
 export async function POST(request: Request) {
   return endpoint(async () => {
     const user = await authorized(request, true);
-    const limit = 5 * 1024 * 1024 + 64 * 1024;
-    if (Number(request.headers.get('content-length') || 0) > limit) throw new HttpError(413, 'Document exceeds 5 MB.');
+    const limit = MAX_MULTIPART_BYTES;
+    if (Number(request.headers.get('content-length') || 0) > limit)
+      throw new HttpError(413, `Document exceeds the ${DOCUMENT_LIMIT_LABEL} upload limit.`);
     // Cap streamed bytes as well as Content-Length to resist chunked oversized requests.
     if (!request.body) throw new HttpError(400, 'Document upload is empty.');
     const reader = request.body.getReader();
@@ -19,7 +21,7 @@ export async function POST(request: Request) {
       total += item.value.byteLength;
       if (total > limit) {
         await reader.cancel();
-        throw new HttpError(413, 'Document exceeds 5 MB.');
+        throw new HttpError(413, `Document exceeds the ${DOCUMENT_LIMIT_LABEL} upload limit.`);
       }
       chunks.push(item.value);
     }

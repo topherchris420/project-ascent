@@ -410,7 +410,7 @@ export async function executeMigrationAction(actor: Actor, raw: unknown) {
         baseline,
         candidate,
         delta: candidate.estimate - baseline.estimate,
-        note: 'Same frozen dataset and as-of, explicit assumption variants. Deterministic sensitivity only; no Homesolo comparison or accuracy superiority.',
+        note: 'Same frozen dataset and as-of, explicit assumption variants. Deterministic sensitivity only; not an accuracy validation.',
       },
     };
   }

@@ -75,7 +75,7 @@ async function main() {
     generatedAt: new Date().toISOString(),
     dataset: 'Authored English synthetic golden cases v1; no customer content or licensed records.',
     scope:
-      'Deterministic execution and safety-triage comparison on this preset fixture only. No Homesolo measurement, independent expert agreement, legal correctness, real-world calibration or predictive superiority is established.',
+      'Deterministic execution and safety-triage comparison on this preset fixture only. No independent expert agreement, legal correctness, real-world calibration or predictive superiority is established.',
     thresholds,
     safetyPass,
     fairHousing: { metrics, cases },

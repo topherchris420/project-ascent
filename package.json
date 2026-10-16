@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "engines": {
-    "node": ">=24.15.0"
+    "node": "24.x"
   },
   "scripts": {
     "dev": "next dev --webpack -H 127.0.0.1 -p 3040",
@@ -13,6 +13,8 @@
     "test": "tsx --test tests/*.test.ts",
     "test:e2e": "playwright test",
     "db:migrate": "node --env-file-if-exists=.env.local --import tsx scripts/migrate.ts",
+    "check:deploy": "node --env-file-if-exists=.env.local --import tsx scripts/check-deployment.ts",
+    "verify:hobby-setup": "node scripts/verify-hobby-setup.mjs",
     "benchmark": "tsx scripts/benchmark.ts",
     "audit:a11y": "node scripts/a11y-scan.mjs",
     "evaluate:domain": "tsx scripts/evaluate-domain.ts",

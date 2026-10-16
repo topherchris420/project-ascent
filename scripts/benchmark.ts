@@ -50,7 +50,7 @@ async function main() {
     platform: `${process.platform}-${process.arch}`,
     datasetAsOf: workspace.asOf,
     scope:
-      'Local in-process synthetic-fixture microbenchmarks only. No network, AI-provider, database, browser, or Homesolo measurements. Timing is machine-specific and is not a claim of competitive superiority.',
+      'Local in-process synthetic-fixture microbenchmarks only. No network, AI-provider, database or browser measurements. Timing is machine-specific and is not a claim of production performance.',
     dataset: {
       properties: workspace.properties.length,
       comparables: cma.comps.length,
@@ -73,7 +73,7 @@ async function main() {
     syntheticRetrospectiveEvaluation: evaluateOutcomes(workspace.cmas, workspace.outcomes),
     missingBenchmarks: [
       'Live-market accuracy/calibration and paired baseline',
-      'End-to-end task completion against Homesolo',
+      'End-to-end task completion against a fixed internal baseline',
       'AI factual grounding against a human-adjudicated question set',
       'Live integration freshness and error rates',
       'Database and storage performance under concurrent tenant load',

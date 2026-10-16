@@ -253,7 +253,7 @@ test('side-by-side evaluation uses exactly the frozen dataset, refuses a mismatc
   })) as { comparison: { datasetHash: string; equivalentDataset: boolean; delta: number; note: string } };
   assert.equal(compared.comparison.equivalentDataset, true);
   assert.equal(compared.comparison.delta, 0);
-  assert.match(compared.comparison.note, /no Homesolo/);
+  assert.match(compared.comparison.note, /not an accuracy validation/);
   await assert.rejects(
     executeMigrationAction(account.user, {
       action: 'compare',

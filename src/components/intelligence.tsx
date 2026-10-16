@@ -1072,8 +1072,8 @@ export function PortabilityView({ workspace, user, onWorkspace }: Props) {
         <section className="panel">
           <h2>Compare the same evidence</h2>
           <p className="body-note">
-            This evaluates two declared time-trend assumptions on the same archived CMA dataset. It does not compare
-            against Homesolo or claim which forecast is more accurate.
+            This evaluates two declared time-trend assumptions on the same archived CMA dataset. It shows sensitivity to
+            assumptions; it does not establish which forecast is more accurate.
           </p>
           <form
             onSubmit={e => {

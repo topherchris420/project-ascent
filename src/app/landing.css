@@ -1666,3 +1666,20 @@
     scroll-behavior: smooth;
   }
 }
+.lp-setup {
+  border: 1px solid #c6d5c1;
+  border-radius: 10px;
+  padding: 16px;
+  margin: 18px 0;
+  background: #f1f6ed;
+  font-size: 14px;
+  color: #243d34;
+}
+.lp-setup p {
+  margin: 6px 0;
+  color: #40533b;
+}
+.lp-setup a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}

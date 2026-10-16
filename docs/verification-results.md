@@ -1,6 +1,6 @@
 # Verification results
 
-Executed on this Windows ARM64 development machine with Node 24.19.0, October 15–16, 2026. These results describe this implementation and its fixtures, not a comparison against an authenticated Homesolo product or licensed market outcomes.
+Executed on this Windows ARM64 development machine with Node 24.19.0, October 15–16, 2026. These results describe this implementation and its fixtures, not a claim of production reliability or licensed market accuracy.
 
 | Check | Actual result | Scope |
 | --- | --- | --- |
@@ -53,7 +53,27 @@ Continued from the updated 232-test application without replacing its landing pa
 | Credential scan | No supplied Groq/RentCast value in **55 compiled browser artifacts** or **306 tracked files**; `.env.local` remains ignored. The tracked-source scan excludes untracked additions |
 | Provider costs | These tests use synthetic documents, stored/synthetic property fixtures and deterministic assistant mode. **No new paid RentCast or Groq request was made**; caps were not raised |
 
-Evidence: [desktop review](../evidence/ascent-deadline-review-desktop.png), [mobile review](../evidence/ascent-deadline-review-mobile.png), [workflow and limitations](contract-deadlines.md). These results do not establish legal correctness, OCR completeness, expert agreement, production decoder isolation, or superiority over Homesolo. PDFs without usable text require manual review; business-day arithmetic is a disclosed weekday-only estimate with no holiday or extension calendar. Existing saved proposals remain unchanged and can lack new evidence metadata.
+Evidence: [desktop review](../evidence/ascent-deadline-review-desktop.png), [mobile review](../evidence/ascent-deadline-review-mobile.png), [workflow and limitations](contract-deadlines.md). These results do not establish legal correctness, OCR completeness, expert agreement, production decoder isolation, or independently validated market accuracy. PDFs without usable text require manual review; business-day arithmetic is a disclosed weekday-only estimate with no holiday or extension calendar. Existing saved proposals remain unchanged and can lack new evidence metadata.
+
+## October 16, 2026 Hobby deployment and Ascent branding update
+
+| Check | Actual result |
+| --- | --- |
+| Unit/integration suite | **253/253 passed**; eight new deployment/upload tests, including exact 4 MB acceptance, one-byte excess, declared/chunked body rejection, private legacy-file handling, configuration validation and pool bounds |
+| Full browser suite | **18 passed, 1 skipped**, approximately **2.2 minutes**. Optional real-cache test remains opt-in; no new live provider requests |
+| New upload browser workflow | Oversize selection triggers a useful error and **zero upload requests**; replacing it with a small synthetic contract succeeds and clears the error |
+| Optimized production build | Passed; homepage remains statically rendered. Node 24 and 60-second API ceilings configured; once-daily cron replaces the incompatible six-hour schedule |
+| Public setup acceptance | Optimized local server on port 3041: HTTP 200, setup message, disabled account actions, interactive pricing example, **zero browser API requests** and no page errors |
+| Accessibility | **22/22 application configurations**, plus optimized setup desktop/mobile: no axe WCAG 2 A/AA or 2.1 AA violations detected and no horizontal overflow |
+| Configuration preflight | Correctly exits nonzero for the current missing hosted database, HTTPS origin and document-encryption key; no database or paid provider call performed |
+| Domain evaluation | **32/32 authored triage outcomes**, 11 rule case sets pass; regenerated scope uses Ascent's own validation framework, not external product claims |
+| Browser credential check | No supplied Groq/RentCast value in **55 compiled client artifacts** |
+| Server trace check | **35 server trace manifests** inspected; zero private local-data, evidence, test or test-output files included. This is not a real Vercel bundle acceptance |
+| Product independence | Legacy product references removed from current source/docs; reference-site captures and superseded screenshots excluded from the current tracked assets. Ascent calculations and workflows retained; existing Git history was not rewritten |
+
+The first combined browser attempt overlapped a client development refresh and reset the deadline page to Overview; the unchanged deadline assertions passed on focused and final full reruns. The new upload test initially matched both the application alert and Next.js's route announcer; it now targets the actual error. Setup-smoke locator/context mistakes were fixed without weakening its interactive, privacy or accessibility assertions. No failing test was removed.
+
+Evidence: [optimized setup acceptance](../evidence/hobby-setup-acceptance.json), [desktop](../evidence/ascent-hobby-setup-desktop.png), [mobile](../evidence/ascent-hobby-setup-mobile.png), [Hobby setup](vercel-hobby.md). This verifies local optimized behavior and configured limits, **not a successful Vercel deployment or production PostgreSQL acceptance**. The provider spending caps and private credentials remain unchanged. Vercel Hobby permits personal, non-commercial use; commercial operation requires an appropriate hosting plan.
 
 ## Reproduce
 
@@ -91,13 +111,12 @@ After building, `node --env-file=.env.local scripts/verify-build.mjs` checks com
 - [Archived live attempts](../evidence/ai-evaluations/)
 - [Cumulative evaluation accounting](../evidence/ai-evaluation-spend.json)
 - [Successful minimal live diagnostic](../evidence/ai-evaluation.live-diagnostic.json)
-- [REA reconstruction evidence](evidence-ledger.md)
 
 ## What remains unverified
 
 A restricted RentCast key and active owner subscription now support the verified private local workflow. Seven requests remain counted under the ten-request cap; UI renders, assistant questions and cached-data browser verification made no additional property requests. The local technical policy/grant is not production legal approval and cannot authorize production source reads. No authorized production PostgreSQL connection, deployed Vercel project, real Stripe sandbox account, license-verification feed, MLS contract, actual expert participation or destination Git remote was supplied. Ordinary RentCast tests use invented fixtures/mocked HTTP. The separate live service/browser receipts document actual provider data; raw records, private access details and real-data screenshots remain ignored. Source contracts, full retention/deletion across backups, per-member professional eligibility, email verification/recovery/MFA, distributed ingestion scale and operational incident/backup procedures remain production gates. [Prioritized remaining work](remaining-work.md).
 
-No real property outcome, customer, endorsement, causal time saving, voluntary retention or superiority over Homesolo is claimed. The working local application is a substantial production-oriented foundation with documented live-data, operational and AI-validation blockers.
+No real property outcome, customer, endorsement, causal time saving, voluntary retention or independently validated competitive superiority is claimed. The working local application is a substantial production-oriented foundation with documented live-data, operational and AI-validation blockers.
 
 ## Corrections made in this verification cycle
 
