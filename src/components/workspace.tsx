@@ -949,7 +949,7 @@ export default function WorkspaceApp({ workspaceAvailable = true }: { workspaceA
             <span>{ws.mode === 'demo' ? 'Demo workspace' : 'Professional workspace'}</span>
           </div>
         </div>
-        <nav aria-label="Main navigation">
+        <nav id="workspace-navigation" aria-label="Main navigation">
           {navGroups.map(group => {
             const items = groupItems(group);
             const open = !collapsed.includes(group.id) || items.some(n => n.page === page);
@@ -1046,7 +1046,13 @@ export default function WorkspaceApp({ workspaceAvailable = true }: { workspaceA
       )}
       <div className="workspace-main">
         <header className="topbar">
-          <button className="icon-button mobile-menu" aria-label="Open navigation" onClick={() => setMobileNav(true)}>
+          <button
+            className="icon-button mobile-menu"
+            aria-label="Open navigation"
+            aria-expanded={mobileNav}
+            aria-controls="workspace-navigation"
+            onClick={() => setMobileNav(true)}
+          >
             <Menu size={20} />
           </button>
           <div className="breadcrumb">
