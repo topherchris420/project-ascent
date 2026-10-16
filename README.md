@@ -2,7 +2,7 @@
 
 Ascent is an independent real estate decision workspace. It includes persistent private workspaces, pricing calculations, clients, offers, transactions, grounded assistance, progressive access, configurable plans, and a national property ingestion fabric.
 
-All bundled properties, people, offers, transactions, and outcomes are **fictional**. The default is a synthetic demonstration, not a live MLS application. Demonstration results do not establish live-market accuracy.
+New workspaces contain no bundled properties, people, offers, transactions, or outcomes. Workflow records are created only from authorized user input or connected systems. Property research uses the server-side RentCast integration when configured; RentCast is a property-data provider, not an MLS feed, and does not supply people, offers, transactions, or outcomes.
 
 ## Run locally
 
@@ -15,11 +15,11 @@ if (!(Test-Path .env.local)) { Copy-Item .env.example .env.local }
 npm.cmd run dev
 ```
 
-Open **http://localhost:3040**. The public page includes a live pricing card that runs the real engine on fictional data. Choose **Explore the working demo**, or create an account. Each demo/account has its own tenant and persistent SQLite database state. No credentials or manual verification are required to complete a synthetic CMA. Data persists in `.data/ascent.sqlite`; never commit this directory. Use PostgreSQL for production.
+Open **http://localhost:3040**. Create an account to open a private workspace. New workspaces intentionally show empty states until you import authorized records, enter workflow data, or run a RentCast property search. Data persists in `.data/ascent.sqlite`; never commit this directory. Use PostgreSQL for production.
 
-DMV is the initial reference market. The **Market region** selector switches to Austin using the same property and CMA interfaces. **National data fabric** shows record completeness, source rights, sync runs, and gaps. Existing Austin workflows and historical decisions are preserved.
+DMV is the initial reference market. The **Market region** selector operates on the properties available to the current workspace. **National data fabric** shows record completeness, source rights, sync runs, and gaps. Empty-state guidance explains how to connect authorized property data; no fictional workflows or historical decisions are preloaded.
 
-**Properties → National provider research** connects the server-side RentCast adapter to address research, recorded-sale CMA, listing/AVM benchmarks, ZIP statistics, scenario arithmetic, the evidence assistant and printable reports. The default fixture path requires no key. Live RentCast requires `RENTCAST_API_KEY`, reviewed contractual entitlements and explicit request/spend limits; live acceptance is verified in DMV and San Antonio with seven actual requests under a ten-request application cap. The private local policy does not authorize production deployment. See [RentCast setup and boundaries](docs/rentcast-integration.md).
+**Properties → National provider research** connects the server-side RentCast adapter to address research, recorded-sale CMA, listing/AVM benchmarks, ZIP statistics, scenario arithmetic, the evidence assistant and printable reports. Searches require `RENTCAST_API_KEY`, reviewed contractual entitlements and explicit request/spend limits; the app does not substitute fictional property records when RentCast is unavailable. RentCast is not an MLS feed and does not provide people, offers, transactions, or outcomes. See [RentCast setup and boundaries](docs/rentcast-integration.md).
 
 Local live-research access is stored only in the ignored `.data/rentcast-local-access.json`; keep that file private. The ordinary demo remains independent and makes no live requests. See [live acceptance evidence](evidence/rentcast-live-acceptance.json) and [remaining production work](docs/remaining-work.md).
 
