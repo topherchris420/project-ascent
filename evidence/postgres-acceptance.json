@@ -1,0 +1,50 @@
+{
+  "recordedAt": "2026-10-16T22:24:19.695Z",
+  "environment": "Hosted Neon PostgreSQL 18 / PostGIS; isolated Ascent project on the existing Free plan",
+  "database": "ascent",
+  "runtimeRole": "Restricted non-owner, no superuser/BYPASSRLS/role administration/schema creation",
+  "tls": "verify-full",
+  "pooled": true,
+  "migrationVersions": [
+    "001_initial",
+    "002_platform",
+    "003_api_keys"
+  ],
+  "browserRegistrationPersistedInPostgres": true,
+  "verified": true,
+  "checks": [
+    {
+      "name": "restricted runtime role, forced RLS, migrations and PostGIS",
+      "passed": true,
+      "milliseconds": 157
+    },
+    {
+      "name": "instant registration and session authentication",
+      "passed": true,
+      "milliseconds": 694
+    },
+    {
+      "name": "database RLS denies cross-tenant reads, writes and unscoped access",
+      "passed": true,
+      "milliseconds": 151
+    },
+    {
+      "name": "PostGIS geographic search and durable concurrent client edits",
+      "passed": true,
+      "milliseconds": 384
+    },
+    {
+      "name": "encrypted document bytes, human-reviewed dates and tenant privacy",
+      "passed": true,
+      "milliseconds": 320
+    },
+    {
+      "name": "saved CMA reproduces from jsonb, scenarios, evidence assistant and report export",
+      "passed": true,
+      "milliseconds": 422
+    }
+  ],
+  "cleanup": "passed",
+  "note": "Dedicated PostgreSQL only. Synthetic records; no paid provider calls or existing customer data copied. Failure details are withheld to protect credentials.",
+  "vercelDeployed": false
+}

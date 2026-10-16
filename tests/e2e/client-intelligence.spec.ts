@@ -37,12 +37,24 @@ test('client search criteria, inventory explanations, alerts and follow-up conti
     .locator('article')
     .filter({ has: page.getByRole('heading', { name: 'Objective Austin home search', exact: true }) });
   await expect(search).toContainText('satisfies minimum');
-  await search.getByRole('button', { name: 'Review matches & create alerts', exact: true }).click();
+  const reviewMatches = async () => {
+    const [response] = await Promise.all([
+      page.waitForResponse(
+        response =>
+          response.url().endsWith('/api/actions') &&
+          response.request().method() === 'POST' &&
+          response.request().postDataJSON().type === 'reviewSavedSearch',
+      ),
+      search.getByRole('button', { name: 'Review matches & create alerts', exact: true }).click(),
+    ]);
+    expect(response.status()).toBe(200);
+  };
+  await reviewMatches();
   const before = await (await page.request.get('/api/workspace')).json();
   const saved = before.workspace.savedSearches.at(-1);
   const alerts = before.workspace.alerts.filter((alert: { searchId?: string }) => alert.searchId === saved.id);
   expect(alerts.length).toBeGreaterThan(0);
-  await search.getByRole('button', { name: 'Review matches & create alerts', exact: true }).click();
+  await reviewMatches();
   const after = await (await page.request.get('/api/workspace')).json();
   expect(after.workspace.alerts.filter((alert: { searchId?: string }) => alert.searchId === saved.id)).toHaveLength(
     alerts.length,

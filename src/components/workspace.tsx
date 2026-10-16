@@ -257,6 +257,7 @@ export default function WorkspaceApp({ workspaceAvailable = true }: { workspaceA
     [ws, setWs] = useState<Workspace | null>(null),
     [loading, setLoading] = useState(workspaceAvailable),
     [busy, setBusy] = useState(false),
+    [regionLoading, setRegionLoading] = useState(false),
     [error, setError] = useState(''),
     [toast, setToast] = useState('');
   const [page, setPage] = useState<Page>('overview'),
@@ -335,6 +336,7 @@ export default function WorkspaceApp({ workspaceAvailable = true }: { workspaceA
   }, [workspaceAvailable]);
   useEffect(() => {
     const generation = ++sessionVersion.current;
+    setRegionLoading(false);
     setConversation([]);
     setActiveSearchId('');
     setAssistantMessage('');
@@ -537,10 +539,16 @@ export default function WorkspaceApp({ workspaceAvailable = true }: { workspaceA
     setCommandOpen(false);
   };
   async function switchRegion(regionId: string) {
+    if (busy || regionLoading) return;
+    const generation = sessionVersion.current;
     setBusy(true);
+    setRegionLoading(true);
+    setAssistantOpen(false);
+    setToast('');
     setError('');
     try {
       const d = await request<FabricInfo>('/api/fabric', { action: 'selectRegion', regionId });
+      if (generation !== sessionVersion.current) return;
       setWs(d.workspace);
       setRegions(d.regions);
       const ids = new Set(
@@ -554,14 +562,18 @@ export default function WorkspaceApp({ workspaceAvailable = true }: { workspaceA
       if (next) changeProperty(next.id);
       setAssumptions(regionalAssumptions(regionId));
     } catch (e) {
-      setError((e as Error).message);
+      if (generation === sessionVersion.current) setError((e as Error).message);
     } finally {
-      setBusy(false);
+      if (generation === sessionVersion.current) {
+        setBusy(false);
+        setRegionLoading(false);
+      }
     }
   }
   async function mutate(type: string, payload: Record<string, unknown> = {}) {
     setBusy(true);
     setError('');
+    setToast('');
     try {
       const d = await request<{ workspace: Workspace; result?: unknown }>('/api/actions', { type, ...payload });
       setWs(d.workspace);
@@ -1121,7 +1133,14 @@ export default function WorkspaceApp({ workspaceAvailable = true }: { workspaceA
             <ArrowUpRight size={12} />
           </button>
         </div>
-        <main id="main" tabIndex={-1} className="page-content">
+        <main id="main" tabIndex={-1} className="page-content" aria-busy={regionLoading}>
+          {regionLoading && (
+            <div className="market-loading empty" role="status">
+              <LoaderCircle className="spin" size={28} aria-hidden="true" />
+              <h2>Loading market</h2>
+              <p>Updating properties and pricing assumptions for the selected region.</p>
+            </div>
+          )}
           {page === 'overview' && productFlags['guided-academy'] && (
             <div className="guided-academy-banner">
               <GraduationCap size={22} />

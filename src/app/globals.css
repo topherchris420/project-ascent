@@ -752,6 +752,9 @@ pre {
   color: #53634d;
   white-space: nowrap;
 }
+.page-content[aria-busy='true'] > :not(.market-loading) {
+  display: none;
+}
 .page-content {
   padding: 35px 36px 36px;
   max-width: 1600px;

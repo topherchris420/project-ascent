@@ -57,6 +57,7 @@ Playwright uses an installed Chrome by default on this workstation. Set `CHROME_
 ## Engineering and evidence
 
 - [Vercel Hobby setup](docs/vercel-hobby.md)
+- [Hosted PostgreSQL connection and verification](docs/postgres-connection.md)
 - [Architecture, security, APIs and deployment](docs/engineering.md)
 - [Capability and limitation matrix](docs/capability-matrix.md)
 - [Progressive access and adoption economics](docs/adoption-economics.md)
@@ -68,4 +69,4 @@ Playwright uses an installed Chrome by default on this workstation. Set `CHROME_
 - [Verification results](docs/verification-results.md)
 - Database migrations: `migrations/`; source: `src/`; tests: `tests/`; measured Ascent artifacts: `evidence/`
 
-Source repository: [topherchris420/project-ascent](https://github.com/topherchris420/project-ascent) (private). Deployment credentials remain unconfigured. The bounded private local RentCast workflow is verified; production provider rights, payment settlement, license-provider automation and PostgreSQL deployment remain unverified. Groq responses have been tested on synthetic evidence; production privacy, reliability and semantic quality still require validation.
+Source repository: [topherchris420/project-ascent](https://github.com/topherchris420/project-ascent) (private). The workstation is connected to hosted Neon PostgreSQL/PostGIS using a restricted runtime role; database acceptance passes. Vercel environment configuration and public deployment remain pending. The bounded private local RentCast workflow is verified; production provider rights, payment settlement and license-provider automation remain unverified. Groq responses have been tested on synthetic evidence; production privacy, reliability and semantic quality still require validation.

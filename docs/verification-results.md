@@ -75,6 +75,26 @@ The first combined browser attempt overlapped a client development refresh and r
 
 Evidence: [optimized setup acceptance](../evidence/hobby-setup-acceptance.json), [desktop](../evidence/ascent-hobby-setup-desktop.png), [mobile](../evidence/ascent-hobby-setup-mobile.png), [Hobby setup](vercel-hobby.md). This verifies local optimized behavior and configured limits, **not a successful Vercel deployment or production PostgreSQL acceptance**. The provider spending caps and private credentials remain unchanged. Vercel Hobby permits personal, non-commercial use; commercial operation requires an appropriate hosting plan.
 
+## October 16, 2026 hosted PostgreSQL connection
+
+The workstation now uses a dedicated `ascent` database in a separate Neon Free-plan project, with PostgreSQL 18/PostGIS, a restricted non-owner runtime login and certificate-verified pooled TLS. All three migrations were applied using the administrator identity. Anna's project was not modified. Private runtime configuration is excluded from Git and deployment uploads; the previous SQLite data remains intact and was not imported.
+
+| Check | Executed result and boundary |
+| --- | --- |
+| Hosted PostgreSQL acceptance | **6/6 passed**: restricted role/forced RLS/PostGIS; registration/session lifecycle; cross-tenant reads/writes and pooled tenant reset; spatial search/concurrent edits; encrypted documents/unapproved dates; reproducible JSONB CMA, scenarios, evidence assistance and report export. The two disposable accounts were removed |
+| Browser storage confirmation | Browser-created synthetic registration independently found in the PostgreSQL registry; this is not a SQLite-only browser run |
+| Final browser suite | **19 passed, 1 skipped**, approximately **2.2 minutes**, against the locally served app connected to hosted PostgreSQL. The cached live RentCast case remains intentionally opt-in |
+| New delayed-market regression | A held region request displays a loading state and withholds stale property actions; after completion, the saved CMA's identity, address and Texas state match the selected Austin property |
+| Unit/integration suite | **253/253 passed**; existing SQLite/unit scenarios retained |
+| TypeScript / optimized build | Both passed |
+| Credential and trace checks | Six configured secret strings absent from **58 compiled browser artifacts**; **35 server traces** contain no private env-file paths or excluded local artifacts. Source/history scan also reported no findings; these are bounded checks, not security certification |
+| Data and costs | Synthetic browser fixtures and deterministic evidence mode; **no new RentCast or Groq calls**, no budget expansion and no paid Neon plan enabled |
+| Deployment boundary | Vercel environment setup, exact HTTPS origin and public deployment remain pending. Backup/restore, key recovery, capacity and exhaustive invitation/billing/API-key lifecycle policy acceptance remain operational work |
+
+Cloud latency exposed a pending-region interface problem and timing assumptions in existing tests. The application now withholds stale page actions during market changes and clears old save confirmations. Geographic and client-alert tests wait for the actual successful save response before reading persisted state; geographic evidence also verifies the saved CMA's ID, address and state. An initial new-test selector incorrectly referenced Overview while on Properties and was corrected. No failing assertion or test was deleted; the final full suite passes.
+
+Evidence: [hosted acceptance receipt](../evidence/postgres-acceptance.json), [credential/trace scan](../evidence/postgres-deployment-scan.json), [onboarding](../evidence/onboarding-acceptance.json), [DMV and Austin](../evidence/geographic-acceptance.json), [connection setup and limitations](postgres-connection.md).
+
 ## Reproduce
 
 ```powershell

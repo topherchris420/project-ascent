@@ -1,0 +1,8 @@
+{
+  "at": "2026-10-16T22:32:21.088Z",
+  "browserArtifacts": 58,
+  "configuredSecretsChecked": 6,
+  "serverTracesCheckedForPrivateEnv": 35,
+  "findings": [],
+  "scope": "Configured secret strings in compiled client artifacts and private env paths in server trace manifests; not a full security audit or Vercel deployment."
+}

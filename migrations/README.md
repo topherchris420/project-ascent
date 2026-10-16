@@ -6,7 +6,7 @@ The application checks that its role is neither superuser nor BYPASSRLS and that
 
 Use TLS with certificate validation for a remote production database (PGSSL=require when not already required by your connection URL). Configure APP_ORIGIN as the exact HTTPS deployment origin, APP_ENCRYPTION_KEY as base64 encoding of 32 random bytes, and CRON_SECRET for the market job. Keep document encryption keys stable and backed up; rotation and backups require an operational procedure before real customer deployment.
 
-Migration 001 creates PostGIS projections and tenant workspace/document isolation. Migration 002 adds durable Stripe event deduplication and one-use team invitations. Migration 003 adds hashed, scoped enterprise API credentials with tenant RLS. PostgreSQL execution remains unverified until an authorized database is configured; the local automated suite verifies SQLite persistence and application authorization boundaries.
+Migration 001 creates PostGIS projections and tenant workspace/document isolation. Migration 002 adds durable Stripe event deduplication and one-use team invitations. Migration 003 adds hashed, scoped enterprise API credentials with tenant RLS. All three were applied to the dedicated hosted Ascent database; [six PostgreSQL acceptance checks passed](../evidence/postgres-acceptance.json). New installations still require their own role, migration, isolation and deployment verification.
 
 ## Sharing an existing PostgreSQL service safely
 
