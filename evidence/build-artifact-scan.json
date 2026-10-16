@@ -1,8 +1,12 @@
 {
-  "at": "2026-10-16T02:14:16.012Z",
+  "at": "2026-10-16T02:37:26.082Z",
   "scanned": 55,
   "found": 0,
   "matches": [],
   "suppliedCredentialChecked": true,
+  "credentialNamesChecked": [
+    "GROQ_API_KEY",
+    "RENTCAST_API_KEY"
+  ],
   "scope": "Compiled browser JavaScript, JSON and source maps only; no provider request"
 }

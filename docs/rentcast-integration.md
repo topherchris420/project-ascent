@@ -1,6 +1,6 @@
 # RentCast integration: implementation and validation
 
-RentCast is the first implemented national commercial property-provider adapter. No RentCast key was supplied, so **no live RentCast request or real-address acceptance test was performed**. The complete application workflow has been exercised with fictional, schema-shaped fixtures. This does not establish live coverage, data accuracy, current billing, provider reliability or competitive superiority.
+RentCast is the first implemented national commercial property-provider adapter. A dedicated key named **Project Ascent local development** was created with the owner's explicit confirmation and stored only in the ignored server environment. It is restricted to `/properties`, `/listings/sale`, `/avm/value` and `/markets`. RentCast currently labels it **Inactive** because the account's API subscription is not activated. No billing subscription was activated by the agent, and **no live RentCast request or real-address acceptance test has been performed**. The complete application workflow has been exercised with fictional, schema-shaped fixtures. See [setup status](../evidence/rentcast-setup.json); key possession alone does not establish live coverage, data accuracy, active entitlement or provider reliability.
 
 ## Architecture and the working path
 
@@ -44,6 +44,8 @@ RentCast data remains labeled licensed-provider data. A reviewed contract can al
 ## Cost, cache and operational behavior
 
 RentCast documents 50 included Developer requests, overages after the allowance, and no provider-side hard request cap. Billing cycles follow the account renewal date. Verify the actual account and remaining allowance before enabling live calls. [Official billing guidance](https://developers.rentcast.io/reference/billing-and-pricing).
+
+The October 15 local dashboard showed the Developer plan at $0/month with 50 included requests and $0.20 for each overage request; activation required a card and API terms acceptance. The local application is initially capped at **10 live requests/month** across the configured key, with matching per-user/tenant caps and concurrency one. A $0.20 per-attempt reserve and $2 monthly reserve conservatively enforce that cap; they are **not charges** for included requests. Other applications using this account can consume its included allowance. The integration remains disabled pending actual subscription activation and the reviewed workspace-use configuration. Merely changing the research selector makes no API request; the fictional fixture address is cleared before live entry.
 
 Ascent uses atomic application-wide counters bound to the configured key, plus tenant and user monthly limits, a global conservative spend reserve, controlled concurrency, expiring request leases, identical-request coalescing and tenant-scoped authorized caches. Cache and fixture/live keys are separate. Budget alerts begin at the configured warning percentage. Status exposes counts, conservative estimated reserves and measured request outcomes/latencies without query text. Reserves round upward to cents and are retained on failed/uncertain attempts; this can stop requests earlier than actual provider billing.
 

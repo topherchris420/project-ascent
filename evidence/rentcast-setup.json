@@ -1,0 +1,28 @@
+{
+  "at": "2026-10-16T02:35:41.064Z",
+  "keyCreated": true,
+  "keyName": "Project Ascent local development",
+  "restrictedEndpoints": [
+    "/properties",
+    "/listings/sale",
+    "/avm/value",
+    "/markets"
+  ],
+  "serverEnvironmentConfigured": true,
+  "keyValueIncluded": false,
+  "providerDashboardKeyState": "Inactive",
+  "providerDashboardPlan": "Not Subscribed",
+  "subscriptionActivatedByAgent": false,
+  "liveProviderEnabled": false,
+  "livePropertyRequests": 0,
+  "localCaps": {
+    "monthlyRequests": 10,
+    "perUserRequests": 10,
+    "perTenantRequests": 10,
+    "concurrency": 1,
+    "perAttemptReserveUsd": 0.2,
+    "monthlyReserveUsd": 2
+  },
+  "reserveIsProviderInvoice": false,
+  "nextStep": "Account owner must activate an API plan; then configure reviewed workspace data rights and execute bounded live acceptance."
+}

@@ -2,7 +2,7 @@ import { readdir, readFile, writeFile } from 'node:fs/promises';
 import { resolve, relative } from 'node:path';
 import { execFileSync } from 'node:child_process';
 
-// Reads the supplied server credential only to compare bytes. Never prints its value.
+// Reads supplied server credentials only to compare bytes. Never prints their values.
 async function filesBelow(directory) {
   const files = [];
   for (const entry of await readdir(directory, { withFileTypes: true })) {
@@ -13,15 +13,16 @@ async function filesBelow(directory) {
   return files;
 }
 const files = await filesBelow(resolve('.next/static'));
-const credential = process.env.GROQ_API_KEY;
+const credentialNames = ['GROQ_API_KEY', 'RENTCAST_API_KEY'].filter(name => process.env[name]);
+const credentials = credentialNames.map(name => process.env[name]);
 const matches = [];
 for (const path of files) {
   const contents = await readFile(path, 'utf8');
-  if ((credential && contents.includes(credential)) || /gsk_[A-Za-z0-9]{24,}/.test(contents)) matches.push(relative(process.cwd(), path));
+  if (credentials.some(credential => contents.includes(credential)) || /gsk_[A-Za-z0-9]{24,}/.test(contents)) matches.push(relative(process.cwd(), path));
 }
-const scan = { at: new Date().toISOString(), scanned: files.length, found: matches.length, matches, suppliedCredentialChecked: Boolean(credential), scope: 'Compiled browser JavaScript, JSON and source maps only; no provider request' };
+const scan = { at: new Date().toISOString(), scanned: files.length, found: matches.length, matches, suppliedCredentialChecked: credentials.length > 0, credentialNamesChecked: credentialNames, scope: 'Compiled browser JavaScript, JSON and source maps only; no provider request' };
 await writeFile(resolve('evidence/build-artifact-scan.json'), JSON.stringify(scan, null, 2) + '\n');
-console.log(JSON.stringify({ clientArtifacts: files.length, credentialMatches: matches.length, suppliedCredentialChecked: Boolean(credential) }));
+console.log(JSON.stringify({ clientArtifacts: files.length, credentialMatches: matches.length, suppliedCredentialChecked: credentials.length > 0, credentialNamesChecked: credentialNames }));
 if (matches.length) process.exitCode = 1;
 
 if (process.argv.includes('--repository')) {
@@ -30,10 +31,10 @@ if (process.argv.includes('--repository')) {
   let found = 0;
   for (const file of tracked) {
     const text = await readFile(resolve(file), 'utf8');
-    if ((credential && text.includes(credential)) || /gsk_[A-Za-z0-9]{24,}/.test(text) || /-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----/.test(text)) found++;
+    if (credentials.some(credential => text.includes(credential)) || /gsk_[A-Za-z0-9]{24,}/.test(text) || /-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----/.test(text)) found++;
   }
   const privateEnvironmentIgnored = git(['check-ignore', '.env.local']).trim() === '.env.local';
-  const result = { at: new Date().toISOString(), trackedFilesScanned: tracked.length, credentialMatches: found, suppliedCredentialChecked: Boolean(credential), privateEnvironmentIgnored, scope: 'Tracked file bytes, known Groq token pattern and private-key markers; not a comprehensive secret/security audit' };
+  const result = { at: new Date().toISOString(), trackedFilesScanned: tracked.length, credentialMatches: found, suppliedCredentialChecked: credentials.length > 0, credentialNamesChecked: credentialNames, privateEnvironmentIgnored, scope: 'Tracked file bytes, known Groq token pattern and private-key markers; not a comprehensive secret/security audit' };
   await writeFile(resolve('evidence/repository-secret-scan.json'), JSON.stringify(result, null, 2) + '\n');
   console.log(JSON.stringify(result));
   if (found || !privateEnvironmentIgnored) process.exitCode = 1;

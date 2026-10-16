@@ -1,6 +1,22 @@
 import { test, expect } from '@playwright/test';
 import { writeFile } from 'node:fs/promises';
 
+test('switching to live research does not submit a fictional address or fetch provider data', async ({ page }) => {
+  let providerPosts = 0;
+  page.on('request', request => { if (request.method() === 'POST' && request.url().endsWith('/api/providers/property')) providerPosts++; });
+  await page.goto('/'); await page.getByRole('button', { name: 'Explore the working demo' }).click();
+  await page.getByRole('navigation', { name: 'Main navigation' }).getByRole('button', { name: 'Properties', exact: true }).click();
+  await page.getByRole('button', { name: 'National provider research', exact: true }).click();
+  await expect(page.getByLabel('US property address', { exact: true })).toHaveValue('4821 Example Ridge Road, Arlington, VA 22207');
+  await page.getByRole('combobox', { name: /^Data environment/ }).selectOption('live');
+  await expect(page.getByLabel('US property address', { exact: true })).toHaveValue('');
+  await expect(page.getByText('RENTCAST · AUTHORIZED PROVIDER DATA', { exact: true })).toBeVisible();
+  expect(providerPosts).toBe(0);
+  await page.getByRole('combobox', { name: /^Data environment/ }).selectOption('fixture');
+  await expect(page.getByLabel('US property address', { exact: true })).toHaveValue('4821 Example Ridge Road, Arlington, VA 22207');
+  expect(providerPosts).toBe(0);
+});
+
 test('RentCast-shaped fixture: address to recorded-sales CMA, benchmark, ZIP context, copilot and report', async ({ page }) => {
   await page.route('**/api/assistant', async route => { await route.continue({ postData: JSON.stringify({ ...route.request().postDataJSON(), mode: 'evidence' }) }); });
   const errors: string[] = []; page.on('pageerror', e => errors.push(e.message));
