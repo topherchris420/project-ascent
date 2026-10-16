@@ -1,0 +1,12 @@
+{
+  "at": "2026-10-16T01:37:02.407Z",
+  "environment": "Local Next production build",
+  "homeStatus": 200,
+  "anonymousWorkspaceStatus": 401,
+  "anonymousProviderStatus": 401,
+  "demoStatusWithoutPostgres": 503,
+  "configurationErrorHandled": true,
+  "cspOmitsUnsafeEval": true,
+  "poweredByHeaderAbsent": true,
+  "scope": "HTTP launch and fail-closed configuration only; no live PostgreSQL tested"
+}

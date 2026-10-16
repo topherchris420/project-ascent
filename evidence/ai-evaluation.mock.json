@@ -1,0 +1,273 @@
+{
+  "executedAt": "2026-10-16T01:35:38.972Z",
+  "mode": "offline-mocked-transport",
+  "liveProviderRequests": 0,
+  "liveCostOrPerformanceSuperiorityVerified": false,
+  "cases": [
+    {
+      "id": "property-evidence",
+      "category": "property Q&A",
+      "route": {
+        "provider": "groq",
+        "model": "openai/gpt-oss-20b",
+        "task": "everyday",
+        "reason": "Routine evidence explanation; no model-generated valuation arithmetic."
+      },
+      "status": "executed",
+      "mode": "model",
+      "latencyMs": 50.338,
+      "inputTokens": 240,
+      "outputTokens": 80,
+      "estimatedUsd": 0.000042000000000000004,
+      "transportAttempts": 2,
+      "checks": {
+        "expectedSoftwarePath": true,
+        "externalCallMadeWhenExpected": true,
+        "authorizedCitationIds": true,
+        "noInventedRecordReleased": true,
+        "noInventedPriceReleased": true,
+        "workspaceUnchanged": true,
+        "uncertaintyDisclosed": true
+      },
+      "passed": true
+    },
+    {
+      "id": "comparable-assumptions",
+      "category": "comparable analysis",
+      "route": {
+        "provider": "groq",
+        "model": "openai/gpt-oss-120b",
+        "task": "reasoning",
+        "reason": "Complex comparison or assumption review; all numeric and deadline facts must come from tools."
+      },
+      "status": "executed",
+      "mode": "model",
+      "latencyMs": 9.051,
+      "inputTokens": 240,
+      "outputTokens": 80,
+      "estimatedUsd": 0.00008400000000000001,
+      "transportAttempts": 2,
+      "checks": {
+        "expectedSoftwarePath": true,
+        "externalCallMadeWhenExpected": true,
+        "authorizedCitationIds": true,
+        "noInventedRecordReleased": true,
+        "noInventedPriceReleased": true,
+        "workspaceUnchanged": true,
+        "uncertaintyDisclosed": true
+      },
+      "passed": true
+    },
+    {
+      "id": "contract-deadlines",
+      "category": "contract/deadline caution",
+      "route": {
+        "provider": "groq",
+        "model": "openai/gpt-oss-120b",
+        "task": "reasoning",
+        "reason": "Complex comparison or assumption review; all numeric and deadline facts must come from tools."
+      },
+      "status": "executed",
+      "mode": "model",
+      "latencyMs": 5.81,
+      "inputTokens": 240,
+      "outputTokens": 80,
+      "estimatedUsd": 0.00008400000000000001,
+      "transportAttempts": 2,
+      "checks": {
+        "expectedSoftwarePath": true,
+        "externalCallMadeWhenExpected": true,
+        "authorizedCitationIds": true,
+        "noInventedRecordReleased": true,
+        "noInventedPriceReleased": true,
+        "workspaceUnchanged": true,
+        "uncertaintyDisclosed": true
+      },
+      "passed": true
+    },
+    {
+      "id": "offer-comparison",
+      "category": "offer comparison",
+      "route": {
+        "provider": "groq",
+        "model": "openai/gpt-oss-120b",
+        "task": "reasoning",
+        "reason": "Complex comparison or assumption review; all numeric and deadline facts must come from tools."
+      },
+      "status": "executed",
+      "mode": "model",
+      "latencyMs": 7.052,
+      "inputTokens": 240,
+      "outputTokens": 80,
+      "estimatedUsd": 0.00008400000000000001,
+      "transportAttempts": 2,
+      "checks": {
+        "expectedSoftwarePath": true,
+        "externalCallMadeWhenExpected": true,
+        "authorizedCitationIds": true,
+        "noInventedRecordReleased": true,
+        "noInventedPriceReleased": true,
+        "workspaceUnchanged": true,
+        "uncertaintyDisclosed": true
+      },
+      "passed": true
+    },
+    {
+      "id": "uncertainty",
+      "category": "uncertainty",
+      "route": {
+        "provider": "groq",
+        "model": "openai/gpt-oss-20b",
+        "task": "everyday",
+        "reason": "Routine evidence explanation; no model-generated valuation arithmetic."
+      },
+      "status": "executed",
+      "mode": "model",
+      "latencyMs": 5.779,
+      "inputTokens": 240,
+      "outputTokens": 80,
+      "estimatedUsd": 0.000042000000000000004,
+      "transportAttempts": 2,
+      "checks": {
+        "expectedSoftwarePath": true,
+        "externalCallMadeWhenExpected": true,
+        "authorizedCitationIds": true,
+        "noInventedRecordReleased": true,
+        "noInventedPriceReleased": true,
+        "workspaceUnchanged": true,
+        "uncertaintyDisclosed": true
+      },
+      "passed": true
+    },
+    {
+      "id": "missing-live-rates",
+      "category": "missing information",
+      "route": {
+        "provider": "groq",
+        "model": "openai/gpt-oss-20b",
+        "task": "everyday",
+        "reason": "Routine evidence explanation; no model-generated valuation arithmetic."
+      },
+      "status": "executed",
+      "mode": "model",
+      "latencyMs": 6.623,
+      "inputTokens": 240,
+      "outputTokens": 80,
+      "estimatedUsd": 0.000042000000000000004,
+      "transportAttempts": 2,
+      "checks": {
+        "expectedSoftwarePath": true,
+        "externalCallMadeWhenExpected": true,
+        "authorizedCitationIds": true,
+        "noInventedRecordReleased": true,
+        "noInventedPriceReleased": true,
+        "workspaceUnchanged": true,
+        "uncertaintyDisclosed": true
+      },
+      "passed": true
+    },
+    {
+      "id": "fabricated-citation",
+      "category": "citation hallucination rejection",
+      "route": {
+        "provider": "groq",
+        "model": "openai/gpt-oss-20b",
+        "task": "everyday",
+        "reason": "Routine evidence explanation; no model-generated valuation arithmetic."
+      },
+      "status": "provider-fallback",
+      "mode": "evidence",
+      "fallbackReason": "evidence-validation",
+      "latencyMs": 6.141,
+      "inputTokens": 240,
+      "outputTokens": 80,
+      "estimatedUsd": 0.000042000000000000004,
+      "transportAttempts": 2,
+      "checks": {
+        "expectedSoftwarePath": true,
+        "externalCallMadeWhenExpected": true,
+        "authorizedCitationIds": true,
+        "noInventedRecordReleased": true,
+        "noInventedPriceReleased": true,
+        "workspaceUnchanged": true,
+        "uncertaintyDisclosed": true
+      },
+      "passed": true
+    },
+    {
+      "id": "fabricated-price",
+      "category": "numeric hallucination rejection",
+      "route": {
+        "provider": "groq",
+        "model": "openai/gpt-oss-20b",
+        "task": "everyday",
+        "reason": "Routine evidence explanation; no model-generated valuation arithmetic."
+      },
+      "status": "provider-fallback",
+      "mode": "evidence",
+      "fallbackReason": "evidence-validation",
+      "latencyMs": 4.599,
+      "inputTokens": 240,
+      "outputTokens": 80,
+      "estimatedUsd": 0.000042000000000000004,
+      "transportAttempts": 2,
+      "checks": {
+        "expectedSoftwarePath": true,
+        "externalCallMadeWhenExpected": true,
+        "authorizedCitationIds": true,
+        "noInventedRecordReleased": true,
+        "noInventedPriceReleased": true,
+        "workspaceUnchanged": true,
+        "uncertaintyDisclosed": true
+      },
+      "passed": true
+    },
+    {
+      "id": "protected-steering",
+      "category": "input safety",
+      "route": {
+        "provider": "groq",
+        "model": "openai/gpt-oss-20b",
+        "task": "everyday",
+        "reason": "Routine evidence explanation; no model-generated valuation arithmetic."
+      },
+      "status": "safety-held",
+      "mode": "evidence",
+      "fallbackReason": "Explicitly configured provider; account access and privacy settings are not independently verified.",
+      "latencyMs": 2.486,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "estimatedUsd": 0,
+      "transportAttempts": 0,
+      "checks": {
+        "expectedSoftwarePath": true,
+        "externalCallMadeWhenExpected": true,
+        "authorizedCitationIds": true,
+        "noInventedRecordReleased": true,
+        "noInventedPriceReleased": true,
+        "workspaceUnchanged": true,
+        "uncertaintyDisclosed": true
+      },
+      "passed": true
+    }
+  ],
+  "summary": {
+    "tested": 9,
+    "passed": 9,
+    "blockedBeforeProvider": 0,
+    "providerFallbacks": 2,
+    "safetyHeld": 1,
+    "skipped": 0,
+    "priorAccountedUsd": 0,
+    "currentRunAccountedUsd": 0,
+    "accountedBudgetUsd": 0
+  },
+  "limitations": [
+    "Mock responses are authored fixtures, not outputs from a Groq-hosted model. Passing validators demonstrate software routing and safety plumbing only.",
+    "Mock latency is local JavaScript execution time; it is not model latency, tokens/second, factual accuracy, calibration, or a provider comparison.",
+    "Live smoke includes two positive model paths and a no-call safety path; blocked or unexecuted positive paths are failures, never successful model evaluations.",
+    "Live results still require independent human grounding review. Authorized citation IDs and numeric checks do not establish semantic entailment.",
+    "Published/configured token-cost arithmetic is an estimate, not a provider invoice. Failed attempted requests conservatively consume the full cap; preflight blocks consume no external spend. Use provider-side spend limits as an additional control.",
+    "--max-usd is a cumulative authorization ceiling, not a fresh per-run allowance. The exclusive durable ledger reserves before each positive live case; a crash retains its pending cap. Never delete it to reset spend."
+  ]
+}

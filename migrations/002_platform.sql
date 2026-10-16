@@ -1,0 +1,11 @@
+CREATE TABLE IF NOT EXISTS billing_events(id text PRIMARY KEY,tenant_id text NOT NULL REFERENCES tenants(id),created_at timestamptz NOT NULL);
+CREATE TABLE IF NOT EXISTS team_invitations(id text PRIMARY KEY,tenant_id text NOT NULL REFERENCES tenants(id),token_hash text NOT NULL UNIQUE,email text NOT NULL,role text NOT NULL CHECK(role IN ('agent','viewer')),expires_at timestamptz NOT NULL,created_by text NOT NULL,used_at timestamptz);
+CREATE INDEX IF NOT EXISTS invitations_tenant ON team_invitations(tenant_id);
+ALTER TABLE billing_events ENABLE ROW LEVEL SECURITY;
+ALTER TABLE billing_events FORCE ROW LEVEL SECURITY;
+ALTER TABLE team_invitations ENABLE ROW LEVEL SECURITY;
+ALTER TABLE team_invitations FORCE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS billing_event_isolation ON billing_events;
+CREATE POLICY billing_event_isolation ON billing_events USING(tenant_id=current_setting('app.tenant_id',true)) WITH CHECK(tenant_id=current_setting('app.tenant_id',true));
+DROP POLICY IF EXISTS invitation_isolation ON team_invitations;
+CREATE POLICY invitation_isolation ON team_invitations USING(tenant_id=current_setting('app.tenant_id',true)) WITH CHECK(tenant_id=current_setting('app.tenant_id',true));

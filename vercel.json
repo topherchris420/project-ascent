@@ -1,0 +1,6 @@
+{
+  "framework": "nextjs",
+  "installCommand": "npm ci",
+  "buildCommand": "npm run build",
+  "crons": [{ "path": "/api/jobs/market", "schedule": "0 */6 * * *" }]
+}

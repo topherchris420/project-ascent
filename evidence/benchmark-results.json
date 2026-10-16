@@ -1,0 +1,126 @@
+{
+  "generatedAt": "2026-10-16T01:21:38.046Z",
+  "runtime": "v24.19.0",
+  "platform": "win32-arm64",
+  "datasetAsOf": "2026-10-15T12:00:00.000Z",
+  "scope": "Local in-process synthetic-fixture microbenchmarks only. No network, AI-provider, database, browser, or Homesolo measurements. Timing is machine-specific and is not a claim of competitive superiority.",
+  "dataset": {
+    "properties": 12,
+    "comparables": 7,
+    "offers": 3,
+    "outcomes": 1
+  },
+  "methods": {
+    "warmup": 20,
+    "trials": 200,
+    "clock": "node:perf_hooks performance.now",
+    "outlierPolicy": "none removed"
+  },
+  "timings": {
+    "cma": {
+      "trials": 200,
+      "medianMs": 0.4505,
+      "p95Ms": 0.8242,
+      "maxMs": 1.3492
+    },
+    "market": {
+      "trials": 200,
+      "medianMs": 0.0165,
+      "p95Ms": 0.0683,
+      "maxMs": 0.2473
+    },
+    "scenario": {
+      "trials": 200,
+      "medianMs": 0.003,
+      "p95Ms": 0.0042,
+      "maxMs": 0.0624
+    },
+    "offers": {
+      "trials": 200,
+      "medianMs": 0.0043,
+      "p95Ms": 0.0274,
+      "maxMs": 0.6362
+    }
+  },
+  "regionalBenchmarks": [
+    {
+      "regionId": "dmv",
+      "mode": "synthetic",
+      "properties": 9,
+      "comparableCount": 5,
+      "estimate": 946773,
+      "checksum": "fnv1a32-dbaddd58",
+      "timing": {
+        "trials": 200,
+        "medianMs": 0.3455,
+        "p95Ms": 0.6053,
+        "maxMs": 0.8133
+      }
+    },
+    {
+      "regionId": "austin",
+      "mode": "synthetic",
+      "properties": 12,
+      "comparableCount": 7,
+      "estimate": 727321,
+      "checksum": "fnv1a32-fe12efca",
+      "timing": {
+        "trials": 200,
+        "medianMs": 0.4592,
+        "p95Ms": 0.7633,
+        "maxMs": 1.1747
+      }
+    }
+  ],
+  "reproducibility": {
+    "cmaChecksum": "fnv1a32-fe12efca",
+    "estimate": 727321,
+    "empiricalAdjustedCompRange": [
+      719400,
+      738100
+    ]
+  },
+  "syntheticRetrospectiveEvaluation": {
+    "count": 1,
+    "meanAbsoluteError": 5922,
+    "meanAbsolutePercentError": 0.8353,
+    "meanSignedError": 5922,
+    "rootMeanSquaredError": 5922,
+    "empiricalRangeCoverage": 100,
+    "samples": [
+      {
+        "outcomeId": "outcome-demo-01",
+        "cmaId": "cma-history-01",
+        "predicted": 714922,
+        "actual": 709000,
+        "signedError": 5922,
+        "absolutePercentError": 0.8353,
+        "inRange": true,
+        "evidenceIds": [
+          "cma-history-01",
+          "outcome-demo-01",
+          "property-07",
+          "source-synthetic-historical"
+        ]
+      }
+    ],
+    "excluded": [],
+    "warnings": [
+      "Retrospective descriptive metrics, not evidence of causal improvement or guaranteed future accuracy.",
+      "Closed-sale outcomes are selected observations: unsold, withdrawn, missing, and unlicensed outcomes can create selection and survivorship bias.",
+      "Use a prospectively frozen cohort, time-based holdouts, market/price-band stratification, missing-outcome accounting, and a paired baseline before claiming improvement.",
+      "Repeated forecasts of the same property are dependent observations; evaluate one prespecified forecast per property or use property-clustered analysis.",
+      "Range coverage describes an empirical comparable envelope, not calibrated confidence-interval coverage.",
+      "Synthetic demo outcomes test evaluation plumbing only; they cannot validate market accuracy.",
+      "Fewer than 30 evaluable observations; do not infer statistical calibration or comparative superiority from this sample."
+    ]
+  },
+  "missingBenchmarks": [
+    "Live-market accuracy/calibration and paired baseline",
+    "End-to-end task completion against Homesolo",
+    "AI factual grounding against a human-adjudicated question set",
+    "Live integration freshness and error rates",
+    "Database and storage performance under concurrent tenant load",
+    "Production report/browser response time"
+  ]
+}

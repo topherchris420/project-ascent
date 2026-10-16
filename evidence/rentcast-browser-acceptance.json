@@ -1,0 +1,19 @@
+{
+  "at": "2026-10-16T01:29:21.161Z",
+  "environment": "Local application with synthetic schema-shaped fixtures; not recorded live responses",
+  "liveRentCastRequests": 0,
+  "recordLookup": true,
+  "recordedSales": 6,
+  "independentCma": 704188,
+  "providerBenchmark": 725000,
+  "conditionInvented": false,
+  "listingPricesUsedAsSales": false,
+  "zipContext": true,
+  "scenario": {
+    "assumedSalePrice": 735000,
+    "illustrativeProceedsBeforePayoff": 709275
+  },
+  "assistant": "deterministic evidence mode",
+  "report": true,
+  "cacheReuse": true
+}

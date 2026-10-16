@@ -1,0 +1,380 @@
+[
+  {
+    "evidence_id": "ev_10aab48ae5c783d15a739ee34a48812167404b14988276007f11321aa8f261a8",
+    "step_id": "scenario_start",
+    "url": "https://homesolo.ai/demo",
+    "status": "completed",
+    "error": null,
+    "artifact_files": {
+      "dom": {
+        "file": "ev_10aab48ae5c7-scenario_start.html",
+        "sha256": "4acd59c78f30cd7725b48d49d4fa2eb9d06db09d0ab9cef317ad4bad75e6f72d"
+      },
+      "accessibility": {
+        "file": "ev_10aab48ae5c7-scenario_start.txt",
+        "sha256": "f8ac1f3dccc9f46a86e2dbdfef1976fbb3fc2ad123f94ae0a285d62c47fff7d9"
+      }
+    }
+  },
+  {
+    "evidence_id": "ev_10aab48ae5c783d15a739ee34a48812167404b14988276007f11321aa8f261a8",
+    "step_id": "demo-settle",
+    "url": "https://homesolo.ai/demo",
+    "status": "completed",
+    "error": null,
+    "artifact_files": {
+      "dom": {
+        "file": "ev_10aab48ae5c7-demo-settle.html",
+        "sha256": "fa9cc3fe991a4a28b488a31008142516346e2c795e14eb55ce2fb957c1aa0434"
+      },
+      "accessibility": {
+        "file": "ev_10aab48ae5c7-demo-settle.txt",
+        "sha256": "f8ac1f3dccc9f46a86e2dbdfef1976fbb3fc2ad123f94ae0a285d62c47fff7d9"
+      }
+    }
+  },
+  {
+    "evidence_id": "ev_10aab48ae5c783d15a739ee34a48812167404b14988276007f11321aa8f261a8",
+    "step_id": "login-page",
+    "url": "https://homesolo.ai/login",
+    "status": "completed",
+    "error": null,
+    "artifact_files": {
+      "dom": {
+        "file": "ev_10aab48ae5c7-login-page.html",
+        "sha256": "8b97c0bb471b35578e1de2888d43b5c44f1166849bfc887cb6abdb4f00440f89"
+      },
+      "accessibility": {
+        "file": "ev_10aab48ae5c7-login-page.txt",
+        "sha256": "aeb6fa2fd0403c6f0b5c4b1730a8dde4f45c9df7a3d6bce6b45125a2dcfe6cae"
+      }
+    }
+  },
+  {
+    "evidence_id": "ev_10aab48ae5c783d15a739ee34a48812167404b14988276007f11321aa8f261a8",
+    "step_id": "apply-page",
+    "url": "https://homesolo.ai/apply",
+    "status": "completed",
+    "error": null,
+    "artifact_files": {
+      "dom": {
+        "file": "ev_10aab48ae5c7-apply-page.html",
+        "sha256": "7228301b66895534ac5dcd771ba4dcdbd7e8813391315cafc015dd4977734a7b"
+      },
+      "accessibility": {
+        "file": "ev_10aab48ae5c7-apply-page.txt",
+        "sha256": "d8975741bf2112b700daebd9347f3d7fe5dcacccc596734f1fc4242c42f3471b"
+      }
+    }
+  },
+  {
+    "evidence_id": "ev_10aab48ae5c783d15a739ee34a48812167404b14988276007f11321aa8f261a8",
+    "step_id": "privacy-page",
+    "url": "https://homesolo.ai/privacy",
+    "status": "completed",
+    "error": null,
+    "artifact_files": {
+      "dom": {
+        "file": "ev_10aab48ae5c7-privacy-page.html",
+        "sha256": "4cc7e24c578bb5f0b6952eddf0e3b24f3480aaf70f53d9468424b6cca2a15dcf"
+      },
+      "accessibility": {
+        "file": "ev_10aab48ae5c7-privacy-page.txt",
+        "sha256": "50e5db573802c2d954351b9d71397f7066f004c41034691f387fa53a4f8b5664"
+      }
+    }
+  },
+  {
+    "evidence_id": "ev_10aab48ae5c783d15a739ee34a48812167404b14988276007f11321aa8f261a8",
+    "step_id": "terms-page",
+    "url": "https://homesolo.ai/terms",
+    "status": "completed",
+    "error": null,
+    "artifact_files": {
+      "dom": {
+        "file": "ev_10aab48ae5c7-terms-page.html",
+        "sha256": "3a9f09e152eb0f43ab38a2e3c8dba72ce19f7134cfe0ee1547f187b83bb93791"
+      },
+      "accessibility": {
+        "file": "ev_10aab48ae5c7-terms-page.txt",
+        "sha256": "147177e2693787961fc0765bb962ea065ba3a0c7568191bb23fc564cfe1d4769"
+      }
+    }
+  },
+  {
+    "evidence_id": "ev_2fab63cb64c248c021d4c756d19a9ef6515bf2aa858dc4ed5bfe66e4f53339fd",
+    "step_id": "scenario_start",
+    "url": "https://homesolo.ai/",
+    "status": "completed",
+    "error": null,
+    "artifact_files": {}
+  },
+  {
+    "evidence_id": "ev_2fab63cb64c248c021d4c756d19a9ef6515bf2aa858dc4ed5bfe66e4f53339fd",
+    "step_id": "public-home-settle",
+    "url": "https://homesolo.ai/",
+    "status": "completed",
+    "error": null,
+    "artifact_files": {
+      "dom": {
+        "file": "ev_2fab63cb64c2-public-home-settle.html",
+        "sha256": "4911a4283354b05ec56d9d2e9c1b8fe9d55a1b930310715861195329cfa0290c"
+      },
+      "accessibility": {
+        "file": "ev_2fab63cb64c2-public-home-settle.txt",
+        "sha256": "d5103be295a43c6d8f2d205f8fa26e8e18e7c8f8b4b7ee8e8f814099894d9bdf"
+      }
+    }
+  },
+  {
+    "evidence_id": "ev_8a1746aceb27d124d07be87a042b928a1e1dd798335d2f713ff4edb71b088898",
+    "step_id": "scenario_start",
+    "url": "https://homesolo.ai/forgot-password",
+    "status": "completed",
+    "error": null,
+    "artifact_files": {
+      "accessibility": {
+        "file": "ev_8a1746aceb27-scenario_start.txt",
+        "sha256": "64eded24b069f74d6065696ef781bc056d1e5eae2eb8ff61107bd060830b70bb"
+      }
+    }
+  },
+  {
+    "evidence_id": "ev_8a1746aceb27d124d07be87a042b928a1e1dd798335d2f713ff4edb71b088898",
+    "step_id": "forgot-settle",
+    "url": "https://homesolo.ai/forgot-password",
+    "status": "completed",
+    "error": null,
+    "artifact_files": {
+      "accessibility": {
+        "file": "ev_8a1746aceb27-forgot-settle.txt",
+        "sha256": "64eded24b069f74d6065696ef781bc056d1e5eae2eb8ff61107bd060830b70bb"
+      }
+    }
+  },
+  {
+    "evidence_id": "ev_8a1746aceb27d124d07be87a042b928a1e1dd798335d2f713ff4edb71b088898",
+    "step_id": "crm-auth-boundary",
+    "url": "https://homesolo.ai/login?redirectTo=%2Fcrm%2Fmichael",
+    "status": "completed",
+    "error": null,
+    "artifact_files": {
+      "accessibility": {
+        "file": "ev_8a1746aceb27-crm-auth-boundary.txt",
+        "sha256": "aeb6fa2fd0403c6f0b5c4b1730a8dde4f45c9df7a3d6bce6b45125a2dcfe6cae"
+      }
+    }
+  },
+  {
+    "evidence_id": "ev_8a1746aceb27d124d07be87a042b928a1e1dd798335d2f713ff4edb71b088898",
+    "step_id": "client-auth-boundary",
+    "url": "https://homesolo.ai/login?redirectTo=%2Fbroker%2Fclients%2Fa",
+    "status": "completed",
+    "error": null,
+    "artifact_files": {
+      "accessibility": {
+        "file": "ev_8a1746aceb27-client-auth-boundary.txt",
+        "sha256": "aeb6fa2fd0403c6f0b5c4b1730a8dde4f45c9df7a3d6bce6b45125a2dcfe6cae"
+      }
+    }
+  },
+  {
+    "evidence_id": "ev_8a1746aceb27d124d07be87a042b928a1e1dd798335d2f713ff4edb71b088898",
+    "step_id": "print-auth-boundary",
+    "url": "https://homesolo.ai/login?redirectTo=%2Fbroker%2Fcma%2Fsample-report%2Fprint",
+    "status": "completed",
+    "error": null,
+    "artifact_files": {
+      "accessibility": {
+        "file": "ev_8a1746aceb27-print-auth-boundary.txt",
+        "sha256": "aeb6fa2fd0403c6f0b5c4b1730a8dde4f45c9df7a3d6bce6b45125a2dcfe6cae"
+      }
+    }
+  },
+  {
+    "evidence_id": "ev_8a1746aceb27d124d07be87a042b928a1e1dd798335d2f713ff4edb71b088898",
+    "step_id": "condition-guide",
+    "url": "https://homesolo.ai/login?redirectTo=%2Fhelp%2Fcondition",
+    "status": "completed",
+    "error": null,
+    "artifact_files": {
+      "accessibility": {
+        "file": "ev_8a1746aceb27-condition-guide.txt",
+        "sha256": "aeb6fa2fd0403c6f0b5c4b1730a8dde4f45c9df7a3d6bce6b45125a2dcfe6cae"
+      }
+    }
+  },
+  {
+    "evidence_id": "ev_a752d5b4c2586873ae840a6f75ee9e8d397561360052bd0fa6f58cf7817187c1",
+    "step_id": "scenario_start",
+    "url": "https://homesolo.ai/login",
+    "status": "completed",
+    "error": null,
+    "artifact_files": {
+      "dom": {
+        "file": "ev_a752d5b4c258-scenario_start.html",
+        "sha256": "179a20bb909d9c23477d98cddc87959c0dd0e7f7d3f9f415a05dacf075f52bee"
+      },
+      "accessibility": {
+        "file": "ev_a752d5b4c258-scenario_start.txt",
+        "sha256": "aeb6fa2fd0403c6f0b5c4b1730a8dde4f45c9df7a3d6bce6b45125a2dcfe6cae"
+      },
+      "screenshot": {
+        "file": "ev_a752d5b4c258-scenario_start.png",
+        "sha256": "f26a9511803f4861db7bd95659abae7c004877c069a193b1f7b0082338924325"
+      }
+    }
+  },
+  {
+    "evidence_id": "ev_a752d5b4c2586873ae840a6f75ee9e8d397561360052bd0fa6f58cf7817187c1",
+    "step_id": "blank-login-validation",
+    "url": "https://homesolo.ai/login",
+    "status": "completed",
+    "error": null,
+    "artifact_files": {
+      "dom": {
+        "file": "ev_a752d5b4c258-blank-login-validation.html",
+        "sha256": "05e5fa9381d5e44bef18a7dc2ed78529c876905bbff5c23362dddef3d5c074d0"
+      },
+      "accessibility": {
+        "file": "ev_a752d5b4c258-blank-login-validation.txt",
+        "sha256": "eec88251a41744fafa5e614ca9343844fad26672b06fd98cd58ec40c2f087b32"
+      },
+      "screenshot": {
+        "file": "ev_a752d5b4c258-blank-login-validation.png",
+        "sha256": "d137b8676b1703d016f37702ed8191b4b714cd1cd328820a430f53c7b61c1650"
+      }
+    }
+  },
+  {
+    "evidence_id": "ev_a752d5b4c2586873ae840a6f75ee9e8d397561360052bd0fa6f58cf7817187c1",
+    "step_id": "desktop-home",
+    "url": "https://homesolo.ai/",
+    "status": "completed",
+    "error": null,
+    "artifact_files": {
+      "dom": {
+        "file": "ev_a752d5b4c258-desktop-home.html",
+        "sha256": "4911a4283354b05ec56d9d2e9c1b8fe9d55a1b930310715861195329cfa0290c"
+      },
+      "accessibility": {
+        "file": "ev_a752d5b4c258-desktop-home.txt",
+        "sha256": "d5103be295a43c6d8f2d205f8fa26e8e18e7c8f8b4b7ee8e8f814099894d9bdf"
+      },
+      "screenshot": {
+        "file": "ev_a752d5b4c258-desktop-home.png",
+        "sha256": "a117630db9500919c129892d285abe830e1881d0d0d708aaba71b0e3d7548e33"
+      }
+    }
+  },
+  {
+    "evidence_id": "ev_a752d5b4c2586873ae840a6f75ee9e8d397561360052bd0fa6f58cf7817187c1",
+    "step_id": "faq-open",
+    "url": "https://homesolo.ai/",
+    "status": "completed",
+    "error": null,
+    "artifact_files": {
+      "dom": {
+        "file": "ev_a752d5b4c258-faq-open.html",
+        "sha256": "3791b1aa19573dc183d960320c456b094a2a67dbbefba367ccf69d01c8e5c00e"
+      },
+      "accessibility": {
+        "file": "ev_a752d5b4c258-faq-open.txt",
+        "sha256": "64eaf6cf3c601dbe710fb6fa968607c7d267a7d0f3bb5f2b8dcd894de2475e02"
+      },
+      "screenshot": {
+        "file": "ev_a752d5b4c258-faq-open.png",
+        "sha256": "246c4c0b927d51d8070db5219e1d8232f820f01caaa12029147725f3c7b53fa6"
+      }
+    }
+  },
+  {
+    "evidence_id": "ev_bf477f8879f7e99da7b5d342e6f36703f4b4ef9bac91c57500b3b79002e7ee57",
+    "step_id": "scenario_start",
+    "url": "https://homesolo.ai/demo",
+    "status": "completed",
+    "error": null,
+    "artifact_files": {
+      "accessibility": {
+        "file": "ev_bf477f8879f7-scenario_start.txt",
+        "sha256": "9ce797aa612b702a3b04fe9408114ec75ab365e8b6168c2032875bb593972a02"
+      }
+    }
+  },
+  {
+    "evidence_id": "ev_bf477f8879f7e99da7b5d342e6f36703f4b4ef9bac91c57500b3b79002e7ee57",
+    "step_id": "slider-keyboard-increase",
+    "url": "https://homesolo.ai/demo",
+    "status": "completed",
+    "error": null,
+    "artifact_files": {
+      "accessibility": {
+        "file": "ev_bf477f8879f7-slider-keyboard-increase.txt",
+        "sha256": "f8ac1f3dccc9f46a86e2dbdfef1976fbb3fc2ad123f94ae0a285d62c47fff7d9"
+      }
+    }
+  },
+  {
+    "evidence_id": "ev_bf477f8879f7e99da7b5d342e6f36703f4b4ef9bac91c57500b3b79002e7ee57",
+    "step_id": "slider-home",
+    "url": "https://homesolo.ai/demo",
+    "status": "completed",
+    "error": null,
+    "artifact_files": {
+      "accessibility": {
+        "file": "ev_bf477f8879f7-slider-home.txt",
+        "sha256": "f8ac1f3dccc9f46a86e2dbdfef1976fbb3fc2ad123f94ae0a285d62c47fff7d9"
+      }
+    }
+  },
+  {
+    "evidence_id": "ev_bf477f8879f7e99da7b5d342e6f36703f4b4ef9bac91c57500b3b79002e7ee57",
+    "step_id": "crm-role",
+    "url": "https://homesolo.ai/demo",
+    "status": "failed",
+    "error": "Analysis operation timed out after 5000ms: capture_browser_scenario",
+    "artifact_files": {
+      "accessibility": {
+        "file": "ev_bf477f8879f7-crm-role.txt",
+        "sha256": "f8ac1f3dccc9f46a86e2dbdfef1976fbb3fc2ad123f94ae0a285d62c47fff7d9"
+      }
+    }
+  },
+  {
+    "evidence_id": "ev_bf477f8879f7e99da7b5d342e6f36703f4b4ef9bac91c57500b3b79002e7ee57",
+    "step_id": "sample-save",
+    "url": "https://homesolo.ai/demo",
+    "status": "cancelled",
+    "error": "not executed after an earlier action failure",
+    "artifact_files": {}
+  },
+  {
+    "evidence_id": "ev_e35ebc1f9de6d768da2ffee5e528d1e814d57d299a0373250956b52cacb5fa18",
+    "step_id": "scenario_start",
+    "url": "https://homesolo.ai/",
+    "status": "completed",
+    "error": null,
+    "artifact_files": {}
+  },
+  {
+    "evidence_id": "ev_e35ebc1f9de6d768da2ffee5e528d1e814d57d299a0373250956b52cacb5fa18",
+    "step_id": "mobile-home-settle",
+    "url": "https://homesolo.ai/",
+    "status": "completed",
+    "error": null,
+    "artifact_files": {
+      "dom": {
+        "file": "ev_e35ebc1f9de6-mobile-home-settle.html",
+        "sha256": "4911a4283354b05ec56d9d2e9c1b8fe9d55a1b930310715861195329cfa0290c"
+      },
+      "accessibility": {
+        "file": "ev_e35ebc1f9de6-mobile-home-settle.txt",
+        "sha256": "1a07b84b0b47fb5e0358e589b735a594bea300658f2e635d5bee4a0137de5b04"
+      },
+      "screenshot": {
+        "file": "ev_e35ebc1f9de6-mobile-home-settle.png",
+        "sha256": "1c0b5b6e353a02ee2f54491d1b579d5d5bd1296a14e6abc5f766892929eaa0e9"
+      }
+    }
+  }
+]

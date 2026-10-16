@@ -1,0 +1,22 @@
+{
+  "at": "2026-10-16T01:28:52.458Z",
+  "regions": [
+    {
+      "region": "dmv",
+      "property": "100 Example Potomac Way",
+      "comps": 5,
+      "estimate": 946773,
+      "mode": "demo"
+    },
+    {
+      "region": "austin",
+      "property": "104 Example Willow Loop",
+      "comps": 7,
+      "estimate": 727321,
+      "mode": "demo"
+    }
+  ],
+  "implementation": "Shared canonical ingestion, property interface, and calculateCma function",
+  "data": "Synthetic fixtures only",
+  "liveCoverageClaim": false
+}

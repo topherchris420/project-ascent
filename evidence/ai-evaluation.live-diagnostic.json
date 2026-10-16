@@ -1,0 +1,33 @@
+{
+  "executedAt": "2026-10-16T01:28:33.813Z",
+  "mode": "explicit-opt-in-single-diagnostic",
+  "provider": "groq",
+  "model": "openai/gpt-oss-20b",
+  "attempts": 1,
+  "latencyMs": 463.1531,
+  "inputTokens": 166,
+  "outputTokens": 38,
+  "estimatedUsd": 0.00002385,
+  "reservedCapUsd": 0.0009,
+  "priorAccountedUsd": 0.009,
+  "cumulativeConservativeBoundUsd": 0.009899999999999999,
+  "result": {
+    "status": "completed",
+    "output": [
+      {
+        "type": "function_call",
+        "call_id": "fc_29a13a91-8416-4c0c-a07f-3a93f36489d2",
+        "name": "lookup_evidence",
+        "arguments": "{\"id\":\"demo-1\"}"
+      }
+    ]
+  },
+  "discoverableSupportedModels": [
+    "openai/gpt-oss-120b",
+    "openai/gpt-oss-20b"
+  ],
+  "limitations": [
+    "Synthetic minimal tool-phase transport diagnostic only; does not verify the application final structured answer,120B inference, factual accuracy or superiority.",
+    "No retries, secondary-provider calls or hidden model reasoning are retained. Token arithmetic is an estimate, not an invoice."
+  ]
+}

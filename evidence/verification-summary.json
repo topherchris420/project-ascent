@@ -1,0 +1,34 @@
+{
+  "at": "2026-10-16T01:38:27.296Z",
+  "unitIntegration": {
+    "passed": 188,
+    "failed": 0,
+    "durationMs": 4750.6134
+  },
+  "browser": {
+    "passed": 12,
+    "failed": 0
+  },
+  "accessibility": {
+    "scanned": 22,
+    "violations": 0,
+    "overflowViews": 0
+  },
+  "productionBuild": "passed",
+  "productionDependencyAdvisories": 0,
+  "clientSecretScan": {
+    "scanned": 55,
+    "found": 0
+  },
+  "liveRentCastRequests": 0,
+  "liveGroq": {
+    "completeAssistant": "http-400-fallback",
+    "minimalReadOnlyTool": "success",
+    "reasoning120b": "unverified",
+    "conservativeEvaluationBoundUsd": 0.0099
+  },
+  "limitations": [
+    "No live RentCast, PostgreSQL, Stripe or MLS validation.",
+    "No performance or accuracy superiority established."
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "executedOn": "2026-10-15",
+  "command": "npm.cmd exec -- tsx --test tests/platform.test.ts",
+  "result": { "tests": 6, "passed": 6, "failed": 0, "durationMs": 1246.1834 },
+  "providerMode": "mocked Stripe HTTP plus locally generated signed webhook payloads",
+  "liveStripeVerified": false,
+  "paymentsOrChargesCreated": false,
+  "assertions": [
+    "Free Explorer remains permanent with unlimited basic CMA and useful synthetic workflows; no model quota consumed by CMA",
+    "Concurrent monthly quota reservations cannot exceed the configured allowance; model tokens and configured cost estimates are idempotent; rollover archives usage",
+    "Checkout submits server-configured Stripe price and tenant metadata; checkout alone cannot grant a paid plan",
+    "Signed subscription events grant mapped tiers, deduplicate, downgrade past_due/canceled, and ignore stale or unsafe same-second reordering",
+    "Raw-body signatures, timestamp tolerance, customer binding, configured-price mapping, and independent professional/provider data rights prevent escalation",
+    "Hashed one-use invitations preserve existing private workspaces and enforce tenant role/seat boundaries and session revocation"
+  ],
+  "limits": [
+    "No live Stripe account, product, price, checkout, portal, payment, or webhook delivery was exercised",
+    "Configured token cost estimates are not customer invoices or measured provider bills",
+    "Production PostgreSQL migration and RLS behavior require a configured database and were not exercised by this SQLite test suite",
+    "Professional license verification and contracted provider access remain independent of paid subscription state"
+  ]
+}

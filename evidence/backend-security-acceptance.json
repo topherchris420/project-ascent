@@ -1,0 +1,24 @@
+{
+  "executedOn": "2026-10-15",
+  "command": "npm.cmd exec -- tsx --test tests/security.test.ts tests/platform.test.ts",
+  "result": { "tests": 18, "passed": 18, "failed": 0, "durationMs": 3805.4128 },
+  "typecheck": { "command": "npm.cmd run typecheck", "exitCode": 0 },
+  "providerMode": "Mocked OpenAI Responses transport and mocked Stripe transport; no paid live call or charge",
+  "verifiedRegressions": [
+    "Frozen report subject/comparable facts survive mutable current records and removal of current records",
+    "Current export rights gate frozen reports",
+    "Workspace, property search, action writes, document downloads, reports, and assistant reject unlicensed legacy evidence",
+    "Licensed workspace evidence cannot trigger an external model request",
+    "Model graph tools cannot retrieve research-denied public source nodes from raw stored history; pricing tools independently require valuation access",
+    "Known names, property addresses, contacts, and stored relationship notes are absent from outbound model payloads by default",
+    "One assisted question with two provider rounds reserves one quota unit and separately records all reported input/output tokens",
+    "Exhausted automatic model quota returns useful evidence mode; explicit model mode returns 402; explicit evidence mode remains available",
+    "Tenant authorization, sessions, role boundaries, CSRF, bounded uploads, human date approval, audit integrity, encryption, atomic usage, signed subscription lifecycle, and one-time team invitations remain passing"
+  ],
+  "limitations": [
+    "No live model factual-quality evaluation or provider-billing reconciliation was performed",
+    "Known-field and pattern PII redaction is best effort; sensitive freeform questions should not be sent to a model",
+    "Global AI_PII_SHARING=approved deliberately disables the optional redaction, but does not bypass the licensed-source model block",
+    "Production PostgreSQL migrations, role grants, and RLS still require a configured authorized database"
+  ]
+}
