@@ -4,11 +4,18 @@ import { checkNarrativeFacts } from '../src/lib/inference/grounding';
 import { createDemoWorkspace } from '../src/lib/seed';
 const workspace = createDemoWorkspace();
 const currentCma = workspace.cmas.find(cma => cma.id === 'cma-01')!;
-const check = (text: string, citationIds = ['cma-01']) => checkNarrativeFacts([{ text, citationIds }], workspace.cmas, workspace.properties);
+const check = (text: string, citationIds = ['cma-01']) =>
+  checkNarrativeFacts([{ text, citationIds }], workspace.cmas, workspace.properties);
 
 test('known live count regression is withheld for numeric and spelled-out counts linked through comp IDs', () => {
   assert.equal(currentCma.result.comps.length, 7);
-  assert.equal(check('The eight comparable property records provide the weights.', currentCma.result.comps.map(comp => comp.propertyId)), 'comparable-count');
+  assert.equal(
+    check(
+      'The eight comparable property records provide the weights.',
+      currentCma.result.comps.map(comp => comp.propertyId),
+    ),
+    'comparable-count',
+  );
   assert.equal(check('The CMA uses 8 comparable sales.'), 'comparable-count');
   assert.equal(check('Using seven selected comparables supports this calculation.'), undefined);
 });
@@ -26,10 +33,20 @@ test('known floor/lot confusion is withheld without fabricating missing lot data
   assert.equal(check('A 2,480-sq-ft lot is recorded.', ['property-01']), 'property-area');
   assert.equal(check('Interior floor area is 2,480 sq ft; lot area is 7,200 square feet.', ['property-01']), undefined);
   const property = { ...workspace.properties[0], lotSqft: undefined };
-  assert.equal(checkNarrativeFacts([{ text: 'Lot area is 7,200 sq ft.', citationIds: [property.id] }], [], [property]), 'property-area');
+  assert.equal(
+    checkNarrativeFacts([{ text: 'Lot area is 7,200 sq ft.', citationIds: [property.id] }], [], [property]),
+    'property-area',
+  );
 });
 test('ambiguous multi-property and multi-CMA statements are not silently assigned a fact context', () => {
   assert.equal(check('Lot area is 2,480 sq ft.', ['property-01', 'property-02']), undefined);
   const second = { ...workspace.cmas[0], id: 'second-cma' };
-  assert.equal(checkNarrativeFacts([{ text: 'The eight comparables span both analyses.', citationIds: ['cma-01', 'second-cma'] }], [...workspace.cmas, second], workspace.properties), undefined);
+  assert.equal(
+    checkNarrativeFacts(
+      [{ text: 'The eight comparables span both analyses.', citationIds: ['cma-01', 'second-cma'] }],
+      [...workspace.cmas, second],
+      workspace.properties,
+    ),
+    undefined,
+  );
 });

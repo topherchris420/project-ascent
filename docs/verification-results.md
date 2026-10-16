@@ -23,6 +23,38 @@ Executed on this Windows ARM64 development machine with Node 24.19.0, October 15
 
 The live evaluation's conservative cumulative accounting is **$0.06054915**, within the expanded, explicitly approved **$0.1099** ceiling. Final successful-path token arithmetic totals **$0.0015246**; cumulative accounting also includes full reserved amounts for failed requests with unknown usage. A persistent ledger prevents resetting this ceiling between runs. The original HTTP 400 was reproduced as `tool_use_failed`; separating retrieval and synthesis instructions restored the full path. Later citation-format experiments and a 120B structured-output failure are retained in the run archive, followed by the successful final run. These are not provider invoices, reliability estimates or competitive quality benchmarks. [Quality review and known semantic errors](ai-evaluation-review.md).
 
+## October 16, 2026 decision-support update
+
+After adding the public landing page, weekly agenda, listing check-ins, term-strength offer ranking, client pipeline, contract-date reading (text and text-based PDF), pricing narration, listing-description studio and the rebuilt client report/presentation:
+
+| Check | Result |
+| --- | --- |
+| TypeScript | Pass |
+| Unit/integration suite | **232/232 passed**, including `decision-support.test.ts` and `contract-dates.test.ts` |
+| Browser suite | **16 passed, 1 skipped** (the opt-in live cached-data test), including `decision-support.spec.ts` with axe checks on the new views |
+| Accessibility scan | **22/22 configurations without detected violations or horizontal overflow** after raising the global type scale (no text below 10px) |
+| Production build | Pass |
+
+All new figures are deterministic arithmetic on entered or fictional data. Offer term strength ranks entered terms by stated weights and is not a closing probability; listing-review thresholds are broker rules of thumb; computed contract dates show their rule and still require professional approval. No live provider or model requests were made by these checks.
+
+## October 16, 2026 contract-evidence update
+
+Continued from the updated 232-test application without replacing its landing page, reporting, listing reviews, offer ranking or other workflows. The completed slice strengthens the existing document-to-deadline workflow.
+
+| Check | Executed result and scope |
+| --- | --- |
+| Unit/integration suite | **245/245 passed**; 13 additional regression cases, preserving the existing scenarios |
+| Contract coverage | Separate/missing/conflicting anchors, inconsistent counts, ambiguous direction, forward/backward weekday arithmetic, normalized page evidence, two-page PDF extraction, textless pages/truncation, unchanged original bytes, authorization before/after decoding, review/correction persistence and structured audit privacy |
+| Browser suite | **17 passed, 1 skipped**, approximately **1.4 minutes**; the skipped case is the opt-in live RentCast cache test, not a failed workflow |
+| New browser acceptance | Conflicting terms are held; a synthetic inspection deadline is explicitly reviewed, corrected with a reason and restored after reload; the private original download works. Final deadline/main-workflow rerun: **5/5 passed in 57.5 s**, including a check that synthetic source IDs never become broken document links |
+| New accessibility checks | Desktop review form and 390px mobile transaction/document view: no axe WCAG 2 A/AA or 2.1 AA violations detected; mobile horizontal-overflow check passed. These states are not comprehensive accessibility certification |
+| TypeScript and build | Strict type check and optimized Next.js build passed |
+| Formatting | Prettier check passed for all source/test files changed by this slice |
+| Credential scan | No supplied Groq/RentCast value in **55 compiled browser artifacts** or **306 tracked files**; `.env.local` remains ignored. The tracked-source scan excludes untracked additions |
+| Provider costs | These tests use synthetic documents, stored/synthetic property fixtures and deterministic assistant mode. **No new paid RentCast or Groq request was made**; caps were not raised |
+
+Evidence: [desktop review](../evidence/ascent-deadline-review-desktop.png), [mobile review](../evidence/ascent-deadline-review-mobile.png), [workflow and limitations](contract-deadlines.md). These results do not establish legal correctness, OCR completeness, expert agreement, production decoder isolation, or superiority over Homesolo. PDFs without usable text require manual review; business-day arithmetic is a disclosed weekday-only estimate with no holiday or extension calendar. Existing saved proposals remain unchanged and can lack new evidence metadata.
+
 ## Reproduce
 
 ```powershell

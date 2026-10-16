@@ -1,5 +1,10 @@
 import { endpoint, json, rateLimit, readJson } from '@/lib/api';
-import { authorizeVerificationReview, reviewLicenseVerification, verificationResponse, verificationReviewSchema } from '@/lib/verification';
+import {
+  authorizeVerificationReview,
+  reviewLicenseVerification,
+  verificationResponse,
+  verificationReviewSchema,
+} from '@/lib/verification';
 
 export const runtime = 'nodejs';
 export async function POST(request: Request) {

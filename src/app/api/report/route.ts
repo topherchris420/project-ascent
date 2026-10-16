@@ -3,19 +3,68 @@ import { getWorkspace } from '@/lib/db';
 import { find } from '@/lib/service';
 import { scopeWorkspaceForAccess } from '@/lib/fabric';
 import { HttpError } from '@/lib/auth';
+import { renderCmaReport } from '@/lib/report-html';
 export const runtime = 'nodejs';
-const escape = (value: unknown) => String(value ?? '').replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]!));
-const usd = (value: number) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(value);
-export async function GET(request: Request) { return endpoint(async () => {
-  const user = await authorized(request); const url = new URL(request.url); const original = await getWorkspace(user.tenantId); const workspace = scopeWorkspaceForAccess(original, 'export'); const requestedId = url.searchParams.get('cmaId') || '';
-  if (original.cmas.some((record) => record.id === requestedId) && !workspace.cmas.some((record) => record.id === requestedId)) throw new HttpError(403, 'Current source permissions do not permit exporting this saved CMA or its frozen evidence.');
-  const record = find(workspace.cmas, requestedId, 'CMA'); const property = record.result.inputSnapshot?.subject || find(workspace.properties, record.propertyId, 'Property');
-  const reportIsSynthetic = record.result.sourceIds.some(id => workspace.sources.find(source => source.id === id)?.kind === 'synthetic');
-  if (url.searchParams.get('format') === 'json') return json({ organization: workspace.settings.organization, mode: reportIsSynthetic ? 'demo' : 'licensed', property, cma: record, snapshotMode: record.result.inputSnapshot ? 'frozen-inputs' : 'legacy-current-records-review-required', sources: workspace.sources.filter((source) => record.result.sourceIds.includes(source.id)) });
-  const cma = record.result;
-  const rows = cma.comps.map((comp) => { const sale = find(cma.inputSnapshot?.candidates || workspace.properties, comp.propertyId, 'Comparable'); return `<tr><td>${escape(sale.address)}<small>${escape(sale.soldAt?.slice(0, 10))} · ${comp.distanceMiles.toFixed(2)} miles</small></td><td>${sale.soldPrice!==undefined?usd(sale.soldPrice):'Closing price missing'}</td><td>${usd(comp.netAdjustment)}</td><td>${usd(comp.adjustedPrice)}</td><td>${(comp.weight * 100).toFixed(1)}%</td></tr><tr><td colspan="5" class="detail">${comp.adjustments.map((adjustment) => escape(adjustment.explanation) + ': ' + usd(adjustment.amount)).join(' · ')}${comp.warnings.length ? '<br>Review: ' + escape(comp.warnings.join(' ')) : ''}</td></tr>`; }).join('');
-  const sources = workspace.sources.filter((source) => cma.sourceIds.includes(source.id));
-  const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escape(record.name)} · Ascent</title><style>body{font:15px/1.6 system-ui,sans-serif;color:#18312e;max-width:1000px;margin:50px auto;padding:0 28px}h1{font-size:36px;line-height:1.2}h2{font-size:20px;margin-top:32px}small{display:block;color:#536a65}.brand{font-weight:800;letter-spacing:4px}.notice{background:#fff4d2;border:1px solid #e6cc79;padding:14px}.metrics{display:flex;gap:30px;margin:25px 0}.metrics strong{font-size:26px;display:block}table{width:100%;border-collapse:collapse;font-size:13px}td,th{padding:10px;text-align:left;border-bottom:1px solid #d9e6e0}.detail{color:#536a65;font-size:11px}.hash{overflow-wrap:anywhere;font:11px monospace}.footer{margin-top:36px;border-top:1px solid #b6cbc2;padding-top:18px;color:#536a65}@media print{body{margin:0;padding:8mm;font-size:11px}h1{font-size:26px}tr{break-inside:avoid}.metrics strong{font-size:21px}@page{size:A4;margin:15mm}}</style></head><body><div class="brand">ASCENT / ${escape(workspace.settings.organization)}</div><h1>${escape(record.name)}</h1><p>${escape(property.address)}, ${escape(property.city)}, ${escape(property.state)} ${escape(property.zip)}<br>${property.beds} beds · ${property.baths} baths · ${property.sqft.toLocaleString()} sq ft · built ${property.yearBuilt??'unknown'}</p>${reportIsSynthetic ? '<p class="notice"><strong>FICTIONAL DEMONSTRATION DATA</strong> — This report contains synthetic properties and sales. It must not be relied on for a real transaction.</p>' : ''}<small>Evidence as of ${escape(cma.asOf)} · Generated ${escape(new Date().toISOString())} · ${record.approvedAt ? 'Workspace approval recorded: ' + escape(record.approvedAt) : 'DRAFT — professional approval required'}</small><div class="metrics"><div><small>Computed estimate</small><strong>${usd(cma.estimate)}</strong></div><div><small>Comparable range</small><strong>${usd(cma.low)}–${usd(cma.high)}</strong></div></div><p>The range describes adjusted comparable dispersion. It is not a calibrated confidence interval, appraisal, guaranteed outcome, or legal advice.</p><h2>Pricing strategy anchors</h2><p>Conservative ${usd(cma.strategies.conservative)} · Moderate ${usd(cma.strategies.moderate)} · Aggressive ${usd(cma.strategies.aggressive)}</p><h2>Comparable sales and adjustments</h2><table><thead><tr><th>Comparable</th><th>Sale price</th><th>Net adjustment</th><th>Adjusted price</th><th>Weight</th></tr></thead><tbody>${rows}</tbody></table><h2>Assumptions and reproducibility</h2><p>${Object.entries(cma.assumptions).map(([key, value]) => `${escape(key)}: ${escape(value)}`).join(' · ')}</p><p>Algorithm ${escape(cma.version)}</p><p class="hash">Calculation hash: ${escape(cma.calculationHash)}</p><h2>Reliability and excluded evidence</h2><ul>${[...cma.warnings,...(record.providerContext?.normalizationWarnings||[]),...(record.providerContext?.incomplete||[]).map(entry=>`Excluded incomplete provider record ${entry.id}: ${entry.missingFields.join(', ')}`)].map((warning) => `<li>${escape(warning)}</li>`).join('')}${cma.excluded.map((excluded) => `<li>${escape(excluded.propertyId)}: ${escape(excluded.reason)}</li>`).join('')}</ul><h2>Evidence provenance and permitted use</h2>${sources.map((source) => `<p><strong>${escape(source.label)}</strong> (${escape(source.kind)})<br>Observed ${escape(source.observedAt)} · confidence ${escape(source.confidence)}<br>${escape(source.license)}</p>`).join('')}<p class="footer">Prepared by ${escape(user.name)} with Ascent. Verify condition, concessions, current licensed records, and contractual facts. Use your browser’s Print → Save as PDF for a client copy. No external communication has been sent.</p></body></html>`;
-  const verifiedHtml = cma.inputSnapshot ? html.replace('<h2>Assumptions and reproducibility</h2>', '<p>Subject and comparable facts are frozen with this calculation. Export permission is evaluated against current source rights.</p><h2>Assumptions and reproducibility</h2>') : html.replace('<h2>Assumptions and reproducibility</h2>', '<p class="notice">LEGACY RECORD — frozen raw inputs are unavailable. Subject and sale facts use current records and require review; this legacy report is not a fully reproducible historical export.</p><h2>Assumptions and reproducibility</h2>');
-  return new Response(verifiedHtml, { headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'private, no-store', 'X-Content-Type-Options': 'nosniff', 'Content-Security-Policy': "default-src 'none'; style-src 'unsafe-inline'; frame-ancestors 'none'" } });
-}); }
+export async function GET(request: Request) {
+  return endpoint(async () => {
+    const user = await authorized(request);
+    const url = new URL(request.url);
+    const original = await getWorkspace(user.tenantId);
+    const workspace = scopeWorkspaceForAccess(original, 'export');
+    const requestedId = url.searchParams.get('cmaId') || '';
+    if (
+      original.cmas.some(record => record.id === requestedId) &&
+      !workspace.cmas.some(record => record.id === requestedId)
+    )
+      throw new HttpError(
+        403,
+        'Current source permissions do not permit exporting this saved CMA or its frozen evidence.',
+      );
+    const record = find(workspace.cmas, requestedId, 'CMA');
+    const property = record.result.inputSnapshot?.subject || find(workspace.properties, record.propertyId, 'Property');
+    const reportIsSynthetic = record.result.sourceIds.some(
+      id => workspace.sources.find(source => source.id === id)?.kind === 'synthetic',
+    );
+    if (url.searchParams.get('format') === 'json')
+      return json({
+        organization: workspace.settings.organization,
+        mode: reportIsSynthetic ? 'demo' : 'licensed',
+        property,
+        cma: record,
+        snapshotMode: record.result.inputSnapshot ? 'frozen-inputs' : 'legacy-current-records-review-required',
+        sources: workspace.sources.filter(source => record.result.sourceIds.includes(source.id)),
+      });
+    const cma = record.result;
+    const number = (key: string, max: number) => {
+      const raw = url.searchParams.get(key);
+      if (raw === null || raw.trim() === '') return undefined;
+      const value = Number(raw);
+      return Number.isFinite(value) && value >= 0 ? Math.min(value, max) : undefined;
+    };
+    const verifiedHtml = renderCmaReport({
+      record,
+      property,
+      organization: workspace.settings.organization,
+      preparedBy: user.name,
+      synthetic: reportIsSynthetic,
+      sources: workspace.sources.filter(source => cma.sourceIds.includes(source.id)),
+      candidates: cma.inputSnapshot?.candidates || workspace.properties,
+      costs: {
+        commissionPercent: number('commission', 25),
+        closingPercent: number('closing', 25),
+        concessions: number('concessions', 100_000_000),
+      },
+      payoff: number('payoff', 1_000_000_000) ?? 0,
+      presentation: url.searchParams.get('view') === 'presentation',
+      generatedAt: new Date().toISOString(),
+    });
+    return new Response(verifiedHtml, {
+      headers: {
+        'Content-Type': 'text/html; charset=utf-8',
+        'Cache-Control': 'private, no-store',
+        'X-Content-Type-Options': 'nosniff',
+        'Content-Security-Policy': "default-src 'none'; style-src 'unsafe-inline'; frame-ancestors 'none'",
+      },
+    });
+  });
+}

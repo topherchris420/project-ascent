@@ -3,26 +3,45 @@ import { writeFile } from 'node:fs/promises';
 
 test('switching to live research does not submit a fictional address or fetch provider data', async ({ page }) => {
   let providerPosts = 0;
-  page.on('request', request => { if (request.method() === 'POST' && request.url().endsWith('/api/providers/property')) providerPosts++; });
-  await page.goto('/'); await page.getByRole('button', { name: 'Explore the working demo' }).click();
-  await page.getByRole('navigation', { name: 'Main navigation' }).getByRole('button', { name: 'Properties', exact: true }).click();
+  page.on('request', request => {
+    if (request.method() === 'POST' && request.url().endsWith('/api/providers/property')) providerPosts++;
+  });
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Explore the working demo' }).click();
+  await page
+    .getByRole('navigation', { name: 'Main navigation' })
+    .getByRole('button', { name: 'Properties', exact: true })
+    .click();
   await page.getByRole('button', { name: 'National provider research', exact: true }).click();
-  await expect(page.getByLabel('US property address', { exact: true })).toHaveValue('4821 Example Ridge Road, Arlington, VA 22207');
+  await expect(page.getByLabel('US property address', { exact: true })).toHaveValue(
+    '4821 Example Ridge Road, Arlington, VA 22207',
+  );
   await page.getByRole('combobox', { name: /^Data environment/ }).selectOption('live');
   await expect(page.getByLabel('US property address', { exact: true })).toHaveValue('');
   await expect(page.getByText('RENTCAST · AUTHORIZED PROVIDER DATA', { exact: true })).toBeVisible();
   expect(providerPosts).toBe(0);
   await page.getByRole('combobox', { name: /^Data environment/ }).selectOption('fixture');
-  await expect(page.getByLabel('US property address', { exact: true })).toHaveValue('4821 Example Ridge Road, Arlington, VA 22207');
+  await expect(page.getByLabel('US property address', { exact: true })).toHaveValue(
+    '4821 Example Ridge Road, Arlington, VA 22207',
+  );
   expect(providerPosts).toBe(0);
 });
 
-test('RentCast-shaped fixture: address to recorded-sales CMA, benchmark, ZIP context, copilot and report', async ({ page }) => {
-  await page.route('**/api/assistant', async route => { await route.continue({ postData: JSON.stringify({ ...route.request().postDataJSON(), mode: 'evidence' }) }); });
-  const errors: string[] = []; page.on('pageerror', e => errors.push(e.message));
-  await page.goto('/'); await page.getByRole('button', { name: 'Explore the working demo' }).click();
-  await expect(page.getByRole('heading', { name: /Good (morning|afternoon), Alex/ })).toBeVisible();
-  await page.getByRole('navigation', { name: 'Main navigation' }).getByRole('button', { name: 'Properties', exact: true }).click();
+test('RentCast-shaped fixture: address to recorded-sales CMA, benchmark, ZIP context, copilot and report', async ({
+  page,
+}) => {
+  await page.route('**/api/assistant', async route => {
+    await route.continue({ postData: JSON.stringify({ ...route.request().postDataJSON(), mode: 'evidence' }) });
+  });
+  const errors: string[] = [];
+  page.on('pageerror', e => errors.push(e.message));
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Explore the working demo' }).click();
+  await expect(page.getByRole('heading', { name: /Good (morning|afternoon|evening), Alex/ })).toBeVisible();
+  await page
+    .getByRole('navigation', { name: 'Main navigation' })
+    .getByRole('button', { name: 'Properties', exact: true })
+    .click();
   await page.getByRole('button', { name: 'National provider research', exact: true }).click();
   await expect(page.getByText('SYNTHETIC RENTCAST-SHAPED FIXTURES', { exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Retrieve property record', exact: true }).click();
@@ -37,25 +56,56 @@ test('RentCast-shaped fixture: address to recorded-sales CMA, benchmark, ZIP con
   await expect(page.getByRole('heading', { name: 'Listing comparables & competing inventory' })).toBeVisible();
   await page.getByRole('button', { name: 'Retrieve ZIP market statistics', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'ZIP 22207: listing market context' })).toBeVisible();
-  await page.getByRole('checkbox', { name: 'I acknowledge condition is unknown and explicitly omit its adjustment.' }).check();
+  await page
+    .getByRole('checkbox', { name: 'I acknowledge condition is unknown and explicitly omit its adjustment.' })
+    .check();
   await page.getByRole('button', { name: 'Calculate & preserve independent CMA', exact: true }).click();
   await expect(page.locator('.provider-cma-result')).toBeVisible();
-  const state = await (await page.request.get('/api/workspace')).json(); const cma = state.workspace.cmas.at(-1);
-  expect(cma.result.comps).toHaveLength(6); expect(cma.result.assumptions.conditionValue).toBe(0);
+  const state = await (await page.request.get('/api/workspace')).json();
+  const cma = state.workspace.cmas.at(-1);
+  expect(cma.result.comps).toHaveLength(6);
+  expect(cma.result.assumptions.conditionValue).toBe(0);
   expect(cma.result.inputSnapshot.subject.condition).toBeUndefined();
   expect(cma.result.inputSnapshot.candidates.every((p: { status: string }) => p.status === 'sold')).toBe(true);
   await page.getByLabel('Provider pricing scenario', { exact: true }).fill('735000');
   await expect(page.getByText('$709,275', { exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Explain saved research', exact: true }).click();
   await expect(page.locator('.provider-answer')).toContainText('Evidence retrieval');
-  const report = await page.request.get(`/api/report?cmaId=${cma.id}`); expect(report.ok()).toBe(true);
-  const html = await report.text(); expect(html).toContain('FICTIONAL DEMONSTRATION DATA'); expect(html).toContain('Condition is unknown'); expect(html).not.toContain('undefined');
+  const report = await page.request.get(`/api/report?cmaId=${cma.id}`);
+  expect(report.ok()).toBe(true);
+  const html = await report.text();
+  expect(html).toContain('FICTIONAL DEMONSTRATION DATA');
+  expect(html).toContain('Condition is unknown');
+  expect(html).not.toContain('undefined');
   const before = await (await page.request.get('/api/providers/property')).json();
   await page.getByRole('button', { name: 'Find recent recorded sales', exact: true }).click();
   await expect(page.getByText('Authorized stored evidence reused. No additional provider request.')).toBeVisible();
   const after = await (await page.request.get('/api/providers/property')).json();
-  expect(after.usage.tenantRequests).toBe(before.usage.tenantRequests); expect(after.health.liveVerified).toBe(false);
+  expect(after.usage.tenantRequests).toBe(before.usage.tenantRequests);
+  expect(after.health.liveVerified).toBe(false);
   await page.screenshot({ path: 'evidence/ascent-provider-workflow.png', fullPage: true });
   expect(errors).toEqual([]);
-  await writeFile('evidence/rentcast-browser-acceptance.json', JSON.stringify({ at: new Date().toISOString(), environment: 'Local application with synthetic schema-shaped fixtures; not recorded live responses', liveRentCastRequests: 0, recordLookup: true, recordedSales: cma.result.comps.length, independentCma: cma.result.estimate, providerBenchmark: 725000, conditionInvented: false, listingPricesUsedAsSales: false, zipContext: true, scenario: { assumedSalePrice: 735000, illustrativeProceedsBeforePayoff: 709275 }, assistant: 'deterministic evidence mode', report: true, cacheReuse: true }, null, 2));
+  await writeFile(
+    'evidence/rentcast-browser-acceptance.json',
+    JSON.stringify(
+      {
+        at: new Date().toISOString(),
+        environment: 'Local application with synthetic schema-shaped fixtures; not recorded live responses',
+        liveRentCastRequests: 0,
+        recordLookup: true,
+        recordedSales: cma.result.comps.length,
+        independentCma: cma.result.estimate,
+        providerBenchmark: 725000,
+        conditionInvented: false,
+        listingPricesUsedAsSales: false,
+        zipContext: true,
+        scenario: { assumedSalePrice: 735000, illustrativeProceedsBeforePayoff: 709275 },
+        assistant: 'deterministic evidence mode',
+        report: true,
+        cacheReuse: true,
+      },
+      null,
+      2,
+    ),
+  );
 });

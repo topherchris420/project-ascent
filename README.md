@@ -15,7 +15,7 @@ if (!(Test-Path .env.local)) { Copy-Item .env.example .env.local }
 npm.cmd run dev
 ```
 
-Open **http://localhost:3040**. Choose **Explore the working demo**, or create an account. Each demo/account has its own tenant and persistent SQLite database state. No credentials or manual verification are required to complete a synthetic CMA. Data persists in `.data/ascent.sqlite`; never commit this directory. Use PostgreSQL for production.
+Open **http://localhost:3040**. The public page includes a live pricing card that runs the real engine on fictional data. Choose **Explore the working demo**, or create an account. Each demo/account has its own tenant and persistent SQLite database state. No credentials or manual verification are required to complete a synthetic CMA. Data persists in `.data/ascent.sqlite`; never commit this directory. Use PostgreSQL for production.
 
 DMV is the initial reference market. The **Market region** selector switches to Austin using the same property and CMA interfaces. **National data fabric** shows record completeness, source rights, sync runs, and gaps. Existing Austin workflows and historical decisions are preserved.
 
@@ -25,11 +25,13 @@ Local live-research access is stored only in the ignored `.data/rentcast-local-a
 
 ## Useful workflows
 
-- **Properties → Pricing studio:** search records, select comparables, inspect signed adjustments and assumptions, explore an asking price, save a frozen CMA, approve a recommendation, and open a printable client report.
-- **Clients:** retain conversations, structured saved searches, inspectable inventory matches, deduplicated in-app alerts, saved homes and dated follow-up tasks that can be completed or reopened.
-- **Offer room:** compare price, credits, financing, conditions, and timing; draft and explicitly approve a counteroffer. Approval records a review; no offer or message is sent.
-- **Transactions:** store private PDF/text documents, extract explicit ISO dates from text, review proposed deadlines, and track milestones. PDF OCR is not connected.
-- **Ask Ascent:** retrieve authorized context and cited evidence. Groq-first GPT-OSS routing uses configurable models, server-controlled read tools, structured paragraph references, explicit sharing and spend controls. Both 20B and 120B complete synthetic live smoke. Model explanations still require factual review; see [known quality limits](docs/ai-evaluation-review.md). Optional secondary OpenAI access is deliberate; unavailable or exhausted model capacity returns useful evidence mode.
+- **Overview → This week:** every milestone, follow-up, offer expiry and listing check-in due in the next seven days, with overdue/urgent/soon countdowns.
+- **Properties → Pricing studio:** search records, select comparables (excluded sales show why), inspect signed adjustments and assumptions, explore an asking price with deterministic pricing narration, save a frozen CMA, approve a recommendation, and open a client report or full-screen listing presentation that carries your seller-cost assumptions.
+- **Market pulse → Weekly listing review:** record showings, second showings, offers and buyer feedback each week; Ascent reads the pattern into signals and seller options (hold, refresh, buyer credit, reposition) with the payment arithmetic shown.
+- **Clients:** a stage/role pipeline board (or list) with phone, role and a lost stage; retain conversations, structured saved searches, inspectable inventory matches, deduplicated in-app alerts, saved homes and dated follow-up tasks that can be completed or reopened.
+- **Offer room:** rank offers by term strength with every factor, formula and client-adjustable weight visible; compare price, credits, financing, conditions, and timing; draft and explicitly approve a counteroffer. Approval records a review; no offer or message is sent.
+- **Transactions:** store private PDF/text documents; inspect source-page evidence and explicit counting assumptions for proposed contract dates. Conflicting anchors and ambiguous terms are held for manual review. Correct a proposed date with a reason, record review, and follow the source document from the milestone. Scanned-PDF OCR and holiday calendars are not connected. See [deadline review and limits](docs/contract-deadlines.md).
+- **Ask Ascent:** retrieve authorized context and cited evidence; ask what is due this week, summarize a CMA for a seller meeting, rank offers, or draft an email/text that uses {placeholders} instead of client identities. Groq-first GPT-OSS routing uses configurable models, server-controlled read tools, structured paragraph references, explicit sharing and spend controls. Both 20B and 120B complete synthetic live smoke. Model explanations still require factual review; see [known quality limits](docs/ai-evaluation-review.md). Optional secondary OpenAI access is deliberate; unavailable or exhausted model capacity returns useful evidence mode.
 - **Access & verification:** submit credentials asynchronously without interrupting free exploration. A trusted reviewer, independent of the user session, checks authoritative evidence.
 - **Plans & usage / Brokerage team:** configurable freemium allowances, Stripe checkout/portal/webhooks when configured, and one-time team invitations. Payment never grants MLS rights.
 - **Outcomes lab / Decision graph:** inspect retrospective error calculations and source-linked relationships. Synthetic outcomes verify plumbing, not market accuracy.
@@ -66,4 +68,4 @@ Playwright uses an installed Chrome by default on this workstation. Set `CHROME_
 - [Verification results](docs/verification-results.md)
 - Database migrations: `migrations/`; source: `src/`; tests: `tests/`; retained REA evidence and measured artifacts: `evidence/`
 
-This repository has no configured deployment credentials or authorized destination remote. Nothing modifies Homesolo production. Live MLS/RentCast access, payment settlement, license-provider automation and PostgreSQL deployment remain unverified. Groq responses have been tested on synthetic evidence; production privacy, reliability and semantic quality still require validation.
+Source repository: [topherchris420/project-ascent](https://github.com/topherchris420/project-ascent) (private). Deployment credentials remain unconfigured, and nothing modifies Homesolo production. The bounded private local RentCast workflow is verified; production provider rights, payment settlement, license-provider automation and PostgreSQL deployment remain unverified. Groq responses have been tested on synthetic evidence; production privacy, reliability and semantic quality still require validation.

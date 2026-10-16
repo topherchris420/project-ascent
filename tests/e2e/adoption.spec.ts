@@ -1,15 +1,111 @@
-import {test,expect} from '@playwright/test';
+import { test, expect } from '@playwright/test';
 
 // Browser workflow tests exercise deterministic evidence mode; live inference has a separate capped evaluation.
-test.beforeEach(async({page})=>{await page.route('**/api/assistant',async route=>{const body=route.request().postDataJSON();await route.continue({postData:JSON.stringify({...body,mode:'evidence'})});});});
-import {writeFile} from 'node:fs/promises';
-test('onboarding acceptance: useful CMA in under two minutes with pending professional review',async({page})=>{
- const started=Date.now();await page.goto('/');await page.getByRole('button',{name:'New here? Create an account'}).click();await page.getByLabel('Full name').fill('Taylor Explorer');await page.getByLabel('Organization',{exact:true}).fill('Instant Exploration');await page.getByLabel('Email address').fill(`explorer-${Date.now()}@example.invalid`);await page.getByLabel('Password',{exact:true}).fill('Independent-Free-Explorer!');await page.getByRole('button',{name:'Create workspace'}).click();await expect(page.getByRole('heading',{name:/Good (morning|afternoon), Taylor/})).toBeVisible();await expect(page.getByRole('combobox',{name:'Market region'})).toHaveValue('dmv');
- await page.getByRole('navigation',{name:'Main navigation'}).getByRole('button',{name:'Access & verification'}).click();await page.getByLabel('Legal name on license').fill('Taylor Explorer');await page.getByLabel('License number',{exact:true}).fill('SYNTHETIC-REVIEW-ONLY');await page.getByRole('button',{name:'Submit for asynchronous review'}).click();await expect(page.getByText('Credential status: pending')).toBeVisible();
- await page.getByRole('navigation',{name:'Main navigation'}).getByRole('button',{name:'Pricing studio',exact:true}).click();await expect(page.locator('.valuation-card h2')).toContainText('$');await page.getByRole('button',{name:'Save CMA snapshot'}).click();await expect(page.locator('.snapshot-row').last().getByRole('link',{name:'Client report'})).toBeVisible();const elapsedMs=Date.now()-started;expect(elapsedMs).toBeLessThan(120000);const response=await page.request.get('/api/workspace');const data=await response.json();expect(data.workspace.platform.verification.status).toBe('pending');expect(data.workspace.platform.plan).toBe('free');expect(data.workspace.cmas.length).toBeGreaterThan(2);await writeFile('evidence/onboarding-acceptance.json',JSON.stringify({at:new Date().toISOString(),environment:'Local development browser; fictional records; not a human usability study',elapsedMs,registered:true,verification:'pending',plan:'free',usefulWorkflow:'DMV synthetic CMA saved with printable report',underTwoMinutes:elapsedMs<120000},null,2));
+test.beforeEach(async ({ page }) => {
+  await page.route('**/api/assistant', async route => {
+    const body = route.request().postDataJSON();
+    await route.continue({ postData: JSON.stringify({ ...body, mode: 'evidence' }) });
+  });
 });
-test('geographic expansion acceptance: same property/CMA interfaces work in DMV and Austin',async({page})=>{
- await page.goto('/');await page.getByRole('button',{name:'Explore the working demo'}).click();await expect(page.getByRole('combobox',{name:'Market region'})).toHaveValue('dmv');const nav=page.getByRole('navigation',{name:'Main navigation'});
- const results=[];for(const region of ['dmv','austin']){await page.getByRole('combobox',{name:'Market region'}).selectOption(region);await nav.getByRole('button',{name:'Properties',exact:true}).click();await expect(page.locator('.property-card').first()).toBeVisible();await page.getByRole('button',{name:'Build a CMA for this property'}).click();await expect(page.locator('.valuation-card h2')).toContainText('$');const title=await page.locator('.valuation-card-top .eyebrow').textContent();await page.getByRole('button',{name:'Save CMA snapshot'}).click();await expect(page.getByText('Saved to your decision history.')).toBeVisible();const state=await (await page.request.get('/api/workspace')).json();const record=state.workspace.cmas.at(-1);expect(record.result.inputSnapshot.subject.id).toBe(record.propertyId);expect(record.result.comps.length).toBeGreaterThan(2);results.push({region,property:title,comps:record.result.comps.length,estimate:record.result.estimate,mode:state.workspace.mode});}
- expect(results[0].property).not.toEqual(results[1].property);await nav.getByRole('button',{name:'National data fabric'}).click();await expect(page.getByRole('heading',{name:'One engine. More places to understand.'})).toBeVisible();await expect(page.locator('.coverage-card')).toHaveCount(2);await expect(page.getByText('No nationwide MLS access implied')).toBeVisible();await writeFile('evidence/geographic-acceptance.json',JSON.stringify({at:new Date().toISOString(),regions:results,implementation:'Shared canonical ingestion, property interface, and calculateCma function',data:'Synthetic fixtures only',liveCoverageClaim:false},null,2));
+import { writeFile } from 'node:fs/promises';
+test('onboarding acceptance: useful CMA in under two minutes with pending professional review', async ({ page }) => {
+  const started = Date.now();
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Create an account' }).first().click();
+  await page.getByLabel('Full name').fill('Taylor Explorer');
+  await page.getByLabel('Organization', { exact: true }).fill('Instant Exploration');
+  await page.getByLabel('Email address').fill(`explorer-${Date.now()}@example.invalid`);
+  await page.getByLabel('Password', { exact: true }).fill('Independent-Free-Explorer!');
+  await page.getByRole('button', { name: 'Create workspace' }).click();
+  await expect(page.getByRole('heading', { name: /Good (morning|afternoon|evening), Taylor/ })).toBeVisible();
+  await expect(page.getByRole('combobox', { name: 'Market region' })).toHaveValue('dmv');
+  await page.getByRole('button', { name: 'WORKSPACE TOOLS' }).click();
+  await page
+    .getByRole('navigation', { name: 'Main navigation' })
+    .getByRole('button', { name: 'Access & verification' })
+    .click();
+  await page.getByLabel('Legal name on license').fill('Taylor Explorer');
+  await page.getByLabel('License number', { exact: true }).fill('SYNTHETIC-REVIEW-ONLY');
+  await page.getByRole('button', { name: 'Submit for asynchronous review' }).click();
+  await expect(page.getByText('Credential status: pending')).toBeVisible();
+  await page
+    .getByRole('navigation', { name: 'Main navigation' })
+    .getByRole('button', { name: 'Pricing studio', exact: true })
+    .click();
+  await expect(page.locator('.valuation-card h2')).toContainText('$');
+  await page.getByRole('button', { name: 'Save CMA snapshot' }).click();
+  await expect(page.locator('.snapshot-row').last().getByRole('link', { name: 'Client report' })).toBeVisible();
+  const elapsedMs = Date.now() - started;
+  expect(elapsedMs).toBeLessThan(120000);
+  const response = await page.request.get('/api/workspace');
+  const data = await response.json();
+  expect(data.workspace.platform.verification.status).toBe('pending');
+  expect(data.workspace.platform.plan).toBe('free');
+  expect(data.workspace.cmas.length).toBeGreaterThan(2);
+  await writeFile(
+    'evidence/onboarding-acceptance.json',
+    JSON.stringify(
+      {
+        at: new Date().toISOString(),
+        environment: 'Local development browser; fictional records; not a human usability study',
+        elapsedMs,
+        registered: true,
+        verification: 'pending',
+        plan: 'free',
+        usefulWorkflow: 'DMV synthetic CMA saved with printable report',
+        underTwoMinutes: elapsedMs < 120000,
+      },
+      null,
+      2,
+    ),
+  );
+});
+test('geographic expansion acceptance: same property/CMA interfaces work in DMV and Austin', async ({ page }) => {
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Explore the working demo' }).click();
+  await expect(page.getByRole('combobox', { name: 'Market region' })).toHaveValue('dmv');
+  const nav = page.getByRole('navigation', { name: 'Main navigation' });
+  const results = [];
+  for (const region of ['dmv', 'austin']) {
+    await page.getByRole('combobox', { name: 'Market region' }).selectOption(region);
+    await nav.getByRole('button', { name: 'Properties', exact: true }).click();
+    await expect(page.locator('.property-card').first()).toBeVisible();
+    await page.getByRole('button', { name: 'Build a CMA for this property' }).click();
+    await expect(page.locator('.valuation-card h2')).toContainText('$');
+    const title = await page.locator('.valuation-card-top .eyebrow').textContent();
+    await page.getByRole('button', { name: 'Save CMA snapshot' }).click();
+    await expect(page.getByText('Saved to your decision history.')).toBeVisible();
+    const state = await (await page.request.get('/api/workspace')).json();
+    const record = state.workspace.cmas.at(-1);
+    expect(record.result.inputSnapshot.subject.id).toBe(record.propertyId);
+    expect(record.result.comps.length).toBeGreaterThan(2);
+    results.push({
+      region,
+      property: title,
+      comps: record.result.comps.length,
+      estimate: record.result.estimate,
+      mode: state.workspace.mode,
+    });
+  }
+  expect(results[0].property).not.toEqual(results[1].property);
+  const tools = page.getByRole('button', { name: 'WORKSPACE TOOLS' });
+  if ((await tools.getAttribute('aria-expanded')) === 'false') await tools.click();
+  await nav.getByRole('button', { name: 'National data fabric' }).click();
+  await expect(page.getByRole('heading', { name: 'One engine. More places to understand.' })).toBeVisible();
+  await expect(page.locator('.coverage-card')).toHaveCount(2);
+  await expect(page.getByText('No nationwide MLS access implied')).toBeVisible();
+  await writeFile(
+    'evidence/geographic-acceptance.json',
+    JSON.stringify(
+      {
+        at: new Date().toISOString(),
+        regions: results,
+        implementation: 'Shared canonical ingestion, property interface, and calculateCma function',
+        data: 'Synthetic fixtures only',
+        liveCoverageClaim: false,
+      },
+      null,
+      2,
+    ),
+  );
 });
