@@ -60,3 +60,7 @@ Homesolo comparisons require reliable equivalent datasets, workflows, access and
 3. Validate contract-specific offer interpretations and analyst thresholds prospectively against a frozen comparison cohort.
 4. Run licensed-source revocation, export and retention checks in production PostgreSQL and actual provider contracts.
 5. Measure professional task completion, correction burden and outcome calibration before claiming a competitive advantage.
+
+## October 16 engineering acceptance checkpoint
+
+The final local checks passed 210 unit/integration tests and 15 browser workflows. A separate live RentCast acceptance consumed seven actual requests under the configured ten-request cap across DMV and San Antonio; its saved valuation was reproducible, but required an explicit 365-day sale-age window and had wide dispersion. Real cached browser verification required no additional requests. Client matching/follow-up continuity and bounded known AI grounding regressions are covered in authored tests. These receipts narrow implementation uncertainty; they do not meet the independent professional study, outcome calibration, trust or retention thresholds above. See [verification results](verification-results.md) and [live provider evidence](../evidence/rentcast-live-acceptance.json).

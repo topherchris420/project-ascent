@@ -64,6 +64,19 @@ test('Groq retrieval instructions never demand final JSON before the separate st
   assert.equal(result.mode, 'model'); assert.equal(calls, 2); assert.equal(result.citations[0].id, 'cma-01');
 });
 
+test('known semantic grounding regressions return deterministic evidence without another provider call', async () => {
+  for (const [text, citationIds, code] of [
+    ['The CMA uses eight comparables.', ['cma-01'], 'comparable-count'],
+    ['The CMA median is $727,321.', ['cma-01'], 'valuation-method'],
+    ['The subject has a lot size of 2,480 sq ft.', ['property-01'], 'property-area'],
+  ] as const) {
+    let calls = 0;
+    const mocked: typeof fetch = async (_url, init) => { calls++; const body = JSON.parse(String(init?.body)); return completion(body.tools ? 'The supplied evidence is sufficient.' : JSON.stringify({ sections: [{ text, citationIds }], missingInformation: [], suggestedActions: [] })); };
+    const answer = await answerAssistant(createDemoWorkspace(), 'Explain the property and its saved comparable analysis.', { propertyId: 'property-01', cmaId: 'cma-01' }, mocked);
+    assert.equal(answer.mode, 'evidence'); assert.ok(answer.tools.includes(`validation-error-code:${code}`)); assert.equal(calls, 2);
+  }
+});
+
 test('Groq SSE tool deltas parse across byte chunks; only nonstream final synthesis uses strict schema', async () => {
   const chunks = [JSON.stringify({ choices: [{ delta: { tool_calls: [{ index: 0, id: 'stream-call', function: { name: 'read_decision_graph', arguments: '{"entityId":' } }] } }] }), JSON.stringify({ choices: [{ delta: { tool_calls: [{ index: 0, function: { arguments: '"property-01"}' } }] } }], x_groq: { usage: { prompt_tokens: 40, completion_tokens: 15 } } })];
   const bytes = new TextEncoder().encode(chunks.map((chunk) => `data: ${chunk}\n\n`).join('') + 'data: [DONE]\n\n');

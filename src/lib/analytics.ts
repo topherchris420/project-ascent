@@ -193,6 +193,19 @@ export function buildDecisionGraph(workspace: Workspace): { nodes: GraphNode[]; 
       const id = `${client.id}:interaction:${index}`;
       node(id, 'interaction', event.note, [], event.date); edge(client.id, id, 'recorded_interaction', [], event.date);
     });
+    for (const task of client.followUps || []) {
+      const sourceIds = workspace.properties.filter(property => property.id === task.propertyId).map(property => property.sourceId);
+      node(task.id, 'client-follow-up', `Manual reminder · ${task.title} · ${task.status}`, sourceIds, task.createdAt, task.completedAt);
+      edge(client.id, task.id, 'has_follow_up', sourceIds, task.createdAt);
+      if (task.propertyId) edge(task.id, task.propertyId, 'reminder_concerns_property', sourceIds, task.createdAt);
+    }
+  }
+  for (const search of workspace.savedSearches) { node(search.id, 'saved-search', search.name, [], search.createdAt); if (search.clientId) edge(search.clientId, search.id, 'saved_objective_criteria', [], search.createdAt); }
+  for (const alert of workspace.alerts) {
+    node(alert.id, 'evidence-alert', alert.title, alert.sourceIds, alert.createdAt);
+    if (alert.propertyId) edge(alert.id, alert.propertyId, 'flags_evidence_for_review', alert.sourceIds, alert.createdAt);
+    if (alert.searchId) edge(alert.id, alert.searchId, 'matches_saved_criteria', alert.sourceIds, alert.createdAt);
+    if (alert.clientId) edge(alert.id, alert.clientId, 'suggests_client_review', alert.sourceIds, alert.createdAt);
   }
   for (const cma of workspace.cmas) {
     // Archived/minimal provider facts remain graph evidence even without a fabricated full listing record.

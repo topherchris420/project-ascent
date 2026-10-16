@@ -1,0 +1,130 @@
+{
+  "at": "2026-10-16T02:55:32.986Z",
+  "mode": "actual-live-provider",
+  "qualifiedProfessionalValidation": false,
+  "steps": [
+    {
+      "action": "searchProperties",
+      "transport": "cache",
+      "durationMs": 17,
+      "returned": 50,
+      "warnings": [
+        "Recorded sale fields can be absent in non-disclosure states; missing facts and condition are not inferred."
+      ]
+    },
+    {
+      "action": "getProperty",
+      "transport": "live",
+      "durationMs": 361,
+      "returned": 1,
+      "warnings": [
+        "Recorded sale fields can be absent in non-disclosure states; missing facts and condition are not inferred."
+      ]
+    },
+    {
+      "action": "getValuation",
+      "transport": "live",
+      "durationMs": 538,
+      "returned": 1,
+      "warnings": [
+        "Provider AVM estimate, not an appraisal or a guaranteed sale result. The provider-claimed interval is not locally calibrated. Comparables are sale listings and are not closed-sale evidence."
+      ]
+    },
+    {
+      "action": "getSaleListings",
+      "transport": "live",
+      "durationMs": 136,
+      "returned": 10,
+      "warnings": [
+        "Prices are asking prices. Inactive means delisted, not sold; listing history is not a complete within-listing price-change feed."
+      ]
+    },
+    {
+      "action": "getMarketStatistics",
+      "transport": "live",
+      "durationMs": 149,
+      "returned": 1,
+      "warnings": [
+        "Statistics describe active sale listings, not closed transactions, absorption, or mortgage rates. Historical gaps can reflect insufficient listing observations."
+      ]
+    },
+    {
+      "action": "getProperty",
+      "transport": "live",
+      "durationMs": 121,
+      "returned": 1,
+      "warnings": [
+        "Recorded sale fields can be absent in non-disclosure states; missing facts and condition are not inferred."
+      ]
+    },
+    {
+      "action": "getMarketStatistics",
+      "transport": "live",
+      "durationMs": 154,
+      "returned": 1,
+      "warnings": [
+        "Statistics describe active sale listings, not closed transactions, absorption, or mortgage rates. Historical gaps can reflect insufficient listing observations."
+      ]
+    }
+  ],
+  "requestsThisRun": 6,
+  "applicationObservedMonthlyRequests": 7,
+  "monthlyRequestCap": 10,
+  "conservativeReservedUsd": 1.4,
+  "reserveIsInvoice": false,
+  "markets": [
+    "Arlington VA 22207",
+    "San Antonio TX 78244"
+  ],
+  "secondMarketPropertyAvailable": true,
+  "activeListingCount": 10,
+  "independentCma": {
+    "comparableCount": 17,
+    "estimate": 1801612,
+    "low": 810780,
+    "high": 2437720,
+    "calculationHash": "fnv1a32-f81011ea",
+    "reproduced": true,
+    "explicitMaximumSaleAgeDays": 365
+  },
+  "providerBenchmark": {
+    "estimate": 1728000,
+    "isGroundTruth": false
+  },
+  "scenarioExamples": [
+    {
+      "assumedSalePrice": 1801612,
+      "estimatedNetAtAssumedSalePrice": 1738556,
+      "prediction": false
+    },
+    {
+      "assumedSalePrice": 1855660,
+      "estimatedNetAtAssumedSalePrice": 1790712,
+      "prediction": false
+    }
+  ],
+  "assistant": {
+    "mode": "evidence",
+    "citationCount": 20,
+    "externalProviderCalls": 0,
+    "licensedDataTransmittedToGroq": false
+  },
+  "report": {
+    "status": 200,
+    "privateLocalFile": ".data/rentcast-live-report.html"
+  },
+  "limitations": [
+    "Small developer acceptance sample, not accuracy calibration or proof of national completeness.",
+    "Provider-recorded sales require independent verification; listing asks and AVM estimates remain separate.",
+    "No inspected condition or verified concessions; zero condition adjustment explicitly selected.",
+    "Real provider evidence remains blocked from external inference.",
+    "No automatic pagination or retries; every attempted live request is conservatively reserved."
+  ],
+  "providerDashboardReconciliation": {
+    "observedAt": "2026-10-16T03:19:04.708Z",
+    "requestsUsed": 7,
+    "includedAllowance": 50,
+    "errors": 0,
+    "source": "Owner-authenticated RentCast API dashboard read through browser UI; no extra API request"
+  }
+}

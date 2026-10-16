@@ -11,7 +11,7 @@ Requirements: Node.js 24.15+ and npm. On Windows use `npm.cmd` if PowerShell blo
 ```powershell
 cd C:\Users\chris\project-ascent
 npm.cmd ci
-Copy-Item .env.example .env.local
+if (!(Test-Path .env.local)) { Copy-Item .env.example .env.local }
 npm.cmd run dev
 ```
 
@@ -19,12 +19,14 @@ Open **http://localhost:3040**. Choose **Explore the working demo**, or create a
 
 DMV is the initial reference market. The **Market region** selector switches to Austin using the same property and CMA interfaces. **National data fabric** shows record completeness, source rights, sync runs, and gaps. Existing Austin workflows and historical decisions are preserved.
 
-**Properties → National provider research** connects the server-side RentCast adapter to address research, recorded-sale CMA, listing/AVM benchmarks, ZIP statistics, scenario arithmetic, the evidence assistant and printable reports. The default fixture path requires no key. Live RentCast requires `RENTCAST_API_KEY`, reviewed contractual entitlements and explicit request/spend limits; it has not been live-tested without credentials. See [RentCast setup and boundaries](docs/rentcast-integration.md).
+**Properties → National provider research** connects the server-side RentCast adapter to address research, recorded-sale CMA, listing/AVM benchmarks, ZIP statistics, scenario arithmetic, the evidence assistant and printable reports. The default fixture path requires no key. Live RentCast requires `RENTCAST_API_KEY`, reviewed contractual entitlements and explicit request/spend limits; live acceptance is verified in DMV and San Antonio with seven actual requests under a ten-request application cap. The private local policy does not authorize production deployment. See [RentCast setup and boundaries](docs/rentcast-integration.md).
+
+Local live-research access is stored only in the ignored `.data/rentcast-local-access.json`; keep that file private. The ordinary demo remains independent and makes no live requests. See [live acceptance evidence](evidence/rentcast-live-acceptance.json) and [remaining production work](docs/remaining-work.md).
 
 ## Useful workflows
 
 - **Properties → Pricing studio:** search records, select comparables, inspect signed adjustments and assumptions, explore an asking price, save a frozen CMA, approve a recommendation, and open a printable client report.
-- **Clients:** create profiles and retain conversations and saved searches.
+- **Clients:** retain conversations, structured saved searches, inspectable inventory matches, deduplicated in-app alerts, saved homes and dated follow-up tasks that can be completed or reopened.
 - **Offer room:** compare price, credits, financing, conditions, and timing; draft and explicitly approve a counteroffer. Approval records a review; no offer or message is sent.
 - **Transactions:** store private PDF/text documents, extract explicit ISO dates from text, review proposed deadlines, and track milestones. PDF OCR is not connected.
 - **Ask Ascent:** retrieve authorized context and cited evidence. Groq-first GPT-OSS routing uses configurable models, server-controlled read tools, structured paragraph references, explicit sharing and spend controls. Both 20B and 120B complete synthetic live smoke. Model explanations still require factual review; see [known quality limits](docs/ai-evaluation-review.md). Optional secondary OpenAI access is deliberate; unavailable or exhausted model capacity returns useful evidence mode.

@@ -19,6 +19,16 @@ const explorer = { credentialVerified: false };
 const payload = () => syntheticRegionPayload('dmv');
 const restricted = (): FabricSource => ({ ...demoSource('dmv'), id: 'licensed-test', providerId: 'provider-test', kind: 'licensed', license: { ...demoSource('dmv').license, label: 'Test explicit restricted license', exportAllowed: false, allowedUses: ['research', 'valuation'] } });
 
+test('opening a workspace repairs missing demo projections after provider-first fabric initialization without replacing prior work', async () => {
+  const account = await register({ name: 'Provider first fixture', email: `${randomUUID()}@example.test`, password: 'provider first passphrase 1234' });
+  await mutateWorkspace(account.user, workspace => { bootstrapFabric(workspace); workspace.clients[0].preferences = 'Retained private objective preferences'; });
+  const first = await getFabricSnapshot(account.user);
+  assert.equal(first.workspace.properties.filter(property => property.state === 'VA').length, 9); assert.equal(first.workspace.properties.filter(property => property.state === 'TX').length, 12);
+  assert.equal(first.workspace.cmas.length, 2); assert.equal(first.workspace.clients[0].preferences, 'Retained private objective preferences');
+  assert.equal(first.workspace.audit.filter(event => event.action === 'repairDemoProjection').length, 1);
+  const again = await getFabricSnapshot(account.user); assert.equal(again.workspace.properties.length, 21); assert.equal(again.workspace.audit.filter(event => event.action === 'repairDemoProjection').length, 1); assert.equal(verifyAudit(again.workspace), true);
+});
+
 test('Explorer admits permitted synthetic/public sources without credentials, while paid-plan claims confer no restricted rights', () => {
   const fabric = createFabricState();
   assert.equal(sourceAccess(demoSource('dmv'), fabric, explorer, 'dmv', 'research', DEMO_AS_OF).allowed, true);

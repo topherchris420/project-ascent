@@ -39,6 +39,7 @@ export function sourceFreshness(source: FabricSource, asOf: string): SourceAcces
 
 export function sourceAccess(source: FabricSource, fabric: FabricState, context: FabricAccessContext, regionId: RegionId, use: FabricUse, asOf: string): SourceAccess {
   const reasons: string[] = [];
+  if (source.license.deploymentScope === 'local-development' && process.env.NODE_ENV === 'production') reasons.push('Private development approval cannot authorize production source access.');
   if (!source.regionIds.includes(regionId)) reasons.push('Source is not licensed/configured for the selected region.');
   if (!source.license.allowedUses.includes(use)) reasons.push(`Source license does not permit ${use}.`);
   if (use === 'export' && !source.license.exportAllowed) reasons.push('Source license prohibits export.');
@@ -335,7 +336,7 @@ export function scopeWorkspaceForAccess(workspace: Workspace, use: FabricUse = '
   scoped.outcomes = scoped.outcomes.filter((outcome) => propertyIds.has(outcome.propertyId) && cmaIds.has(outcome.cmaId));
   scoped.approvals = scoped.approvals.filter((approval) => propertyIds.has(approval.entityId) || offerIds.has(approval.entityId) || cmaIds.has(approval.entityId) || transactionIds.has(approval.entityId));
   const anyDenied = deniedPropertyIds.size > 0 || deniedSourceIds.size > 0;
-  scoped.clients = scoped.clients.map((client) => ({ ...client, savedPropertyIds: client.savedPropertyIds.filter((id) => propertyIds.has(id)), ...(anyDenied ? { preferences: '[Free-text context withheld while a source is unavailable; contact records remain authorized workspace data.]', timeline: [] } : {}) }));
+  scoped.clients = scoped.clients.map((client) => ({ ...client, savedPropertyIds: client.savedPropertyIds.filter((id) => propertyIds.has(id)), followUps: client.followUps?.filter(task => !task.propertyId || propertyIds.has(task.propertyId)).map(task => anyDenied ? { ...task, title: '[Follow-up text withheld while a source is unavailable.]' } : task), ...(anyDenied ? { preferences: '[Free-text context withheld while a source is unavailable; contact records remain authorized workspace data.]', timeline: [] } : {}) }));
   if (anyDenied) {
     scoped.approvals = []; // Drafts can contain copied source text without field-level origin tracking.
     scoped.transactions = scoped.transactions.map((transaction) => ({ ...transaction, notes: '[Free-text notes withheld while source access is unavailable.]' }));
@@ -365,7 +366,7 @@ export function scopeWorkspaceForAccess(workspace: Workspace, use: FabricUse = '
     const state = scoped.providerData, policy = state.policy;
     const verification = workspace.platform?.verification;
     const verified = Boolean(verification?.status === 'verified' && verification.reviewedBy && verification.reviewedAt && validDate(verification.reviewedAt) && Date.parse(verification.reviewedAt) <= timestamp && verification.evidence?.length && verification.expiresAt && Date.parse(verification.expiresAt) > timestamp);
-    const policyValid = Boolean(policy && policy.reviewedBy && policy.licenseReference && validDate(policy.reviewedAt) && Date.parse(policy.reviewedAt) <= timestamp && validDate(policy.expiresAt) && Date.parse(policy.expiresAt) > timestamp && policy.allowedUses.includes(use) && Number.isFinite(policy.retentionHours) && policy.retentionHours > 0 && (!policy.requiresProfessionalVerification || verified));
+    const policyValid = Boolean(policy && !(policy.deploymentScope === 'local-development' && process.env.NODE_ENV === 'production') && policy.reviewedBy && policy.licenseReference && validDate(policy.reviewedAt) && Date.parse(policy.reviewedAt) <= timestamp && validDate(policy.expiresAt) && Date.parse(policy.expiresAt) > timestamp && policy.allowedUses.includes(use) && Number.isFinite(policy.retentionHours) && policy.retentionHours > 0 && (!policy.requiresProfessionalVerification || verified));
     state.cache = state.cache.filter((entry) => {
       if (!validDate(entry.observedAt) || Date.parse(entry.observedAt) > timestamp || !validDate(entry.expiresAt) || Date.parse(entry.expiresAt) <= timestamp) return false;
       if (entry.fixture) return true;

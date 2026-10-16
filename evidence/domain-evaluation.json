@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-16T01:23:30.241Z",
+  "generatedAt": "2026-10-16T03:20:53.911Z",
   "dataset": "Authored English synthetic golden cases v1; no customer content or licensed records.",
   "scope": "Deterministic execution and safety-triage comparison on this preset fixture only. No Homesolo measurement, independent expert agreement, legal correctness, real-world calibration or predictive superiority is established.",
   "thresholds": {
@@ -385,7 +385,7 @@
     "multilingualRobustness": null,
     "adversarialCoverageExhaustive": false
   },
-  "runtimeMs": 33.734,
+  "runtimeMs": 30.195,
   "limitations": [
     "Labels were authored internally; external blinded adjudication remains required.",
     "Thresholds are acceptance goals, not statutory standards or a claim of production risk rates.",

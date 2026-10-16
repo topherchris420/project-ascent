@@ -8,7 +8,7 @@ import { ensurePlatform } from '../src/lib/platform';
 import { scopeWorkspaceForAccess } from '../src/lib/fabric';
 import { verifyAudit } from '../src/lib/service';
 import { calculateCma } from '../src/lib/analytics';
-import { executePropertyProviderAction, getPropertyProviderSnapshot, propertyProviderActionSchema } from '../src/lib/property-provider-service';
+import { executePropertyProviderAction, getPropertyProviderSnapshot, propertyProviderActionSchema, propertyProviderPolicy } from '../src/lib/property-provider-service';
 import { FixturePropertyProvider, FIXTURE_PROPERTY_ADDRESS } from '../src/lib/providers/fixture-property';
 import { PropertyProviderError, type PropertyDataProvider, type ProviderResult } from '../src/lib/providers/property-provider';
 import { GET, POST } from '../src/app/api/providers/property/route';
@@ -32,6 +32,36 @@ function mockProvider(onCall: () => Promise<void> = async () => {}) {
   const provider: PropertyDataProvider = { id: 'rentcast', getProperty: q => run(() => base.getProperty(q)), searchProperties: q => run(() => base.searchProperties(q)), getSaleListings: q => run(() => base.getSaleListings(q)), getValuation: q => run(() => base.getValuation(q)), getComparables: q => run(() => base.getComparables(q)), getMarketStatistics: q => run(() => base.getMarketStatistics(q)), getCoverage: () => base.getCoverage() };
   return { provider, calls: () => calls };
 }
+
+test('readiness reports current rights and remaining shared quotas without provider probes', async () => {
+  configure({ PROPERTY_PROVIDER_MONTHLY_REQUEST_LIMIT: '10', PROPERTY_PROVIDER_USER_MONTHLY_REQUEST_LIMIT: '2' });
+  const account = await owner(), mocked = mockProvider();
+  let status = await getPropertyProviderSnapshot(account.user);
+  assert.equal(status.readiness.configurationReady, true); assert.equal(status.readiness.canRequestNewData, false);
+  assert.ok(status.readiness.permissions.every(permission => !permission.allowed)); assert.equal(status.readiness.subscriptionStatus, 'not-probed');
+  await grant(account.user); status = await getPropertyProviderSnapshot(account.user);
+  assert.equal(status.readiness.canRequestNewData, true); assert.equal(status.readiness.remaining.shared, 10); assert.equal(status.readiness.remaining.user, 2);
+  await executePropertyProviderAction(account.user, lookup, mocked.provider); status = await getPropertyProviderSnapshot(account.user);
+  assert.equal(status.readiness.remaining.shared, 9); assert.equal(status.readiness.remaining.user, 1); assert.equal(mocked.calls(), 1);
+  const viewer = await getPropertyProviderSnapshot({ ...account.user, role: 'viewer' }); assert.equal(viewer.readiness.canRequestNewData, false); assert.match(viewer.readiness.blockers.join(' '), /viewing role/);
+});
+
+test('a private local technical assessment cannot authorize production data access', () => {
+  configure(); const previous = process.env.NODE_ENV;
+  process.env.PROPERTY_PROVIDER_POLICY_JSON = JSON.stringify({ ...JSON.parse(process.env.PROPERTY_PROVIDER_POLICY_JSON!), deploymentScope: 'local-development' });
+  try { Object.assign(process.env, { NODE_ENV: 'development' }); assert.ok(propertyProviderPolicy()); Object.assign(process.env, { NODE_ENV: 'production' }); assert.equal(propertyProviderPolicy(), undefined); }
+  finally { if (previous === undefined) Reflect.deleteProperty(process.env, 'NODE_ENV'); else Object.assign(process.env, { NODE_ENV: previous }); }
+});
+
+test('production also withholds cached records and frozen CMA outputs approved only for local development', async () => {
+  configure(); const account = await owner(); await grant(account.user);
+  process.env.PROPERTY_PROVIDER_POLICY_JSON = JSON.stringify({ ...JSON.parse(process.env.PROPERTY_PROVIDER_POLICY_JSON!), deploymentScope: 'local-development' });
+  const mock = mockProvider(); await executePropertyProviderAction(account.user, lookup, mock.provider); await executePropertyProviderAction(account.user, { action: 'searchProperties', query: { zipCode: '22207' } }, mock.provider);
+  const saved = await executePropertyProviderAction(account.user, { action: 'saveCma', subjectId: 'fixture-property-1', fixture: false, omitUnobservedCondition: true }) as { result: { cma: { id: string } } };
+  const workspace = await getWorkspace(account.user.tenantId), previous = process.env.NODE_ENV;
+  try { Object.assign(process.env, { NODE_ENV: 'production' }); const scoped = scopeWorkspaceForAccess(workspace); assert.equal(scoped.providerData!.cache.length, 0); assert.ok(!scoped.cmas.some(cma => cma.id === saved.result.cma.id)); }
+  finally { if (previous === undefined) Reflect.deleteProperty(process.env, 'NODE_ENV'); else Object.assign(process.env, { NODE_ENV: previous }); }
+});
 
 test('default disabled state makes no call and rejects client configuration, broad unbounded searches and nonconsensual CMA fields', async () => {
   delete process.env.RENTCAST_API_KEY; delete process.env.PROPERTY_PROVIDER_ENABLED; delete process.env.PROPERTY_PROVIDER_POLICY_JSON;

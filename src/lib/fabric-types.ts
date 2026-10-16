@@ -4,7 +4,7 @@ import type { Property } from './types';
 export type RegionId = string;
 export type RegionConfig = { id: RegionId; name: string; states: string[]; countyFips: string[]; center: { lat: number; lng: number }; description: string };
 export type FabricUse = 'research' | 'valuation' | 'market' | 'export';
-export type FabricLicense = { label: string; allowedUses: FabricUse[]; exportAllowed: boolean; retentionDays: number; expiresAt?: string; termsUrl?: string; requiresProfessionalVerification?: boolean; providerGrantIds?: string[]; contractReview?: { reviewedBy: string; reviewedAt: string; expiresAt: string; licenseReference: string } };
+export type FabricLicense = { label: string; allowedUses: FabricUse[]; exportAllowed: boolean; retentionDays: number; expiresAt?: string; termsUrl?: string; deploymentScope?: 'local-development' | 'production'; requiresProfessionalVerification?: boolean; providerGrantIds?: string[]; contractReview?: { reviewedBy: string; reviewedAt: string; expiresAt: string; licenseReference: string } };
 export type FabricSource = { id: string; providerId: string; label: string; kind: 'synthetic' | 'public' | 'licensed'; adapter: 'reso' | 'assessor' | 'census' | 'rentcast'; regionIds: RegionId[]; observedAt: string; expectedUpdateHours: number; license: FabricLicense; documentationUrl: string };
 export type PropertyFacts = Pick<Property, 'beds' | 'baths' | 'sqft' | 'lotSqft' | 'yearBuilt' | 'condition' | 'status' | 'price' | 'soldPrice' | 'listedAt' | 'soldAt' | 'dom' | 'description' | 'history'>;
 export type FabricProvenance = { sourceId: string; externalId: string; observedAt: string; fields: string[]; checksum: string };

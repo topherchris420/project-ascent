@@ -5,7 +5,7 @@ import { HttpError, requireEditor } from './auth';
 import { getWorkspace, mutateWorkspace, syncPropertyLocations } from './db';
 import { appendAudit, refreshGraph } from './service';
 import { assertProviderAccess, ensurePlatform, hasVerifiedLicense, requireOwner, reserveUsage } from './platform';
-import { adapterRegistry, applyFabricProjection, bootstrapFabric, demoSource, ingestBatch, regionConfig, regionCoverage, regions, scopeWorkspaceForAccess, sourceAccess, sourceFreshness, syntheticRegionPayload } from './fabric';
+import { adapterRegistry, applyFabricProjection, bootstrapFabric, demoSource, ingestBatch, projectProperty, regionConfig, regionCoverage, regions, scopeWorkspaceForAccess, sourceAccess, sourceFreshness, syntheticRegionPayload } from './fabric';
 import type { FabricAccessContext, FabricSource, FabricState } from './fabric-types';
 import type { Actor, Workspace } from './types';
 
@@ -34,11 +34,13 @@ function snapshot(original: Workspace) {
 
 export async function getFabricSnapshot(actor: Actor) {
   let workspace = await getWorkspace(actor.tenantId);
-  if (!workspace.fabric) {
+  const missingDemoProjection = (current: Workspace) => current.fabric?.records.some(record => { const property = record.synthetic ? projectProperty(record) : null; return property && !current.properties.some(existing => existing.id === property.id); });
+  if (!workspace.fabric || missingDemoProjection(workspace)) {
     const initialized = await mutateWorkspace(actor, async (current, tx) => {
-      if (!current.fabric) {
+      if (!current.fabric || missingDemoProjection(current)) {
+        const wasInitialized = !!current.fabric;
         bootstrapFabric(current); applyFabricProjection(current, accessContext(current));
-        appendAudit(current, actor, 'initializeFabric', 'fabric', 'Fictional DMV and existing Austin fixtures admitted through the canonical pipeline; all previous workflow references retained.'); refreshGraph(current);
+        appendAudit(current, actor, wasInitialized ? 'repairDemoProjection' : 'initializeFabric', 'fabric', 'Fictional DMV and existing Austin fixtures projected through the canonical pipeline; all previous workflow references and provider evidence retained.'); refreshGraph(current);
         await syncPropertyLocations(tx, actor.tenantId, current);
       }
       return null;

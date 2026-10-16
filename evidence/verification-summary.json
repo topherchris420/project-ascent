@@ -1,53 +1,83 @@
 {
-    "at":  "2026-10-16T02:14:12.6017789Z",
-    "unitIntegration":  {
-                            "passed":  193,
-                            "failed":  0,
-                            "durationMs":  5210.5031
-                        },
-    "browser":  {
-                    "passed":  12,
-                    "failed":  0
-                },
-    "accessibility":  {
-                          "scanned":  22,
-                          "violations":  0,
-                          "overflowViews":  0
-                      },
-    "productionBuild":  "passed",
-    "productionDependencyAdvisories":  0,
-    "clientSecretScan":  {
-                             "scanned":  55,
-                             "found":  0
-                         },
-    "liveRentCastRequests":  0,
-    "liveGroq":  {
-                     "completeAssistant":  "two-model-paths-and-no-call-safety-passed",
-                     "minimalReadOnlyTool":  "success",
-                     "reasoning120b":  "complete-model-path-verified-on-synthetic-evidence",
-                     "finalSoftwareCasesPassed":  3,
-                     "finalProviderRequests":  4,
-                     "property20b":  {
-                                         "latencyMs":  1154.165,
-                                         "inputTokens":  3160,
-                                         "outputTokens":  384,
-                                         "estimatedUsd":  0.0003522
-                                     },
-                     "reasoning120bSample":  {
-                                                 "latencyMs":  3191.801,
-                                                 "inputTokens":  3372,
-                                                 "outputTokens":  1111,
-                                                 "estimatedUsd":  0.0011724
-                                             },
-                     "conservativeEvaluationBoundUsd":  0.06054915,
-                     "approvedCumulativeCeilingUsd":  0.1099,
-                     "semanticQualityAccepted":  false,
-                     "knownFinalSampleError":  "120B described seven comparable IDs as eight comparables; reference and currency validation does not prove semantic support."
-                 },
-    "limitations":  [
-                        "No live RentCast, PostgreSQL, Stripe or MLS validation.",
-                        "Known semantic errors remain in model prose; consequential recommendations require professional review.",
-                        "Prior inference failures are retained, not excluded from cumulative accounting.",
-                        "No performance or accuracy superiority established."
-                    ]
+  "at": "2026-10-16T03:31:46.821Z",
+  "unitIntegration": {
+    "passed": 210,
+    "failed": 0,
+    "durationMs": 6267.4208
+  },
+  "browser": {
+    "passed": 15,
+    "failed": 0,
+    "skipped": 0,
+    "syntheticWorkflows": 14,
+    "realCachedProviderWorkflow": 1,
+    "durationApproxSeconds": 72,
+    "newProviderRequestsDuringBrowserRun": 0
+  },
+  "accessibility": {
+    "ordinaryScanned": 22,
+    "realProviderScanned": 2,
+    "violations": 0,
+    "overflowViews": 0
+  },
+  "productionBuild": "passed",
+  "productionDependencyAdvisories": 0,
+  "clientSecretScan": {
+    "scanned": 55,
+    "found": 0,
+    "credentials": [
+      "GROQ_API_KEY",
+      "RENTCAST_API_KEY"
+    ],
+    "trackedFilesScanned": 306
+  },
+  "liveRentCastRequests": 7,
+  "liveGroq": {
+    "completeAssistant": "two-model-paths-and-no-call-safety-passed",
+    "minimalReadOnlyTool": "success",
+    "reasoning120b": "complete-model-path-verified-on-synthetic-evidence",
+    "finalSoftwareCasesPassed": 3,
+    "finalProviderRequests": 4,
+    "property20b": {
+      "latencyMs": 1154.165,
+      "inputTokens": 3160,
+      "outputTokens": 384,
+      "estimatedUsd": 0.0003522
+    },
+    "reasoning120bSample": {
+      "latencyMs": 3191.801,
+      "inputTokens": 3372,
+      "outputTokens": 1111,
+      "estimatedUsd": 0.0011724
+    },
+    "conservativeEvaluationBoundUsd": 0.06054915,
+    "approvedCumulativeCeilingUsd": 0.1099,
+    "semanticQualityAccepted": false,
+    "knownFinalSampleError": "120B described seven comparable IDs as eight comparables; reference and currency validation does not prove semantic support.",
+    "boundedKnownRegressionGuardsAdded": true,
+    "newLiveCallsThisCycle": 0
+  },
+  "limitations": [
+    "Live RentCast is developer acceptance only; production PostgreSQL, Stripe and MLS remain unverified.",
+    "Known semantic errors remain in model prose; consequential recommendations require professional review.",
+    "Prior inference failures are retained, not excluded from cumulative accounting.",
+    "No performance or accuracy superiority established."
+  ],
+  "rentcast": {
+    "localMonthlyCap": 10,
+    "remainingApplicationRequests": 3,
+    "providerDashboardUsed": 7,
+    "providerDashboardIncluded": 50,
+    "providerDashboardErrors": 0,
+    "independentComparables": 17,
+    "explicitMaximumSaleAgeDays": 365,
+    "calculationReproduced": true,
+    "marketAreas": [
+      "DMV",
+      "San Antonio"
+    ],
+    "qualifiedProfessionalValidation": false,
+    "productionPolicyApproved": false,
+    "externalInferenceOnRealRecords": false
+  }
 }

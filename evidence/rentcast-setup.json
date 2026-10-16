@@ -1,5 +1,5 @@
 {
-  "at": "2026-10-16T02:35:41.064Z",
+  "at": "2026-10-16T03:14:30.499Z",
   "keyCreated": true,
   "keyName": "Project Ascent local development",
   "restrictedEndpoints": [
@@ -10,11 +10,15 @@
   ],
   "serverEnvironmentConfigured": true,
   "keyValueIncluded": false,
-  "providerDashboardKeyState": "Inactive",
-  "providerDashboardPlan": "Not Subscribed",
+  "providerDashboardKeyState": "Active",
+  "providerDashboardPlan": "API Developer - Active",
+  "dashboardObservedIncludedUsage": 0,
+  "dashboardIncludedAllowance": 50,
   "subscriptionActivatedByAgent": false,
-  "liveProviderEnabled": false,
-  "livePropertyRequests": 0,
+  "activationReportedByOwner": true,
+  "liveProviderEnabled": true,
+  "deploymentScope": "local-development",
+  "qualifiedLegalReviewCompleted": false,
   "localCaps": {
     "monthlyRequests": 10,
     "perUserRequests": 10,
@@ -24,5 +28,5 @@
     "monthlyReserveUsd": 2
   },
   "reserveIsProviderInvoice": false,
-  "nextStep": "Account owner must activate an API plan; then configure reviewed workspace data rights and execute bounded live acceptance."
+  "nextStep": "Run bounded live acceptance; production policy and legal/privacy review remain separate."
 }

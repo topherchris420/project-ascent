@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-16T01:21:38.046Z",
+  "generatedAt": "2026-10-16T03:20:55.680Z",
   "runtime": "v24.19.0",
   "platform": "win32-arm64",
   "datasetAsOf": "2026-10-15T12:00:00.000Z",
@@ -19,27 +19,27 @@
   "timings": {
     "cma": {
       "trials": 200,
-      "medianMs": 0.4505,
-      "p95Ms": 0.8242,
-      "maxMs": 1.3492
+      "medianMs": 0.4117,
+      "p95Ms": 0.7288,
+      "maxMs": 1.0381
     },
     "market": {
       "trials": 200,
-      "medianMs": 0.0165,
-      "p95Ms": 0.0683,
-      "maxMs": 0.2473
+      "medianMs": 0.0163,
+      "p95Ms": 0.0387,
+      "maxMs": 0.6164
     },
     "scenario": {
       "trials": 200,
       "medianMs": 0.003,
-      "p95Ms": 0.0042,
-      "maxMs": 0.0624
+      "p95Ms": 0.0036,
+      "maxMs": 0.0119
     },
     "offers": {
       "trials": 200,
       "medianMs": 0.0043,
-      "p95Ms": 0.0274,
-      "maxMs": 0.6362
+      "p95Ms": 0.0052,
+      "maxMs": 0.0379
     }
   },
   "regionalBenchmarks": [
@@ -52,9 +52,9 @@
       "checksum": "fnv1a32-dbaddd58",
       "timing": {
         "trials": 200,
-        "medianMs": 0.3455,
-        "p95Ms": 0.6053,
-        "maxMs": 0.8133
+        "medianMs": 0.3289,
+        "p95Ms": 0.5647,
+        "maxMs": 0.9749
       }
     },
     {
@@ -66,9 +66,9 @@
       "checksum": "fnv1a32-fe12efca",
       "timing": {
         "trials": 200,
-        "medianMs": 0.4592,
-        "p95Ms": 0.7633,
-        "maxMs": 1.1747
+        "medianMs": 0.413,
+        "p95Ms": 0.6311,
+        "maxMs": 1.3163
       }
     }
   ],

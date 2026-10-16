@@ -8,6 +8,7 @@ import { activePropertyIds, regionalAssumptions, scopeWorkspaceForAccess } from 
 import { inspectFairHousing } from './fair-housing';
 import type { FairHousingSurface } from './domain-types';
 import { recordProductAction } from './product';
+import { evaluateSavedSearch } from './client-intelligence';
 
 const id = z.string().min(1).max(100);
 const text = z.string().trim().min(1).max(5000);
@@ -19,7 +20,11 @@ export const actionSchema = z.discriminatedUnion('type', [
   z.object({ type: z.literal('approveCma'), id }),
   z.object({ type: z.literal('saveClient'), id: id.optional(), name: z.string().trim().min(1).max(150), email: z.email().max(254), stage: z.enum(['lead', 'active', 'under-contract', 'closed']), budget: money, preferences: z.string().max(5000) }),
   z.object({ type: z.literal('addClientNote'), id, note: text }),
-  z.object({ type: z.literal('saveSearch'), name: z.string().trim().min(1).max(150), query: z.string().max(500), maxPrice: money, clientId: id.optional() }),
+  z.object({ type: z.literal('saveSearch'), name: z.string().trim().min(1).max(150), query: z.string().max(500), maxPrice: money, clientId: id.optional(), criteria: z.strictObject({ minBedrooms: z.number().int().min(0).max(50).optional(), minBathrooms: z.number().min(0).max(50).optional(), minSqft: z.number().positive().max(1000000).optional(), state: z.string().regex(/^[A-Z]{2}$/).optional(), zip: z.string().regex(/^\d{5}$/).optional(), status: z.enum(['all', 'active', 'sold', 'pending', 'withdrawn']).optional() }).optional() }),
+  z.object({ type: z.literal('reviewSavedSearch'), id }),
+  z.object({ type: z.literal('saveFollowUp'), clientId: id, title: z.string().trim().min(1).max(200), dueAt: date, propertyId: id.optional() }),
+  z.object({ type: z.literal('setFollowUpStatus'), clientId: id, id, status: z.enum(['pending', 'complete']) }),
+  z.object({ type: z.literal('setClientProperty'), clientId: id, propertyId: id, saved: z.boolean() }),
   z.object({ type: z.literal('saveOffer'), propertyId: id, buyer: z.string().trim().min(1).max(150), price: money.positive(), sellerCredit: money, financing: z.enum(['cash', 'conventional', 'fha', 'va']), downPercent: z.number().min(0).max(100), earnestMoney: money, contingencies: z.array(z.string().max(150)).max(20), closeDate: date, expiresAt: date }),
   z.object({ type: z.literal('draftCounter'), offerId: id, price: money.positive(), note: z.string().max(5000) }),
   z.object({ type: z.literal('approveDraft'), id }),
@@ -72,7 +77,9 @@ export async function executeAction(actor: Actor, raw: unknown) {
   const safetyInputs: { text: string; surface: FairHousingSurface }[] = [];
   if (action.type === 'saveClient') safetyInputs.push({ text: action.preferences, surface: 'client-preferences' });
   if (action.type === 'saveSearch') safetyInputs.push({ text: `${action.name}\n${action.query}`, surface: 'search' });
+  if (action.type === 'reviewSavedSearch') { const search = find(scopeWorkspaceForAccess(await getWorkspace(actor.tenantId)).savedSearches, action.id, 'Saved search'); safetyInputs.push({ text: `${search.name}\n${search.query}`, surface: 'search' }); }
   if (action.type === 'addClientNote') safetyInputs.push({ text: action.note, surface: 'client-communication' });
+  if (action.type === 'saveFollowUp') safetyInputs.push({ text: action.title, surface: 'client-communication' });
   if (action.type === 'draftCounter') safetyInputs.push({ text: action.note, surface: 'client-communication' });
   if (action.type === 'approveDraft') {
     const workspace = scopeWorkspaceForAccess(await getWorkspace(actor.tenantId));
@@ -94,7 +101,7 @@ export async function executeAction(actor: Actor, raw: unknown) {
   return mutateWorkspace(actor, async (workspace, tx) => {
     const accessible = scopeWorkspaceForAccess(workspace);
     const permit = <T extends { id: string }>(all: T[], allowed: T[], target: string, label: string) => { if (all.some((item) => item.id === target) && !allowed.some((item) => item.id === target)) throw new HttpError(403, `Current source permissions do not permit this ${label.toLowerCase()} workflow.`); };
-    if ('propertyId' in action) permit(workspace.properties, accessible.properties, action.propertyId, 'Property');
+    if ('propertyId' in action && action.propertyId) permit(workspace.properties, accessible.properties, action.propertyId, 'Property');
     if ('transactionId' in action) permit(workspace.transactions, accessible.transactions, action.transactionId, 'Transaction');
     if (action.type === 'approveCma') permit(workspace.cmas, accessible.cmas, action.id, 'CMA');
     if (action.type === 'draftCounter') permit(workspace.offers, accessible.offers, action.offerId, 'Offer');
@@ -130,7 +137,29 @@ export async function executeAction(actor: Actor, raw: unknown) {
         break;
       }
       case 'addClientNote': { const client = find(workspace.clients, action.id, 'Client'); client.timeline.unshift({ date: now, note: action.note }); entityId = client.id; break; }
-      case 'saveSearch': { if (action.clientId) find(workspace.clients, action.clientId, 'Client'); entityId = randomUUID(); workspace.savedSearches.push({ id: entityId, name: action.name, query: action.query, maxPrice: action.maxPrice, clientId: action.clientId, createdAt: now }); break; }
+      case 'saveSearch': { if (action.clientId) find(workspace.clients, action.clientId, 'Client'); entityId = randomUUID(); workspace.savedSearches.push({ id: entityId, name: action.name, query: action.query, maxPrice: action.maxPrice, clientId: action.clientId, criteria: action.criteria, createdAt: now }); break; }
+      case 'reviewSavedSearch': {
+        const search = find(accessible.savedSearches, action.id, 'Saved search');
+        const evaluation = evaluateSavedSearch(search, accessible.properties); let created = 0;
+        for (const match of evaluation.filter(match => match.matched)) {
+          const property = find(accessible.properties, match.propertyId, 'Property');
+          const fingerprint = createHash('sha256').update(JSON.stringify([search.id, search.query, search.maxPrice, search.criteria, property.id, property.status, property.price, property.soldPrice, property.beds, property.baths, property.sqft, property.sourceId])).digest('hex');
+          if (workspace.alerts.some(alert => alert.fingerprint === fingerprint)) continue;
+          workspace.alerts.unshift({ id: randomUUID(), propertyId: property.id, clientId: search.clientId, searchId: search.id, title: `Saved search match: ${search.name}`, explanation: `Stored inventory matches explicit criteria. ${match.reasons.join(' ')} Confirm current availability and client preferences before outreach. This review fetched no new provider data and sent no message.`, severity: 'info', sourceIds: [property.sourceId], createdAt: now, read: false, fingerprint }); created++;
+        }
+        entityId = search.id; result = { matches: evaluation.filter(match => match.matched).length, needsEvidence: evaluation.filter(match => match.needsEvidence).length, createdAlerts: created, providerRequests: 0 }; break;
+      }
+      case 'saveFollowUp': {
+        const client = find(workspace.clients, action.clientId, 'Client'); if (action.propertyId) find(accessible.properties, action.propertyId, 'Property');
+        entityId = randomUUID(); (client.followUps ??= []).push({ id: entityId, title: action.title, dueAt: action.dueAt, propertyId: action.propertyId, status: 'pending', createdAt: now }); result = { id: entityId }; break;
+      }
+      case 'setFollowUpStatus': {
+        const client = find(workspace.clients, action.clientId, 'Client'), task = find(client.followUps || [], action.id, 'Follow-up');
+        if (task.propertyId) permit(workspace.properties, accessible.properties, task.propertyId, 'Property');
+        if (task.status !== action.status) { task.status = action.status; task.completedAt = action.status === 'complete' ? now : undefined; client.timeline.push({ date: now, note: `Follow-up ${action.status === 'complete' ? 'completed' : 'reopened'}: ${task.title}` }); }
+        entityId = task.id; break;
+      }
+      case 'setClientProperty': { const client = find(workspace.clients, action.clientId, 'Client'); find(accessible.properties, action.propertyId, 'Property'); client.savedPropertyIds = action.saved ? [...new Set([...client.savedPropertyIds, action.propertyId])] : client.savedPropertyIds.filter(id => id !== action.propertyId); entityId = client.id; break; }
       case 'saveOffer': {
         find(workspace.properties, action.propertyId, 'Property');
         if (action.sellerCredit > action.price || action.earnestMoney > action.price) throw new HttpError(400, 'Credit and earnest money cannot exceed the offer price.');

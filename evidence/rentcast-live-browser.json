@@ -1,0 +1,16 @@
+{
+  "at": "2026-10-16T03:30:07.376Z",
+  "source": "Actual previously retrieved licensed RentCast records; no mocked data for this test",
+  "newProviderRequests": 0,
+  "observedMonthlyRequests": 7,
+  "savedCmaRestored": true,
+  "explicitAgeAssumptionDays": 365,
+  "report": "HTTP 200 with authorized source",
+  "assistant": "deterministic evidence; no real records sent to Groq",
+  "accessibility": {
+    "desktopViolations": 0,
+    "mobileViolations": 0,
+    "overflow": false
+  },
+  "actualExpertReview": false
+}

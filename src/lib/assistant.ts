@@ -8,6 +8,7 @@ import { inferenceRoute, providerReady } from './inference/config';
 import { infer, InferenceHttpError, type TransportEvent } from './inference/provider';
 import type { AiRoute } from './ai-types';
 import { inspectFairHousing } from './fair-housing';
+import { checkNarrativeFacts, type GroundingIssue } from './inference/grounding';
 
 export type AssistantContext = { propertyId?: string; cmaId?: string; clientId?: string; transactionId?: string; page?: string };
 export function externalModelPolicy(workspace: Workspace): { allowed: boolean; reason?: string } {
@@ -169,14 +170,14 @@ function parseModelAnswer(value: unknown) {
   // paragraph-level references; rendering them here avoids depending on model typography.
   if (value && typeof value === 'object' && 'sections' in value) {
     const parsed = sectionAnswer.parse(value);
-    return modelAnswer.parse({ answer: parsed.sections.map((section) => `${section.text} ${[...new Set(section.citationIds)].filter((id) => !section.text.includes(`[${id}]`)).map((id) => `[${id}]`).join(' ')}`.trim()).join('\n\n'), citationIds: [...new Set(parsed.sections.flatMap((section) => section.citationIds))], missingInformation: parsed.missingInformation, suggestedActions: parsed.suggestedActions });
+    return { ...modelAnswer.parse({ answer: parsed.sections.map((section) => `${section.text} ${[...new Set(section.citationIds)].filter((id) => !section.text.includes(`[${id}]`)).map((id) => `[${id}]`).join(' ')}`.trim()).join('\n\n'), citationIds: [...new Set(parsed.sections.flatMap((section) => section.citationIds))], missingInformation: parsed.missingInformation, suggestedActions: parsed.suggestedActions }), evidenceSections: parsed.sections };
   }
-  return modelAnswer.parse(value);
+  const parsed = modelAnswer.parse(value); return { ...parsed, evidenceSections: [{ text: parsed.answer, citationIds: parsed.citationIds }] };
 }
 const readArguments = z.object({ propertyId: z.string().max(100).nullable(), cmaId: z.string().max(100).nullable(), clientId: z.string().max(100).nullable(), transactionId: z.string().max(100).nullable(), focus: z.string().min(1).max(4000) });
 const pricingArguments = z.object({ cmaId: z.string().max(100), listPrice: z.number().positive().max(1e9), commissionPercent: z.number().min(0).max(20), closingPercent: z.number().min(0).max(20), concessions: z.number().min(0).max(1e9) });
 class EvidenceValidationError extends Error {
-  constructor(readonly code: 'unknown-citation' | 'missing-inline-citation' | 'unmatched-inline-citation' | 'unreferenced-citation' | 'unsupported-number') { super('Model evidence validation failed'); }
+  constructor(readonly code: 'unknown-citation' | 'missing-inline-citation' | 'unmatched-inline-citation' | 'unreferenced-citation' | 'unsupported-number' | GroundingIssue) { super('Model evidence validation failed'); }
 }
 type ProviderItem = { type: string; name?: string; call_id?: string; arguments?: string; content?: { type: string; text?: string }[]; [key: string]: unknown };
 const functionTool = (name: string, description: string, properties: Record<string, unknown>) => ({ type: 'function', name, description, strict: true, parameters: { type: 'object', properties, required: Object.keys(properties), additionalProperties: false } });
@@ -230,6 +231,8 @@ export async function answerAssistant(workspace: Workspace, message: string, con
         const responseText = body.output.flatMap((item) => item.type === 'message' ? item.content || [] : []).filter((item) => item.type === 'output_text').map((item) => item.text || '').join('');
         const answer = parseModelAnswer(JSON.parse(responseText));
         if (answer.citationIds.some((citationId) => !evidence.has(citationId))) throw new EvidenceValidationError('unknown-citation');
+        const factualIssue = checkNarrativeFacts(answer.evidenceSections, scopeWorkspaceForAccess(workspace, 'valuation').cmas, workspace.properties);
+        if (factualIssue) throw new EvidenceValidationError(factualIssue);
         const inlineIds = [...answer.answer.matchAll(/\[([A-Za-z0-9][A-Za-z0-9:._-]{0,499})\]/g)].map((match) => match[1]);
         if (!inlineIds.length) throw new EvidenceValidationError('missing-inline-citation');
         if (inlineIds.some((id) => !evidence.has(id) || !answer.citationIds.includes(id))) throw new EvidenceValidationError('unmatched-inline-citation');
