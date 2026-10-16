@@ -650,6 +650,9 @@ pre {
   min-width: 0;
 }
 .topbar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -3367,6 +3370,7 @@ summary {
     height: 61px;
     padding: 0 17px;
     gap: 12px;
+    box-shadow: 0 4px 16px #203f3208;
   }
   .breadcrumb {
     font-size: 11px;
