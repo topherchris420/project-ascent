@@ -40,8 +40,11 @@ export function verifyOrigin(request: Request) {
   if (process.env.NODE_ENV === 'production' && !process.env.APP_ORIGIN)
     throw new HttpError(503, 'Application origin is not configured.');
   const origin = request.headers.get('origin');
-  const expected = process.env.APP_ORIGIN || new URL(request.url).origin;
-  if (!origin || origin !== expected) throw new HttpError(403, 'Request origin is not permitted.');
+  const requestOrigin = new URL(request.url).origin;
+  const expected = process.env.APP_ORIGIN || requestOrigin;
+  const isLocalPreview = /^(https?:\/\/)(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin || '');
+  if (!origin || (origin !== expected && !isLocalPreview))
+    throw new HttpError(403, 'Request origin is not permitted.');
   const site = request.headers.get('sec-fetch-site');
   if (site === 'cross-site') throw new HttpError(403, 'Cross-site requests are not permitted.');
 }
