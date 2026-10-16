@@ -39,6 +39,8 @@ npm.cmd run check:deploy -- --database
 
 The first command is offline. The optional `--database` probe makes database reads under production safeguards, checking connectivity, a restricted runtime role, all six enabled/forced tenant RLS tables and PostGIS. It performs no migrations or provider/inference requests. It is not a substitute for real registration, cross-tenant, upload and concurrency acceptance on the deployed database. Missing required configuration or a failed requested probe exits nonzero. Optional-feature warnings do not prevent deterministic workflows.
 
+For the opt-in application/database acceptance workflow, run `npm.cmd run verify:postgres -- --database=ascent` against the dedicated database with the restricted runtime credentials and document encryption key. See [scope and cleanup behavior](../migrations/README.md#sharing-an-existing-postgresql-service-safely). This check does not require the final site origin and does not consume RentCast or Groq quota.
+
 5. Deploy. Confirm the Vercel access/protection settings permit your intended personal testers, then verify registration/login/logout, private workspace persistence, CMA save/report, small-document upload/review/download and cross-tenant access. Test the daily route with the configured Bearer secret; never put that secret in a URL or browser code. The public pricing example remains usable before account storage is configured.
 
 ## Optional features and budgets

@@ -13,6 +13,7 @@
     "test": "tsx --test tests/*.test.ts",
     "test:e2e": "playwright test",
     "db:migrate": "node --env-file-if-exists=.env.local --import tsx scripts/migrate.ts",
+    "verify:postgres": "node --env-file-if-exists=.env.local --import tsx scripts/verify-postgres.ts",
     "check:deploy": "node --env-file-if-exists=.env.local --import tsx scripts/check-deployment.ts",
     "verify:hobby-setup": "node scripts/verify-hobby-setup.mjs",
     "benchmark": "tsx scripts/benchmark.ts",
