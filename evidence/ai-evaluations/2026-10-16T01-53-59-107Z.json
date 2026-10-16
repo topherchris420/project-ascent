@@ -1,0 +1,116 @@
+{
+  "executedAt": "2026-10-16T01:53:59.107Z",
+  "mode": "explicit-opt-in-live",
+  "liveProviderRequests": 2,
+  "liveCostOrPerformanceSuperiorityVerified": false,
+  "cases": [
+    {
+      "id": "property-evidence",
+      "category": "property Q&A",
+      "route": {
+        "provider": "groq",
+        "model": "openai/gpt-oss-20b",
+        "task": "everyday",
+        "reason": "Routine evidence explanation; no model-generated valuation arithmetic."
+      },
+      "status": "provider-fallback",
+      "mode": "evidence",
+      "answer": "104 Example Willow Loop, Austin: 4 beds, 3 baths, 2,480 sq ft. Stored active price: $749,000. Recorded days on market: 56.\n\nThe saved CMA computes $727,321, with an empirical comparable range of $719,400–$738,100, using 7 selected sales. Conservative / moderate / aggressive strategy anchors are $719,400 / $727,321 / $738,100. These are scenario anchors, not predicted sale probabilities.\n\nAssumptions: $110 per square foot difference, $12,000 per bedroom, $15,000 per bathroom, and 0.00% monthly trend. The comparable limit is 3 miles and 180 days.\n\nReliability checks: Professional review required. This calculation is a pricing aid, not an appraisal or a guaranteed sale price. The range spans adjusted observed comparables; it is not a statistical confidence interval or a forecast coverage guarantee. Adjustment rates and distance/age/size filters are explicit user assumptions, not coefficients learned from this sample. Weights use inverse distance, sale age, and relative size difference. Lot, school boundaries, concessions, permits, title, and unobserved condition are not modeled. Bedroom and square-footage adjustments may double-count related value; inspect sensitivity before use.\n\nDemonstration evidence: the selected property and market examples are fictional. Workspace examples are frozen at 2026-10-15; individual synthetic provider fixtures retain their own dated provenance. No live MLS or public-record lookup was performed by the assistant.",
+      "citations": [
+        {
+          "id": "property-01",
+          "label": "104 Example Willow Loop",
+          "detail": "Stored property record; source source-synthetic-properties; evidence as of 2026-10-15."
+        },
+        {
+          "id": "source-synthetic-properties",
+          "label": "Invented Austin-area property fixture · DEMO",
+          "detail": "synthetic; observed 2026-10-15T12:00:00.000Z; Locally authored fictional data; demonstration use only. No MLS rights or live data implied."
+        },
+        {
+          "id": "cma-01",
+          "label": "Willow Loop · evidence review",
+          "detail": "Computed with ascent-cma-1.0; 2026-10-15T12:00:00.000Z; calculation hash fnv1a32-fe12efca. Awaiting professional approval."
+        },
+        {
+          "id": "property-02",
+          "label": "118 Example Willow Loop",
+          "detail": "Adjusted comparable $719,400; weight 12.9%; distance 0.36 mi."
+        },
+        {
+          "id": "property-03",
+          "label": "212 Example Cedar Trace",
+          "detail": "Adjusted comparable $728,800; weight 11.0%; distance 0.58 mi."
+        },
+        {
+          "id": "property-04",
+          "label": "306 Example Meadow Rise",
+          "detail": "Adjusted comparable $734,100; weight 11.8%; distance 0.58 mi."
+        },
+        {
+          "id": "property-05",
+          "label": "418 Example Juniper Way",
+          "detail": "Adjusted comparable $726,700; weight 15.3%; distance 0.71 mi."
+        },
+        {
+          "id": "property-06",
+          "label": "522 Example Orchard Bend",
+          "detail": "Adjusted comparable $738,100; weight 11.4%; distance 1.04 mi."
+        },
+        {
+          "id": "property-07",
+          "label": "624 Example Creek Hollow",
+          "detail": "Adjusted comparable $722,600; weight 17.5%; distance 0.73 mi."
+        },
+        {
+          "id": "property-08",
+          "label": "728 Example Laurel Court",
+          "detail": "Adjusted comparable $726,100; weight 20.1%; distance 0.85 mi."
+        }
+      ],
+      "missingInformation": [
+        "No calibrated probability of selling or causal days-on-market model is available.",
+        "Verify condition, concessions, legal facts, and current licensed inventory before professional reliance.",
+        "Inference outcome: evidence-validation.  Deterministic evidence retrieval is shown instead; no automatic secondary-provider call was made."
+      ],
+      "providerDiagnostics": [
+        "validation-error-code:missing-inline-citation"
+      ],
+      "fallbackReason": "evidence-validation",
+      "latencyMs": 1531.516,
+      "inputTokens": 2948,
+      "outputTokens": 653,
+      "estimatedUsd": 0.00041700000000000005,
+      "transportAttempts": 2,
+      "checks": {
+        "expectedSoftwarePath": false,
+        "externalCallMadeWhenExpected": true,
+        "authorizedCitationIds": true,
+        "noInventedRecordReleased": true,
+        "noInventedPriceReleased": true,
+        "workspaceUnchanged": true,
+        "uncertaintyDisclosed": true
+      },
+      "passed": false
+    }
+  ],
+  "summary": {
+    "tested": 1,
+    "passed": 0,
+    "blockedBeforeProvider": 0,
+    "providerFallbacks": 1,
+    "safetyHeld": 0,
+    "skipped": 0,
+    "priorAccountedUsd": 0.038514225,
+    "currentRunAccountedUsd": 0.009000000000000001,
+    "accountedBudgetUsd": 0.047514225
+  },
+  "limitations": [
+    "Mock responses are authored fixtures, not outputs from a Groq-hosted model. Passing validators demonstrate software routing and safety plumbing only.",
+    "Mock latency is local JavaScript execution time; it is not model latency, tokens/second, factual accuracy, calibration, or a provider comparison.",
+    "Live smoke includes two positive model paths and a no-call safety path; blocked or unexecuted positive paths are failures, never successful model evaluations.",
+    "Live results still require independent human grounding review. Authorized citation IDs and numeric checks do not establish semantic entailment.",
+    "Published/configured token-cost arithmetic is an estimate, not a provider invoice. Failed attempted requests conservatively consume the full cap; preflight blocks consume no external spend. Use provider-side spend limits as an additional control.",
+    "--max-usd is a cumulative authorization ceiling, not a fresh per-run allowance. The exclusive durable ledger reserves before each positive live case; a crash retains its pending cap. Never delete it to reset spend."
+  ]
+}

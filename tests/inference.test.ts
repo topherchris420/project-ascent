@@ -42,6 +42,28 @@ test('Groq tool selection and strict final schema are separate; shared authorize
   assert.equal(answer.mode, 'model'); assert.ok(answer.tools.includes('compare_pricing')); assert.equal(bodies.length, 2); assert.equal(inputs, 200); assert.equal(outputs, 50); assert.ok(!JSON.stringify(bodies).includes('Sensitive Client Sentinel'));
 });
 
+test('Groq retrieval instructions never demand final JSON before the separate structured synthesis phase', async () => {
+  let calls = 0;
+  const mock: typeof fetch = async (_url, init) => {
+    const body = JSON.parse(String(init?.body)); calls++;
+    const instruction = body.messages[0].content as string;
+    if (body.tools) {
+      // Regression from the real tool_use_failed response: the planner must not also be asked for final JSON.
+      assert.match(instruction, /retrieval phase/);
+      assert.doesNotMatch(instruction, /Reply with the required JSON schema|Produce the final answer/);
+      assert.equal(body.response_format, undefined);
+      return completion('The supplied evidence is sufficient.');
+    }
+    assert.match(instruction, /Produce the final answer/);
+    assert.equal(body.response_format.json_schema.strict, true);
+    assert.equal(body.tools, undefined);
+    assert.ok(body.messages.some((message: { role: string; content: string }) => message.role === 'assistant' && message.content === 'The supplied evidence is sufficient.'));
+    return completion(finalAnswer());
+  };
+  const result = await answerAssistant(createDemoWorkspace(), 'Explain the available property evidence.', { cmaId: 'cma-01' }, mock);
+  assert.equal(result.mode, 'model'); assert.equal(calls, 2); assert.equal(result.citations[0].id, 'cma-01');
+});
+
 test('Groq SSE tool deltas parse across byte chunks; only nonstream final synthesis uses strict schema', async () => {
   const chunks = [JSON.stringify({ choices: [{ delta: { tool_calls: [{ index: 0, id: 'stream-call', function: { name: 'read_decision_graph', arguments: '{"entityId":' } }] } }] }), JSON.stringify({ choices: [{ delta: { tool_calls: [{ index: 0, function: { arguments: '"property-01"}' } }] } }], x_groq: { usage: { prompt_tokens: 40, completion_tokens: 15 } } })];
   const bytes = new TextEncoder().encode(chunks.map((chunk) => `data: ${chunk}\n\n`).join('') + 'data: [DONE]\n\n');
@@ -102,6 +124,58 @@ test('unsupported citations, fabricated prices, unsafe housing output, and provi
   process.env.OPENAI_API_KEY = 'mock_secondary'; process.env.OPENAI_MODEL = 'explicit-test-model';
   const unavailable: typeof fetch = async (url) => { assert.match(String(url), /api.groq.com/); calls++; return new Response('', { status: 503 }); };
   assert.equal((await answerAssistant(workspace, 'Explain evidence', { cmaId: 'cma-01' }, unavailable)).mode, 'evidence'); assert.equal(calls, 1); delete process.env.OPENAI_API_KEY; delete process.env.OPENAI_MODEL;
+});
+
+test('model explanations require matching authorized inline references instead of an unattached citation list', async () => {
+  const workspace = createDemoWorkspace();
+  for (const text of [finalAnswer('This conclusion has no inline reference.'), finalAnswer('Invented reference [private-source].'), finalAnswer('The saved analysis needs review [cma-01].', ['cma-01', 'property-01'])]) {
+    const mock: typeof fetch = async (_url, init) => JSON.parse(String(init?.body)).response_format ? completion(text) : completion('Evidence is sufficient.');
+    const result = await answerAssistant(workspace, 'Explain the evidence', { cmaId: 'cma-01' }, mock);
+    assert.equal(result.mode, 'evidence'); assert.ok(result.tools.includes('fallback:evidence-validation'));
+  }
+  const valid: typeof fetch = async (_url, init) => JSON.parse(String(init?.body)).response_format ? completion(finalAnswer()) : completion('Evidence is sufficient.');
+  assert.equal((await answerAssistant(workspace, 'Explain the evidence', { cmaId: 'cma-01' }, valid)).mode, 'model');
+});
+
+test('Groq paragraph references are schema-bound to retrieved IDs and rendered by the application', async () => {
+  const mock: typeof fetch = async (_url, init) => {
+    const body = JSON.parse(String(init?.body));
+    if (!body.response_format) return completion('Evidence is sufficient.');
+    const schema = body.response_format.json_schema.schema;
+    assert.ok(schema.properties.sections.items.properties.citationIds.items.enum.includes('cma-01'));
+    return completion(JSON.stringify({ sections: [{ text: 'The stored analysis is a calculation, not a guaranteed sale.', citationIds: ['cma-01'] }], missingInformation: ['Current condition requires review.'], suggestedActions: ['Inspect the assumptions.'] }));
+  };
+  const result = await answerAssistant(createDemoWorkspace(), 'Explain the property evidence', { cmaId: 'cma-01' }, mock);
+  assert.equal(result.mode, 'model'); assert.match(result.answer, /guaranteed sale\. \[cma-01\]/);
+  for (const ids of [[], ['unknown-private-record']]) {
+    const invalid: typeof fetch = async (_url, init) => JSON.parse(String(init?.body)).response_format ? completion(JSON.stringify({ sections: [{ text: 'Unsupported paragraph.', citationIds: ids }], missingInformation: [], suggestedActions: [] })) : completion('Evidence is sufficient.');
+    assert.equal((await answerAssistant(createDemoWorkspace(), 'Explain the property evidence', { cmaId: 'cma-01' }, invalid)).mode, 'evidence');
+  }
+});
+
+test('reasoning retrieval and structured final assembly use distinct bounded effort levels', async () => {
+  const efforts: string[] = [];
+  const mock: typeof fetch = async (_url, init) => {
+    const body = JSON.parse(String(init?.body)); efforts.push(body.reasoning_effort);
+    assert.ok(body.max_completion_tokens > 0 && body.max_completion_tokens <= 8192);
+    return body.response_format ? completion(finalAnswer()) : completion('Evidence is sufficient.');
+  };
+  const result = await answerAssistant(createDemoWorkspace(), 'Challenge the comparable assumptions.', { cmaId: 'cma-01' }, mock);
+  assert.equal(result.mode, 'model'); assert.deepEqual(efforts, ['medium', 'low']);
+});
+
+test('currency abbreviations and spaced percentages are validated in explanations, uncertainty and next actions', async () => {
+  const workspace = createDemoWorkspace();
+  assert.match(answerFromEvidence(workspace, 'Explain the CMA', { cmaId: 'cma-01' }).answer, /weighted mean.*not a median/);
+  assert.match(answerFromEvidence(workspace, 'Explain the CMA', { cmaId: 'cma-01' }).answer, /Condition adjustment IS modeled/);
+  const base = JSON.parse(finalAnswer());
+  for (const output of [{ ...base, answer: 'A value of $999k is certain [cma-01].' }, { ...base, missingInformation: ['Expect a 91.25\u202f% success rate.'] }, { ...base, suggestedActions: ['List at $999m immediately.'] }]) {
+    const mock: typeof fetch = async (_url, init) => JSON.parse(String(init?.body)).response_format ? completion(JSON.stringify(output)) : completion('Evidence is sufficient.');
+    const result = await answerAssistant(workspace, 'Explain the evidence', { cmaId: 'cma-01' }, mock);
+    assert.equal(result.mode, 'evidence'); assert.ok(result.tools.includes('validation-error-code:unsupported-number'));
+  }
+  const valid: typeof fetch = async (_url, init) => JSON.parse(String(init?.body)).response_format ? completion(finalAnswer('The recorded bedroom adjustment assumption is $12k [cma-01].')) : completion('Evidence is sufficient.');
+  assert.equal((await answerAssistant(workspace, 'Explain the evidence', { cmaId: 'cma-01' }, valid)).mode, 'model');
 });
 
 test('optional models discovery intersects the known registry rather than inventing capabilities', async () => {

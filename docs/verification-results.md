@@ -5,22 +5,22 @@ Executed on this Windows ARM64 development machine with Node 24.19.0, October 15
 | Check | Actual result | Scope |
 | --- | --- | --- |
 | TypeScript | Pass | Strict project type checking, including scripts and routes |
-| Unit/integration suite | **188/188 passed**; 4.75 s final runner duration | Real local SQLite persistence, authentication/roles/tenants, pricing, source rights, billing event mocks, migration, domain/AI/provider protocol fixtures |
-| Browser suite | **12/12 passed**; approximately 1.1 min | Registration/login/logout, full professional demo, progressive access, DMV/Austin, Academy/support, CSV rollback/export, privacy races, provider fixture workflow and mobile CMA |
+| Unit/integration suite | **193/193 passed**; 5.21 s final runner duration | Real local SQLite persistence, authentication/roles/tenants, pricing, source rights, billing event mocks, migration, domain/AI/provider protocol fixtures; phase separation, paragraph references and numeric-output regressions |
+| Browser suite | **12/12 passed**; approximately 1.0 min | Registration/login/logout, full professional demo, progressive access, DMV/Austin, Academy/support, CSV rollback/export, privacy races, provider fixture workflow and mobile CMA |
 | Accessibility | **22/22 scanned view configurations without detected violations or horizontal overflow** | Axe WCAG 2 A/AA and 2.1 AA; 20 application views plus populated provider desktop/mobile. Automated checks are not complete accessibility certification |
 | Production build | Pass | Next.js optimized compilation, type checking, prerendering and all route generation |
 | Production HTTP smoke | Pass | Home 200, anonymous workspace/provider 401, missing production database 503 with safe configuration message, production CSP without unsafe-eval |
 | Production dependency audit | Zero known advisories reported | `npm audit --omit=dev`; point-in-time registry check, not penetration testing |
 | Client secret scan | No supplied Groq credential value in 55 compiled client artifacts | `.next/static` JavaScript/JSON/maps; environment file ignored by Git |
-| First-use acceptance | **7,423 ms** in the final recorded run | Automated local Explorer registration → pending verification → saved synthetic DMV CMA/report; not human onboarding research |
-| Report HTTP | **22 ms** in one recorded local request | Synthetic HTML generation, not an SLA or competitive comparison |
+| First-use acceptance | **6,274 ms** in the final recorded browser rerun | Automated local Explorer registration → pending verification → saved synthetic DMV CMA/report; not human onboarding research |
+| Report HTTP | See timestamped report receipt | One local synthetic HTML request, not an SLA or competitive comparison |
 | RentCast workflow | Pass with **six fictional recorded-sale comparables** | Exact fixture address → records/assessment history → CMA → separate AVM benchmark → ZIP context → scenario → evidence assistant → report/cache reuse; **zero live RentCast calls** |
 | Domain fixture evaluation | **32/32 expected triage outcomes**; 11 practice-rule case sets pass | Internally authored English cases; no independent holdout, legal certification, expert agreement or live outcome validation |
 | Offline AI evaluation | **9/9 software cases passed** | Authored mocked model responses; proves routing/validation behavior, not model quality or network speed |
-| Live Groq full assistant | **Failed positive smoke: HTTP 400**; safe evidence fallback | One 20B request, about 661 ms; provider tokens unreported. Error cause was not retained in the first attempt. No successful complete model answer claimed |
+| Live Groq full assistant | **3/3 final software smoke cases passed**: two model responses and one no-call safety hold | Final 20B: **1,154.165 ms**, 3,160 input / 384 output tokens, estimated **$0.0003522**. Final 120B: **3,191.801 ms**, 3,372 input / 1,111 output tokens, estimated **$0.0011724**. Synthetic evidence only; semantic-quality acceptance remains open |
 | Live Groq minimal tool phase | **Succeeded** | One 20B read-only tool call, **463 ms**, 166 input / 38 output tokens; published-rate estimate **$0.00002385**, not an invoice. Model discovery returned both configured IDs |
 
-The live evaluation's conservative cumulative reservation is **$0.0099**, within the stated $0.01 cap. A persistent cumulative evaluation ledger prevents silently resetting that limit on subsequent runs. Additional full-path diagnosis requires a separately approved test allowance. No 120B inference, live final strict-schema synthesis or competitive model-quality benchmark has been verified. The minimal diagnostic is not a replacement for those evaluations.
+The live evaluation's conservative cumulative accounting is **$0.06054915**, within the expanded, explicitly approved **$0.1099** ceiling. Final successful-path token arithmetic totals **$0.0015246**; cumulative accounting also includes full reserved amounts for failed requests with unknown usage. A persistent ledger prevents resetting this ceiling between runs. The original HTTP 400 was reproduced as `tool_use_failed`; separating retrieval and synthesis instructions restored the full path. Later citation-format experiments and a 120B structured-output failure are retained in the run archive, followed by the successful final run. These are not provider invoices, reliability estimates or competitive quality benchmarks. [Quality review and known semantic errors](ai-evaluation-review.md).
 
 ## Reproduce
 
@@ -38,6 +38,8 @@ npm.cmd run build
 
 The ordinary test suite and offline evaluations make no paid inference/property requests. Browser tests explicitly select deterministic assistant mode. Live evaluation is a separate opt-in command requiring a supplied server key, explicit sharing/budget configuration and an approved cumulative `--max-usd` ceiling. Do not include `.env.local` in source control or reports.
 
+After building, `node --env-file=.env.local scripts/verify-build.mjs` checks compiled browser artifacts for the supplied Groq credential without printing it. Add `--repository` to check tracked source/evidence and verify the local environment file is ignored. With a local production server running and PostgreSQL deliberately unconfigured, add `--production-http` to reproduce the fail-closed HTTP smoke. This optional smoke is specific to that unconfigured environment; it is not a production database acceptance test.
+
 ## Evidence
 
 - [Browser provider acceptance](../evidence/rentcast-browser-acceptance.json)
@@ -46,10 +48,13 @@ The ordinary test suite and offline evaluations make no paid inference/property 
 - [Migration acceptance](../evidence/migration-browser-acceptance.json)
 - [Accessibility scan](../evidence/accessibility-results.json)
 - [Production launch/configuration smoke](../evidence/production-smoke.json)
+- [Compiled browser credential scan](../evidence/build-artifact-scan.json)
 - [Computation benchmarks](../evidence/benchmark-results.json)
 - [Domain cases](../evidence/domain-evaluation.json)
 - [Offline AI results](../evidence/ai-evaluation.mock.json)
-- [Failed complete live AI smoke](../evidence/ai-evaluation.live.json)
+- [Final complete live AI smoke](../evidence/ai-evaluation.live.json)
+- [Archived live attempts](../evidence/ai-evaluations/)
+- [Cumulative evaluation accounting](../evidence/ai-evaluation-spend.json)
 - [Successful minimal live diagnostic](../evidence/ai-evaluation.live-diagnostic.json)
 - [REA reconstruction evidence](evidence-ledger.md)
 

@@ -1,0 +1,115 @@
+{
+  "executedAt": "2026-10-16T02:02:14.603Z",
+  "implementation": {
+    "sha256": "c58224ac3230225a2d01fd8f1634d67dd7c1fbe9f265d95ad43387ede2005a60",
+    "evidence": "fictional synthetic workspace only",
+    "outputTokenLimit": 1200
+  },
+  "mode": "explicit-opt-in-live",
+  "liveProviderRequests": 2,
+  "liveCostOrPerformanceSuperiorityVerified": false,
+  "cases": [
+    {
+      "id": "property-evidence",
+      "category": "property Q&A",
+      "route": {
+        "provider": "groq",
+        "model": "openai/gpt-oss-20b",
+        "task": "everyday",
+        "reason": "Routine evidence explanation; no model-generated valuation arithmetic."
+      },
+      "status": "executed",
+      "mode": "model",
+      "answer": "Model-generated explanation — professional review required.\n\n[Property 1] (property‑01) is a 4‑bed, 3‑bath single‑family home in Austin with a 2,480‑sq‑ft interior and a 7,200‑sq‑ft lot, listed at $749,000 and having spent 56 days on the market. [property-01]\n\nThe comparative market analysis (cma‑01) shows an adjusted weighted mean sale price of $727,321, with an empirical comparable range of $719,400 to $738,100 based on 7 sales within 3 mi and 180 days. Conservative, moderate, and aggressive anchors align with the lower, mean, and upper bounds of that range, respectively. [cma-01]\n\nThe comparables (property‑02 to property‑08) provide the weighted contributions and distances used in the CMA calculation. Each property’s adjusted price, weight, and proximity to the subject are documented, allowing a review of adjustment assumptions and potential double‑counting of bedroom and square‑footage values. [property-02] [property-03] [property-04] [property-05] [property-06] [property-07] [property-08]\n\nAll property and market evidence in this workspace is fictional demonstration data.",
+      "citations": [
+        {
+          "id": "property-01",
+          "label": "104 Example Willow Loop",
+          "detail": "Stored property record; source source-synthetic-properties; evidence as of 2026-10-15."
+        },
+        {
+          "id": "cma-01",
+          "label": "Willow Loop · evidence review",
+          "detail": "Computed with ascent-cma-1.0; 2026-10-15T12:00:00.000Z; calculation hash fnv1a32-fe12efca. Awaiting professional approval."
+        },
+        {
+          "id": "property-02",
+          "label": "118 Example Willow Loop",
+          "detail": "Adjusted comparable $719,400; weight 12.9%; distance 0.36 mi."
+        },
+        {
+          "id": "property-03",
+          "label": "212 Example Cedar Trace",
+          "detail": "Adjusted comparable $728,800; weight 11.0%; distance 0.58 mi."
+        },
+        {
+          "id": "property-04",
+          "label": "306 Example Meadow Rise",
+          "detail": "Adjusted comparable $734,100; weight 11.8%; distance 0.58 mi."
+        },
+        {
+          "id": "property-05",
+          "label": "418 Example Juniper Way",
+          "detail": "Adjusted comparable $726,700; weight 15.3%; distance 0.71 mi."
+        },
+        {
+          "id": "property-06",
+          "label": "522 Example Orchard Bend",
+          "detail": "Adjusted comparable $738,100; weight 11.4%; distance 1.04 mi."
+        },
+        {
+          "id": "property-07",
+          "label": "624 Example Creek Hollow",
+          "detail": "Adjusted comparable $722,600; weight 17.5%; distance 0.73 mi."
+        },
+        {
+          "id": "property-08",
+          "label": "728 Example Laurel Court",
+          "detail": "Adjusted comparable $726,100; weight 20.1%; distance 0.85 mi."
+        }
+      ],
+      "missingInformation": [
+        "No calibrated probability of selling or causal days‑on‑market model is available.",
+        "Verify condition, concessions, legal facts, and current licensed inventory before professional reliance.",
+        "No calibrated probability of selling or causal days-on-market model is available.",
+        "Citation IDs and supported numeric values are checked; semantic support for model-generated conclusions still requires professional review.",
+        "Known property/client/buyer names, contact details, and stored free-text notes were replaced before external model processing. Redaction is best effort; do not put sensitive information in a question."
+      ],
+      "providerDiagnostics": [],
+      "latencyMs": 1366.258,
+      "inputTokens": 3052,
+      "outputTokens": 436,
+      "estimatedUsd": 0.0003597,
+      "transportAttempts": 2,
+      "checks": {
+        "expectedSoftwarePath": true,
+        "externalCallMadeWhenExpected": true,
+        "authorizedCitationIds": true,
+        "noInventedRecordReleased": true,
+        "noInventedPriceReleased": true,
+        "workspaceUnchanged": true,
+        "uncertaintyDisclosed": true
+      },
+      "passed": true
+    }
+  ],
+  "summary": {
+    "tested": 1,
+    "passed": 1,
+    "blockedBeforeProvider": 0,
+    "providerFallbacks": 0,
+    "safetyHeld": 0,
+    "skipped": 0,
+    "priorAccountedUsd": 0.05866485,
+    "currentRunAccountedUsd": 0.0003596999999999975,
+    "accountedBudgetUsd": 0.059024549999999995
+  },
+  "limitations": [
+    "Mock responses are authored fixtures, not outputs from a Groq-hosted model. Passing validators demonstrate software routing and safety plumbing only.",
+    "Mock latency is local JavaScript execution time; it is not model latency, tokens/second, factual accuracy, calibration, or a provider comparison.",
+    "Live smoke includes two positive model paths and a no-call safety path; blocked or unexecuted positive paths are failures, never successful model evaluations.",
+    "Live results still require independent human grounding review. Authorized citation IDs and numeric checks do not establish semantic entailment.",
+    "Published/configured token-cost arithmetic is an estimate, not a provider invoice. Failed attempted requests conservatively consume the full cap; preflight blocks consume no external spend. Use provider-side spend limits as an additional control.",
+    "--max-usd is a cumulative authorization ceiling, not a fresh per-run allowance. The exclusive durable ledger reserves before each positive live case; a crash retains its pending cap. Never delete it to reset spend."
+  ]
+}

@@ -1,6 +1,6 @@
 {
-  "at": "2026-10-16T01:37:02.407Z",
-  "environment": "Local Next production build",
+  "at": "2026-10-16T02:09:40.571Z",
+  "environment": "Local Next production build without PostgreSQL",
   "homeStatus": 200,
   "anonymousWorkspaceStatus": 401,
   "anonymousProviderStatus": 401,
@@ -8,5 +8,5 @@
   "configurationErrorHandled": true,
   "cspOmitsUnsafeEval": true,
   "poweredByHeaderAbsent": true,
-  "scope": "HTTP launch and fail-closed configuration only; no live PostgreSQL tested"
+  "scope": "HTTP launch and fail-closed configuration only; no live PostgreSQL or provider tested"
 }

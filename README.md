@@ -27,7 +27,7 @@ DMV is the initial reference market. The **Market region** selector switches to 
 - **Clients:** create profiles and retain conversations and saved searches.
 - **Offer room:** compare price, credits, financing, conditions, and timing; draft and explicitly approve a counteroffer. Approval records a review; no offer or message is sent.
 - **Transactions:** store private PDF/text documents, extract explicit ISO dates from text, review proposed deadlines, and track milestones. PDF OCR is not connected.
-- **Ask Ascent:** retrieve authorized context and cited evidence. Groq-first GPT-OSS routing uses configurable models, server-controlled read tools, explicit sharing and spend controls. Optional secondary OpenAI access is deliberate; unavailable or exhausted model capacity returns useful evidence mode.
+- **Ask Ascent:** retrieve authorized context and cited evidence. Groq-first GPT-OSS routing uses configurable models, server-controlled read tools, structured paragraph references, explicit sharing and spend controls. Both 20B and 120B complete synthetic live smoke. Model explanations still require factual review; see [known quality limits](docs/ai-evaluation-review.md). Optional secondary OpenAI access is deliberate; unavailable or exhausted model capacity returns useful evidence mode.
 - **Access & verification:** submit credentials asynchronously without interrupting free exploration. A trusted reviewer, independent of the user session, checks authoritative evidence.
 - **Plans & usage / Brokerage team:** configurable freemium allowances, Stripe checkout/portal/webhooks when configured, and one-time team invitations. Payment never grants MLS rights.
 - **Outcomes lab / Decision graph:** inspect retrospective error calculations and source-linked relationships. Synthetic outcomes verify plumbing, not market accuracy.
@@ -64,4 +64,4 @@ Playwright uses an installed Chrome by default on this workstation. Set `CHROME_
 - [Verification results](docs/verification-results.md)
 - Database migrations: `migrations/`; source: `src/`; tests: `tests/`; retained REA evidence and measured artifacts: `evidence/`
 
-This repository has no configured deployment credentials or authorized destination remote. Nothing modifies Homesolo production. Live MLS access, payment settlement, license-provider automation, PostgreSQL deployment, and model-provider responses must be verified with authorized service credentials before launch.
+This repository has no configured deployment credentials or authorized destination remote. Nothing modifies Homesolo production. Live MLS/RentCast access, payment settlement, license-provider automation and PostgreSQL deployment remain unverified. Groq responses have been tested on synthetic evidence; production privacy, reliability and semantic quality still require validation.

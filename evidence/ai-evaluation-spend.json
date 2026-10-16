@@ -1,0 +1,156 @@
+{
+  "version": 1,
+  "accountedUsd": 0.06054915,
+  "events": [
+    {
+      "at": "2026-10-16T01:42:18.641Z",
+      "caseId": "import-existing-receipts",
+      "status": "historical",
+      "amountUsd": 0.0099
+    },
+    {
+      "at": "2026-10-16T01:42:18.642Z",
+      "caseId": "property-evidence",
+      "status": "reserved",
+      "amountUsd": 0.009
+    },
+    {
+      "at": "2026-10-16T01:42:19.418Z",
+      "caseId": "property-evidence",
+      "status": "settled",
+      "amountUsd": 0.009
+    },
+    {
+      "at": "2026-10-16T01:44:16.900Z",
+      "caseId": "property-evidence",
+      "status": "reserved",
+      "amountUsd": 0.009
+    },
+    {
+      "at": "2026-10-16T01:44:18.547Z",
+      "caseId": "property-evidence",
+      "status": "settled",
+      "amountUsd": 0.000535275
+    },
+    {
+      "at": "2026-10-16T01:44:46.144Z",
+      "caseId": "comparable-assumptions",
+      "status": "reserved",
+      "amountUsd": 0.009
+    },
+    {
+      "at": "2026-10-16T01:44:49.457Z",
+      "caseId": "comparable-assumptions",
+      "status": "settled",
+      "amountUsd": 0.00107895
+    },
+    {
+      "at": "2026-10-16T01:52:08.635Z",
+      "caseId": "property-evidence",
+      "status": "reserved",
+      "amountUsd": 0.009
+    },
+    {
+      "at": "2026-10-16T01:52:10.006Z",
+      "caseId": "property-evidence",
+      "status": "settled",
+      "amountUsd": 0.009
+    },
+    {
+      "at": "2026-10-16T01:53:15.182Z",
+      "caseId": "property-evidence",
+      "status": "reserved",
+      "amountUsd": 0.009
+    },
+    {
+      "at": "2026-10-16T01:53:16.165Z",
+      "caseId": "property-evidence",
+      "status": "settled",
+      "amountUsd": 0.009
+    },
+    {
+      "at": "2026-10-16T01:53:57.574Z",
+      "caseId": "property-evidence",
+      "status": "reserved",
+      "amountUsd": 0.009
+    },
+    {
+      "at": "2026-10-16T01:53:59.107Z",
+      "caseId": "property-evidence",
+      "status": "settled",
+      "amountUsd": 0.009
+    },
+    {
+      "at": "2026-10-16T01:56:32.066Z",
+      "caseId": "property-evidence",
+      "status": "reserved",
+      "amountUsd": 0.009
+    },
+    {
+      "at": "2026-10-16T01:56:33.263Z",
+      "caseId": "property-evidence",
+      "status": "settled",
+      "amountUsd": 0.000360975
+    },
+    {
+      "at": "2026-10-16T01:56:37.490Z",
+      "caseId": "comparable-assumptions",
+      "status": "reserved",
+      "amountUsd": 0.009
+    },
+    {
+      "at": "2026-10-16T01:56:42.244Z",
+      "caseId": "comparable-assumptions",
+      "status": "settled",
+      "amountUsd": 0.009
+    },
+    {
+      "at": "2026-10-16T02:01:43.455Z",
+      "caseId": "comparable-assumptions",
+      "status": "reserved",
+      "amountUsd": 0.009
+    },
+    {
+      "at": "2026-10-16T02:01:49.680Z",
+      "caseId": "comparable-assumptions",
+      "status": "settled",
+      "amountUsd": 0.0017896499999999998
+    },
+    {
+      "at": "2026-10-16T02:02:13.233Z",
+      "caseId": "property-evidence",
+      "status": "reserved",
+      "amountUsd": 0.009
+    },
+    {
+      "at": "2026-10-16T02:02:14.602Z",
+      "caseId": "property-evidence",
+      "status": "settled",
+      "amountUsd": 0.0003597
+    },
+    {
+      "at": "2026-10-16T02:05:15.633Z",
+      "caseId": "property-evidence",
+      "status": "reserved",
+      "amountUsd": 0.009
+    },
+    {
+      "at": "2026-10-16T02:05:16.788Z",
+      "caseId": "property-evidence",
+      "status": "settled",
+      "amountUsd": 0.0003522
+    },
+    {
+      "at": "2026-10-16T02:05:16.789Z",
+      "caseId": "comparable-assumptions",
+      "status": "reserved",
+      "amountUsd": 0.009
+    },
+    {
+      "at": "2026-10-16T02:05:19.980Z",
+      "caseId": "comparable-assumptions",
+      "status": "settled",
+      "amountUsd": 0.0011724
+    }
+  ]
+}
