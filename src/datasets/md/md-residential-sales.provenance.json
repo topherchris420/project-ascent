@@ -1,0 +1,41 @@
+{
+  "datasetId": "md-residential-sales",
+  "title": "Montgomery and Prince George's County, MD recorded detached single-family sales with SDAT characteristics",
+  "publisher": "State of Maryland: State Department of Assessments and Taxation (SDAT) and Maryland Department of Planning (MDP)",
+  "license": "Public Domain",
+  "licenseEvidence": "opendata.maryland.gov dataset ed4q-f8tm metadata: license \"Public Domain\" (licenseId PUBLIC_DOMAIN); attribution field \"SDAT (State Department of Assessments and Taxation) and MDP (Maryland Department of Planning)\".",
+  "attribution": "Contains State of Maryland data (SDAT and Maryland Department of Planning) published as Public Domain on opendata.maryland.gov.",
+  "source": "https://opendata.maryland.gov/Business-and-Economy/Maryland-Real-Property-Assessments-Hidden-Property/ed4q-f8tm",
+  "endpoint": "https://opendata.maryland.gov/resource/ed4q-f8tm.json",
+  "fetchedAt": "2026-10-17T18:16:12Z",
+  "scope": "Montgomery and Prince George's counties; land use Residential (R); MDP residence type SF (detached single-family); one dwelling unit",
+  "sourceRows": 351591,
+  "conditionScale": "SDAT dwelling grade (1 Low, 2 Economy, 3 Below Average, 4 Average, 5 Above Average, 6 Good, 7 Very Good, 8 Excellent, 9 Superior), written in the condition column. The SDAT dwelling condition code is blank for almost every home.",
+  "unrecorded": "Bedrooms and bathrooms are not published; written as 0 and declared unrecorded in the validation protocol.",
+  "salesSince": "2022-01-01",
+  "rows": 37928,
+  "firstSale": "2022-01-04",
+  "lastSale": "2026-09-24",
+  "historyDepth": "SDAT publishes the last three transfers per account; sales are taken from all three segments.",
+  "removedParcels": {
+    "multiUnitBuilding": 919,
+    "noAddressOrLocation": 122
+  },
+  "removedBeforeValidation": {
+    "characteristicsMayPostdateSale": 1576,
+    "duplicateRecording": 8,
+    "multiParcelTransfer": 5899,
+    "noConsideration": 19,
+    "notArmsLengthImproved": 52791
+  },
+  "csvSha256": "455a48ad8158ef9225a34a80cc893e7e8b0f9f582e005d79af424ee6084bb3f5",
+  "fingerprintBasis": "SHA-256 of the decompressed CSV bytes.",
+  "derivation": "scripts/datasets/fetch-md-records.py; price = consideration; sqft = SDAT structure area; arm's-length = how-conveyed code 1 (private arm's-length, improved).",
+  "limitations": [
+    "Characteristics are current, not as of each sale; sales in or before the year built are removed, but renovations are not recorded.",
+    "Concessions are not recorded. Code 1 is SDAT's arm's-length determination.",
+    "Only the last three transfers per account are published, so older history is incomplete for frequently sold homes.",
+    "Townhouses, condominiums and multi-unit buildings are out of scope.",
+    "Recordation lags settlement, so the most recent weeks are incomplete."
+  ]
+}

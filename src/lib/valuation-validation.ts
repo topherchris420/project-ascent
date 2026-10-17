@@ -61,6 +61,11 @@ export type ValidationProtocol = {
   bootstrap: { resamples: number; seed: number };
   primaryVariant: string;
   acceptance: readonly AcceptanceCriterion[];
+  /**
+   * Features the market's public records do not publish. They are held equal for every home, excluded from the
+   * paired-sales fit and reported as unrecorded, rather than fitted on invented values.
+   */
+  unrecordedFeatures?: readonly ('bedroomValue' | 'bathroomValue' | 'conditionValue')[];
 };
 
 /** King County, WA (2014–15). Frozen: its report digest covers this exact object. */
@@ -199,7 +204,27 @@ export const dcProtocol = {
   },
 } as const satisfies ValidationProtocol;
 
-export const validationProtocols: readonly ValidationProtocol[] = [dcProtocol, kingCountyProtocol];
+/**
+ * Montgomery and Prince George's counties, Maryland: detached single-family homes from the State's public-domain
+ * SDAT data. Declared before any Maryland valuation was run. It reuses DC's method, bars and calendar windows; the
+ * only differences are that Maryland publishes no bedrooms or bathrooms, so both are unrecorded (held equal and not
+ * fitted) and their screening bounds are relaxed to match, and the condition column carries SDAT's dwelling grade.
+ */
+export const mdProtocol = {
+  ...kingCountyProtocol,
+  id: 'ascent-valuation-validation-md-1',
+  dataset: {
+    id: 'md-residential-sales',
+    csvSha256: '455a48ad8158ef9225a34a80cc893e7e8b0f9f582e005d79af424ee6084bb3f5',
+    license: 'Public-Domain',
+    sourceId: 'md-public-record',
+  },
+  windows: dcProtocol.windows,
+  screening: { minBeds: 0, maxBeds: 12, minBaths: 0, minSqft: 300 },
+  unrecordedFeatures: ['bedroomValue', 'bathroomValue'],
+} as const satisfies ValidationProtocol;
+
+export const validationProtocols: readonly ValidationProtocol[] = [dcProtocol, mdProtocol, kingCountyProtocol];
 
 const DAY = 86_400_000;
 const round = (value: number, digits: number) => Number(value.toFixed(digits));
@@ -396,7 +421,8 @@ export function fitAdjustmentRates(
     }
   }
   const names = ['sqftRate', 'bedroomValue', 'bathroomValue', 'conditionValue', 'monthlyTrend'] as const;
-  let active = [0, 1, 2, 3, 4];
+  const unrecorded = new Set<string>(protocol.unrecordedFeatures ?? []);
+  let active = [0, 1, 2, 3, 4].filter(feature => !unrecorded.has(names[feature]));
   let coefficients = [0, 0, 0, 0, 0];
   const clamped: string[] = [];
   const fit = (weights: number[]) => {

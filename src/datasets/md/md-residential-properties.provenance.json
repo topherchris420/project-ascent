@@ -1,0 +1,22 @@
+{
+  "datasetId": "md-residential-properties",
+  "title": "Montgomery and Prince George's County, MD detached single-family parcels with addresses and SDAT characteristics",
+  "publisher": "State of Maryland: State Department of Assessments and Taxation (SDAT) and Maryland Department of Planning (MDP)",
+  "license": "Public Domain",
+  "licenseEvidence": "opendata.maryland.gov dataset ed4q-f8tm metadata: license \"Public Domain\" (licenseId PUBLIC_DOMAIN); attribution field \"SDAT (State Department of Assessments and Taxation) and MDP (Maryland Department of Planning)\".",
+  "attribution": "Contains State of Maryland data (SDAT and Maryland Department of Planning) published as Public Domain on opendata.maryland.gov.",
+  "source": "https://opendata.maryland.gov/Business-and-Economy/Maryland-Real-Property-Assessments-Hidden-Property/ed4q-f8tm",
+  "endpoint": "https://opendata.maryland.gov/resource/ed4q-f8tm.json",
+  "fetchedAt": "2026-10-17T18:16:12Z",
+  "scope": "Montgomery and Prince George's counties; land use Residential (R); MDP residence type SF (detached single-family); one dwelling unit",
+  "sourceRows": 351591,
+  "conditionScale": "SDAT dwelling grade (1 Low, 2 Economy, 3 Below Average, 4 Average, 5 Above Average, 6 Good, 7 Very Good, 8 Excellent, 9 Superior), written in the condition column. The SDAT dwelling condition code is blank for almost every home.",
+  "unrecorded": "Bedrooms and bathrooms are not published; written as 0 and declared unrecorded in the validation protocol.",
+  "rows": 350550,
+  "removed": {
+    "multiUnitBuilding": 919,
+    "noAddressOrLocation": 122
+  },
+  "csvSha256": "dddfa52710e619c222ae62a44d3add2c3f7026302617275c55e5adc012af7e91",
+  "fingerprintBasis": "SHA-256 of the decompressed CSV bytes."
+}
