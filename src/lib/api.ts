@@ -1,6 +1,7 @@
 import { z, ZodError } from 'zod';
 import { authenticate, digest, HttpError } from './auth';
 import { consumeRateLimit, DatabaseConfigurationError } from './db';
+import { allowedAppOrigins } from './deployment';
 import type { Actor } from './types';
 
 export function json(value: unknown, status = 200, headers?: HeadersInit) {
@@ -37,14 +38,11 @@ export async function readJson<T>(request: Request, schema: z.ZodType<T>): Promi
 }
 
 export function verifyOrigin(request: Request) {
-  if (process.env.NODE_ENV === 'production' && !process.env.APP_ORIGIN)
-    throw new HttpError(503, 'Application origin is not configured.');
+  const production = process.env.NODE_ENV === 'production';
+  const allowed = production ? allowedAppOrigins() : [process.env.APP_ORIGIN || new URL(request.url).origin];
+  if (production && allowed.length === 0) throw new HttpError(503, 'Application origin is not configured.');
   const origin = request.headers.get('origin');
-  const requestOrigin = new URL(request.url).origin;
-  const expected = process.env.APP_ORIGIN || requestOrigin;
-  const isLocalPreview = /^(https?:\/\/)(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin || '');
-  if (!origin || (origin !== expected && !isLocalPreview))
-    throw new HttpError(403, 'Request origin is not permitted.');
+  if (!origin || !allowed.includes(origin)) throw new HttpError(403, 'Request origin is not permitted.');
   const site = request.headers.get('sec-fetch-site');
   if (site === 'cross-site') throw new HttpError(403, 'Cross-site requests are not permitted.');
 }
