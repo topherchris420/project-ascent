@@ -2,7 +2,7 @@
 
 ## Independent Ascent / HomeSolo task study (not yet conducted)
 
-The primary preference target is **at least 7 of 10 experienced real estate professionals choosing Ascent after using both products**. Participants to date: **0**. This is a future validation target, not a product result. The [public scorecard](competitive-scorecard.md) distinguishes directly observed demonstrations from private behavior that remains unverified.
+The primary preference target is **at least 7 of 10 experienced real estate professionals choosing Ascent after using both products**. Participants to date: **0**. This is a future validation target, not a product result. The ready-to-run study kit (protocol, facilitator script, task cards, answer key, consent form and tested analysis) is in [docs/study](study/README.md); it still needs an independent facilitator, working HomeSolo access and pre-registration. The [public scorecard](competitive-scorecard.md) distinguishes directly observed demonstrations from private behavior that remains unverified.
 
 Before recruitment, an independent facilitator must preregister the protocol, neutral task wording, dataset rights, thresholds, exclusions and scoring. Obtain access to both working products with equivalent capabilities and the **same legally permitted frozen evidence**. If HomeSolo cannot accept that evidence or access is unavailable, mark that task unverified; do not score its marketing page against Ascent's unlocked workspace or substitute different fixtures and call it a fair comparison.
 
