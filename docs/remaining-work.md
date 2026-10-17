@@ -1,5 +1,11 @@
 # Remaining work and production gates
 
+## October 17 continuation II: real DC homes, validated accuracy and a study kit
+
+- **Validated accuracy merged** after review (PR #6): DC and King County backtests reproduce byte for byte; the scorecard now discloses that DC's 10.0% median error is the DC-calibrated settings (defaults: 16.3%).
+- **Real DC homes**: `/dc` prices any of 92,142 single-family District parcels from CC BY 4.0 public records with the validated settings and the calibrated range when unmodified ([details](dc-public-records.md)). Remaining: Maryland and Virginia sources, condominiums, MLS listing history, a scheduled snapshot refresh paired with re-validation.
+- **Preference study kit** ([docs/study](study/README.md)): ready to pre-register. Remaining, owner-side: an independent facilitator and reviewers, working HomeSolo access, participant compensation and the public pre-registration. Participants to date: 0.
+
 ## October 17 continuation: decision drivers, seller plan and labeled answers
 
 Added on top of the Pricing Studio slice: the one-axis range chart linked to the comparable inspector, ranked input sensitivity, the seller plan with reduction-versus-credit arithmetic and search-threshold notes, subject-condition and user-entered practice sales, four task sections in the workspace Pricing Studio, labeled Ask Ascent answers, the landing page's own decision-loop framing, and a fix for an unread sign-in response that held a browser request open. See [implementation and limits](pricing-studio.md) and the [second-pass scorecard](competitive-scorecard.md#second-pass--october-17-2026-afternoon).

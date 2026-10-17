@@ -122,7 +122,7 @@ export function PriceEvidenceStrip({
   );
 }
 
-const settingText = (driver: DecisionDriver, value: number) => {
+const settingText = (driver: DecisionDriver, value: number, conditionMax = 5) => {
   switch (driver.unit) {
     case 'usd-per-sqft':
       return `$${number(value)}/sq ft`;
@@ -137,13 +137,13 @@ const settingText = (driver: DecisionDriver, value: number) => {
     case 'ratio':
       return `${value}×`;
     case 'points':
-      return `${value}/5`;
+      return `${value}/${conditionMax}`;
   }
 };
 
 /** "What changes my decision?" — the tested arithmetic dependency of the estimate on each input. */
-export function DecisionDrivers({ result }: { result: CmaResult }) {
-  const drivers = useMemo(() => decisionDrivers(result), [result]);
+export function DecisionDrivers({ result, conditionMax = 5 }: { result: CmaResult; conditionMax?: number }) {
+  const drivers = useMemo(() => decisionDrivers(result, { conditionMax }), [result, conditionMax]);
   if (!drivers.length) return null;
   const scale = Math.max(1, ...drivers.map(d => d.swing));
   const bar = (outcome: DecisionDriver['lower'], driver: DecisionDriver, side: 'lower' | 'higher') => {
@@ -155,7 +155,7 @@ export function DecisionDrivers({ result }: { result: CmaResult }) {
         key={side}
         className={`driver-bar ${negative ? 'down' : 'up'}`}
         style={negative ? { right: '50%', width: `${width}%` } : { left: '50%', width: `${width}%` }}
-        title={`At ${settingText(driver, outcome.setting)}: ${money(outcome.estimate!)} (${signed(outcome.change)})`}
+        title={`At ${settingText(driver, outcome.setting, conditionMax)}: ${money(outcome.estimate!)} (${signed(outcome.change)})`}
       />
     );
   };
@@ -175,8 +175,9 @@ export function DecisionDrivers({ result }: { result: CmaResult }) {
             <div className="driver-label">
               <strong>{driver.label}</strong>
               <span>
-                Now {settingText(driver, driver.current)} · tested {settingText(driver, driver.lower.setting)} and{' '}
-                {settingText(driver, driver.higher.setting)}
+                Now {settingText(driver, driver.current, conditionMax)} · tested{' '}
+                {settingText(driver, driver.lower.setting, conditionMax)} and{' '}
+                {settingText(driver, driver.higher.setting, conditionMax)}
               </span>
             </div>
             <div className="driver-track" aria-hidden="true">
@@ -187,7 +188,7 @@ export function DecisionDrivers({ result }: { result: CmaResult }) {
             <div className="driver-values">
               {[driver.lower, driver.higher].map((outcome, i) => (
                 <span key={i}>
-                  {settingText(driver, outcome.setting)}:{' '}
+                  {settingText(driver, outcome.setting, conditionMax)}:{' '}
                   <strong>
                     {outcome.change === null
                       ? 'no eligible sale'

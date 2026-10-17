@@ -31,6 +31,8 @@ async function saveAndReadCma(page: Page) {
 test('onboarding acceptance: useful CMA in under two minutes with pending professional review', async ({ page }) => {
   const started = Date.now();
   await page.goto('/');
+  // On a cold development server the first page can paint before React attaches handlers.
+  await page.waitForLoadState('networkidle');
   await page.getByRole('button', { name: 'Create an account' }).first().click();
   await page.getByLabel('Full name').fill('Taylor Explorer');
   await page.getByLabel('Organization', { exact: true }).fill('Instant Exploration');

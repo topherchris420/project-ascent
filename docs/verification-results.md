@@ -166,6 +166,22 @@ Executed in a Linux cloud container with Node 22.22.0. Details are in [valuation
 | Accessibility | **22/22 configurations**, zero Axe violations, no horizontal overflow |
 | Production build and typecheck | Pass |
 
+## October 17, 2026 DC public records, validation review and study kit
+
+Run in a separate worktree on local SQLite (no production database writes), Windows ARM64, Node 24.19.0, installed Chrome.
+
+| Check | Actual result |
+| --- | --- |
+| Validation review before merge (PR #6) | `--check` passes both markets; `--verify --market dc` reproduced the DC report and every per-sale estimate byte for byte in 76 s; engine fingerprint `fnv1a32-49f0c98b` unchanged on master |
+| DC data integrity | Runtime sales file SHA-256 equals the evidence copy and the published benchmark (`eebe4719…`); parcels file matches its provenance (92,142 rows) |
+| DC coverage sample | 222 of 231 evenly spaced parcels priced with the validated settings; 9 had no qualifying sale within 0.5 mi and 90 days |
+| Unit/integration suite | **321/321 passed**, including `dc-public-records.test.ts` (search, own-sale exclusion, radius/age/as-of bounds, calibrated range only when unmodified, server-rebuilt reports, replay) and `study-analysis.test.ts` (exact Clopper-Pearson and binomial values, counterbalancing, withdrawals and unsupported tasks kept) |
+| Browser suite | **29 passed, 1 opt-in skipped**, 2.6 min, including the DC flow at 1440 and 390 px (search, calibrated range, edit removes it, report attribution, reload, reset, back button, axe, overflow) |
+| Production build | Pass; DC routes' server traces include all four dataset and provenance files |
+| Optimized smoke | `/dc` 200; DC search 200 (699 ms including the one-time data load); property 200 (14 ms); unknown parcel 404; report 200 (58 ms); existing routes unchanged; 0 credential matches in 69 compiled artifacts |
+
+One onboarding test failed once on a cold development server: the click arrived before React attached handlers. It passed in isolation; the test now waits for the page to settle before clicking. No assertion was removed.
+
 ## Reproduce
 
 ```powershell

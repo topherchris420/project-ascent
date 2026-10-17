@@ -1,6 +1,10 @@
 import type { NextConfig } from 'next';
 const config: NextConfig = {
   serverExternalPackages: ['pg', 'node:sqlite', 'unpdf'],
+  // The DC public-record routes read bundled CC BY snapshots at runtime.
+  outputFileTracingIncludes: {
+    '/api/dc/*': ['./src/datasets/dc/**/*'],
+  },
   outputFileTracingExcludes: {
     '/*': ['./.data/**/*', './evidence/**/*', './tests/**/*', './test-results/**/*', './playwright-report/**/*'],
   },

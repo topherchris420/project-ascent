@@ -1,5 +1,5 @@
 {
-  "at": "2026-10-17T13:49:54.555Z",
+  "at": "2026-10-17T17:05:37.616Z",
   "environment": "Local optimized Next.js production build; no hosted Vercel acceptance, no real provider/model requests",
   "platform": "win32",
   "arch": "arm64",
@@ -8,27 +8,52 @@
     {
       "path": "/",
       "status": 200,
-      "elapsedMs": 25.4
+      "elapsedMs": 24.4
     },
     {
       "path": "/demo",
       "status": 200,
-      "elapsedMs": 21.9
+      "elapsedMs": 27.6
     },
     {
       "path": "/api/demo/report",
       "status": 200,
-      "elapsedMs": 35.9
+      "elapsedMs": 34.2
     },
     {
       "path": "/api/demo/report?state=invalid",
       "status": 400,
-      "elapsedMs": 8.7
+      "elapsedMs": 14.6
     },
     {
       "path": "/api/workspace",
       "status": 401,
-      "elapsedMs": 38.3
+      "elapsedMs": 40
+    },
+    {
+      "path": "/dc",
+      "status": 200,
+      "elapsedMs": 12.8
+    },
+    {
+      "path": "/api/dc/search?q=313%20shepherd",
+      "status": 200,
+      "elapsedMs": 698.3
+    },
+    {
+      "path": "/api/dc/property?parcel=3313____0047",
+      "status": 200,
+      "elapsedMs": 13.8
+    },
+    {
+      "path": "/api/dc/property?parcel=not-a-parcel",
+      "status": 404,
+      "elapsedMs": 18.3
+    },
+    {
+      "path": "/api/dc/report?parcel=3313____0047",
+      "status": 200,
+      "elapsedMs": 57.9
     },
     {
       "path": "/api/auth/demo",
@@ -37,7 +62,7 @@
     }
   ],
   "secretScan": {
-    "artifacts": 63,
+    "artifacts": 69,
     "credentialValuesDisclosed": false,
     "matches": 0
   },

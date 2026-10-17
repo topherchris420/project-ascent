@@ -30,7 +30,7 @@ And it doesn't stop at pricing. Clients, offers, transaction deadlines, saved re
 
 **[Launch Ascent →](https://project-ascent-theta.vercel.app/)**
 
-Choose **Analyze a property** to open the account-free **Pricing Studio** (`/demo`) on a clearly fictional home in Arlington, Virginia. In four steps you can:
+Choose **Analyze a property** to price a **real single-family home in Washington, DC** (`/dc`) from District public records (CC BY 4.0), with the settings validated on DC sales the engine never saw and every recorded sale shown. No account, MLS feed or model request is involved; see [how DC pricing works](docs/dc-public-records.md). Outside DC, or to practise first, open the account-free **fictional sample** (`/demo`). Either way, in four steps you can:
 
 1. **Review the evidence**: every adjusted sale on one price axis, linked to a sale-by-sale inspector with signed adjustments, the weight formula and the source.
 2. **Choose a strategy**: conservative, balanced and aggressive positions, and what each move nets the seller, including a later reduction to the next search threshold versus the same amount as a credit.

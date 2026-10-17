@@ -1,0 +1,43 @@
+{
+  "datasetId": "dc-residential-sales",
+  "title": "District of Columbia recorded residential sales joined to CAMA characteristics and address points",
+  "publisher": "District of Columbia (Office of Tax and Revenue; Office of the Chief Technology Officer), via opendata.dc.gov",
+  "license": "CC-BY-4.0",
+  "attribution": "Contains District of Columbia open data licensed under CC BY 4.0: Tax System Property Sales (CAMA), Computer Assisted Mass Appraisal - Residential, Address Points.",
+  "sources": {
+    "sales": "https://maps2.dcgis.dc.gov/dcgis/rest/services/DCGIS_DATA/Property_and_Land_WebMercator/FeatureServer/57",
+    "characteristics": "https://maps2.dcgis.dc.gov/dcgis/rest/services/DCGIS_DATA/Property_and_Land_WebMercator/FeatureServer/25",
+    "locations": "https://maps2.dcgis.dc.gov/dcgis/rest/services/DCGIS_DATA/Location_WebMercator/FeatureServer/0"
+  },
+  "fetchedAt": "2026-10-17T06:13:30Z",
+  "salesSince": "2022-01-01",
+  "sourceRows": {
+    "sales": 45425,
+    "characteristics": 109395,
+    "addressPoints": 143072
+  },
+  "rows": 10174,
+  "firstSale": "2022-01-03",
+  "lastSale": "2026-10-07",
+  "removedBeforeValidation": {
+    "characteristicsMayPostdateSale": 2252,
+    "missingCharacteristics": 2,
+    "multiParcelTransfer": 1981,
+    "multiUnitBuilding": 1958,
+    "multipleBuildingsOnLot": 10,
+    "noAddressPoint": 62,
+    "notAssessorQualified": 16849,
+    "notSingleFamilyResidentialCama": 12137
+  },
+  "csvSha256": "eebe47197b9c815ffc9c2c98f27dd8226bc588418b06d3b3db5d245353650b1f",
+  "fingerprintBasis": "SHA-256 of the decompressed CSV bytes.",
+  "conditionScale": "DC CAMA CNDTN code (1 Poor, 2 Fair, 3 Average, 4 Good, 5 Very Good, 6 Excellent), used as condition points.",
+  "derivation": "scripts/datasets/fetch-dc-sales.py; baths = full + 0.5 x half; sqft = gross building area (GBA); coordinates = mean of the lot's address points.",
+  "independence": "Recorded deed transfers and assessor records published by the District government. Ascent's authors did not create, select or edit any record.",
+  "limitations": [
+    "CAMA characteristics are current, not as of each sale; sales in or before a recorded build or remodel year are removed, but unrecorded changes remain.",
+    "Assessor qualification (Q) is the District's arm's-length determination; concessions are not recorded.",
+    "Condominiums, multi-unit buildings and multi-building lots are out of scope.",
+    "Recordation lags closing, so the most recent weeks of the snapshot are incomplete."
+  ]
+}
