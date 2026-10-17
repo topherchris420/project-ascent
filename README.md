@@ -68,17 +68,21 @@ Move among conservative, moderate, and aggressive list positions. Change the pri
 
 The scenario calculator does **not** predict that a buyer will pay the selected price or that a listing will sell faster.
 
-### 03 · Keep the reasoning
+### 03 · Inspect evidence fitness and changing decisions
+
+The Pricing studio now exposes **reviewable evidence sufficiency**: effective sample size, weight concentration, adjusted-sale dispersion, source identity and explicit model omissions. These are analyst review heuristics, not a claimed prediction of error. The **Decision Time Machine** compares a saved CMA with today's calculation, showing which sale records entered or left, what source facts and assumptions changed, and how the valuation moved. It cannot assert market causation. [Inspect the methodology](docs/evidence-and-decision-time-machine.md).
+
+### 04 · Keep the reasoning
 
 Save a frozen CMA containing inputs, comp decisions, adjustments, source references, calculation version, and a reproducibility checksum. Build a seller-facing report without silently recomputing yesterday's decision using tomorrow's data.
 
 Any saved snapshot can be **replayed**: Ascent recomputes it from the evidence it archived at save time, checks that the archive still matches its own checksum, and reports either *Reproduced* or exactly where the replay departs. Replay reads the archive only; changing today's records never changes the verdict.
 
-### 04 · Continue the work
+### 05 · Continue the work
 
 Carry that context into client notes, listing reviews, offer comparisons, counter drafts, transaction milestones, and an evidence-linked decision graph. Significant approvals are explicit; **Ascent does not send a client message, accept an offer, or execute a contract for you.**
 
-### 05 · Ask, inspect, decide
+### 06 · Ask, inspect, decide
 
 Ask Ascent draws on authorized workspace records. Deterministic evidence mode works without a language-model key; optional model synthesis can help explain or draft. Source references, privacy controls, and human review remain important: a citation can identify a record without guaranteeing every sentence is correct.
 

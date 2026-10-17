@@ -104,6 +104,7 @@ import {
 import { compact, date, initials, money, number } from './format';
 import { clientRoles, clientStages } from '@/lib/types';
 import { buildAgenda, type AgendaItem } from '@/lib/agenda';
+import { assessCmaEvidence, compareCmaDecisions } from '@/lib/decision-review';
 
 type Page =
   | 'overview'
@@ -300,6 +301,7 @@ export default function WorkspaceApp({ workspaceAvailable = true }: { workspaceA
   const [activeSearchId, setActiveSearchId] = useState('');
   const [productFlags, setProductFlags] = useState<Record<string, boolean>>({});
   const [replays, setReplays] = useState<Record<string, CmaReplay>>({});
+  const [comparisonId, setComparisonId] = useState('');
   const [collapsed, setCollapsed] = useState<string[]>(['tools']);
   const [rate, setRate] = useState(6.5);
   const [reviewPropertyId, setReviewPropertyId] = useState('');
@@ -526,6 +528,17 @@ export default function WorkspaceApp({ workspaceAvailable = true }: { workspaceA
     }
   }, [ws, property, compIds, assumptions, valuationProperties]);
   const cma = cmaState.result;
+  const authorizedValuation = useMemo(() => ws ? scopeWorkspaceForAccess(ws, 'valuation') : null, [ws]);
+  const visibleCmaSnapshots = useMemo(
+    () => authorizedValuation?.cmas.filter(saved => saved.propertyId === property?.id) || [],
+    [authorizedValuation, property?.id],
+  );
+  const evidenceReview = useMemo(
+    () => cma && authorizedValuation ? assessCmaEvidence(cma, authorizedValuation.sources) : null,
+    [cma, authorizedValuation],
+  );
+  const comparisonSnapshot = visibleCmaSnapshots.find(saved => saved.id === comparisonId) || visibleCmaSnapshots.at(-1);
+  const decisionComparison = cma && comparisonSnapshot ? compareCmaDecisions(comparisonSnapshot.result, cma) : null;
   const scenario = useMemo(
     () => (cma ? simulatePricing(cma, listPrice || cma.strategies.moderate, costs) : null),
     [cma, listPrice, costs],
@@ -1776,6 +1789,74 @@ export default function WorkspaceApp({ workspaceAvailable = true }: { workspaceA
                   onSelect={setListPrice}
                 />
               )}
+              {cma && evidenceReview && (
+                <section className="panel" aria-label="Valuation evidence review">
+                  <div className="panel-heading">
+                    <div>
+                      <span className="eyebrow">EVIDENCE FITNESS · EXPLAINABLE REVIEW HEURISTICS</span>
+                      <h2>What can these sales actually support?</h2>
+                    </div>
+                    <Badge tone={evidenceReview.status === 'reviewable' ? 'green' : evidenceReview.status === 'limited' ? 'warn' : 'neutral'}>
+                      {evidenceReview.label}
+                    </Badge>
+                  </div>
+                  <div className="assumptions-grid">
+                    <div><span>Eligible sales</span><strong>{evidenceReview.comparableCount}</strong></div>
+                    <div><span>Effective sales after weighting</span><strong>{evidenceReview.effectiveComparableCount.toFixed(1)}</strong></div>
+                    <div><span>Largest sale weight</span><strong>{evidenceReview.largestWeightPercent.toFixed(1)}%</strong></div>
+                    <div><span>Adjusted-sale spread / estimate</span><strong>{evidenceReview.adjustedSpreadPercent.toFixed(1)}%</strong></div>
+                  </div>
+                  <ul className="caution-list">
+                    {evidenceReview.findings.map(finding => (
+                      <li key={finding.label}>
+                        <Circle size={8} />
+                        <span><strong>{finding.label}.</strong> {finding.detail}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <p className="fine">These checks flag questions for an analyst; they do not predict error, certify data completeness, authorize licensed use or replace an appraisal.</p>
+                </section>
+              )}
+              {comparisonSnapshot && decisionComparison && (
+                <section className="panel" aria-label="Decision Time Machine">
+                  <div className="panel-heading">
+                    <div>
+                      <span className="eyebrow">DECISION TIME MACHINE</span>
+                      <h2>What changed since this decision?</h2>
+                    </div>
+                    <GitBranch size={20} />
+                  </div>
+                  <label>
+                    Compare current calculation with saved analysis
+                    <select
+                      aria-label="Compare against saved CMA"
+                      value={comparisonSnapshot.id}
+                      onChange={e => setComparisonId(e.target.value)}
+                    >
+                      {visibleCmaSnapshots.map(saved => (
+                        <option key={saved.id} value={saved.id}>{saved.name} · {date(saved.createdAt)}</option>
+                      ))}
+                    </select>
+                  </label>
+                  <div className="assumptions-grid">
+                    <div><span>Previous estimate</span><strong>{money(decisionComparison.previousEstimate)}</strong></div>
+                    <div><span>Current estimate</span><strong>{money(decisionComparison.currentEstimate)}</strong></div>
+                    <div>
+                      <span>Observed change</span>
+                      <strong>{decisionComparison.estimateChange >= 0 ? '+' : '−'}{money(Math.abs(decisionComparison.estimateChange))} ({decisionComparison.estimateChangePercent >= 0 ? '+' : ''}{decisionComparison.estimateChangePercent.toFixed(1)}%)</strong>
+                    </div>
+                    <div><span>Calculation checksum</span><strong>{decisionComparison.sameCalculation ? 'Identical' : 'Different'}</strong></div>
+                  </div>
+                  <ul className="caution-list">
+                    <li><Circle size={8} /><span>Adjusted range movement: low {money(decisionComparison.lowChange)}, high {money(decisionComparison.highChange)} (signed relative to the saved decision).</span></li>
+                    <li><Circle size={8} /><span>Eligible sales added: {decisionComparison.addedSales.length ? decisionComparison.addedSales.join(', ') : 'none'}. Removed: {decisionComparison.removedSales.length ? decisionComparison.removedSales.join(', ') : 'none'}.</span></li>
+                    <li><Circle size={8} /><span>Archived facts changed on retained sales: {decisionComparison.inputComparisonAvailable ? (decisionComparison.revisedSharedSales.join(', ') || 'none identified') : 'not comparable; archived inputs missing'}.</span></li>
+                    <li><Circle size={8} /><span>Subject valuation facts: {decisionComparison.subjectFactsChanged === null ? 'unavailable' : decisionComparison.subjectFactsChanged ? 'changed' : 'unchanged'}. Analysis date: {decisionComparison.analysisDateChanged ? 'changed' : 'unchanged'}. Calculation version: {decisionComparison.algorithmChanged ? 'changed' : 'unchanged'}.</span></li>
+                    <li><Circle size={8} /><span>Changed analyst assumptions: {decisionComparison.assumptionChanges.length ? decisionComparison.assumptionChanges.map(change => `${change.label} ${change.before} → ${change.after}`).join('; ') : 'none'}.</span></li>
+                  </ul>
+                  <p className="fine">This compares recorded decisions, not market causality or sale likelihood. A checksum is a reproducibility aid, not tamper-proof evidence. Use Replay below to verify the archived calculation.</p>
+                </section>
+              )}
               <section className="panel">
                 <div className="panel-heading">
                   <div>
@@ -1942,15 +2023,13 @@ export default function WorkspaceApp({ workspaceAvailable = true }: { workspaceA
                   </button>
                 </section>
               </div>
-              {ws.cmas.filter(c => c.propertyId === property?.id).length > 0 && (
+              {visibleCmaSnapshots.length > 0 && (
                 <section className="panel saved-cmas">
                   <div className="panel-heading">
                     <h2>Preserved decision history</h2>
-                    <Badge>{ws.cmas.filter(c => c.propertyId === property?.id).length} snapshots</Badge>
+                    <Badge>{visibleCmaSnapshots.length} snapshots</Badge>
                   </div>
-                  {ws.cmas
-                    .filter(c => c.propertyId === property?.id)
-                    .map(c => (
+                  {visibleCmaSnapshots.map(c => (
                       <div className="snapshot-row" key={c.id}>
                         <div>
                           <strong>{c.name}</strong>
