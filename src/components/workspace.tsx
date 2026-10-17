@@ -789,6 +789,12 @@ export default function WorkspaceApp({ workspaceAvailable = true }: { workspaceA
                 {error}
               </div>
             )}
+            {!workspaceAvailable && (
+              <div role="status" className="error-box">
+                Hosted sign-in and private workspaces are awaiting deployment configuration. You can still explore the
+                interactive pricing example on the home page.
+              </div>
+            )}
             <form
               onSubmit={e => {
                 e.preventDefault();
