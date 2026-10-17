@@ -95,6 +95,22 @@ Cloud latency exposed a pending-region interface problem and timing assumptions 
 
 Evidence: [hosted acceptance receipt](../evidence/postgres-acceptance.json), [credential/trace scan](../evidence/postgres-deployment-scan.json), [onboarding](../evidence/onboarding-acceptance.json), [DMV and Austin](../evidence/geographic-acceptance.json), [connection setup and limitations](postgres-connection.md).
 
+## October 17, 2026 valuation validation and production safeguards
+
+Executed in a Linux cloud container with Node 22.22.0. Details are in [valuation validation](valuation-validation.md).
+
+| Check | Result |
+| --- | --- |
+| Out-of-sample valuation accuracy | 6,975 recorded King County, WA sales (Jan–May 2015) scored once under protocol `ascent-valuation-validation-1`: **MdAPE 10.6%** (95% CI 10.3–10.9), PPE10 47.8%, COD 15.2, PRD 1.040, median bias −0.17%, calibrated 80% interval coverage 77.5%. **5 of 9 pre-registered criteria met** (MdAPE, PPE10, COD and PRD missed). Report `sha256-11e488db…` |
+| Baseline comparison | Beats trailing ZIP median by 9.4 MdAPE points and median $/sqft of the same comparables by 0.7 points (paired bootstrap 95% upper bounds −8.7 and −0.44). The untuned shipped defaults do not beat median $/sqft |
+| Independent re-derivation (`--check`) | All 12 checks pass: report, protocol, sample and engine digests; metrics recomputed from per-sale samples by separate code; acceptance verdicts; in-app benchmark derivation |
+| Full re-run (`--verify`) | **Pass**: report digest and all 6,975 per-sale estimates reproduced byte for byte in 187 s (14/14 checks) |
+| Third-party attestation | **None recorded yet**; Ed25519 mechanism tested |
+| Unit/integration suite | **286/286 passed**, including 19 new validation, release-gate, drift, health and approval-gate tests |
+| Browser suite (affected specs) | **10/10 passed**: workspace, decision-support, adoption and Hobby specs, including approve-from-snapshot |
+| Accessibility | **22/22 configurations**, zero Axe violations, no horizontal overflow (includes the new landing accuracy section) |
+| Production build and typecheck | Pass; `/api/health` route generated |
+
 ## Reproduce
 
 ```powershell

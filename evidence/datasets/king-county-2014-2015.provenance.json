@@ -1,0 +1,21 @@
+{
+  "datasetId": "king-county-wa-residential-sales-2014-2015",
+  "title": "House Sales in King County, Washington (May 2014 - May 2015)",
+  "dataAuthors": "Public data from King County, Washington",
+  "distribution": "https://huggingface.co/datasets/kraina/house_sales_in_king_county",
+  "distributionFile": "data/house_sales_king_county.parquet",
+  "distributionDoi": "10.57967/hf/8015",
+  "relatedPublication": "Moska et al. 2025. OBSR: Open Benchmark for Spatial Representations. SIGSPATIAL '25. https://doi.org/10.1145/3748636.3762783",
+  "license": "CC0-1.0 (public domain dedication)",
+  "upstreamParquetSha256": "fb0469d04a861c3dbb366fdbc1183e100c924c182b7a0aa310b0e06fb4a61228",
+  "csvSha256": "14cfee54629fd2bee0d8f5cd28fce95a2c1afadb93a4f12e5862b865e58ad684",
+  "rows": 21613,
+  "conversion": "scripts/datasets/convert-king-county.py (column selection, ISO dates, sort by sale date then parcel; no rows removed)",
+  "fingerprintBasis": "SHA-256 of the decompressed CSV bytes. Gzip bytes can differ between zlib builds, so they are not the fingerprint.",
+  "independence": "Recorded transactions published by a county government and redistributed by an unaffiliated university research group. Ascent's authors did not create, select or edit any record, and no shipped Ascent default was tuned on it.",
+  "limitations": [
+    "One county and one 13-month period (2014-2015); results do not transfer to other markets or years without a new validation run.",
+    "Sale prices are recorded transfer prices; concessions, non-arm's-length transfers and data-entry errors are not flagged by the publisher.",
+    "Coordinates are rounded by the publisher (about 11 m latitude, about 75 m longitude)."
+  ]
+}

@@ -1683,3 +1683,135 @@
   text-decoration: underline;
   text-underline-offset: 3px;
 }
+
+/* Measured accuracy */
+.landing .lp-accuracy {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+  gap: 24px;
+  align-items: start;
+}
+.landing .lp-accuracy-stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+.landing .lp-accuracy-stat {
+  display: grid;
+  gap: 6px;
+  padding: 22px;
+  border-radius: 20px;
+  background: var(--lp-card);
+  border: 1px solid var(--lp-line);
+  box-shadow: var(--lp-shadow);
+}
+.landing .lp-accuracy-stat strong {
+  font-size: 34px;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--lp-deep);
+  font-variant-numeric: tabular-nums;
+}
+.landing .lp-accuracy-stat span {
+  color: var(--lp-ink);
+  font-size: 15px;
+  line-height: 1.4;
+}
+.landing .lp-accuracy-stat small {
+  color: var(--lp-muted);
+  font-size: 13px;
+}
+.landing .lp-accuracy-card {
+  padding: 24px;
+  border-radius: 20px;
+  background: var(--lp-card);
+  border: 1px solid var(--lp-line);
+  box-shadow: var(--lp-shadow);
+}
+.landing .lp-accuracy-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.landing .lp-accuracy-card-head h3 {
+  font-size: 17px;
+}
+.landing .lp-accuracy-verdict {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+}
+.landing .lp-accuracy-verdict.pass {
+  background: var(--lp-pale);
+  color: var(--lp-deep);
+}
+.landing .lp-accuracy-verdict.fail {
+  background: #f8e9df;
+  color: #8a4520;
+}
+.landing .lp-accuracy-list {
+  list-style: none;
+  margin: 16px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 2px;
+}
+.landing .lp-accuracy-list li {
+  display: grid;
+  grid-template-columns: 16px minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: baseline;
+  padding: 8px 0;
+  border-top: 1px solid var(--lp-line);
+  font-size: 14px;
+}
+.landing .lp-accuracy-list svg {
+  align-self: center;
+}
+.landing .lp-accuracy-list svg.pass {
+  color: var(--lp-green);
+}
+.landing .lp-accuracy-list svg.fail {
+  color: #a5532a;
+}
+.landing .lp-accuracy-label {
+  color: var(--lp-ink);
+}
+.landing .lp-accuracy-value {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: var(--lp-ink);
+  font-weight: 600;
+}
+.landing .lp-accuracy-value em {
+  display: block;
+  font-style: normal;
+  font-weight: 400;
+  color: var(--lp-muted);
+  font-size: 12px;
+}
+.landing .lp-accuracy-foot {
+  margin-top: 14px;
+  font-size: 13px;
+  line-height: 1.55;
+}
+.landing .lp-accuracy-foot code {
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 1080px) {
+  .landing .lp-accuracy {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 520px) {
+  .landing .lp-accuracy-stats {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .landing .lp-accuracy-stat strong {
+    font-size: 28px;
+  }
+}

@@ -27,6 +27,8 @@ import {
 import { calculateCma, defaultAssumptions, simulatePricing } from '@/lib/analytics';
 import { assessCmaEvidence, compareCmaDecisions } from '@/lib/decision-review';
 import type { ValuationProperty } from '@/lib/types';
+import { valuationBenchmark } from '@/lib/valuation-safeguards';
+import { AccuracyScorecard } from './accuracy-scorecard';
 
 export type LandingProps = {
   onDemo: () => void;
@@ -600,6 +602,18 @@ const comparison: { row: string; ascent: string; typical: string; typicalHas: bo
     typicalHas: 'partial',
   },
   {
+    row: 'Publish measured accuracy',
+    ascent: 'Pre-registered holdout on public sales, misses included',
+    typical: 'No published error rate',
+    typicalHas: false,
+  },
+  {
+    row: 'Gate a price before it is approved',
+    ascent: 'Named release checks, operator pause switch',
+    typical: 'Any number can be sent',
+    typicalHas: false,
+  },
+  {
     row: 'Reproduce a saved analysis',
     ascent: 'Frozen inputs plus a checksum',
     typical: 'Regenerated from current data',
@@ -643,6 +657,10 @@ const faqs = [
   {
     q: 'How is the price calculated?',
     a: 'Closed sales are adjusted for living area, bedrooms, bathrooms, condition and time, then weighted by distance, recency and size similarity. The range is the spread of adjusted sales, and every rate and filter can be edited.',
+  },
+  {
+    q: 'How accurate is it?',
+    a: `We measured it, and we publish the result even where it falls short. On ${valuationBenchmark.holdout.sales.toLocaleString('en-US')} recorded King County, Washington sales the engine never saw, the median error was ${(valuationBenchmark.primary.mdape * 100).toFixed(1)}%, and its calibrated ${valuationBenchmark.intervals.target * 100}% range held ${(valuationBenchmark.intervals.calibratedCoverage * 100).toFixed(1)}% of sales. It met ${valuationBenchmark.acceptance.filter(item => item.passed).length} of ${valuationBenchmark.acceptance.length} pre-registered criteria. The scorecard above names the misses, and anyone can re-run the test to check it.`,
   },
   {
     q: 'Does the AI set prices?',
@@ -692,6 +710,7 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAv
             <a href="#workflow">Workflow</a>
             <a href="#assistant">Ask Ascent</a>
             <a href="#compare">Compare</a>
+            <a href="#accuracy">Accuracy</a>
             <a href="#trust">Trust</a>
             <a href="#faq">FAQ</a>
           </nav>
@@ -936,6 +955,20 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAv
                 </tbody>
               </table>
             </div>
+          </div>
+        </section>
+
+        <section id="accuracy" className="lp-section lp-section-tint" aria-labelledby="lp-accuracy-title">
+          <div className="lp-wrap">
+            <div className="lp-section-head">
+              <span className="lp-eyebrow">Measured, not claimed</span>
+              <h2 id="lp-accuracy-title">Accuracy tested on sales it never saw, misses included.</h2>
+              <p>
+                Most pricing tools never publish an error rate. Ascent&apos;s engine was scored once on a public-record
+                holdout against thresholds fixed in advance, and anyone can re-run the test to check the result.
+              </p>
+            </div>
+            <AccuracyScorecard />
           </div>
         </section>
 

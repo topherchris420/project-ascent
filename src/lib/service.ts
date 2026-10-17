@@ -1,6 +1,7 @@
 import { createHash, randomUUID } from 'node:crypto';
 import { z } from 'zod';
 import { calculateCma, buildDecisionGraph, detectMarketChanges } from './analytics';
+import { assessValuationRelease } from './valuation-safeguards';
 import { auditDigest, HttpError, requireEditor } from './auth';
 import { getWorkspace, mutateWorkspace, storeDocument, type DbTransaction } from './db';
 import { clientRoles, clientStages, type Actor, type DocumentRecord, type Workspace } from './types';
@@ -45,7 +46,7 @@ export const actionSchema = z.discriminatedUnion('type', [
     compIds: z.array(id).max(50).optional(),
     assumptions: assumptions.optional(),
   }),
-  z.object({ type: z.literal('approveCma'), id }),
+  z.object({ type: z.literal('approveCma'), id, acknowledgeReview: z.boolean().optional() }),
   z.object({
     type: z.literal('saveClient'),
     id: id.optional(),
@@ -326,16 +327,34 @@ export async function executeAction(actor: Actor, raw: unknown) {
           propertyId: property.id,
           createdAt: now,
           result: calculation,
+          release: assessValuationRelease(calculation, { sources: valuation.sources, now }),
         };
         workspace.cmas.push(cma);
+        auditDetails = `Release gate ${cma.release.decision} (${cma.release.policyVersion}).`;
         entityId = cma.id;
         result = cma;
         break;
       }
       case 'approveCma': {
         const cma = find(workspace.cmas, action.id, 'CMA');
+        if (cma.approvedAt) throw new HttpError(409, 'This analysis is already approved.');
+        // Re-run the gate now: the operator switch, engine build or source metadata may have changed since saving.
+        const release = assessValuationRelease(cma.result, { sources: workspace.sources, now });
+        if (release.decision === 'withhold')
+          throw new HttpError(409, `${release.summary} Calculation remains available for review.`);
+        const reviewItems = release.checks.filter(check => check.status === 'review');
+        if (reviewItems.length && action.acknowledgeReview !== true)
+          throw new HttpError(409, `${release.summary} Confirm you reviewed these items to approve.`);
+        cma.release = release;
         cma.approvedAt = now;
+        cma.approval = {
+          decision: release.decision,
+          acknowledgedChecks: reviewItems.map(check => check.id),
+          policyVersion: release.policyVersion,
+          approvedBy: actor.id,
+        };
         entityId = cma.id;
+        auditDetails = `Release gate ${release.decision}; acknowledged ${reviewItems.map(check => check.id).join(', ') || 'none'} (${release.policyVersion}).`;
         break;
       }
       case 'saveClient': {
@@ -679,9 +698,11 @@ export async function executeAction(actor: Actor, raw: unknown) {
       actor,
       action.type,
       entityId,
-      action.type === 'approveDraft' || action.type === 'approveCma'
+      action.type === 'approveDraft'
         ? 'Explicit professional approval recorded; no external action performed.'
-        : auditDetails,
+        : action.type === 'approveCma'
+          ? `Explicit professional approval recorded; no external action performed. ${auditDetails}`
+          : auditDetails,
     );
     recordProductAction(workspace, actor, action.type, entityId, performance.now() - startedAt);
     refreshGraph(workspace);

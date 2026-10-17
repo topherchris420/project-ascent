@@ -1,0 +1,200 @@
+{
+  "reportDigest": "sha256-11e488dbc7d020732b9e35556e561f7608b448d02a3d5fb8d4b66e4c99c32c53",
+  "protocolDigest": "sha256-6c0c2beff9ccad1779427a4a656cf824629e33e06646cf0d2dbd8e87a1197512",
+  "protocolId": "ascent-valuation-validation-1",
+  "accepted": false,
+  "dataset": {
+    "id": "king-county-wa-residential-sales-2014-2015",
+    "label": "King County, WA recorded sales",
+    "license": "CC0-1.0",
+    "csvSha256": "14cfee54629fd2bee0d8f5cd28fce95a2c1afadb93a4f12e5862b865e58ad684",
+    "screened": 21596
+  },
+  "holdout": {
+    "from": "2015-01-01",
+    "to": "2015-05-27",
+    "sales": 6975
+  },
+  "engine": {
+    "version": "ascent-cma-1.0",
+    "fingerprint": "fnv1a32-49f0c98b"
+  },
+  "primary": {
+    "id": "locally-calibrated",
+    "label": "Engine with locally fitted rates and selected search filters",
+    "valuedShare": 0.954982,
+    "mdape": 0.105707,
+    "mdapeCi95": [
+      0.10271,
+      0.108749
+    ],
+    "ppe5": 0.25882,
+    "ppe10": 0.478006,
+    "ppe20": 0.750788,
+    "medianSignedError": -0.00172,
+    "cod": 15.2499,
+    "prd": 1.039631
+  },
+  "shipped": {
+    "id": "shipped-defaults",
+    "label": "Engine with shipped default assumptions (untuned)",
+    "valuedShare": 0.998996,
+    "mdape": 0.115519,
+    "mdapeCi95": [
+      0.1124,
+      0.118704
+    ],
+    "ppe5": 0.233352,
+    "ppe10": 0.441447,
+    "ppe20": 0.722445,
+    "medianSignedError": -0.015716,
+    "cod": 16.4646,
+    "prd": 1.061414
+  },
+  "baselines": [
+    {
+      "id": "baseline-median-ppsf",
+      "label": "Median $/sqft of the primary configuration’s comparables × subject sqft",
+      "mdape": 0.112709,
+      "ppe10": 0.452184
+    },
+    {
+      "id": "baseline-zip-median",
+      "label": "Median recorded price in the same ZIP over the prior 180 days",
+      "mdape": 0.202094,
+      "ppe10": 0.26681
+    }
+  ],
+  "paired": [
+    {
+      "baseline": "baseline-median-ppsf",
+      "mdapeDelta": -0.007002,
+      "ci95": [
+        -0.010331,
+        -0.004366
+      ],
+      "winRate": 0.549317
+    },
+    {
+      "baseline": "baseline-zip-median",
+      "mdapeDelta": -0.093743,
+      "ci95": [
+        -0.099837,
+        -0.087
+      ],
+      "winRate": 0.703498
+    }
+  ],
+  "intervals": {
+    "target": 0.8,
+    "calibratedCoverage": 0.774959,
+    "calibratedMedianWidth": 0.453165,
+    "envelopeCoverage": 0.71731
+  },
+  "tiers": [
+    {
+      "id": "sparse",
+      "maxComps": 2,
+      "holdoutSales": 706,
+      "mdape": 0.156898,
+      "coverage": 0.814448,
+      "lowerPercent": -28.79,
+      "upperPercent": 41.53
+    },
+    {
+      "id": "moderate",
+      "maxComps": 9,
+      "holdoutSales": 2837,
+      "mdape": 0.109121,
+      "coverage": 0.778287,
+      "lowerPercent": -24.3,
+      "upperPercent": 21.02
+    },
+    {
+      "id": "dense",
+      "maxComps": null,
+      "holdoutSales": 3118,
+      "mdape": 0.09577,
+      "coverage": 0.762989,
+      "lowerPercent": -21.52,
+      "upperPercent": 15.68
+    }
+  ],
+  "fittedAssumptions": {
+    "sqftRate": 121.47,
+    "bedroomValue": 0,
+    "bathroomValue": 13857,
+    "conditionValue": 16766,
+    "monthlyTrend": 0.00969,
+    "maxDistanceMiles": 0.5,
+    "maxAgeDays": 180,
+    "maxSizeRatio": 1.35
+  },
+  "acceptance": [
+    {
+      "id": "A1",
+      "label": "Holdout sales valued",
+      "value": 0.954982,
+      "min": 0.9,
+      "passed": true
+    },
+    {
+      "id": "A2",
+      "label": "Median absolute percentage error",
+      "value": 0.105707,
+      "max": 0.1,
+      "passed": false
+    },
+    {
+      "id": "A3",
+      "label": "Share within ±10% of sale price",
+      "value": 0.478006,
+      "min": 0.5,
+      "passed": false
+    },
+    {
+      "id": "A4",
+      "label": "Coefficient of dispersion (COD)",
+      "value": 15.2499,
+      "max": 15,
+      "passed": false
+    },
+    {
+      "id": "A5",
+      "label": "Price-related differential (PRD)",
+      "value": 1.039631,
+      "min": 0.98,
+      "max": 1.03,
+      "passed": false
+    },
+    {
+      "id": "A6",
+      "label": "Absolute median signed error",
+      "value": 0.00172,
+      "max": 0.03,
+      "passed": true
+    },
+    {
+      "id": "A7",
+      "label": "Beats median $/sqft of the same comparables",
+      "value": -0.004366,
+      "max": 0,
+      "passed": true
+    },
+    {
+      "id": "A8",
+      "label": "Beats trailing ZIP median price",
+      "value": -0.087,
+      "max": 0,
+      "passed": true
+    },
+    {
+      "id": "A9",
+      "label": "Calibrated 80% interval coverage",
+      "value": 0.774959,
+      "min": 0.75,
+      "max": 0.85,
+      "passed": true
+    }
+  ]
+}

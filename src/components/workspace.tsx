@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect, useMemo, useRef } from 'react';
+import { Fragment, useState, useEffect, useMemo, useRef } from 'react';
 import { ClientIntelligencePanel, SearchCriteriaFields } from './client-intelligence';
 import { DocumentDeadlineReview } from './document-deadline-review';
 import { DOCUMENT_LIMIT_LABEL, documentSizeError } from '@/lib/upload-limits';
@@ -69,6 +69,7 @@ import {
   replayCma,
   type CmaReplay,
 } from '@/lib/analytics';
+import { assessAccuracyDrift, assessValuationRelease } from '@/lib/valuation-safeguards';
 import {
   AccessView,
   BillingView,
@@ -2029,66 +2030,131 @@ export default function WorkspaceApp({ workspaceAvailable = true }: { workspaceA
                     <h2>Preserved decision history</h2>
                     <Badge>{visibleCmaSnapshots.length} snapshots</Badge>
                   </div>
-                  {visibleCmaSnapshots.map(c => (
-                      <div className="snapshot-row" key={c.id}>
-                        <div>
-                          <strong>{c.name}</strong>
-                          <small>
-                            {date(c.createdAt)} · {c.result.calculationHash.slice(0, 16)}
-                          </small>
-                        </div>
-                        <strong>{money(c.result.estimate)}</strong>
-                        <Badge tone={c.approvedAt ? 'green' : 'neutral'}>
-                          {c.approvedAt ? 'Reviewed' : 'Needs review'}
-                        </Badge>
-                        {replays[c.id] ? (
-                          <span
-                            className={`badge replay-result ${replays[c.id].reproduced ? 'green' : 'warn'}`}
-                            role="status"
-                            title={[replays[c.id].verdict, ...replays[c.id].differences].join(' ')}
-                          >
-                            {replays[c.id].reproduced
-                              ? `Reproduced · ${replays[c.id].elapsedMs} ms`
-                              : 'Does not reproduce'}
-                            <span className="sr-only">
-                              {' '}
-                              {[replays[c.id].verdict, ...replays[c.id].differences].join(' ')}
+                  {visibleCmaSnapshots.map(c => {
+                    // Analyses saved before the gate existed are assessed for display; the server re-runs it on approval.
+                    const gate =
+                      c.release ??
+                      assessValuationRelease(c.result, { sources: ws.sources, release: { enabled: true, reason: '' } });
+                    const reviewItems = gate.checks.filter(
+                      check => check.status === 'review' || check.status === 'block',
+                    );
+                    return (
+                      <Fragment key={c.id}>
+                        <div className="snapshot-row">
+                          <div>
+                            <strong>{c.name}</strong>
+                            <small>
+                              {date(c.createdAt)} · {c.result.calculationHash.slice(0, 16)}
+                            </small>
+                          </div>
+                          <strong>{money(c.result.estimate)}</strong>
+                          <Badge tone={c.approvedAt ? 'green' : 'neutral'}>
+                            {c.approvedAt ? 'Reviewed' : 'Needs review'}
+                          </Badge>
+                          {replays[c.id] ? (
+                            <span
+                              className={`badge replay-result ${replays[c.id].reproduced ? 'green' : 'warn'}`}
+                              role="status"
+                              title={[replays[c.id].verdict, ...replays[c.id].differences].join(' ')}
+                            >
+                              {replays[c.id].reproduced
+                                ? `Reproduced · ${replays[c.id].elapsedMs} ms`
+                                : 'Does not reproduce'}
+                              <span className="sr-only">
+                                {' '}
+                                {[replays[c.id].verdict, ...replays[c.id].differences].join(' ')}
+                              </span>
                             </span>
-                          </span>
-                        ) : (
-                          <button
+                          ) : (
+                            <button
+                              className="button small"
+                              title="Recompute this snapshot from the evidence it archived and compare checksums"
+                              onClick={() => setReplays(prev => ({ ...prev, [c.id]: replayCma(c) }))}
+                            >
+                              Replay
+                            </button>
+                          )}
+                          <Badge tone={gate.decision === 'release' ? 'green' : 'warn'}>
+                            {gate.decision === 'release'
+                              ? 'Release gate passed'
+                              : gate.decision === 'review'
+                                ? `Release gate: ${reviewItems.length} to review`
+                                : 'Release gate: withheld'}
+                          </Badge>
+                          {!c.approvedAt && (
+                            <button
+                              className="button small"
+                              disabled={readonly || busy || gate.decision === 'withhold'}
+                              title={gate.summary}
+                              onClick={() =>
+                                void mutate('approveCma', {
+                                  id: c.id,
+                                  ...(gate.decision === 'review' ? { acknowledgeReview: true } : {}),
+                                })
+                              }
+                            >
+                              {gate.decision === 'review' ? 'Acknowledge and approve' : 'Approve recommendation'}
+                            </button>
+                          )}
+                          <a className="button small" href={reportHref(c.id)} target="_blank" rel="noreferrer">
+                            <Download size={14} />
+                            Client report
+                          </a>
+                          <a
                             className="button small"
-                            title="Recompute this snapshot from the evidence it archived and compare checksums"
-                            onClick={() => setReplays(prev => ({ ...prev, [c.id]: replayCma(c) }))}
+                            href={reportHref(c.id, true)}
+                            target="_blank"
+                            rel="noreferrer"
+                            aria-label={`Listing presentation for ${c.name}`}
                           >
-                            Replay
-                          </button>
-                        )}
-                        {!c.approvedAt && (
-                          <button
-                            className="button small"
-                            disabled={readonly || busy}
-                            onClick={() => void mutate('approveCma', { id: c.id })}
-                          >
-                            Approve recommendation
-                          </button>
-                        )}
-                        <a className="button small" href={reportHref(c.id)} target="_blank" rel="noreferrer">
-                          <Download size={14} />
-                          Client report
-                        </a>
-                        <a
-                          className="button small"
-                          href={reportHref(c.id, true)}
-                          target="_blank"
-                          rel="noreferrer"
-                          aria-label={`Listing presentation for ${c.name}`}
-                        >
-                          <ArrowUpRight size={14} />
-                          Presentation
-                        </a>
-                      </div>
-                    ))}
+                            <ArrowUpRight size={14} />
+                            Presentation
+                          </a>
+                        </div>
+                        <details className="release-gate">
+                          <summary>Release checks · {gate.summary}</summary>
+                          <ul>
+                            {gate.checks.map(check => (
+                              <li key={check.id} className={`release-${check.status}`}>
+                                <strong>
+                                  {check.status === 'pass'
+                                    ? 'Pass'
+                                    : check.status === 'review'
+                                      ? 'Review'
+                                      : check.status === 'block'
+                                        ? 'Blocked'
+                                        : 'Note'}
+                                  {' · '}
+                                  {check.label}
+                                </strong>{' '}
+                                {check.detail}
+                              </li>
+                            ))}
+                          </ul>
+                          {gate.reference && (
+                            <p>
+                              Measured reference ({gate.reference.market}, {gate.reference.tier} evidence,{' '}
+                              {gate.reference.holdoutSales.toLocaleString('en-US')} holdout sales): median error{' '}
+                              {gate.reference.mdape === null ? 'n/a' : `${(gate.reference.mdape * 100).toFixed(1)}%`};
+                              80% of sales fell between {gate.reference.lowerPercent.toFixed(1)}% and +
+                              {gate.reference.upperPercent.toFixed(1)}% of the estimate (
+                              {(gate.reference.coverage * 100).toFixed(1)}% observed). Shown for scale only, not as this
+                              property&apos;s range.
+                            </p>
+                          )}
+                          {c.approval && (
+                            <p>
+                              Approved with gate decision “{c.approval.decision}”
+                              {c.approval.acknowledgedChecks.length
+                                ? `, acknowledging ${c.approval.acknowledgedChecks.join(', ')}`
+                                : ''}
+                              .
+                            </p>
+                          )}
+                        </details>
+                      </Fragment>
+                    );
+                  })}
                 </section>
               )}
             </>
@@ -3821,6 +3887,7 @@ function DecisionGraph({ workspace, onProperty }: { workspace: Workspace; onProp
 }
 function OutcomesView({ workspace }: { workspace: Workspace }) {
   const evaluation = evaluateOutcomes(workspace.cmas, workspace.outcomes);
+  const drift = assessAccuracyDrift(evaluation);
   return (
     <>
       <div className="metrics-grid">
@@ -3855,6 +3922,18 @@ function OutcomesView({ workspace }: { workspace: Workspace }) {
           value={workspace.mode === 'demo' ? 'Synthetic' : 'Licensed'}
           detail="Synthetic outcomes verify evaluation plumbing"
           icon={ShieldCheck}
+        />
+        <Metric
+          label="Accuracy drift"
+          value={
+            drift.status === 'degraded'
+              ? 'Degraded'
+              : drift.status === 'within-benchmark'
+                ? 'Within benchmark'
+                : 'Not assessed'
+          }
+          detail={drift.detail}
+          icon={Activity}
         />
       </div>
       <section className="panel">

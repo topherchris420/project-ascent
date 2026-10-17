@@ -6,6 +6,7 @@ import type { MigrationState } from './migration-types';
 import type { ProductState } from './product-types';
 import type { AiState } from './ai-types';
 import type { PropertyProviderState } from './property-provider-types';
+import type { ReleaseAssessment } from './valuation-safeguards';
 export type Role = 'owner' | 'agent' | 'viewer';
 export type Actor = { id: string; tenantId: string; name: string; email: string; role: Role };
 export type Source = {
@@ -224,7 +225,16 @@ export type CmaRecord = {
     incomplete: { id: string; missingFields: string[] }[];
     recordIds: string[];
   };
+  /** Release gate result recorded when the analysis was saved. */
+  release?: ReleaseAssessment;
   approvedAt?: string;
+  /** What the approver saw and accepted: the gate decision at approval time and the review items acknowledged. */
+  approval?: {
+    decision: ReleaseAssessment['decision'];
+    acknowledgedChecks: string[];
+    policyVersion: string;
+    approvedBy: string;
+  };
 };
 export type SearchCriteria = {
   minBedrooms?: number;
