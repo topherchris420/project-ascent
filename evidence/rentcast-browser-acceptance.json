@@ -1,10 +1,10 @@
 {
-  "at": "2026-10-17T00:53:06.272Z",
+  "at": "2026-10-17T13:52:19.593Z",
   "environment": "Local application with synthetic schema-shaped fixtures; not recorded live responses",
   "liveRentCastRequests": 0,
   "recordLookup": true,
   "recordedSales": 6,
-  "independentCma": 704196,
+  "independentCma": 704200,
   "providerBenchmark": 725000,
   "conditionInvented": false,
   "listingPricesUsedAsSales": false,

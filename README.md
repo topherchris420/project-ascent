@@ -30,9 +30,14 @@ And it doesn't stop at pricing. Clients, offers, transaction deadlines, saved re
 
 **[Launch Ascent →](https://project-ascent-theta.vercel.app/)**
 
-The public site includes a **working, interactive pricing example** using a clearly fictional home in Arlington, Virginia. Explore conservative, moderate, and aggressive asking-price positions, adjust the slider, and open **Show the math** to inspect the comparable sales and signed adjustments.
+Choose **Analyze a property** to open the account-free **Pricing Studio** (`/demo`) on a clearly fictional home in Arlington, Virginia. In four steps you can:
 
-The sample uses Ascent's actual deterministic pricing engine, **not a generated image or fabricated AI answer**. Its properties and prices are illustrative, not real market research. Expand **Inspect evidence fitness and a sample revision** to see source-quality review heuristics and an explicitly fictional before/after decision comparison without creating an account.
+1. **Review the evidence**: every adjusted sale on one price axis, linked to a sale-by-sale inspector with signed adjustments, the weight formula and the source.
+2. **Choose a strategy**: conservative, balanced and aggressive positions, and what each move nets the seller, including a later reduction to the next search threshold versus the same amount as a credit.
+3. **Challenge the decision**: see which input moves the price most, change the subject's condition or any rate, exclude a sale with a reason, or add a sale you know about, then reconcile the change sale by sale.
+4. **Open your report**: a printable draft carrying your selected price, costs, reasons and every comparable's source, plus a replayable JSON decision.
+
+The studio uses Ascent's actual deterministic pricing engine, **not a generated image or fabricated AI answer**. Its authored properties and prices are illustrative, not real market research, and sales you add are labeled as unverified entries.
 
 **Two ways in, with different honesty rules.** *Explore the working demo* opens an isolated, persistent workspace preloaded with a clearly fictional fixture (frozen in time so its deadlines stay meaningful). *Create an account* opens a workspace that starts **empty on purpose**: no invented properties, people, offers or transactions. Evidence arrives only through authorized imports, your own entries, a configured property-data provider, or an explicit, audited choice to load the labeled practice fixture.
 
@@ -42,13 +47,13 @@ The sample uses Ascent's actual deterministic pricing engine, **not a generated 
 
 | Workspace | What it helps you do |
 | --- | --- |
-| **Pricing studio** | Inspect closed-sale comps, change feature adjustments, exclude unsuitable sales, explore list prices, and save reproducible comparative market analyses (CMAs). |
+| **Pricing studio** | Inspect closed-sale comps on a range chart and sale by sale, see which input moves the estimate most, compare what each pricing move nets the seller, exclude unsuitable sales, and save reproducible comparative market analyses (CMAs). |
 | **Seller presentations** | Turn reviewed pricing work into a printable report, three-position recommendation, and transparent seller-proceeds scenario. |
 | **Market pulse** | Record weekly showings, buyer feedback, offers, and listing changes; examine evidence-linked next-step options. |
 | **Clients** | Track contacts, stages, saved searches, inventory matches, conversations, and follow-up tasks in a private workspace. |
 | **Offer room** | Compare price, credits, financing, contingencies, timing, and configurable term-strength weights. Draft counters without automatically sending them. |
 | **Transactions** | Keep milestones and private documents together; review proposed dates against cited source text before accepting them. |
-| **Ask Ascent** | Ask about existing workspace evidence, summarize a CMA, review upcoming tasks, and draft messages with record references. |
+| **Ask Ascent** | Ask about the record on screen. Answers are labeled as recorded facts, calculations, assumptions, model interpretation, drafts and unknowns, with record references. |
 | **Data fabric** | Inspect property sources, freshness, record completeness, usage permissions, ingestion runs, and unresolved conflicts. |
 | **Portability & teams** | Preview and reconcile CSV imports, export supported records, manage workspace roles, and track approvals. |
 

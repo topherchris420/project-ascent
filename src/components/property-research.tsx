@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
+import { AnswerAnatomy } from './answer-anatomy';
 import {
   ArrowRight,
   BookOpen,
@@ -762,7 +763,7 @@ export function PropertyResearchView({
           {answer && (
             <div className="provider-answer">
               <span className="badge">{answer.mode === 'model' ? 'Model synthesis' : 'Evidence retrieval'}</span>
-              <p className="answer-text">{answer.answer}</p>
+              <AnswerAnatomy response={answer} />
               {answer.citations.map((c, i) => (
                 <p className="fine" key={i}>
                   <strong>{c.label}</strong> · {c.detail}

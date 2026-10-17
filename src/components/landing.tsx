@@ -1,5 +1,6 @@
 'use client';
 import '@/app/landing.css';
+import Link from 'next/link';
 import { useMemo, useRef, useState } from 'react';
 import {
   Activity,
@@ -13,12 +14,12 @@ import {
   FileText,
   Fingerprint,
   Handshake,
+  History,
   Layers3,
   LoaderCircle,
   Lock,
   Minus,
   Scale,
-  Send,
   ShieldCheck,
   SlidersHorizontal,
   Sparkles,
@@ -37,69 +38,13 @@ export type LandingProps = {
   workspaceAvailable?: boolean;
 };
 
-// Invented records for the hero sample. They run through the same engine as the workspace.
-const SAMPLE_AS_OF = '2026-10-15T12:00:00.000Z';
-const SOURCE = 'source-synthetic-landing';
-const place = { city: 'Arlington', state: 'VA', zip: '22205', sourceId: SOURCE };
-const subject: ValuationProperty = {
-  ...place,
-  id: 'landing-subject',
-  address: '1200 Example Linden Court',
-  lat: 38.8816,
-  lng: -77.1145,
-  beds: 4,
-  baths: 3,
-  sqft: 2180,
-  condition: 4,
-  status: 'active',
-};
-const sold = (
-  id: string,
-  address: string,
-  lat: number,
-  lng: number,
-  beds: number,
-  baths: number,
-  sqft: number,
-  condition: number,
-  soldAt: string,
-  soldPrice: number,
-): ValuationProperty => ({
-  ...place,
-  id,
-  address,
-  lat,
-  lng,
-  beds,
-  baths,
-  sqft,
-  condition,
-  status: 'sold',
-  soldAt: `${soldAt}T12:00:00.000Z`,
-  soldPrice,
-});
-const candidates: ValuationProperty[] = [
-  sold('landing-c1', '1186 Example Linden Court', 38.8829, -77.1131, 4, 3, 2120, 4, '2026-09-02', 952000),
-  sold('landing-c2', '1231 Example Linden Court', 38.8801, -77.1162, 4, 2.5, 2240, 3, '2026-08-14', 938000),
-  sold('landing-c3', '905 Example Aspen Street', 38.8862, -77.1098, 3, 3, 2010, 4, '2026-07-21', 905000),
-  sold('landing-c4', '1414 Example Cedar Lane', 38.8774, -77.1201, 4, 3, 2310, 5, '2026-09-26', 1018000),
-  sold('landing-c5', '702 Example Birch Way', 38.8893, -77.1187, 5, 3, 2400, 3, '2026-06-30', 969000),
-  sold('landing-c6', '1320 Example Maple Row', 38.8838, -77.1076, 4, 3.5, 2195, 4, '2026-10-03', 981000),
-  sold('landing-c7', '1098 Example Walnut Place', 38.8808, -77.1119, 4, 3, 2150, 4, '2026-03-11', 890000),
-  {
-    ...place,
-    id: 'landing-a1',
-    address: '1250 Example Linden Court',
-    lat: 38.8812,
-    lng: -77.1151,
-    beds: 4,
-    baths: 3,
-    sqft: 2205,
-    condition: 4,
-    status: 'active',
-    price: 989000,
-  },
-];
+import {
+  SAMPLE_AS_OF,
+  sampleSubject as subject,
+  sampleCandidates as candidates,
+  sampleSources,
+} from '@/lib/pricing-sample';
+const SOURCE = sampleSources[0].id;
 const addressOf = (id: string) => candidates.find(candidate => candidate.id === id)?.address ?? id;
 
 const money = (n: number) =>
@@ -112,38 +57,52 @@ const shortDate = (s: string) =>
 
 function readPosition(price: number, low: number, estimate: number, high: number, supporting: number, total: number) {
   if (price < low)
-    return `Below all ${total} adjusted sales, ${money(low - price)} under the lowest. That leaves value the evidence supports unclaimed, unless speed matters most.`;
+    return `Below all ${total} adjusted sales, ${money(low - price)} under the lowest. This asking-price assumption does not predict buyer response or a sale outcome.`;
   if (price > high)
     return `Above every adjusted sale by ${money(price - high)}. The evidence does not support this yet, so name the reason before you list here.`;
   if (Math.abs(price - estimate) <= estimate * 0.005)
-    return `At the weighted estimate. ${supporting} of ${total} adjusted sales sit at or above this price.`;
+    return `Near the weighted estimate of ${money(estimate)}. ${supporting} of ${total} adjusted sales sit at or above this price.`;
   if (price < estimate)
-    return `Inside the evidence and under the weighted estimate: ${supporting} of ${total} adjusted sales support this price or higher, leaving room to negotiate.`;
+    return `Inside the observed range and under the weighted estimate: ${supporting} of ${total} adjusted sales sit at this price or higher.`;
   return `Above the estimate but inside the range. Only ${supporting} of ${total} adjusted sales support it, so be ready to defend the premium.`;
 }
 
 function PricingCard() {
   const cma = useMemo(() => calculateCma(subject, candidates, defaultAssumptions, SAMPLE_AS_OF), []);
-  const evidenceAssessment = useMemo(() => assessCmaEvidence(cma, [{
-    id: SOURCE, label: 'Clearly fictional Arlington sample', kind: 'synthetic',
-    observedAt: SAMPLE_AS_OF, license: 'Practice-only fictional evidence', confidence: 1,
-  }]), [cma]);
+  const evidenceAssessment = useMemo(
+    () =>
+      assessCmaEvidence(cma, [
+        {
+          id: SOURCE,
+          label: 'Clearly fictional Arlington sample',
+          kind: 'synthetic',
+          observedAt: SAMPLE_AS_OF,
+          license: 'Practice-only fictional evidence',
+          confidence: 1,
+        },
+      ]),
+    [cma],
+  );
   // Demonstrate a revision to an input record, not a purported historical market price movement.
-  const earlierSample = useMemo(() => calculateCma(
-    subject,
-    candidates.map(candidate => candidate.id === 'landing-c2'
-      ? { ...candidate, soldPrice: candidate.soldPrice! - 15000 }
-      : candidate),
-    defaultAssumptions,
-    SAMPLE_AS_OF,
-  ), []);
+  const earlierSample = useMemo(
+    () =>
+      calculateCma(
+        subject,
+        candidates.map(candidate =>
+          candidate.id === 'landing-c2' ? { ...candidate, soldPrice: candidate.soldPrice! - 15000 } : candidate,
+        ),
+        defaultAssumptions,
+        SAMPLE_AS_OF,
+      ),
+    [],
+  );
   const recordedRevision = useMemo(() => compareCmaDecisions(earlierSample, cma), [earlierSample, cma]);
   const positions = useMemo(
     () =>
       [
         // Round to whole-thousand list prices without leaving the adjusted-comp range.
         { key: 'conservative', label: 'Conservative', price: Math.ceil(cma.strategies.conservative / 1000) * 1000 },
-        { key: 'moderate', label: 'Moderate', price: roundTo(cma.strategies.moderate, 1000) },
+        { key: 'moderate', label: 'Balanced', price: roundTo(cma.strategies.moderate, 1000) },
         { key: 'aggressive', label: 'Aggressive', price: Math.floor(cma.strategies.aggressive / 1000) * 1000 },
       ] as const,
     [cma],
@@ -269,19 +228,43 @@ function PricingCard() {
           <ShieldCheck size={14} aria-hidden="true" /> Inspect evidence fitness and a sample revision
         </summary>
         <div className="lp-math-body">
-          <p><strong>{evidenceAssessment.label}.</strong> {evidenceAssessment.comparableCount} eligible fictional sales, {evidenceAssessment.effectiveComparableCount.toFixed(1)} effective after weighting, largest weight {evidenceAssessment.largestWeightPercent.toFixed(1)}%, and adjusted spread {evidenceAssessment.adjustedSpreadPercent.toFixed(1)}% of the estimate.</p>
+          <p>
+            <strong>{evidenceAssessment.label}.</strong> {evidenceAssessment.comparableCount} eligible fictional sales,{' '}
+            {evidenceAssessment.effectiveComparableCount.toFixed(1)} effective after weighting, largest weight{' '}
+            {evidenceAssessment.largestWeightPercent.toFixed(1)}%, and adjusted spread{' '}
+            {evidenceAssessment.adjustedSpreadPercent.toFixed(1)}% of the estimate.
+          </p>
           <ul className="lp-comps">
             {evidenceAssessment.findings.map(finding => (
-              <li key={finding.label}><strong>{finding.label}:</strong> {finding.detail}</li>
+              <li key={finding.label}>
+                <strong>{finding.label}:</strong> {finding.detail}
+              </li>
             ))}
           </ul>
-          <p><strong>Decision Time Machine, miniature example.</strong> Compare this fictional calculation with a deliberately altered practice snapshot in which one fictional sale was entered $15,000 lower. Neither snapshot represents an actual market change.</p>
+          <p>
+            <strong>Decision Time Machine, miniature example.</strong> Compare this fictional calculation with a
+            deliberately altered practice snapshot in which one fictional sale was entered $15,000 lower. Neither
+            snapshot represents an actual market change.
+          </p>
           <dl className="lp-facts">
-            <div><dt>Earlier practice estimate</dt><dd>{money(recordedRevision.previousEstimate)}</dd></div>
-            <div><dt>Current practice estimate</dt><dd>{money(recordedRevision.currentEstimate)}</dd></div>
-            <div><dt>Revised sale facts</dt><dd>{recordedRevision.revisedSharedSales.length}</dd></div>
+            <div>
+              <dt>Earlier practice estimate</dt>
+              <dd>{money(recordedRevision.previousEstimate)}</dd>
+            </div>
+            <div>
+              <dt>Current practice estimate</dt>
+              <dd>{money(recordedRevision.currentEstimate)}</dd>
+            </div>
+            <div>
+              <dt>Revised sale facts</dt>
+              <dd>{recordedRevision.revisedSharedSales.length}</dd>
+            </div>
           </dl>
-          <p className="lp-math-assumptions">Observed estimate difference: {signed(recordedRevision.estimateChange)}. A changed calculation is not proof that any real home gained or lost value. Saved workspace analyses can be replayed against their archived input evidence.</p>
+          <p className="lp-math-assumptions">
+            Observed estimate difference: {signed(recordedRevision.estimateChange)}. A changed calculation is not proof
+            that any real home gained or lost value. Saved workspace analyses can be replayed against their archived
+            input evidence.
+          </p>
         </div>
       </details>
 
@@ -354,22 +337,72 @@ function PricingCard() {
   );
 }
 
+/** The example answer is computed from the sample with the real engine, so its figures cannot drift. */
+function AssistantExample() {
+  const cma = useMemo(() => calculateCma(subject, candidates, defaultAssumptions, SAMPLE_AS_OF), []);
+  const top = [...cma.comps].sort((a, b) => b.weight - a.weight)[0];
+  const sale = candidates.find(candidate => candidate.id === top.propertyId)!;
+  return (
+    <>
+      <div className="lp-chat-q">Why is {sale.address} carrying the most weight?</div>
+      <div className="lp-chat-a">
+        <span className="lp-chat-who">
+          <Sparkles size={13} /> Ask Ascent · evidence mode, no model
+        </span>
+        <dl className="lp-anatomy">
+          <div className="calc">
+            <dt>Calculation</dt>
+            <dd>
+              It carries {(top.weight * 100).toFixed(1)}% of the {money(cma.estimate)} weighted estimate:{' '}
+              {top.distanceMiles.toFixed(2)} mi away, sold {Math.round(top.ageDays)} days before the analysis,{' '}
+              {sale.sqft.toLocaleString('en-US')} sq ft against the subject&apos;s{' '}
+              {subject.sqft.toLocaleString('en-US')}.
+            </dd>
+          </div>
+          <div className="fact">
+            <dt>Recorded fact</dt>
+            <dd>
+              Sold {shortDate(sale.soldAt!)} for {money(sale.soldPrice!)} · authored fictional record
+            </dd>
+          </div>
+          <div className="assumption">
+            <dt>Assumption</dt>
+            <dd>
+              Weights favor nearer, newer, similar-size sales. Bathrooms adjust at{' '}
+              {money(cma.assumptions.bathroomValue)} each.
+            </dd>
+          </div>
+          <div className="unknown">
+            <dt>Unknown</dt>
+            <dd>Condition ratings are analyst inputs, not inspections. Concessions are not recorded.</dd>
+          </div>
+        </dl>
+        <div className="lp-cites">
+          <span>CMA snapshot · {shortDate(SAMPLE_AS_OF)}</span>
+          <span>{sale.address}</span>
+          <span>Weight formula</span>
+        </div>
+      </div>
+    </>
+  );
+}
+
 const journey = [
   {
     id: 'price',
-    step: 'Price',
+    step: 'Pricing Studio',
     icon: SlidersHorizontal,
-    title: 'Three list positions, one evidence trail.',
-    body: 'Select comparables, inspect every signed adjustment and set the assumptions yourself. Ascent gives you conservative, moderate and aggressive positions with the tradeoff for each.',
+    title: 'Inspect it, challenge it, freeze it.',
+    body: 'Open any sale to see its signed adjustments and weight, test which input moves the estimate most, and compare what each strategy or later move nets the seller.',
     points: [
-      'Adjusted comps with distance, recency and size weighting',
-      'Seller net sheet with commission, closing costs and payoff',
-      'Frozen snapshots with a checksum you can reproduce later',
+      'Range chart and sale-by-sale inspector on the same evidence',
+      'Input sensitivity and reduction-versus-credit arithmetic',
+      'Frozen snapshots that replay to the same checksum later',
     ],
   },
   {
     id: 'analyze',
-    step: 'Analyze',
+    step: 'Market pulse',
     icon: Activity,
     title: 'Know when the picture changes.',
     body: 'Market pulse tracks supply, absorption and days on market for your listings. Weekly check-ins record showings, second showings, offers and feedback.',
@@ -381,7 +414,7 @@ const journey = [
   },
   {
     id: 'advise',
-    step: 'Advise',
+    step: 'Clients',
     icon: Users,
     title: 'Relationships with continuity.',
     body: 'Keep every client in a pipeline by stage and role, with preferences, notes and the next follow-up in one place.',
@@ -393,7 +426,7 @@ const journey = [
   },
   {
     id: 'negotiate',
-    step: 'Negotiate',
+    step: 'Offer room',
     icon: Scale,
     title: 'Compare terms, not just price.',
     body: 'Line offers up by net, credits, financing, earnest money, contingencies and timing. The term-strength breakdown shows its weights, and you can change them.',
@@ -405,7 +438,7 @@ const journey = [
   },
   {
     id: 'close',
-    step: 'Close',
+    step: 'Transactions',
     icon: CalendarClock,
     title: 'From accepted to all set.',
     body: 'Track each deadline with a countdown that turns amber inside a week and red inside three days. Upload the contract and review the dates Ascent finds.',
@@ -422,9 +455,9 @@ function JourneyVisual({ id }: { id: (typeof journey)[number]['id'] }) {
     return (
       <div className="lp-mini lp-mini-price" aria-hidden="true">
         {[
-          ['Conservative', '$936k', 'Fast, inside the evidence'],
-          ['Moderate', '$963k', 'Balanced, at the estimate'],
-          ['Aggressive', '$989k', 'Top of the range'],
+          ['Conservative', '$936k', 'Lowest adjusted sale'],
+          ['Balanced', '$963k', 'Weighted estimate'],
+          ['Aggressive', '$989k', 'Highest adjusted sale'],
         ].map(([label, value, note], index) => (
           <div key={label} className={index === 1 ? 'on' : ''}>
             <span>{label}</span>
@@ -588,45 +621,33 @@ function Journey() {
 
 const comparison: { row: string; ascent: string; typical: string; typicalHas: boolean | 'partial' }[] = [
   {
-    row: 'Try the full workflow first',
-    ascent: 'Instant private demo workspace',
-    typical: 'Waitlist, application or sales call',
-    typicalHas: false,
-  },
-  {
-    row: 'See every adjustment',
-    ascent: 'Signed amounts with the formula behind each',
-    typical: 'One adjusted figure per comp',
+    row: 'Why this price?',
+    ascent: 'Inspect sold values, signed adjustments and weights',
+    typical: 'Adjustment rates are analyst assumptions, not fitted coefficients',
     typicalHas: 'partial',
   },
   {
-    row: 'Reproduce a saved analysis',
-    ascent: 'Frozen inputs plus a checksum',
-    typical: 'Regenerated from current data',
-    typicalHas: false,
-  },
-  {
-    row: 'Change the assumptions',
-    ascent: 'Every rate, radius and time window',
-    typical: 'Fixed model settings',
-    typicalHas: false,
-  },
-  {
-    row: 'Keep AI out of the math',
-    ascent: 'Deterministic engine; AI explains and drafts',
-    typical: 'Model output blended into values',
+    row: 'What could change it?',
+    ascent: 'Exclude sales and test assumptions against frozen evidence',
+    typical: 'Alternative calculations do not forecast market outcomes',
     typicalHas: 'partial',
   },
   {
-    row: 'Understand an offer score',
-    ascent: 'Factor weights shown and adjustable',
-    typical: 'A single opaque number',
-    typicalHas: false,
+    row: 'What changed since last time?',
+    ascent: 'Replay snapshots and reconcile comparable contributions',
+    typical: 'A changed estimate does not prove a market move',
+    typicalHas: 'partial',
   },
   {
-    row: 'Take your data with you',
-    ascent: 'CSV and JSON export, previewed imports with rollback',
-    typical: 'Limited or on request',
+    row: 'Can I explain it to my seller?',
+    ascent: 'Open a report with selected price, costs and source references',
+    typical: 'Drafts require professional review; examples are fictional',
+    typicalHas: 'partial',
+  },
+  {
+    row: 'Can I keep the reasoning?',
+    ascent: 'Export a decision with frozen inputs and a replay checksum',
+    typical: 'Export of real evidence requires current source rights',
     typicalHas: 'partial',
   },
 ];
@@ -634,7 +655,7 @@ const comparison: { row: string; ascent: string; typical: string; typicalHas: bo
 const faqs = [
   {
     q: 'Is this a working product or a mockup?',
-    a: 'It works. The demo creates your own private, persistent workspace. Calculations, saved snapshots, client records, offers, drafts and approvals all run and are stored.',
+    a: 'It works. The account-free Pricing Studio calculates, inspects and exports a fictional pricing decision. Where hosted account services are configured, the separate workspace demo adds persistent clients, offers and transaction workflows.',
   },
   {
     q: 'Where does the data come from?',
@@ -663,21 +684,6 @@ const faqs = [
 ];
 
 export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAvailable = true }: LandingProps) {
-  const startDemo = () => {
-    if (workspaceAvailable) onDemo();
-    else document.getElementById('pricing-example')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  };
-  const demoLabel = (
-    <>
-      {busy ? (
-        <LoaderCircle className="spin" size={18} aria-hidden="true" />
-      ) : (
-        <Sparkles size={18} aria-hidden="true" />
-      )}
-      <span>{workspaceAvailable ? 'Explore the working demo' : 'Try the interactive pricing demo'}</span>
-      <ArrowRight size={16} aria-hidden="true" />
-    </>
-  );
   return (
     <div className="landing">
       <a className="lp-skip" href="#lp-main">
@@ -699,9 +705,9 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAv
             <button type="button" className="lp-btn lp-btn-ghost lp-nav-login" onClick={onSignIn}>
               Log in
             </button>
-            <button type="button" className="lp-btn lp-btn-primary lp-btn-sm" onClick={startDemo} disabled={busy}>
-              {workspaceAvailable ? 'Try the demo' : 'Try pricing'}
-            </button>
+            <Link className="lp-btn lp-btn-primary lp-btn-sm" href="/demo">
+              Analyze a property
+            </Link>
           </div>
         </div>
       </header>
@@ -720,42 +726,50 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAv
                 <span>Close with confidence.</span>
               </h1>
               <p className="lp-lede">
-                Ascent turns closed sales into three list positions you can defend line by line, then carries that
-                evidence through clients, offers and closing.
+                Ascent shows exactly which sales support a price, lets you challenge every assumption, and keeps a
+                decision record you can reproduce months later, through clients, offers and closing.
               </p>
-              <p className="lp-lede lp-lede-strong">No application. No waitlist. Try the pricing example below.</p>
-              {!workspaceAvailable && (
-                <div role="status" className="lp-setup">
-                  <strong>Workspace setup is in progress.</strong>
-                  <p>
-                    Hosted account services are not ready. You can explore the interactive pricing example while the
-                    full workspace is configured.
-                  </p>
-                  <a href="#pricing-example">Try the pricing example</a>
-                </div>
-              )}
+              <p className="lp-lede lp-lede-strong">
+                Inspect a sale. Test a decision. Open your report. No account needed.
+              </p>
               {error && (
                 <div role="alert" className="lp-error">
                   {error}
                 </div>
               )}
               <div className="lp-cta-row">
-                <button type="button" className="lp-btn lp-btn-primary lp-btn-lg" onClick={startDemo} disabled={busy}>
-                  {demoLabel}
-                </button>
-                <button type="button" className="lp-btn lp-btn-outline lp-btn-lg" onClick={onSignIn}>
-                  Sign in
-                </button>
+                <Link className="lp-btn lp-btn-primary lp-btn-lg" href="/demo">
+                  Analyze a property <ArrowRight size={17} aria-hidden="true" />
+                </Link>
+                {workspaceAvailable && (
+                  <button type="button" className="lp-btn lp-btn-outline lp-btn-lg" onClick={onDemo} disabled={busy}>
+                    {busy ? 'Opening workspace…' : 'Explore the working demo'}
+                  </button>
+                )}
               </div>
               <p className="lp-fine">
-                {workspaceAvailable
-                  ? 'The demo opens a private workspace with fictional properties and clients. '
-                  : 'The interactive example uses fictional properties. A full account requires workspace setup. '}
-                <button type="button" className="lp-link" onClick={onRegister}>
-                  Create an account
-                </button>{' '}
-                to start your own.
+                {workspaceAvailable ? (
+                  <>
+                    The demo opens a private workspace with fictional properties and clients.{' '}
+                    <button type="button" className="lp-link" onClick={onRegister}>
+                      Create an account
+                    </button>{' '}
+                    to start your own.
+                  </>
+                ) : (
+                  'The Pricing Studio uses fictional properties and saves practice changes on this device.'
+                )}
               </p>
+              {!workspaceAvailable && (
+                <div role="status" className="lp-setup">
+                  <strong>Workspace setup is in progress.</strong>
+                  <p>
+                    Hosted account services are not ready. The account-free Pricing Studio and its reports are available
+                    now.
+                  </p>
+                  <Link href="/demo">Open the account-free Pricing Studio</Link>
+                </div>
+              )}
               <ul className="lp-hero-points" aria-label="Highlights">
                 <li>
                   <CheckCircle2 size={16} aria-hidden="true" /> Deterministic math
@@ -776,48 +790,65 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAv
 
         <section className="lp-proof" aria-labelledby="lp-proof-title">
           <h2 id="lp-proof-title" className="sr-only">
-            What Ascent guarantees
+            Every pricing decision in Ascent can be explained, challenged, reproduced and improved
           </h2>
-          <div className="lp-wrap lp-proof-grid">
+          <ol className="lp-wrap lp-proof-grid lp-loop">
             {[
               {
                 icon: Layers3,
-                title: 'Math you can audit',
-                body: 'The same inputs always give the same price. No hidden model.',
+                verb: 'Explain',
+                title: 'Every sale in the open',
+                body: 'Sold price, signed adjustments and weight for each comparable. Deterministic math, no hidden model.',
+                href: '/demo#studio-evidence',
+              },
+              {
+                icon: SlidersHorizontal,
+                verb: 'Challenge',
+                title: 'See what moves the price',
+                body: 'Test each assumption, exclude a sale with a reason or add one you know about.',
+                href: '/demo#studio-assumptions',
               },
               {
                 icon: Fingerprint,
-                title: 'Snapshots that stay put',
-                body: 'Saved CMAs freeze their inputs, so reports survive later data changes.',
+                verb: 'Reproduce',
+                title: 'Decisions that replay',
+                body: 'Saved analyses freeze their inputs and recompute to the same checksum later.',
               },
               {
-                icon: FileText,
-                title: 'Sources on every figure',
-                body: 'Each record carries its source, date and usage rights.',
+                icon: History,
+                verb: 'Improve',
+                title: 'Compare then and now',
+                body: 'Set a frozen decision beside today’s evidence and see which sales and inputs changed it.',
               },
-              {
-                icon: ShieldCheck,
-                title: 'Nothing sent without you',
-                body: 'Drafts wait for approval. Ascent never contacts clients.',
-              },
-            ].map(item => (
-              <div key={item.title} className="lp-proof-item">
+            ].map((item, index) => (
+              <li key={item.verb} className="lp-proof-item">
                 <item.icon size={20} aria-hidden="true" />
                 <div>
+                  <span className="lp-loop-verb">
+                    {String(index + 1).padStart(2, '0')} · {item.verb}
+                  </span>
                   <h3>{item.title}</h3>
                   <p>{item.body}</p>
+                  {item.href && (
+                    <Link className="lp-loop-link" href={item.href}>
+                      Try it on the sample <ArrowRight size={13} aria-hidden="true" />
+                    </Link>
+                  )}
                 </div>
-              </div>
+              </li>
             ))}
-          </div>
+          </ol>
         </section>
 
         <section id="workflow" className="lp-section" aria-labelledby="lp-workflow-title">
           <div className="lp-wrap">
             <div className="lp-section-head">
-              <span className="lp-eyebrow">One workspace, start to finish</span>
-              <h2 id="lp-workflow-title">From the first comp to the final signature.</h2>
-              <p>Each step builds on the evidence from the last. Nothing is retyped and nothing loses its source.</p>
+              <span className="lp-eyebrow">The connected workspace</span>
+              <h2 id="lp-workflow-title">The reasoning travels with the deal.</h2>
+              <p>
+                A frozen pricing decision carries into clients, offers and deadlines with its sources attached. Nothing
+                is retyped, and nothing loses where it came from.
+              </p>
             </div>
             <Journey />
           </div>
@@ -827,24 +858,24 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAv
           <div className="lp-wrap lp-split">
             <div className="lp-split-copy">
               <span className="lp-eyebrow">Ask Ascent</span>
-              <h2 id="lp-assistant-title">An assistant that cites its work and waits for you.</h2>
+              <h2 id="lp-assistant-title">Answers that say how they know.</h2>
               <p>
-                Ask about the property, client or deal on screen. Answers come from your workspace evidence, with
-                citations to the exact records behind them.
+                Ask about the property, client or deal on screen. Every answer separates what the records say, what
+                Ascent calculated, which assumptions were chosen, what a model interpreted and what is still unknown.
               </p>
               <ul className="lp-checks">
                 <li>
-                  <Check size={16} aria-hidden="true" /> Summarizes a CMA for a seller meeting
+                  <Check size={16} aria-hidden="true" /> Recorded facts, each linked to its source
                 </li>
                 <li>
-                  <Check size={16} aria-hidden="true" /> Drafts client emails and texts with placeholders
+                  <Check size={16} aria-hidden="true" /> Calculations restated exactly, never estimated by a model
                 </li>
                 <li>
-                  <Check size={16} aria-hidden="true" /> Lists what is due this week
+                  <Check size={16} aria-hidden="true" /> Unknowns named instead of guessed
                 </li>
                 <li>
-                  <Check size={16} aria-hidden="true" /> Works without any model, and redacts known client details when
-                  one is used
+                  <Check size={16} aria-hidden="true" /> Works without any model; optional model use is capped and
+                  redacts known client details
                 </li>
               </ul>
               <p className="lp-note">
@@ -855,33 +886,7 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAv
               <figcaption id="lp-chat-caption" className="sr-only">
                 Example conversation with Ask Ascent using the fictional sample
               </figcaption>
-              <div className="lp-chat-q">Summarize the Linden Court CMA for tomorrow&apos;s seller meeting.</div>
-              <div className="lp-chat-a">
-                <span className="lp-chat-who">
-                  <Sparkles size={13} /> Ask Ascent · from workspace evidence
-                </span>
-                <p>
-                  The moderate position of <b>$963,000</b> sits at the weighted estimate. Two of six adjusted sales are
-                  at or above it, and the conservative $936,000 matches the lowest adjusted sale.
-                </p>
-                <div className="lp-cites">
-                  <span>CMA snapshot · Oct 15</span>
-                  <span>1186 Example Linden Ct · sold Sep 2</span>
-                  <span>Adjustment model</span>
-                </div>
-              </div>
-              <div className="lp-draft">
-                <div className="lp-draft-head">
-                  <span>
-                    <Send size={13} /> Draft text
-                  </span>
-                  <em>Not sent · needs your review</em>
-                </div>
-                <p>
-                  Hi <mark>{'{client_first_name}'}</mark>, the pricing review for <mark>{'{property_address}'}</mark> is
-                  ready. Can we walk through the three list positions tomorrow at <mark>{'{meeting_time}'}</mark>?
-                </p>
-              </div>
+              <AssistantExample />
             </figure>
           </div>
         </section>
@@ -890,14 +895,14 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAv
           <div className="lp-wrap">
             <div className="lp-section-head">
               <span className="lp-eyebrow">The difference</span>
-              <h2 id="lp-compare-title">Why Ascent over a typical CMA tool.</h2>
+              <h2 id="lp-compare-title">The questions your next decision deserves.</h2>
               <p>Built around the questions a seller, a buyer or a broker will actually ask you.</p>
             </div>
             <div
               className="lp-table-wrap"
               tabIndex={0}
               role="region"
-              aria-label="Ascent compared with typical CMA tools"
+              aria-label="Questions, working tools and evidence boundaries"
             >
               <table className="lp-table">
                 <thead>
@@ -908,26 +913,24 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAv
                     <th scope="col" className="lp-col-ascent">
                       Ascent
                     </th>
-                    <th scope="col">Typical CMA tools</th>
+                    <th scope="col">Evidence boundary</th>
                   </tr>
                 </thead>
                 <tbody>
                   {comparison.map(item => (
                     <tr key={item.row}>
                       <th scope="row">{item.row}</th>
-                      <td className="lp-col-ascent" data-label="Ascent">
+                      <td className="lp-col-ascent" data-label="In Ascent">
                         <span className="lp-yes">
                           <Check size={14} aria-hidden="true" />
                           <span className="sr-only">Yes: </span>
                         </span>
                         {item.ascent}
                       </td>
-                      <td data-label="Typical CMA tools">
+                      <td data-label="Evidence boundary">
                         <span className={item.typicalHas === 'partial' ? 'lp-partial' : 'lp-no'}>
                           <Minus size={14} aria-hidden="true" />
-                          <span className="sr-only">
-                            {item.typicalHas === 'partial' ? 'Sometimes: ' : 'Usually not: '}
-                          </span>
+                          <span className="sr-only">Evidence boundary:</span>
                         </span>
                         {item.typical}
                       </td>
@@ -1006,21 +1009,18 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAv
                 <p>
                   {workspaceAvailable
                     ? 'Open a private workspace in seconds. Price a property, add a client, compare offers.'
-                    : 'Explore the transparent pricing example while account setup is completed.'}
+                    : 'Inspect the evidence, test a pricing decision and open a report without an account.'}
                 </p>
               </div>
               <div className="lp-final-actions">
-                <button type="button" className="lp-btn lp-btn-light lp-btn-lg" onClick={startDemo} disabled={busy}>
-                  {busy ? (
-                    <LoaderCircle className="spin" size={18} aria-hidden="true" />
-                  ) : (
-                    <Handshake size={18} aria-hidden="true" />
-                  )}
-                  {workspaceAvailable ? 'Open a demo workspace' : 'Try the pricing example'}
-                </button>
-                <button type="button" className="lp-btn lp-btn-onDark lp-btn-lg" onClick={onRegister}>
-                  Create an account <ArrowUpRight size={16} aria-hidden="true" />
-                </button>
+                <Link className="lp-btn lp-btn-light lp-btn-lg" href="/demo">
+                  Analyze a property <ArrowRight size={17} aria-hidden="true" />
+                </Link>
+                {workspaceAvailable && (
+                  <button type="button" className="lp-btn lp-btn-onDark lp-btn-lg" onClick={onRegister}>
+                    Create an account <ArrowUpRight size={16} aria-hidden="true" />
+                  </button>
+                )}
               </div>
             </div>
           </div>

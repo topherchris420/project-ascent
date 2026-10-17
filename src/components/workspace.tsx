@@ -89,6 +89,11 @@ import {
 } from './intelligence';
 import { PropertyResearchView } from './property-research';
 import { Landing } from './landing';
+import { ComparableExplorer, DecisionArithmetic } from './comparable-explorer';
+import { PricingQuestions } from './pricing-questions';
+import { DecisionDrivers, PriceEvidenceStrip, SellerPlanTable } from './pricing-visuals';
+import { AnswerAnatomy } from './answer-anatomy';
+import { positionLabel, type PricingPosition } from '@/lib/pricing-narrative';
 import {
   ClientPipeline,
   Countdown,
@@ -255,7 +260,13 @@ function HouseArt({ variant = 0, large = false }: { variant?: number; large?: bo
   );
 }
 
-export default function WorkspaceApp({ workspaceAvailable = true }: { workspaceAvailable?: boolean }) {
+export default function WorkspaceApp({
+  workspaceAvailable = true,
+  initialAuth,
+}: {
+  workspaceAvailable?: boolean;
+  initialAuth?: 'login' | 'register';
+}) {
   const [user, setUser] = useState<Actor | null>(null),
     [ws, setWs] = useState<Workspace | null>(null),
     [loading, setLoading] = useState(workspaceAvailable),
@@ -283,9 +294,10 @@ export default function WorkspaceApp({ workspaceAvailable = true }: { workspaceA
     [chatBusy, setChatBusy] = useState(false),
     [editClient, setEditClient] = useState<Client | null>(null),
     [costs, setCosts] = useState({ commissionPercent: 2.5, closingPercent: 1, concessions: 0 }),
-    [payoff, setPayoff] = useState(0);
-  const [showAuth, setShowAuth] = useState(false);
-  const [authMode, setAuthMode] = useState<'login' | 'register'>('login'),
+    [payoff, setPayoff] = useState(0),
+    [inspectId, setInspectId] = useState('');
+  const [showAuth, setShowAuth] = useState(!!initialAuth);
+  const [authMode, setAuthMode] = useState<'login' | 'register'>(initialAuth || 'login'),
     [inviteToken, setInviteToken] = useState(''),
     [regions, setRegions] = useState<{ id: string; name: string }[]>([]);
   const chatEnd = useRef<HTMLDivElement>(null),
@@ -359,7 +371,8 @@ export default function WorkspaceApp({ workspaceAvailable = true }: { workspaceA
     setPropertyId('');
     setReviewPropertyId('');
     setListPrice(0);
-    setPage('overview');
+    const requestedPage = new URLSearchParams(window.location.search).get('view');
+    setPage(nav.some(item => item.page === requestedPage) ? (requestedPage as Page) : 'overview');
     setQuery('');
     setStatus('all');
     setModal(null);
@@ -380,12 +393,34 @@ export default function WorkspaceApp({ workspaceAvailable = true }: { workspaceA
         const first =
           d.workspace.properties.find(p => ids.has(p.id) && p.status === 'active') ||
           d.workspace.properties.find(p => ids.has(p.id));
-        if (first) setPropertyId(first.id);
+        const requestedProperty = new URLSearchParams(window.location.search).get('property');
+        const restored = d.workspace.properties.find(p => p.id === requestedProperty && ids.has(p.id));
+        if (restored || first) setPropertyId((restored || first)!.id);
       })
       .catch(e => {
         if (generation === sessionVersion.current) setError(e.message);
       });
   }, [user?.id]);
+  useEffect(() => {
+    if (!user || !ws) return;
+    const restoreNavigation = () => {
+      const params = new URLSearchParams(window.location.search);
+      const view = params.get('view');
+      setPage(nav.some(item => item.page === view) ? (view as Page) : 'overview');
+      const id = params.get('property');
+      if (id && ws.properties.some(p => p.id === id)) {
+        setPropertyId(id);
+        setCompIds(null);
+        setSavedCmaId('');
+        setComparisonId('');
+        setListPrice(0);
+      }
+      setMobileNav(false);
+      setCommandOpen(false);
+    };
+    window.addEventListener('popstate', restoreNavigation);
+    return () => window.removeEventListener('popstate', restoreNavigation);
+  }, [user?.id, ws]);
   useEffect(() => {
     const key = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
@@ -528,31 +563,46 @@ export default function WorkspaceApp({ workspaceAvailable = true }: { workspaceA
     }
   }, [ws, property, compIds, assumptions, valuationProperties]);
   const cma = cmaState.result;
-  const authorizedValuation = useMemo(() => ws ? scopeWorkspaceForAccess(ws, 'valuation') : null, [ws]);
+  const authorizedValuation = useMemo(() => (ws ? scopeWorkspaceForAccess(ws, 'valuation') : null), [ws]);
   const visibleCmaSnapshots = useMemo(
     () => authorizedValuation?.cmas.filter(saved => saved.propertyId === property?.id) || [],
     [authorizedValuation, property?.id],
   );
   const evidenceReview = useMemo(
-    () => cma && authorizedValuation ? assessCmaEvidence(cma, authorizedValuation.sources) : null,
+    () => (cma && authorizedValuation ? assessCmaEvidence(cma, authorizedValuation.sources) : null),
     [cma, authorizedValuation],
   );
   const comparisonSnapshot = visibleCmaSnapshots.find(saved => saved.id === comparisonId) || visibleCmaSnapshots.at(-1);
   const decisionComparison = cma && comparisonSnapshot ? compareCmaDecisions(comparisonSnapshot.result, cma) : null;
+  const decisionSaleName = (id: string) =>
+    cma?.inputSnapshot?.candidates.find(p => p.id === id)?.address ||
+    comparisonSnapshot?.result.inputSnapshot?.candidates.find(p => p.id === id)?.address ||
+    id;
+
   const scenario = useMemo(
     () => (cma ? simulatePricing(cma, listPrice || cma.strategies.moderate, costs) : null),
     [cma, listPrice, costs],
   );
   const changeProperty = (id: string) => {
     setPropertyId(id);
+    setInspectId('');
     setCompIds(null);
     setListPrice(0);
     setSavedCmaId('');
+    setComparisonId('');
+    const url = new URL(window.location.href);
+    url.searchParams.set('property', id);
+    window.history.replaceState(null, '', url);
   };
   const go = (p: Page) => {
     setPage(p);
     setMobileNav(false);
     setCommandOpen(false);
+    const url = new URL(window.location.href);
+    if (url.searchParams.get('view') !== p) {
+      url.searchParams.set('view', p);
+      window.history.pushState(null, '', url);
+    }
   };
   async function switchRegion(regionId: string, action: 'selectRegion' | 'syncDemo' = 'selectRegion') {
     if (busy || regionLoading) return;
@@ -589,19 +639,21 @@ export default function WorkspaceApp({ workspaceAvailable = true }: { workspaceA
     }
   }
   async function mutate(type: string, payload: Record<string, unknown> = {}) {
+    const generation = sessionVersion.current;
     setBusy(true);
     setError('');
     setToast('');
     try {
       const d = await request<{ workspace: Workspace; result?: unknown }>('/api/actions', { type, ...payload });
+      if (generation !== sessionVersion.current) return null;
       setWs(d.workspace);
       notify('Saved to your decision history.');
       return d;
     } catch (e) {
-      setError((e as Error).message);
+      if (generation === sessionVersion.current) setError((e as Error).message);
       return null;
     } finally {
-      setBusy(false);
+      if (generation === sessionVersion.current) setBusy(false);
     }
   }
   async function authenticate(action: string, body: Record<string, unknown> = {}) {
@@ -912,6 +964,7 @@ export default function WorkspaceApp({ workspaceAvailable = true }: { workspaceA
       closing: String(costs.closingPercent),
       concessions: String(costs.concessions),
       payoff: String(payoff),
+      ...(savedCmaId === cmaId && listPrice ? { asking: String(listPrice) } : {}),
       ...(presentation ? { view: 'presentation' } : {}),
     })}`;
   const listingRange = (listing: Property) => {
@@ -1074,11 +1127,17 @@ export default function WorkspaceApp({ workspaceAvailable = true }: { workspaceA
               aria-label="Sign out"
               disabled={busy}
               onClick={async () => {
-                await request('/api/auth/logout', {});
-                setUser(null);
-                setWs(null);
-                setAuthMode('login');
-                setShowAuth(true);
+                try {
+                  await request('/api/auth/logout', {});
+                  ++sessionVersion.current;
+                  window.history.replaceState(null, '', '/');
+                  setUser(null);
+                  setWs(null);
+                  setAuthMode('login');
+                  setShowAuth(true);
+                } catch (e) {
+                  setError(e instanceof Error ? e.message : 'Sign-out could not complete. Please retry.');
+                }
               }}
             >
               <LogOut size={16} />
@@ -1647,7 +1706,20 @@ export default function WorkspaceApp({ workspaceAvailable = true }: { workspaceA
                   </button>
                 </>,
               )}
-              <div className="cma-top">
+              <nav className="pricing-section-nav" aria-label="Pricing studio sections">
+                {[
+                  ['pricing-decide', 'Decide'],
+                  ['pricing-evidence', 'Evidence'],
+                  ['pricing-challenge', 'Challenge'],
+                  ['pricing-history', 'History'],
+                ].map(([id, label], index) => (
+                  <a key={id} href={`#${id}`}>
+                    <span>{String(index + 1).padStart(2, '0')}</span>
+                    {label}
+                  </a>
+                ))}
+              </nav>
+              <div className="cma-top studio-section-anchor" id="pricing-decide">
                 <section className="valuation-card">
                   <div className="valuation-card-top">
                     <span className="eyebrow">{property?.address}</span>
@@ -1656,15 +1728,22 @@ export default function WorkspaceApp({ workspaceAvailable = true }: { workspaceA
                   <span className="valuation-label">Comparable-supported estimate</span>
                   <h2>{cma ? money(cma.estimate) : 'Insufficient evidence'}</h2>
                   <p>{cma ? `${money(cma.low)}–${money(cma.high)}` : cmaState.error}</p>
-                  <div className="range-track">
-                    <i />
-                    <span />
-                  </div>
-                  <div className="range-labels">
-                    <span>Empirical low</span>
-                    <span>Weighted estimate</span>
-                    <span>Empirical high</span>
-                  </div>
+                  {cma && (
+                    <dl className="valuation-facts">
+                      <div>
+                        <dt>Eligible sales</dt>
+                        <dd>{cma.comps.length}</dd>
+                      </div>
+                      <div>
+                        <dt>Set aside</dt>
+                        <dd>{cma.excluded.length}</dd>
+                      </div>
+                      <div>
+                        <dt>Evidence as of</dt>
+                        <dd>{date(cma.asOf)}</dd>
+                      </div>
+                    </dl>
+                  )}
                   <small>
                     This is the observed adjusted-comp range, not a statistical confidence interval or an appraisal.
                   </small>
@@ -1701,7 +1780,7 @@ export default function WorkspaceApp({ workspaceAvailable = true }: { workspaceA
                             onClick={() => setListPrice(val)}
                             className={(listPrice || cma.strategies.moderate) === val ? 'selected' : ''}
                           >
-                            <span>{key}</span>
+                            <span>{positionLabel[key as PricingPosition]}</span>
                             <strong>{compact(val)}</strong>
                           </button>
                         ))}
@@ -1789,6 +1868,39 @@ export default function WorkspaceApp({ workspaceAvailable = true }: { workspaceA
                   onSelect={setListPrice}
                 />
               )}
+              {cma && scenario && (
+                <section className="panel seller-plan-panel" aria-label="Seller plan">
+                  <span className="eyebrow">SELLER PLAN · DETERMINISTIC ARITHMETIC</span>
+                  <SellerPlanTable result={cma} selectedPrice={scenario.listPrice} costs={costs} payoff={payoff} />
+                </section>
+              )}
+              <div id="pricing-evidence" className="studio-section-anchor pricing-group">
+                {cma && scenario && (
+                  <PriceEvidenceStrip
+                    result={cma}
+                    candidates={valuationProperties}
+                    selectedPrice={scenario.listPrice}
+                    activeId={inspectId}
+                    onInspect={setInspectId}
+                  />
+                )}
+                {cma && evidenceReview && (
+                  <ComparableExplorer
+                    result={cma}
+                    candidates={valuationProperties}
+                    sources={authorizedValuation?.sources || []}
+                    selectedId={inspectId || undefined}
+                    onSelect={setInspectId}
+                  />
+                )}
+              </div>
+              {cma && authorizedValuation && (
+                <PricingQuestions
+                  result={cma}
+                  previous={comparisonSnapshot?.result}
+                  sources={authorizedValuation.sources}
+                />
+              )}
               {cma && evidenceReview && (
                 <section className="panel" aria-label="Valuation evidence review">
                   <div className="panel-heading">
@@ -1796,65 +1908,70 @@ export default function WorkspaceApp({ workspaceAvailable = true }: { workspaceA
                       <span className="eyebrow">EVIDENCE FITNESS · EXPLAINABLE REVIEW HEURISTICS</span>
                       <h2>What can these sales actually support?</h2>
                     </div>
-                    <Badge tone={evidenceReview.status === 'reviewable' ? 'green' : evidenceReview.status === 'limited' ? 'warn' : 'neutral'}>
+                    <Badge
+                      tone={
+                        evidenceReview.status === 'reviewable'
+                          ? 'green'
+                          : evidenceReview.status === 'limited'
+                            ? 'warn'
+                            : 'neutral'
+                      }
+                    >
                       {evidenceReview.label}
                     </Badge>
                   </div>
                   <div className="assumptions-grid">
-                    <div><span>Eligible sales</span><strong>{evidenceReview.comparableCount}</strong></div>
-                    <div><span>Effective sales after weighting</span><strong>{evidenceReview.effectiveComparableCount.toFixed(1)}</strong></div>
-                    <div><span>Largest sale weight</span><strong>{evidenceReview.largestWeightPercent.toFixed(1)}%</strong></div>
-                    <div><span>Adjusted-sale spread / estimate</span><strong>{evidenceReview.adjustedSpreadPercent.toFixed(1)}%</strong></div>
+                    <div>
+                      <span>Eligible sales</span>
+                      <strong>{evidenceReview.comparableCount}</strong>
+                    </div>
+                    <div>
+                      <span>Effective sales after weighting</span>
+                      <strong>{evidenceReview.effectiveComparableCount.toFixed(1)}</strong>
+                    </div>
+                    <div>
+                      <span>Largest sale weight</span>
+                      <strong>{evidenceReview.largestWeightPercent.toFixed(1)}%</strong>
+                    </div>
+                    <div>
+                      <span>Adjusted-sale spread / estimate</span>
+                      <strong>{evidenceReview.adjustedSpreadPercent.toFixed(1)}%</strong>
+                    </div>
                   </div>
                   <ul className="caution-list">
                     {evidenceReview.findings.map(finding => (
                       <li key={finding.label}>
                         <Circle size={8} />
-                        <span><strong>{finding.label}.</strong> {finding.detail}</span>
+                        <span>
+                          <strong>{finding.label}.</strong> {finding.detail}
+                        </span>
                       </li>
                     ))}
                   </ul>
-                  <p className="fine">These checks flag questions for an analyst; they do not predict error, certify data completeness, authorize licensed use or replace an appraisal.</p>
+                  <p className="fine">
+                    These checks flag questions for an analyst; they do not predict error, certify data completeness,
+                    authorize licensed use or replace an appraisal.
+                  </p>
                 </section>
               )}
-              {comparisonSnapshot && decisionComparison && (
-                <section className="panel" aria-label="Decision Time Machine">
+              {cma && (
+                <section
+                  id="pricing-challenge"
+                  className="panel studio-section-anchor"
+                  aria-label="What changes my decision"
+                >
                   <div className="panel-heading">
                     <div>
-                      <span className="eyebrow">DECISION TIME MACHINE</span>
-                      <h2>What changed since this decision?</h2>
+                      <span className="eyebrow">WHAT CHANGES MY DECISION?</span>
+                      <h2>Challenge the assumptions behind this price</h2>
                     </div>
-                    <GitBranch size={20} />
+                    <SlidersHorizontal size={20} />
                   </div>
-                  <label>
-                    Compare current calculation with saved analysis
-                    <select
-                      aria-label="Compare against saved CMA"
-                      value={comparisonSnapshot.id}
-                      onChange={e => setComparisonId(e.target.value)}
-                    >
-                      {visibleCmaSnapshots.map(saved => (
-                        <option key={saved.id} value={saved.id}>{saved.name} · {date(saved.createdAt)}</option>
-                      ))}
-                    </select>
-                  </label>
-                  <div className="assumptions-grid">
-                    <div><span>Previous estimate</span><strong>{money(decisionComparison.previousEstimate)}</strong></div>
-                    <div><span>Current estimate</span><strong>{money(decisionComparison.currentEstimate)}</strong></div>
-                    <div>
-                      <span>Observed change</span>
-                      <strong>{decisionComparison.estimateChange >= 0 ? '+' : '−'}{money(Math.abs(decisionComparison.estimateChange))} ({decisionComparison.estimateChangePercent >= 0 ? '+' : ''}{decisionComparison.estimateChangePercent.toFixed(1)}%)</strong>
-                    </div>
-                    <div><span>Calculation checksum</span><strong>{decisionComparison.sameCalculation ? 'Identical' : 'Different'}</strong></div>
-                  </div>
-                  <ul className="caution-list">
-                    <li><Circle size={8} /><span>Adjusted range movement: low {money(decisionComparison.lowChange)}, high {money(decisionComparison.highChange)} (signed relative to the saved decision).</span></li>
-                    <li><Circle size={8} /><span>Eligible sales added: {decisionComparison.addedSales.length ? decisionComparison.addedSales.join(', ') : 'none'}. Removed: {decisionComparison.removedSales.length ? decisionComparison.removedSales.join(', ') : 'none'}.</span></li>
-                    <li><Circle size={8} /><span>Archived facts changed on retained sales: {decisionComparison.inputComparisonAvailable ? (decisionComparison.revisedSharedSales.join(', ') || 'none identified') : 'not comparable; archived inputs missing'}.</span></li>
-                    <li><Circle size={8} /><span>Subject valuation facts: {decisionComparison.subjectFactsChanged === null ? 'unavailable' : decisionComparison.subjectFactsChanged ? 'changed' : 'unchanged'}. Analysis date: {decisionComparison.analysisDateChanged ? 'changed' : 'unchanged'}. Calculation version: {decisionComparison.algorithmChanged ? 'changed' : 'unchanged'}.</span></li>
-                    <li><Circle size={8} /><span>Changed analyst assumptions: {decisionComparison.assumptionChanges.length ? decisionComparison.assumptionChanges.map(change => `${change.label} ${change.before} → ${change.after}`).join('; ') : 'none'}.</span></li>
-                  </ul>
-                  <p className="fine">This compares recorded decisions, not market causality or sale likelihood. A checksum is a reproducibility aid, not tamper-proof evidence. Use Replay below to verify the archived calculation.</p>
+                  <DecisionDrivers result={cma} />
+                  <p className="fine">
+                    Change any rate or filter in the adjustment model below, or switch a sale off in the table, to make
+                    the change for real. History reconciles it against a saved decision.
+                  </p>
                 </section>
               )}
               <section className="panel">
@@ -1969,7 +2086,7 @@ export default function WorkspaceApp({ workspaceAvailable = true }: { workspaceA
                       { key: 'bedroomValue', label: 'Bedroom adjustment ($)', step: 1000 },
                       { key: 'bathroomValue', label: 'Bathroom adjustment ($)', step: 1000 },
                       { key: 'conditionValue', label: 'Condition point ($)', step: 1000 },
-                      { key: 'monthlyTrend', label: 'Monthly trend (decimal)', step: 0.001 },
+                      { key: 'monthlyTrend', label: 'Monthly market trend (% per month)', step: 0.1, scale: 100 },
                       { key: 'maxDistanceMiles', label: 'Maximum distance (mi)', step: 0.5 },
                       { key: 'maxAgeDays', label: 'Maximum sale age (days)', step: 30 },
                       { key: 'maxSizeRatio', label: 'Maximum size ratio', step: 0.05 },
@@ -1979,9 +2096,10 @@ export default function WorkspaceApp({ workspaceAvailable = true }: { workspaceA
                         <input
                           type="number"
                           step={f.step}
-                          value={assumptions[f.key as keyof typeof assumptions]}
+                          value={Number((assumptions[f.key as keyof typeof assumptions] * (f.scale ?? 1)).toFixed(6))}
                           onChange={e => {
-                            setAssumptions(a => ({ ...a, [f.key]: Number(e.target.value) }));
+                            // The trend is entered as a percentage and stored as the engine's decimal rate.
+                            setAssumptions(a => ({ ...a, [f.key]: Number(e.target.value) / (f.scale ?? 1) }));
                             setSavedCmaId('');
                           }}
                         />
@@ -2023,13 +2141,138 @@ export default function WorkspaceApp({ workspaceAvailable = true }: { workspaceA
                   </button>
                 </section>
               </div>
-              {visibleCmaSnapshots.length > 0 && (
-                <section className="panel saved-cmas">
-                  <div className="panel-heading">
-                    <h2>Preserved decision history</h2>
-                    <Badge>{visibleCmaSnapshots.length} snapshots</Badge>
-                  </div>
-                  {visibleCmaSnapshots.map(c => (
+              <div id="pricing-history" className="studio-section-anchor pricing-group">
+                {comparisonSnapshot && decisionComparison && (
+                  <section className="panel" aria-label="Decision Time Machine">
+                    {cma && <DecisionArithmetic previous={comparisonSnapshot.result} current={cma} />}
+                    <div className="panel-heading">
+                      <div>
+                        <span className="eyebrow">DECISION TIME MACHINE</span>
+                        <h2>What changed since this decision?</h2>
+                      </div>
+                      <GitBranch size={20} />
+                    </div>
+                    <label>
+                      Compare current calculation with saved analysis
+                      <select
+                        aria-label="Compare against saved CMA"
+                        value={comparisonSnapshot.id}
+                        onChange={e => setComparisonId(e.target.value)}
+                      >
+                        {visibleCmaSnapshots.map(saved => (
+                          <option key={saved.id} value={saved.id}>
+                            {saved.name} · {date(saved.createdAt)}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    <div className="assumptions-grid">
+                      <div>
+                        <span>Previous estimate</span>
+                        <strong>{money(decisionComparison.previousEstimate)}</strong>
+                      </div>
+                      <div>
+                        <span>Current estimate</span>
+                        <strong>{money(decisionComparison.currentEstimate)}</strong>
+                      </div>
+                      <div>
+                        <span>Observed change</span>
+                        <strong>
+                          {decisionComparison.estimateChange >= 0 ? '+' : '−'}
+                          {money(Math.abs(decisionComparison.estimateChange))} (
+                          {decisionComparison.estimateChangePercent >= 0 ? '+' : ''}
+                          {decisionComparison.estimateChangePercent.toFixed(1)}%)
+                        </strong>
+                      </div>
+                      <div>
+                        <span>Calculation checksum</span>
+                        <strong>{decisionComparison.sameCalculation ? 'Identical' : 'Different'}</strong>
+                      </div>
+                    </div>
+                    <ul className="caution-list">
+                      <li>
+                        <Circle size={8} />
+                        <span>
+                          Adjusted range movement: low {money(decisionComparison.lowChange)}, high{' '}
+                          {money(decisionComparison.highChange)} (signed relative to the saved decision).
+                        </span>
+                      </li>
+                      <li>
+                        <Circle size={8} />
+                        <span>
+                          Eligible sales added:{' '}
+                          {decisionComparison.addedSales.length
+                            ? decisionComparison.addedSales.map(decisionSaleName).join('; ')
+                            : 'none'}
+                          . Removed:{' '}
+                          {decisionComparison.removedSales.length
+                            ? decisionComparison.removedSales.map(decisionSaleName).join('; ')
+                            : 'none'}
+                          .
+                        </span>
+                      </li>
+                      <li>
+                        <Circle size={8} />
+                        <span>
+                          Archived facts changed on retained sales:{' '}
+                          {decisionComparison.inputComparisonAvailable
+                            ? decisionComparison.revisedSharedSales.map(decisionSaleName).join('; ') ||
+                              'none identified'
+                            : 'not comparable; archived inputs missing'}
+                          .
+                        </span>
+                      </li>
+                      <li>
+                        <Circle size={8} />
+                        <span>
+                          Subject valuation facts:{' '}
+                          {decisionComparison.subjectFactsChanged === null
+                            ? 'unavailable'
+                            : decisionComparison.subjectFactsChanged
+                              ? 'changed'
+                              : 'unchanged'}
+                          . Analysis date: {decisionComparison.analysisDateChanged ? 'changed' : 'unchanged'}.
+                          Calculation version: {decisionComparison.algorithmChanged ? 'changed' : 'unchanged'}.
+                        </span>
+                      </li>
+                      <li>
+                        <Circle size={8} />
+                        <span>
+                          Changed analyst assumptions:{' '}
+                          {decisionComparison.assumptionChanges.length
+                            ? decisionComparison.assumptionChanges
+                                .map(change => `${change.label} ${change.before} → ${change.after}`)
+                                .join('; ')
+                            : 'none'}
+                          .
+                        </span>
+                      </li>
+                    </ul>
+                    <p className="fine">
+                      This compares recorded decisions, not market causality or sale likelihood. A checksum is a
+                      reproducibility aid, not tamper-proof evidence. Use Replay below to verify the archived
+                      calculation.
+                    </p>
+                  </section>
+                )}
+                {!visibleCmaSnapshots.length && (
+                  <section className="panel history-empty" aria-label="Decision history">
+                    <span className="eyebrow">DECISION TIME MACHINE</span>
+                    <h2>No preserved decision yet</h2>
+                    <p className="studio-muted">
+                      Save a CMA snapshot to freeze this evidence. Later, Ascent compares it with the current
+                      calculation, names the sales and assumptions that changed, and replays the original from its
+                      archive.
+                    </p>
+                  </section>
+                )}
+                {visibleCmaSnapshots.length > 0 && (
+                  <section className="panel saved-cmas">
+                    <div className="panel-heading">
+                      <h2>Preserved decision history</h2>
+                      <Badge>{visibleCmaSnapshots.length} snapshots</Badge>
+                    </div>
+                    {visibleCmaSnapshots.map(c => (
                       <div className="snapshot-row" key={c.id}>
                         <div>
                           <strong>{c.name}</strong>
@@ -2049,7 +2292,9 @@ export default function WorkspaceApp({ workspaceAvailable = true }: { workspaceA
                           >
                             {replays[c.id].reproduced
                               ? `Reproduced · ${replays[c.id].elapsedMs} ms`
-                              : 'Does not reproduce'}
+                              : replays[c.id].numericallyEquivalent
+                                ? `Numerically reproduced · ${replays[c.id].elapsedMs} ms · checksum differs (weight rounding ≤ 1e-12)`
+                                : 'Does not reproduce'}
                             <span className="sr-only">
                               {' '}
                               {[replays[c.id].verdict, ...replays[c.id].differences].join(' ')}
@@ -2089,8 +2334,9 @@ export default function WorkspaceApp({ workspaceAvailable = true }: { workspaceA
                         </a>
                       </div>
                     ))}
-                </section>
-              )}
+                  </section>
+                )}
+              </div>
             </>
           )}
           {page === 'market' && (
@@ -3029,7 +3275,7 @@ export default function WorkspaceApp({ workspaceAvailable = true }: { workspaceA
             <ShieldCheck size={13} /> Evidence-led. Professional review required.
           </span>
           <span>
-            Ascent · Independent successor ·{' '}
+            Ascent ·{' '}
             {providerResearch || hasLicensedData
               ? 'Sources labeled per evidence'
               : ws.mode === 'demo'
@@ -3447,7 +3693,7 @@ export default function WorkspaceApp({ workspaceAvailable = true }: { workspaceA
                     {c.response.mode === 'model' ? 'Model synthesis' : 'Evidence retrieval'} ·{' '}
                     {c.response.computed ? 'Computed results' : 'Recorded context'}
                   </Badge>
-                  <div className="answer-text">{c.response.answer}</div>
+                  <AnswerAnatomy response={c.response} />
                   {c.response.citations.length > 0 && (
                     <details open>
                       <summary>Supporting evidence ({c.response.citations.length})</summary>
@@ -3465,7 +3711,7 @@ export default function WorkspaceApp({ workspaceAvailable = true }: { workspaceA
                   )}
                   {c.response.missingInformation.length > 0 && (
                     <div className="missing-info">
-                      <strong>Information to confirm</strong>
+                      <strong>Unknown or missing evidence</strong>
                       <ul>
                         {c.response.missingInformation.map((m, j) => (
                           <li key={j}>{m}</li>

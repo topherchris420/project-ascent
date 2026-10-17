@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { compareOffers, simulatePricing, summarizeMarket } from './analytics';
 import { find } from './service';
 import { HttpError } from './auth';
-import type { AssistantResponse, Workspace } from './types';
+import type { AssistantResponse, AssistantStatement, Workspace } from './types';
 import { activePropertyIds, regions, scopeWorkspaceForAccess } from './fabric';
 import { inferenceRoute, providerReady } from './inference/config';
 import { infer, InferenceHttpError, type TransportEvent } from './inference/provider';
@@ -170,13 +170,20 @@ export function answerFromEvidence(
   const missingInformation: string[] = [];
   const suggestedActions: string[] = [];
   const tools: string[] = [];
-  const parts: string[] = [];
+  const statements: AssistantStatement[] = [];
+  const say = (kind: AssistantStatement['kind'], text: string) => statements.push({ kind, text });
   const query = message.toLowerCase();
   const fairHousing = inspectFairHousing(message, { surface: 'assistant-input' });
   if (fairHousing.decision !== 'allow')
     return {
       mode: 'evidence',
       answer: `I cannot recommend housing using protected characteristics or release a housing recommendation that requires professional review. ${fairHousing.explanation}`,
+      statements: [
+        {
+          kind: 'boundary',
+          text: `I cannot recommend housing using protected characteristics or release a housing recommendation that requires professional review. ${fairHousing.explanation}`,
+        },
+      ],
       citations: [],
       missingInformation: [
         'Use objective property criteria and review flagged language with a qualified professional.',
@@ -193,6 +200,12 @@ export function answerFromEvidence(
       mode: 'evidence',
       answer:
         'I can compare properties using budget, property features, location, and documented transaction terms. I cannot recommend housing or screen clients using protected characteristics.',
+      statements: [
+        {
+          kind: 'boundary',
+          text: 'I can compare properties using budget, property features, location, and documented transaction terms. I cannot recommend housing or screen clients using protected characteristics.',
+        },
+      ],
       citations: [],
       missingInformation: ['Provide objective property or financial criteria.'],
       suggestedActions: ['Use property features, budget, and an objectively defined search area.'],
@@ -245,7 +258,8 @@ export function answerFromEvidence(
     /deadline|closing|milestone|document|transaction|next/.test(query) || context.page === 'transactions';
   if (property) {
     const recordedPrice = property.soldPrice ?? property.price;
-    parts.push(
+    say(
+      'fact',
       `${property.address}, ${property.city}: ${property.beds} beds, ${property.baths} baths; interior floor area ${property.sqft.toLocaleString()} sq ft. Recorded lot area: ${property.lotSqft === undefined ? 'unavailable' : `${property.lotSqft.toLocaleString()} sq ft`}.${recordedPrice !== undefined ? ` Stored ${property.soldPrice !== undefined ? 'recorded sale' : (property.status ?? 'record')} price: ${usd(recordedPrice)}.` : ' No current listing or sale price is established for this subject.'} Recorded days on market: ${property.dom ?? 'unavailable'}. Property type is not established by this retrieved evidence summary; do not infer single-family, condo, or another type.`,
     );
     cite(
@@ -260,18 +274,21 @@ export function answerFromEvidence(
     if (activeCma) {
       const result = activeCma.result;
       tools.push('reproducible-cma-retrieval');
-      parts.push(
+      say(
+        'calculation',
         `The saved CMA computes a weighted mean of adjusted sale prices: ${usd(result.estimate)} (not a median), with an empirical comparable range of ${usd(result.low)}–${usd(result.high)}, using ${result.comps.length} selected sales. Conservative / moderate / aggressive strategy anchors are ${usd(result.strategies.conservative)} / ${usd(result.strategies.moderate)} / ${usd(result.strategies.aggressive)}. These are scenario anchors, not predicted sale probabilities.`,
       );
-      parts.push(
+      say(
+        'assumption',
         `Assumptions: ${usd(result.assumptions.sqftRate)} per square foot difference, ${usd(result.assumptions.bedroomValue)} per bedroom, ${usd(result.assumptions.bathroomValue)} per bathroom, and ${(result.assumptions.monthlyTrend * 100).toFixed(2)}% monthly trend. The comparable limit is ${result.assumptions.maxDistanceMiles} miles and ${result.assumptions.maxAgeDays} days.`,
       );
-      parts.push(
+      say(
+        'assumption',
         result.assumptions.conditionValue > 0
           ? `Condition adjustment IS modeled at ${usd(result.assumptions.conditionValue)} per recorded condition-score point; those subjective scores are not verified inspections. Unobserved condition effects remain unmodeled.`
           : 'Condition adjustment is explicitly disabled because condition is unverified; no condition score was invented.',
       );
-      if (result.warnings.length) parts.push(`Reliability checks: ${result.warnings.join(' ')}`);
+      if (result.warnings.length) say('boundary', `Reliability checks: ${result.warnings.join(' ')}`);
       cite(
         activeCma.id,
         activeCma.name,
@@ -313,10 +330,11 @@ export function answerFromEvidence(
     const regionLabel = regions.find(region => region.id === marketWorkspace.fabric?.selectedRegionId)?.name;
     const market = summarizeMarket(marketProperties, workspace.asOf);
     tools.push('market-summary');
-    parts.push(
+    say(
+      'calculation',
       `Stored market sample${regionLabel ? ` for ${regionLabel}` : ''}: ${market.active} active, ${market.pending} pending, ${market.sold} sold, ${market.withdrawn} withdrawn. Median days on market: ${market.medianDom}; median price: ${usd(market.medianPrice)}. ${market.monthsSupply === null ? 'Supply cannot be estimated from this sample.' : `Estimated supply is ${market.monthsSupply.toFixed(1)} months under the displayed observation-window assumption.`} Recorded price reductions: ${market.priceReductions}.`,
     );
-    if (market.warnings.length) parts.push(market.warnings.join(' '));
+    if (market.warnings.length) say('boundary', market.warnings.join(' '));
     market.sourceIds.forEach(sourceId => {
       const source = workspace.sources.find(item => item.id === sourceId);
       if (source) cite(source.id, source.label, `${source.kind}; observed ${source.observedAt}; ${source.license}`);
@@ -331,7 +349,7 @@ export function answerFromEvidence(
     if (provider.entries.length) {
       tools.push('get_provider_evidence');
       for (const entry of provider.entries) {
-        parts.push(`${entry.synthetic ? 'Synthetic fixture — ' : ''}${entry.label}: ${entry.summary}`);
+        say('fact', `${entry.synthetic ? 'Synthetic fixture — ' : ''}${entry.label}: ${entry.summary}`);
         cite(
           entry.id,
           entry.label,
@@ -348,11 +366,13 @@ export function answerFromEvidence(
     if (offers.length) {
       const comparison = compareOffers(offers, workspace.asOf);
       tools.push('offer-comparison');
-      parts.push(
+      say(
+        'boundary',
         'Offer comparison uses price less seller credit; it does not predict financing success or legal enforceability.',
       );
       for (const row of comparison.rows) {
-        parts.push(
+        say(
+          'calculation',
           `${row.buyer}: ${usd(row.netBeforeCosts)} before other seller costs; ${row.financing}; ${row.contingencyCount} contingencies; ${row.daysToClose} days to stated closing.${row.cautions.length ? ' Review: ' + row.cautions.join(' ') : ''}`,
         );
         cite(
@@ -363,7 +383,8 @@ export function answerFromEvidence(
       }
       const ranked = rankOffers(offers, { estimate: activeCma?.result.estimate, asOf: workspace.asOf });
       tools.push('offer-term-strength');
-      parts.push(
+      say(
+        'calculation',
         `Term strength at the default seller weights (price 35, financing 15, inspection 10, other contingencies 15, earnest 10, closing 15): ${ranked
           .map(item => `${offers.find(offer => offer.id === item.offerId)!.buyer} ${item.score} (${item.band})`)
           .join(
@@ -376,11 +397,12 @@ export function answerFromEvidence(
     } else missingInformation.push('No offers match the active property.');
   }
   if (client) {
-    parts.push(
+    say(
+      'fact',
       `${client.name} is ${client.stage}, with a recorded budget of ${usd(client.budget)}. Stated preferences: ${client.preferences || 'not yet recorded'}.`,
     );
     const recent = client.timeline[0];
-    if (recent) parts.push(`Latest relationship note (${recent.date.slice(0, 10)}): ${recent.note}`);
+    if (recent) say('fact', `Latest relationship note (${recent.date.slice(0, 10)}): ${recent.note}`);
     cite(client.id, client.name, 'Authorized workspace client profile and relationship notes.');
     suggestedActions.push(
       'Confirm current budget, financing, and objective property preferences at the next follow-up.',
@@ -390,7 +412,8 @@ export function answerFromEvidence(
     const pending = transaction.milestones
       .filter(item => item.status === 'pending')
       .sort((a, b) => a.dueAt.localeCompare(b.dueAt));
-    parts.push(
+    say(
+      'fact',
       `Transaction stage: ${transaction.stage}. ${pending.length} open milestones.${
         pending.length
           ? ' Next: ' +
@@ -417,7 +440,8 @@ export function answerFromEvidence(
   if (/\b(due|this week|today|overdue|agenda|upcoming|what'?s next|to-?do)\b/.test(query)) {
     const agenda = buildAgenda(workspace, workspace.mode === 'demo' ? workspace.asOf : new Date().toISOString());
     tools.push('weekly-agenda');
-    parts.push(
+    say(
+      'fact',
       agenda.length
         ? [
             `Due in the next seven days (${agenda.length}):`,
@@ -447,7 +471,8 @@ export function answerFromEvidence(
           : undefined,
       });
       tools.push('listing-review');
-      parts.push(
+      say(
+        'calculation',
         `Listing review: ${review.daysOnMarket} days on market (${review.phase}); ${review.weeks} weekly check-ins, ${review.totals.showings} showings, ${review.totals.secondShowings} second showings, ${review.totals.offers} offers. Signals: ${review.signals.map(signal => signal.title).join('; ')}. Suggested option for the seller conversation: ${review.options.find(option => option.recommended)?.title ?? 'none'}. These rules of thumb use entered counts only.`,
       );
       cite(listing.id, `${listing.address} check-ins`, 'Professional-entered weekly showing counts and feedback.');
@@ -463,7 +488,8 @@ export function answerFromEvidence(
         (activeCma.result.inputSnapshot?.candidates.find(item => item.id === id) as never),
     );
     tools.push('seller-meeting-summary');
-    parts.push(
+    say(
+      'calculation',
       [
         'Seller meeting summary:',
         `• ${narrative.headline}`,
@@ -487,7 +513,8 @@ export function answerFromEvidence(
         : undefined);
     const range = draftCma ? `${usd(draftCma.result.low)}–${usd(draftCma.result.high)}` : '';
     tools.push('placeholder-draft');
-    parts.push(
+    say(
+      'draft',
       asText
         ? [
             'Text draft for your review (not sent):',
@@ -509,13 +536,15 @@ export function answerFromEvidence(
             '{agent_name}',
           ].join('\n'),
     );
-    parts.push(
+    say(
+      'boundary',
       'Placeholders in braces are filled by you before sending. Ascent never sends messages or changes records.',
     );
     suggestedActions.push('Fill the placeholders, check every figure against the report, then send it yourself.');
   }
-  if (!parts.length)
-    parts.push(
+  if (!statements.length)
+    say(
+      'boundary',
       'I can retrieve property evidence, explain a saved CMA, compare recorded offers, review client context, and identify pending transaction milestones. Open a record to supply authorized context.',
     );
   const usedSourceIds = activeCma?.result.sourceIds ?? (property ? [property.sourceId] : []);
@@ -523,7 +552,8 @@ export function answerFromEvidence(
     usedSourceIds.some(id => workspace.sources.some(source => source.id === id && source.kind !== 'synthetic')) ||
     citations.some(citation => citation.detail.startsWith('Licensed provider'));
   if (workspace.mode === 'demo' && !realContext)
-    parts.push(
+    say(
+      'boundary',
       `Demonstration evidence: the selected property and market examples are fictional. Workspace examples are frozen at ${workspace.asOf.slice(0, 10)}; individual synthetic provider fixtures retain their own dated provenance. No live MLS or public-record lookup was performed by the assistant.`,
     );
   missingInformation.push(
@@ -531,7 +561,8 @@ export function answerFromEvidence(
   );
   return {
     mode: 'evidence',
-    answer: parts.join('\n\n'),
+    answer: statements.map(statement => statement.text).join('\n\n'),
+    statements,
     citations,
     missingInformation: [...new Set(missingInformation)],
     suggestedActions: [...new Set(suggestedActions)].slice(0, 5),
@@ -700,8 +731,9 @@ export async function answerAssistant(
   const redact = modelRedactor(workspace);
   workspace = scopeWorkspaceForAccess(workspace);
   const usedTools: string[] = [];
+  const { statements: baselineStatements = [], ...baselineEvidence } = baseline;
   const evidenceBaseline = {
-    ...baseline,
+    ...baselineEvidence,
     missingInformation: baseline.missingInformation.filter(item => !item.includes('no external language model')),
   };
   const input: unknown[] = [
@@ -855,6 +887,23 @@ export async function answerAssistant(
         return {
           mode: 'model',
           answer: `Model-generated explanation — professional review required.\n\n${answer.answer}${workspace.mode === 'demo' ? '\n\nAll property and market evidence in this workspace is fictional demonstration data.' : ''}`,
+          // Model prose stays labeled as interpretation; the deterministic record it was checked against follows it.
+          statements: [
+            ...answer.evidenceSections.map(section => ({
+              kind: 'interpretation' as const,
+              text: section.text,
+              refs: [...new Set(section.citationIds)],
+            })),
+            ...baselineStatements.filter(statement => statement.kind !== 'draft'),
+            ...(workspace.mode === 'demo'
+              ? [
+                  {
+                    kind: 'boundary' as const,
+                    text: 'All property and market evidence in this workspace is fictional demonstration data.',
+                  },
+                ]
+              : []),
+          ],
           citations: [...new Set(answer.citationIds)].map(citationId => evidence.get(citationId)!),
           missingInformation: [
             ...new Set([
@@ -894,8 +943,9 @@ export async function answerAssistant(
               page: context.page,
             });
             result.citations.forEach(citation => evidence.set(citation.id, citation));
+            const { statements: _labeledCopy, ...retrieved } = result;
             output = {
-              ...result,
+              ...retrieved,
               missingInformation: result.missingInformation.filter(
                 item => !item.includes('no external language model'),
               ),

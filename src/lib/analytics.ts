@@ -48,6 +48,9 @@ const finite = (value: number, label: string, min = 0) => {
 export type CmaReplay = {
   /** True only when the archived inputs recomputed to a byte-identical checksum. */
   reproduced: boolean;
+  /** Non-weight fields agree exactly; normalized weights differ only at <= 1e-12.
+   * This is NOT a matching checksum or byte-identical replay. */
+  numericallyEquivalent?: boolean;
   /** Human-readable verdict, safe to show beside a saved analysis. */
   verdict: string;
   /** Points where the replay departed from the archived result; empty when reproduced. */
@@ -109,16 +112,31 @@ export function replayCma(record: Pick<CmaRecord, 'result'>): CmaReplay {
     differences.push(
       `${recomputed.comps.length} comparables qualified on replay; ${archived.comps.length} were archived.`,
     );
-  if (recomputed.calculationHash !== archived.calculationHash && !differences.length)
+  const numericallyEquivalent =
+    recomputed.calculationHash !== archived.calculationHash &&
+    !differences.length &&
+    recomputed.comps.every((comp, index) => {
+      const prior = archived.comps[index];
+      return prior?.propertyId === comp.propertyId && Math.abs(prior.weight - comp.weight) <= 1e-12;
+    }) &&
+    calculationChecksum({
+      ...recomputed,
+      calculationHash: '',
+      comps: recomputed.comps.map((comp, index) => ({ ...comp, weight: archived.comps[index].weight })),
+    }) === archived.calculationHash;
+  if (recomputed.calculationHash !== archived.calculationHash && !differences.length && !numericallyEquivalent)
     differences.push(
       'The checksum differs although the headline figures agree; an adjustment, weight or warning changed.',
     );
   const reproduced = recomputed.calculationHash === archived.calculationHash && !differences.length;
   return {
     reproduced,
+    numericallyEquivalent,
     verdict: reproduced
       ? `Reproduced from archived inputs. ${archived.comps.length} comparables recomputed to the same checksum.`
-      : 'Replay does not match the archived result. Treat this snapshot as historical, not current.',
+      : numericallyEquivalent
+        ? 'Numerically reproduced: inputs, adjustments and monetary results match exactly. Only normalized weights differ by at most 1e-12 across math runtimes. The checksums differ; this is not byte-identical reproduction.'
+        : 'Replay does not match the archived result. Treat this snapshot as historical, not current.',
     differences,
     recomputedHash: recomputed.calculationHash,
     archivedHash: archived.calculationHash,

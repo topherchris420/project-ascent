@@ -125,7 +125,9 @@ test('professional workflow: sign in, research, price, client, offers, transacti
   await expect(page.locator('.assistant-message')).toContainText('Evidence retrieval');
   await page.getByRole('button', { name: 'Close copilot' }).click();
   await page.reload();
-  await expect(page.getByRole('heading', { name: /Good (morning|afternoon|evening), Alex/ })).toBeVisible();
+  // Reload retains the current task; it must not look like the transaction disappeared.
+  await expect(page).toHaveURL(/view=transactions/);
+  await expect(page.getByText('contract-demo.txt', { exact: true })).toBeVisible();
   await page
     .getByRole('navigation', { name: 'Main navigation' })
     .getByRole('button', { name: 'Clients', exact: true })

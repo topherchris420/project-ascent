@@ -95,6 +95,44 @@ Cloud latency exposed a pending-region interface problem and timing assumptions 
 
 Evidence: [hosted acceptance receipt](../evidence/postgres-acceptance.json), [credential/trace scan](../evidence/postgres-deployment-scan.json), [onboarding](../evidence/onboarding-acceptance.json), [DMV and Austin](../evidence/geographic-acceptance.json), [connection setup and limitations](postgres-connection.md).
 
+## October 17, 2026 Pricing Studio continuation
+
+Executed on the same Windows ARM64 machine (Node 24.19.0, installed Chrome) against the local development server, which loads the private `.env.local` and therefore uses the dedicated hosted Neon PostgreSQL database for workspace tests. No RentCast or Groq request was made; browser tests force deterministic assistant mode.
+
+| Check | Actual result | Scope |
+| --- | --- | --- |
+| TypeScript | Pass | Strict project type check |
+| Unit/integration suite | **283/283 passed** | Adds input-sensitivity recalculation, filter-empties-set handling, search thresholds, seller-plan and credit-penalty arithmetic, labeled assistant statements and the guarantee that labels are not sent to the model provider |
+| Browser suite | **27 passed, 1 skipped** (opt-in live cached-provider test), **2.9 min** | Includes the four-step practice studio at 1440, 768 and 390 px: range chart to inspector, seller plan, input sensitivity, condition change (exact −$14,000 per point on the sample), user-entered sale labeled through to the report, axe scans and overflow checks |
+| Accessibility scan | **22/22 configurations**, 0 axe WCAG 2 A/AA or 2.1 AA violations, no horizontal overflow | Workspace views desktop/mobile, including the restructured Pricing Studio. Automated checks are not full accessibility certification |
+| Production build | Pass; `/demo` statically prerendered | Optimized Next.js build |
+| Optimized public smoke | `/` 200, `/demo` 200, practice report 200, invalid practice state 400, anonymous workspace 401, demo sign-in 503 without a database (no SQLite fallback) | Local production server with account storage deliberately unset; [receipt](../evidence/pricing-production-smoke.json) |
+| Credential scan | 0 matches in **63** compiled client artifacts and **257** tracked files; separate scan of all 57 pending changed files found none of six configured secret values | Bounded checks, not a security audit |
+
+Scripted timings, sample size one per viewport, local development server with uncontrolled compile warmth (these are automated checks, not human task times):
+
+| Measure | Target | 1440 px | 768 px | 390 px |
+| --- | --- | --- | --- | --- |
+| Landing → first studio result | 30 s | 1.73 s | 1.78 s | 1.73 s |
+| Landing → full scripted decision (inspect, strategy, challenge, exclusion, added sale, costs, question) → report open | 120 s | 5.56 s | 4.85 s | 5.67 s |
+
+The separate workspace onboarding acceptance (registration → pending verification → saved fictional CMA and report) recorded **6,265 ms**. Golden arithmetic tests found no critical arithmetic errors; tested tenant paths found no cross-tenant access. User preference against HomeSolo remains **unmeasured** (0 participants).
+
+Corrections found during this cycle: the account-free entry did not read the demo sign-in response body on success, so Chromium held the request open and "network idle" never arrived; the page-by-page accessibility script timed out on it. The body is now always read and the scan completes. A development-server hot reload once dropped the dynamically loaded workspace stylesheet; a restart restored it and the production build bundles it. Playwright captures taller than the viewport showed the off-screen skip link mid-page; its real position was verified at −60 px. No failing test was removed or weakened.
+
+## October 17, 2026 hosted production configuration
+
+The owner set five production variables in Vercel with a local script that prints no values: `DATABASE_URL` (the restricted, pooled, `verify-full` runtime role on the dedicated Neon database), a newly generated production `APP_ENCRYPTION_KEY` and `CRON_SECRET` (not the development values), `PGSSL` and `APP_ORIGIN=https://project-ascent-theta.vercel.app`. The three secrets are stored as Vercel sensitive variables. Before configuration, `check:deploy --database` passed against that role: connectivity, restricted runtime identity, six forced RLS tables and PostGIS. Production (master `4c66ee6`) was redeployed by the owner.
+
+| Check on `https://project-ascent-theta.vercel.app` | Result |
+| --- | --- |
+| Account availability | Setup notice gone; workspace actions enabled |
+| Safety responses | Anonymous workspace 401; cross-origin demo request 403; scheduled job without its secret 401 |
+| Demo workflow (headless Chrome, no credentials) | Demo opened (4.96 s first run, 1.24 s second); CMA saved; client report 200 with fictional watermark; snapshot present after reload; sign-out returns workspace 401; zero page errors |
+| Runtime errors | None reported by Vercel in the hour after deployment |
+
+After configuration, the owner ran `npm run verify:postgres -- --database=ascent` against the production database: **6/6 checks passed** (restricted role, forced RLS, migrations and PostGIS; registration and session authentication; RLS denial of cross-tenant reads, writes and unscoped access; PostGIS search and concurrent edits; encrypted documents and reviewed dates; reproducible saved CMA, scenarios, evidence assistant and report export), with cleanup passed. This exercises the application code against the hosted database from the workstation; registration and password sign-in through the deployed pages still need one manual check. Local development and browser tests use the same database as production; their tenants are fictional and isolated by row-level security, but a separate production database or branch remains the cleaner arrangement. The second production domain, `v0-vers3dynamics-ascent.vercel.app`, rejects sign-in because only the `APP_ORIGIN` origin is trusted.
+
 ## Reproduce
 
 ```powershell

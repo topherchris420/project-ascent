@@ -4,6 +4,8 @@ Ascent is a working independent implementation. Bundled records and evaluation o
 
 ## Stack and boundaries
 
+The October 17 Pricing Studio slice is documented in [pricing-studio.md](pricing-studio.md). `/demo` is prerenderable and account-free. `/api/demo/report` is a stateless, bounded **fictional-only** export path with no database or provider import. Existing authenticated report and workspace routes retain tenant and current-source-use enforcement. The public entry defers the larger workspace bundle; async Next.js 16 cookies/search parameters preserve sessions and invitation handoff without treating a cookie's presence as authentication.
+
 Next.js 16 App Router, React, strict TypeScript, Zod, `pg`, and Node 24 SQLite. The workspace is a client component; all authentication, database operations, files, external providers, billing and review credentials stay in Node route handlers. Lucide icons, original vector house illustrations and custom responsive CSS avoid third-party font, tile or image requests. Custom CSS is used instead of Tailwind/shadcn to keep the standalone reference compact; there is no design-system dependency to configure.
 
 Pure calculation modules run on the client for immediate exploration and again on the server when a decision is saved. A client estimate never authorizes a write. A saved CMA contains model version, explicit assumptions, admitted/excluded comparables, signed feature adjustments, normalized weights, dates, source IDs, an input snapshot and a stable checksum. The checksum is for reproducibility, not cryptographic authenticity. Audit events use a separate SHA-256 hash chain.

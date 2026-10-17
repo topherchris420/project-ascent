@@ -1,5 +1,23 @@
 # Remaining work and production gates
 
+## October 17 continuation: decision drivers, seller plan and labeled answers
+
+Added on top of the Pricing Studio slice: the one-axis range chart linked to the comparable inspector, ranked input sensitivity, the seller plan with reduction-versus-credit arithmetic and search-threshold notes, subject-condition and user-entered practice sales, four task sections in the workspace Pricing Studio, labeled Ask Ascent answers, the landing page's own decision-loop framing, and a fix for an unread sign-in response that held a browser request open. See [implementation and limits](pricing-studio.md) and the [second-pass scorecard](competitive-scorecard.md#second-pass--october-17-2026-afternoon).
+
+External dependencies that remain with the owner:
+
+- **Hosted accounts.** Configured and redeployed on October 17 with production-only secrets; the demo workflow passes on the live site ([results](verification-results.md#october-17-2026-hosted-production-configuration)). Database acceptance against the production database passed 6/6 with cleanup. Still to do: one manual registration and password sign-in through the deployed pages, and moving local development and tests to a separate database or branch. The Hobby plan permits personal, non-commercial use only.
+- **Unmerged parallel work.** The remote branch `claude/exciting-lamport-3153iy` adds valuation backtests on public DC and King County sales and an accuracy scorecard. It is not on `master` and also edits the landing page and workspace; merging it requires reconciling those files and reviewing its accuracy claims before they appear in the product.
+- **Licensed history.** Asking-position outcomes (days on market or under-contract rates by distance above estimate), permits, assessor condition grades and mortgage-rate context require licensed or public-record sources that are not configured.
+
+## October 17 delivery checkpoint
+
+The complete account-free Pricing Studio, comparable inspector, sensitivity analysis, arithmetic decision comparison, selected-price report and task-preserving navigation are implemented; see [the delivered slice](pricing-studio.md). The [public competitor audit](competitive-scorecard.md) covers all fourteen requested dimensions. Existing client, offer, transaction, provider and inference workflows are preserved.
+
+The Vercel UI inspection found **no project environment variables** and a **Hobby** team. The connected environment API returned a scope-level 403; the official CLI had no credentials. No secrets were transferred and no subscription, source rights or spending caps were changed. Commercial release needs an appropriately authorized commercial hosting plan, deployment secret configuration, redeployment and actual hosted authentication/tenant/report acceptance. The local optimized sample is testable without those prerequisites. This does not turn previously completed local PostgreSQL acceptance into deployed acceptance.
+
+New data adapters, complete DMV inventory, verified title/permit/tax coverage, email recovery/MFA, production jobs, independent professional study and the existing legal/provider/privacy operational gates below remain open. This release does not claim all requested phases are complete. The new exclusion-rationale editor is a practice feature; broader licensed-note permissions need a deliberate server-side model before extending it.
+
 This is a prioritization of actual gaps in the delivered local application, not a claim that every requested production system is finished. The complete synthetic professional workflow is usable locally; live-data deployment and commercial operation require the work below. See [capability-matrix.md](capability-matrix.md) for the code/test basis and [verification results](verification-results.md) for the final executed checks.
 
 ## Before broader licensed deployment or production client records
@@ -60,6 +78,6 @@ The bounded Enterprise API slice is implemented and locally tested: two read sco
 
 The repository contains Ascent source, local persistence, synthetic fixtures, migrations, APIs, tests, UI, deployment configuration and measured validation evidence. It has not obtained national MLS rights or production-wide provider approvals, sent real client communications, completed a real transaction, verified a real professional, settled a real payment or demonstrated market accuracy superiority. The owner authorized source publication to the private [topherchris420/project-ascent](https://github.com/topherchris420/project-ascent) repository. Local environment files, databases, private access credentials and licensed raw records are excluded; production deployment remains a separate step. The Hobby-compatible profile and setup checks are documented in [vercel-hobby.md](vercel-hobby.md); a real hosted PostgreSQL configuration and deployment acceptance remain required.
 
-## Continuations III?V checkpoint
+## Continuations III–V checkpoint
 
 Domain rules, layered triage, Academy/support queues, authorized CSV migration/rollback, aggregate opt-in metrics, stable feature variations, Groq routing/budgets and the four-endpoint RentCast adapter are implemented. See competitive-advantage-validation.md, professional-portability.md, ai-architecture.md and rentcast-integration.md. These close portions of the earlier roadmap but do not establish licensed coverage or expert-reviewed correctness. RentCast ordinary tests use invented fixtures/mocked HTTP. The owner has activated the API subscription, and seven actual requests verified the four-endpoint private local workflow across DMV and San Antonio. A 365-day assumption was necessary for sufficient DMV sales, with a wide resulting range. Production rights and licensed-data external inference remain separate gates. Live Groq attempts and executed checks are recorded separately in verification-results.md.

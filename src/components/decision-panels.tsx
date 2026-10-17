@@ -27,7 +27,7 @@ import {
   strengthFactorLabels,
   type StrengthWeights,
 } from '@/lib/offer-strength';
-import { explainPricing, type PricingPosition } from '@/lib/pricing-narrative';
+import { explainPricing, positionLabel, type PricingPosition } from '@/lib/pricing-narrative';
 import { composeListingDescription, type DescriptionTone } from '@/lib/listing-description';
 import { inspectFairHousing } from '@/lib/fair-housing';
 import {
@@ -141,7 +141,7 @@ export function PricingIntelligence({
             aria-pressed={narrative.position === key}
             onClick={() => onSelect(cma.strategies[key])}
           >
-            <span>{key}</span>
+            <span>{positionLabel[key]}</span>
             <small>{narrative.tradeoffs[key]}</small>
           </button>
         ))}

@@ -52,7 +52,7 @@ test('a preserved pricing snapshot replays from its archived evidence in the bro
     .click();
   await expect(page.getByRole('heading', { name: 'Preserved decision history' })).toBeVisible();
   await page.getByRole('button', { name: 'Replay' }).first().click();
-  const verdict = page.getByRole('status').filter({ hasText: /Reproduced · [\d.]+ ms/ });
+  const verdict = page.getByRole('status').filter({ hasText: /(?:Reproduced|Numerically reproduced) · [\d.]+ ms/ });
   await expect(verdict.first()).toBeVisible();
   await expect(page.getByText('Does not reproduce')).toHaveCount(0);
 });

@@ -1683,3 +1683,64 @@
   text-decoration: underline;
   text-underline-offset: 3px;
 }
+
+/* Decision loop strip and the labeled assistant answer. */
+.landing .lp-loop {
+  list-style: none;
+  margin: 0 auto;
+  padding: 0;
+}
+.landing .lp-loop-verb {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--lp-green);
+  font-variant-numeric: tabular-nums;
+}
+.landing .lp-loop-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 32px;
+  margin-top: 8px;
+  font-size: 13px;
+  font-weight: 650;
+  color: var(--lp-green);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.landing .lp-anatomy {
+  display: grid;
+  gap: 10px;
+  margin: 10px 0 0;
+}
+.landing .lp-anatomy > div {
+  padding-left: 12px;
+  border-left: 3px solid #b9c4b3;
+}
+.landing .lp-anatomy .calc {
+  border-left-color: #2e8a5f;
+}
+.landing .lp-anatomy .assumption {
+  border-left-style: dashed;
+  border-left-color: #2e8a5f;
+}
+.landing .lp-anatomy .unknown {
+  border-left-color: #c0682f;
+}
+.landing .lp-anatomy dt {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--lp-soft);
+}
+.landing .lp-anatomy dd {
+  margin: 2px 0 0;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--lp-ink);
+}

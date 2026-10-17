@@ -1,0 +1,24 @@
+{
+  "at": "2026-10-17T13:54:00.699Z",
+  "baselineCommit": "4c66ee6",
+  "viewport": {
+    "width": 1440,
+    "height": 960
+  },
+  "browserName": "chromium",
+  "hardware": {
+    "platform": "win32",
+    "arch": "arm64",
+    "cpu": "Snapdragon(R) X - X126100 - Qualcomm(R) Oryon(TM) CPU",
+    "memoryGB": 16
+  },
+  "node": "v24.19.0",
+  "environment": "Local Next.js development server, installed Chrome, fictional authored data, scripted warm/cold compile conditions uncontrolled; not human study or production SLA",
+  "sampleSize": 1,
+  "meaningfulMs": 1796,
+  "reportMs": 5714,
+  "accountRequired": false,
+  "workspaceProviderModelCalls": 0,
+  "axeViolations": 0,
+  "horizontalOverflow": false
+}
