@@ -2,6 +2,10 @@
 
 Ascent is an independent product. The matrix records implemented behavior, supporting tests and remaining limits. See [verification results](verification-results.md) for executed checks. Fixtures and local timings do not establish production reliability or market accuracy.
 
+## Evidence fitness and historical decision review
+
+The Pricing studio provides a deterministic evidence-review summary (eligible and effective comparable counts, concentration, adjusted spread, provenance gaps and major missing assumptions). These are disclosed review heuristics, not an accuracy or probability score. The Decision Time Machine compares an authorized archived CMA to the current calculation, including sales entering/leaving, raw-input changes, subject facts, assumptions, calculation version and time. Archived Replay remains a separate reproducibility check. The isolated tests in `decision-review.test.ts` cover fictional versus licensed evidence, provenance gaps, changes to valuation inputs, legacy missing snapshots and subject mismatches. See [scope and limitations](evidence-and-decision-time-machine.md).
+
 ## Professional workflows
 
 The following capabilities share the same application, permissions and evidence model. Code and fixture tests establish implementation; external outcomes require separate validation.
