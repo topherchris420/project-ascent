@@ -22,6 +22,29 @@ const checkIn = (
 });
 /** Entirely invented fixture records. Geographic context is approximate Austin, not real listings. */
 export function createDemoWorkspace(): Workspace {
+  // New tenants start empty. Properties and workflow records must come from an authorized import or live provider.
+  return {
+    schemaVersion: 1,
+    mode: 'demo',
+    asOf: new Date().toISOString(),
+    properties: [],
+    sources: [],
+    clients: [],
+    offers: [],
+    transactions: [],
+    documents: [],
+    cmas: [],
+    savedSearches: [],
+    alerts: [],
+    nodes: [],
+    edges: [],
+    outcomes: [],
+    approvals: [],
+    listingCheckIns: [],
+    audit: [],
+    settings: { retentionDays: 365, organization: 'Ascent Workspace' },
+  };
+
   const makeProperty = (
     input: Partial<Property> & Pick<Property, 'id' | 'address' | 'lat' | 'lng' | 'sqft' | 'price'>,
   ): Property => ({
