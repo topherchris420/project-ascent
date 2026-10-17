@@ -664,7 +664,6 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAv
               type="button"
               className="lp-btn lp-btn-ghost lp-nav-login"
               onClick={onSignIn}
-              
             >
               Log in
             </button>
@@ -701,7 +700,10 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAv
               {!workspaceAvailable && (
                 <div role="status" className="lp-setup">
                   <strong>Workspace setup is in progress.</strong>
-                  <p>Account storage is not ready. You can explore the interactive pricing example while the full workspace is configured.</p>
+                  <p>
+                    Account storage is not ready. You can explore the interactive pricing example while the full
+                    workspace is configured.
+                  </p>
                   <a href="#pricing-example">Try the pricing example</a>
                 </div>
               )}
@@ -723,14 +725,15 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAv
                   type="button"
                   className="lp-btn lp-btn-outline lp-btn-lg"
                   onClick={onSignIn}
-                  
                 >
                   Sign in
                 </button>
               </div>
               <p className="lp-fine">
-                {workspaceAvailable ? 'The demo opens a private workspace with fictional properties and clients. ' : 'The interactive example uses fictional properties. A full account requires workspace setup. '}
-                <button type="button" className="lp-link" onClick={onRegister} >
+                {workspaceAvailable
+                  ? 'The demo opens a private workspace with fictional properties and clients. '
+                  : 'The interactive example uses fictional properties. A full account requires workspace setup. '}
+                <button type="button" className="lp-link" onClick={onRegister}>
                   Create an account
                 </button>{' '}
                 to start your own.
@@ -982,7 +985,11 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAv
             <div className="lp-final-inner">
               <div>
                 <h2 id="lp-final-title">See your next listing the way Ascent does.</h2>
-                <p>Open a private workspace in seconds. Price a property, add a client, compare offers.</p>
+                <p>
+                  {workspaceAvailable
+                    ? 'Open a private workspace in seconds. Price a property, add a client, compare offers.'
+                    : 'Explore the transparent pricing example while account setup is completed.'}
+                </p>
               </div>
               <div className="lp-final-actions">
                 <button
@@ -1002,7 +1009,6 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAv
                   type="button"
                   className="lp-btn lp-btn-onDark lp-btn-lg"
                   onClick={onRegister}
-                  
                 >
                   Create an account <ArrowUpRight size={16} aria-hidden="true" />
                 </button>
