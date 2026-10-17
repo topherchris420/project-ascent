@@ -35,7 +35,12 @@ process.env.STRIPE_PRICE_PRO = 'price_pro_test';
 process.env.STRIPE_PRICE_TEAM = 'price_team_test';
 after(async () => closeDatabase());
 const owner = () =>
-  register({ name: 'Platform Owner', email: `${randomUUID()}@example.test`, password: 'test platform password 123' });
+  register({
+    seed: 'demo',
+    name: 'Platform Owner',
+    email: `${randomUUID()}@example.test`,
+    password: 'test platform password 123',
+  });
 function signedEvent(tenantId: string, status: string, created: number, overrides: Record<string, unknown> = {}) {
   const event = {
     id: `evt_${randomUUID()}`,

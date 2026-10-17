@@ -11,6 +11,7 @@ import {
   applyFabricProjection,
   bootstrapFabric,
   demoSource,
+  ensureDemoRegion,
   ingestBatch,
   projectProperty,
   regionConfig,
@@ -297,6 +298,10 @@ export async function executeFabricAction(actor: Actor, raw: unknown, fetcher: t
     return snapshot(changed.workspace);
   }
   const changed = await mutateWorkspace(actor, async (workspace, tx) => {
+    // Choosing a fixture region is the explicit, audited opt-in that turns a workspace into a demonstration.
+    const firstFixture = workspace.mode !== 'demo';
+    workspace.mode = 'demo';
+    workspace.asOf = DEMO_AS_OF;
     const fabric = workspace.fabric ?? bootstrapFabric(workspace);
     if (action.action === 'syncDemo')
       ingestBatch(
@@ -307,17 +312,19 @@ export async function executeFabricAction(actor: Actor, raw: unknown, fetcher: t
         { credentialVerified: false },
         workspace.asOf,
       );
+    else ensureDemoRegion(fabric, action.regionId, workspace.asOf);
     fabric.selectedRegionId = action.regionId;
     fabric.dataMode = 'demo';
-    workspace.mode = 'demo';
-    workspace.asOf = DEMO_AS_OF;
     applyFabricProjection(workspace, accessContext(workspace));
+    if (firstFixture) seedRegionalDemoWorkflows(workspace);
     appendAudit(
       workspace,
       actor,
       action.action === 'syncDemo' ? 'syncFabricDemo' : 'selectFabricRegion',
       action.regionId,
-      'Explicitly synthetic fixture mode. Existing clients, offers, valuations and transactions retained.',
+      firstFixture
+        ? "Labeled fictional practice fixture loaded at the owner's request. Existing clients, offers, valuations and transactions retained; fixture records are marked synthetic on every screen."
+        : 'Explicitly synthetic fixture mode. Existing clients, offers, valuations and transactions retained.',
     );
     refreshGraph(workspace);
     await syncPropertyLocations(tx, actor.tenantId, workspace);

@@ -5,9 +5,7 @@ type Environment = Record<string, string | undefined>;
 function validHttpsOrigin(value: string): string | null {
   try {
     const url = new URL(value);
-    return url.protocol === 'https:' && url.origin === value && !url.username && !url.password
-      ? url.origin
-      : null;
+    return url.protocol === 'https:' && url.origin === value && !url.username && !url.password ? url.origin : null;
   } catch {
     return null;
   }

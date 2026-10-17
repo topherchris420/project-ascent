@@ -660,19 +660,10 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAv
             <a href="#faq">FAQ</a>
           </nav>
           <div className="lp-nav-actions">
-            <button
-              type="button"
-              className="lp-btn lp-btn-ghost lp-nav-login"
-              onClick={onSignIn}
-            >
+            <button type="button" className="lp-btn lp-btn-ghost lp-nav-login" onClick={onSignIn}>
               Log in
             </button>
-            <button
-              type="button"
-              className="lp-btn lp-btn-primary lp-btn-sm"
-              onClick={startDemo}
-              disabled={busy}
-            >
+            <button type="button" className="lp-btn lp-btn-primary lp-btn-sm" onClick={startDemo} disabled={busy}>
               {workspaceAvailable ? 'Try the demo' : 'Try pricing'}
             </button>
           </div>
@@ -701,8 +692,8 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAv
                 <div role="status" className="lp-setup">
                   <strong>Workspace setup is in progress.</strong>
                   <p>
-                    Hosted account services are not ready. You can explore the interactive pricing example while the full
-                    workspace is configured.
+                    Hosted account services are not ready. You can explore the interactive pricing example while the
+                    full workspace is configured.
                   </p>
                   <a href="#pricing-example">Try the pricing example</a>
                 </div>
@@ -713,19 +704,10 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAv
                 </div>
               )}
               <div className="lp-cta-row">
-                <button
-                  type="button"
-                  className="lp-btn lp-btn-primary lp-btn-lg"
-                  onClick={startDemo}
-                  disabled={busy}
-                >
+                <button type="button" className="lp-btn lp-btn-primary lp-btn-lg" onClick={startDemo} disabled={busy}>
                   {demoLabel}
                 </button>
-                <button
-                  type="button"
-                  className="lp-btn lp-btn-outline lp-btn-lg"
-                  onClick={onSignIn}
-                >
+                <button type="button" className="lp-btn lp-btn-outline lp-btn-lg" onClick={onSignIn}>
                   Sign in
                 </button>
               </div>
@@ -992,12 +974,7 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAv
                 </p>
               </div>
               <div className="lp-final-actions">
-                <button
-                  type="button"
-                  className="lp-btn lp-btn-light lp-btn-lg"
-                  onClick={startDemo}
-                  disabled={busy}
-                >
+                <button type="button" className="lp-btn lp-btn-light lp-btn-lg" onClick={startDemo} disabled={busy}>
                   {busy ? (
                     <LoaderCircle className="spin" size={18} aria-hidden="true" />
                   ) : (
@@ -1005,11 +982,7 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAv
                   )}
                   {workspaceAvailable ? 'Open a demo workspace' : 'Try the pricing example'}
                 </button>
-                <button
-                  type="button"
-                  className="lp-btn lp-btn-onDark lp-btn-lg"
-                  onClick={onRegister}
-                >
+                <button type="button" className="lp-btn lp-btn-onDark lp-btn-lg" onClick={onRegister}>
                   Create an account <ArrowUpRight size={16} aria-hidden="true" />
                 </button>
               </div>

@@ -20,6 +20,7 @@ delete process.env.APP_ORIGIN;
 after(async () => closeDatabase());
 const owner = () =>
   register({
+    seed: 'demo',
     name: 'Metrics Test Owner',
     email: `${randomUUID()}@example.test`,
     password: 'private metrics passphrase 1234',

@@ -20,12 +20,16 @@ const checkIn = (
   feedback: `DEMO: ${feedback}`,
   createdAt: day(weekOf),
 });
-/** Entirely invented fixture records. Geographic context is approximate Austin, not real listings. */
-export function createDemoWorkspace(): Workspace {
-  // New tenants start empty. Properties and workflow records must come from an authorized import or live provider.
+/**
+ * A workspace that contains only what its owner brings in. New accounts start here: no fictional
+ * properties, people, offers, transactions or outcomes. Evidence arrives through authorized imports,
+ * the user's own entries, a configured property-data provider, or an explicit, audited request to
+ * load the labeled fictional practice fixture.
+ */
+export function createEmptyWorkspace(organization = 'Ascent Workspace'): Workspace {
   return {
     schemaVersion: 1,
-    mode: 'demo',
+    mode: 'licensed',
     asOf: new Date().toISOString(),
     properties: [],
     sources: [],
@@ -42,9 +46,16 @@ export function createDemoWorkspace(): Workspace {
     approvals: [],
     listingCheckIns: [],
     audit: [],
-    settings: { retentionDays: 365, organization: 'Ascent Workspace' },
+    settings: { retentionDays: 365, organization },
   };
+}
 
+/**
+ * The demonstration workspace: entirely invented fixture records, frozen at DEMO_AS_OF so that
+ * every fictional deadline, offer expiry and comparable-sale age stays meaningful. Geographic
+ * context approximates Austin; nothing here is a real listing, person or transaction.
+ */
+export function createDemoWorkspace(): Workspace {
   const makeProperty = (
     input: Partial<Property> & Pick<Property, 'id' | 'address' | 'lat' | 'lng' | 'sqft' | 'price'>,
   ): Property => ({

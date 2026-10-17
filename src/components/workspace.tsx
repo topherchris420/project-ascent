@@ -66,6 +66,8 @@ import {
   compareOffers,
   buildDecisionGraph,
   evaluateOutcomes,
+  replayCma,
+  type CmaReplay,
 } from '@/lib/analytics';
 import {
   AccessView,
@@ -297,6 +299,7 @@ export default function WorkspaceApp({ workspaceAvailable = true }: { workspaceA
     [researchCmaId, setResearchCmaId] = useState('');
   const [activeSearchId, setActiveSearchId] = useState('');
   const [productFlags, setProductFlags] = useState<Record<string, boolean>>({});
+  const [replays, setReplays] = useState<Record<string, CmaReplay>>({});
   const [collapsed, setCollapsed] = useState<string[]>(['tools']);
   const [rate, setRate] = useState(6.5);
   const [reviewPropertyId, setReviewPropertyId] = useState('');
@@ -538,7 +541,7 @@ export default function WorkspaceApp({ workspaceAvailable = true }: { workspaceA
     setMobileNav(false);
     setCommandOpen(false);
   };
-  async function switchRegion(regionId: string) {
+  async function switchRegion(regionId: string, action: 'selectRegion' | 'syncDemo' = 'selectRegion') {
     if (busy || regionLoading) return;
     const generation = sessionVersion.current;
     setBusy(true);
@@ -547,9 +550,11 @@ export default function WorkspaceApp({ workspaceAvailable = true }: { workspaceA
     setToast('');
     setError('');
     try {
-      const d = await request<FabricInfo>('/api/fabric', { action: 'selectRegion', regionId });
+      const d = await request<FabricInfo>('/api/fabric', { action, regionId });
       if (generation !== sessionVersion.current) return;
       setWs(d.workspace);
+      if (action === 'syncDemo')
+        setToast('Labeled fictional fixture loaded. Every fixture record is marked synthetic.');
       setRegions(d.regions);
       const ids = new Set(
         d.fabric.records
@@ -867,6 +872,15 @@ export default function WorkspaceApp({ workspaceAvailable = true }: { workspaceA
 
   const readonly = user.role === 'viewer';
   const unread = ws.alerts.filter(a => !a.read).length;
+  // A workspace with nothing in it yet gets an honest starting point instead of blank panels.
+  const firstRun =
+    ws.mode !== 'demo' &&
+    !ws.properties.length &&
+    !ws.clients.length &&
+    !ws.cmas.length &&
+    !ws.transactions.length &&
+    !ws.offers.length &&
+    !(ws.providerData?.cache.length ?? 0);
   // The demo runs on a frozen clock so its fictional deadlines stay meaningful.
   const now = ws.mode === 'demo' ? ws.asOf : new Date().toISOString();
   const agendaOpen = (item: AgendaItem) => {
@@ -1078,26 +1092,28 @@ export default function WorkspaceApp({ workspaceAvailable = true }: { workspaceA
             <strong>{nav.find(n => n.page === page)?.label || 'Settings'}</strong>
           </div>
           <div className="topbar-right">
-            <label className="market-switch">
-              <MapPin size={14} />
-              <span className="sr-only">Market region</span>
-              <select
-                aria-label="Market region"
-                value={ws.fabric?.selectedRegionId || 'austin'}
-                disabled={busy}
-                onChange={e => void switchRegion(e.target.value)}
-              >
-                {regions.length ? (
-                  regions.map(r => (
-                    <option value={r.id} key={r.id}>
-                      {r.name}
-                    </option>
-                  ))
-                ) : (
-                  <option value="austin">Austin · demo</option>
-                )}
-              </select>
-            </label>
+            {(ws.mode === 'demo' || (ws.fabric?.records.length ?? 0) > 0) && (
+              <label className="market-switch">
+                <MapPin size={14} />
+                <span className="sr-only">Market region</span>
+                <select
+                  aria-label="Market region"
+                  value={ws.fabric?.selectedRegionId || 'austin'}
+                  disabled={busy}
+                  onChange={e => void switchRegion(e.target.value)}
+                >
+                  {regions.length ? (
+                    regions.map(r => (
+                      <option value={r.id} key={r.id}>
+                        {r.name}
+                      </option>
+                    ))
+                  ) : (
+                    <option value="austin">Austin · demo</option>
+                  )}
+                </select>
+              </label>
+            )}
             <button aria-label="Search workspace" className="command-trigger" onClick={() => setCommandOpen(true)}>
               <Search size={16} />
               <span>Jump to anything</span>
@@ -1207,6 +1223,75 @@ export default function WorkspaceApp({ workspaceAvailable = true }: { workspaceA
                   icon={GitBranch}
                 />
               </div>
+              {firstRun && (
+                <section className="panel first-run" aria-labelledby="first-run-title">
+                  <div className="panel-heading">
+                    <div>
+                      <span className="eyebrow">AN EMPTY WORKSPACE, ON PURPOSE</span>
+                      <h2 id="first-run-title">Nothing here is invented. Bring the evidence.</h2>
+                    </div>
+                    <Badge>Private · {ws.settings.organization}</Badge>
+                  </div>
+                  <p className="first-run-lede">
+                    Ascent starts with no fictional properties, people, offers or transactions. Every record you add
+                    will carry a source you can name, a date you can check and a calculation you can replay.
+                  </p>
+                  <div className="first-run-grid">
+                    <button
+                      type="button"
+                      className="first-run-card"
+                      onClick={() => {
+                        setPropertySource('provider');
+                        go('properties');
+                      }}
+                    >
+                      <Search size={20} aria-hidden="true" />
+                      <strong>Research a property</strong>
+                      <span>
+                        Run a recorded-sale CMA through the configured property-data provider. Results keep their
+                        source, observation date and usage rights.
+                      </span>
+                      <em>
+                        Needs a server-side provider key <ArrowRight size={14} aria-hidden="true" />
+                      </em>
+                    </button>
+                    <button type="button" className="first-run-card" onClick={() => go('portability')}>
+                      <Upload size={20} aria-hidden="true" />
+                      <strong>Import authorized records</strong>
+                      <span>
+                        Preview a CSV of clients, searches, notes and milestones. Conflicts surface before anything is
+                        written, and an unchanged import can be rolled back.
+                      </span>
+                      <em>
+                        Previewed, reconciled, reversible <ArrowRight size={14} aria-hidden="true" />
+                      </em>
+                    </button>
+                    <button
+                      type="button"
+                      className="first-run-card"
+                      disabled={readonly || busy}
+                      onClick={() => void switchRegion('dmv', 'syncDemo')}
+                    >
+                      <GraduationCap size={20} aria-hidden="true" />
+                      <strong>Practice on the labeled fixture</strong>
+                      <span>
+                        Load the fictional Washington-area fixture to learn the workflow. It is marked synthetic on
+                        every screen and recorded in your audit trail as your choice.
+                      </span>
+                      <em>
+                        Clearly fictional, never mixed into licensed evidence{' '}
+                        <ArrowRight size={14} aria-hidden="true" />
+                      </em>
+                    </button>
+                  </div>
+                  <div className="first-run-foot">
+                    <ShieldCheck size={14} aria-hidden="true" /> Or begin with the people you already serve:{' '}
+                    <button type="button" className="text-button" onClick={() => go('clients')}>
+                      add a client
+                    </button>
+                  </div>
+                </section>
+              )}
               <div className="overview-grid">
                 <section className="panel feature-property">
                   <div className="panel-heading">
@@ -1214,39 +1299,49 @@ export default function WorkspaceApp({ workspaceAvailable = true }: { workspaceA
                       <span className="eyebrow">THE BIG PICTURE</span>
                       <h2>Your next decision starts here.</h2>
                     </div>
-                    <Badge tone="green">{property?.status}</Badge>
+                    {property && <Badge tone="green">{property.status}</Badge>}
                   </div>
-                  <div className="feature-property-body">
-                    <div className="feature-image">
-                      <HouseArt large />
-                      <div className="image-location">
-                        <MapPin size={14} />
-                        {property?.city}, {property?.state}
-                      </div>
-                    </div>
-                    <div className="feature-details">
-                      <span className="eyebrow">ACTIVE PROPERTY</span>
-                      <h3>{property?.address}</h3>
+                  {!property && (
+                    <Empty title="No property in view yet">
                       <p>
-                        {property?.beds} beds <span>·</span> {property?.baths} baths <span>·</span>{' '}
-                        {number(property?.sqft || 0)} sq ft
+                        Research a property through the provider, or load the labeled practice fixture, and the
+                        comparable-supported estimate appears here with its evidence.
                       </p>
-                      <div className="feature-valuation">
-                        <span>Comparable-supported estimate</span>
-                        <strong>{cma ? money(cma.estimate) : 'Evidence needed'}</strong>
-                        <small>
-                          {cma
-                            ? `${compact(cma.low)}–${compact(cma.high)} · ${cma.comps.length} comparable sales`
-                            : 'Choose a property with recent sold comparables'}
-                        </small>
+                    </Empty>
+                  )}
+                  {property && (
+                    <div className="feature-property-body">
+                      <div className="feature-image">
+                        <HouseArt large />
+                        <div className="image-location">
+                          <MapPin size={14} />
+                          {property?.city}, {property?.state}
+                        </div>
                       </div>
-                      <button className="button primary" onClick={() => go('cma')}>
-                        Explore the valuation
-                        <ArrowRight size={16} />
-                      </button>
-                      <span className="fine">Empirical comp range. Professional review required.</span>
+                      <div className="feature-details">
+                        <span className="eyebrow">ACTIVE PROPERTY</span>
+                        <h3>{property?.address}</h3>
+                        <p>
+                          {property?.beds} beds <span>·</span> {property?.baths} baths <span>·</span>{' '}
+                          {number(property?.sqft || 0)} sq ft
+                        </p>
+                        <div className="feature-valuation">
+                          <span>Comparable-supported estimate</span>
+                          <strong>{cma ? money(cma.estimate) : 'Evidence needed'}</strong>
+                          <small>
+                            {cma
+                              ? `${compact(cma.low)}–${compact(cma.high)} · ${cma.comps.length} comparable sales`
+                              : 'Choose a property with recent sold comparables'}
+                          </small>
+                        </div>
+                        <button className="button primary" onClick={() => go('cma')}>
+                          Explore the valuation
+                          <ArrowRight size={16} />
+                        </button>
+                        <span className="fine">Empirical comp range. Professional review required.</span>
+                      </div>
                     </div>
-                  </div>
+                  )}
                   <div className="feature-footer">
                     <ShieldCheck size={15} /> Every adjustment has a reason. Every source has a history.{sourcesButton}
                   </div>
@@ -1867,6 +1962,29 @@ export default function WorkspaceApp({ workspaceAvailable = true }: { workspaceA
                         <Badge tone={c.approvedAt ? 'green' : 'neutral'}>
                           {c.approvedAt ? 'Reviewed' : 'Needs review'}
                         </Badge>
+                        {replays[c.id] ? (
+                          <span
+                            className={`badge replay-result ${replays[c.id].reproduced ? 'green' : 'warn'}`}
+                            role="status"
+                            title={[replays[c.id].verdict, ...replays[c.id].differences].join(' ')}
+                          >
+                            {replays[c.id].reproduced
+                              ? `Reproduced · ${replays[c.id].elapsedMs} ms`
+                              : 'Does not reproduce'}
+                            <span className="sr-only">
+                              {' '}
+                              {[replays[c.id].verdict, ...replays[c.id].differences].join(' ')}
+                            </span>
+                          </span>
+                        ) : (
+                          <button
+                            className="button small"
+                            title="Recompute this snapshot from the evidence it archived and compare checksums"
+                            onClick={() => setReplays(prev => ({ ...prev, [c.id]: replayCma(c) }))}
+                          >
+                            Replay
+                          </button>
+                        )}
                         {!c.approvedAt && (
                           <button
                             className="button small"

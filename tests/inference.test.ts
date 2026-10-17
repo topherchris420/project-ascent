@@ -309,6 +309,7 @@ test('ZDR is an operator-reviewed organization setting, not a request flag or im
     delete process.env.GROQ_ZDR_REVIEWED_AT;
   }
   const account = await register({
+    seed: 'demo',
     name: 'AI Owner',
     email: `${randomUUID()}@example.test`,
     password: 'safe inference password 123',
@@ -320,6 +321,7 @@ test('ZDR is an operator-reviewed organization setting, not a request flag or im
 
 test('tenant budget reservations are atomic and duplicate settlements do not double count; failures remain conservatively accounted', async () => {
   const account = await register({
+    seed: 'demo',
     name: 'Budget Owner',
     email: `${randomUUID()}@example.test`,
     password: 'safe inference password 123',
@@ -355,6 +357,7 @@ test('tenant budget reservations are atomic and duplicate settlements do not dou
     assert.equal(day.spentUsd, 0.1);
     assert.equal(day.reservedUsd, 0.1);
     const other = await register({
+      seed: 'demo',
       name: 'Other Budget',
       email: `${randomUUID()}@example.test`,
       password: 'safe inference password 123',
@@ -367,6 +370,7 @@ test('tenant budget reservations are atomic and duplicate settlements do not dou
 
 test('assistant SSE returns validated results and tenant metrics without prompt or client text', async () => {
   const account = await register({
+    seed: 'demo',
     name: 'Streaming Owner',
     email: `${randomUUID()}@example.test`,
     password: 'safe inference password 123',

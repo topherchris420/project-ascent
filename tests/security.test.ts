@@ -33,6 +33,7 @@ const request = (token: string) =>
 
 test('held housing instructions never alter client/search/draft state and leave only structured safety evidence', async () => {
   const account = await register({
+    seed: 'demo',
     name: 'Safety Owner',
     email: `${randomUUID()}@example.test`,
     password: 'long safety password 123',
@@ -97,7 +98,7 @@ test('password hashes use independent salts; incorrect passwords do not verify',
 
 test('opaque sessions authenticate, rotate on login, and revoke on logout', async () => {
   const email = `${randomUUID()}@example.test`;
-  const account = await register({ name: 'Test Owner', email, password: 'a secure password 1234' });
+  const account = await register({ seed: 'demo', name: 'Test Owner', email, password: 'a secure password 1234' });
   assert.equal((await authenticate(request(account.token))).id, account.user.id);
   const rows = await transaction(null, tx =>
     tx.query<{ hash: string }>('SELECT hash FROM sessions WHERE user_id=$1', [account.user.id]),
@@ -113,11 +114,13 @@ test('opaque sessions authenticate, rotate on login, and revoke on logout', asyn
 
 test('tenant writes and document bytes remain private; viewers cannot mutate', async () => {
   const a = await register({
+    seed: 'demo',
     name: 'Owner A',
     email: `${randomUUID()}@example.test`,
     password: 'long test password 123',
   });
   const b = await register({
+    seed: 'demo',
     name: 'Owner B',
     email: `${randomUUID()}@example.test`,
     password: 'long test password 456',
@@ -170,6 +173,7 @@ test('tenant writes and document bytes remain private; viewers cannot mutate', a
 
 test('serialized concurrent writes preserve both updates and invalid references fail', async () => {
   const account = await register({
+    seed: 'demo',
     name: 'Concurrency Owner',
     email: `${randomUUID()}@example.test`,
     password: 'long test password 123',
@@ -227,6 +231,7 @@ test('CSRF origin checks, upload signatures, invalid dates and durable rate limi
 
 test('assistant uses authorized context with citations and rejects unowned references', async () => {
   const account = await register({
+    seed: 'demo',
     name: 'Evidence Owner',
     email: `${randomUUID()}@example.test`,
     password: 'long test password 123',
@@ -251,6 +256,7 @@ test('assistant uses authorized context with citations and rejects unowned refer
 test('API boundaries enforce sessions, origin, validation, approval roles, and escaped report output', async () => {
   assert.equal((await workspaceGet(new Request('http://localhost:3040/api/workspace'))).status, 401);
   const account = await register({
+    seed: 'demo',
     name: 'API Owner',
     email: `${randomUUID()}@example.test`,
     password: 'long test password 123',
@@ -293,6 +299,7 @@ test('API boundaries enforce sessions, origin, validation, approval roles, and e
 
 test('encrypted private files round-trip and production refuses SQLite fallback', async () => {
   const account = await register({
+    seed: 'demo',
     name: 'Encryption Owner',
     email: `${randomUUID()}@example.test`,
     password: 'long test password 123',
@@ -328,6 +335,7 @@ test('encrypted private files round-trip and production refuses SQLite fallback'
 
 test('optional model orchestration runs read-only tools and rejects fabricated citations with safe fallback', async () => {
   const account = await register({
+    seed: 'demo',
     name: 'Model Test Owner',
     email: `${randomUUID()}@example.test`,
     password: 'long test password 123',
@@ -547,6 +555,7 @@ test('optional model orchestration runs read-only tools and rejects fabricated c
 
 test('reports retain frozen subject and comparable facts after current records change or disappear', async () => {
   const account = await register({
+    seed: 'demo',
     name: 'Snapshot Owner',
     email: `${randomUUID()}@example.test`,
     password: 'long test password 123',
@@ -597,6 +606,7 @@ test('reports retain frozen subject and comparable facts after current records c
 
 test('read APIs, writes, downloads, reports and assistant fail closed for unlicensed legacy provider evidence', async () => {
   const account = await register({
+    seed: 'demo',
     name: 'Scoped Owner',
     email: `${randomUUID()}@example.test`,
     password: 'long test password 123',
@@ -679,6 +689,7 @@ test('read APIs, writes, downloads, reports and assistant fail closed for unlice
 
 test('CMA inputs never mix synthetic fixture records with source-provided evidence', async () => {
   const account = await register({
+    seed: 'demo',
     name: 'Evidence Partition Owner',
     email: `${randomUUID()}@example.test`,
     password: 'long test password 123',
@@ -747,6 +758,7 @@ test('CMA inputs never mix synthetic fixture records with source-provided eviden
 
 test('one AI-assisted question may use multiple provider rounds while tokens are separately metered and quota fallback stays useful', async () => {
   const account = await register({
+    seed: 'demo',
     name: 'Metered Question Owner',
     email: `${randomUUID()}@example.test`,
     password: 'long test password 123',

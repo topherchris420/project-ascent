@@ -20,6 +20,7 @@ process.env.STRIPE_PRICE_ENTERPRISE = 'price_enterprise_mock';
 after(async () => closeDatabase());
 const owner = () =>
   register({
+    seed: 'demo',
     name: 'Enterprise Test Owner',
     email: `${randomUUID()}@example.test`,
     password: 'enterprise isolated passphrase 1234',

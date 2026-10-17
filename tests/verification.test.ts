@@ -27,6 +27,7 @@ after(async () => {
 });
 const owner = () =>
   register({
+    seed: 'demo',
     name: 'Verification Test Owner',
     email: `${randomUUID()}@example.test`,
     password: 'isolated test passphrase 1234',

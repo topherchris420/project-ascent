@@ -97,6 +97,7 @@ test('text-based PDFs are read and their dates proposed on upload; unreadable PD
   const text = await documentText({ name: 'contract.pdf', bytes: pdf });
   assert.match(text, /October 3, 2026/);
   const { user } = await register({
+    seed: 'demo',
     name: 'Contract reader',
     email: `${randomUUID()}@example.test`,
     password: 'contract reader private passphrase 123',
@@ -261,6 +262,7 @@ test('PDF page evidence and private original bytes survive upload; unreadable fi
 
 const account = () =>
   register({
+    seed: 'demo',
     name: 'Deadline reviewer',
     email: `${randomUUID()}@example.test`,
     password: 'private deadline review passphrase 123',

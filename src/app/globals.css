@@ -5385,3 +5385,96 @@ summary {
     padding: 16px;
   }
 }
+/* First-run starting points for an empty professional workspace */
+.first-run {
+  margin-bottom: 24px;
+}
+.first-run-lede {
+  margin: -6px 23px 18px;
+  max-width: 720px;
+  color: #506153;
+  font-size: 14px;
+}
+.first-run-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  padding: 0 23px 20px;
+}
+.first-run-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 20px 20px 18px;
+  text-align: left;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  color: var(--ink);
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s,
+    transform 0.15s;
+}
+.first-run-card:hover:not(:disabled),
+.first-run-card:focus-visible {
+  border-color: #b9ccb8;
+  box-shadow: var(--shadow);
+  transform: translateY(-1px);
+}
+.first-run-card:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.first-run-card > svg {
+  color: var(--green);
+}
+.first-run-card strong {
+  font-size: 15px;
+  font-weight: 600;
+}
+.first-run-card span {
+  font-size: 13px;
+  line-height: 1.5;
+  color: #53634d;
+}
+.first-run-card em {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: auto;
+  padding-top: 6px;
+  font-style: normal;
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--green);
+}
+.first-run-foot {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 12px 23px 20px;
+  font-size: 13px;
+  color: #53634d;
+}
+.first-run-foot .text-button {
+  padding: 0;
+}
+@media (max-width: 900px) {
+  .first-run-grid {
+    grid-template-columns: 1fr;
+  }
+}
+/* Replay verdict beside a preserved pricing snapshot */
+.badge.replay-result {
+  cursor: help;
+}
+.badge.warn {
+  background: #fbefe3;
+  color: #8a4b1d;
+}

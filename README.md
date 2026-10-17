@@ -34,7 +34,9 @@ The public site includes a **working, interactive pricing example** using a clea
 
 The sample uses Ascent's actual deterministic pricing engine, **not a generated image or fabricated AI answer**. Its properties and prices are illustrative, not real market research.
 
-**Current hosted access:** The public pricing example is available. At the time of this README update, the site reports that account and demo-workspace setup is still in progress. Buttons for the full workspace may be unavailable until hosted configuration is completed. For an independent workspace, [run Ascent locally](#run-it-yourself).
+**Two ways in, with different honesty rules.** *Explore the working demo* opens an isolated, persistent workspace preloaded with a clearly fictional fixture (frozen in time so its deadlines stay meaningful). *Create an account* opens a workspace that starts **empty on purpose**: no invented properties, people, offers or transactions. Evidence arrives only through authorized imports, your own entries, a configured property-data provider, or an explicit, audited choice to load the labeled practice fixture.
+
+**Current hosted access:** The public pricing example is always available. If hosted account services are still being configured, the site says so and the workspace buttons stay out of reach until setup is complete. For an independent workspace, [run Ascent locally](#run-it-yourself).
 
 ## What can you do with Ascent?
 
@@ -70,6 +72,8 @@ The scenario calculator does **not** predict that a buyer will pay the selected 
 
 Save a frozen CMA containing inputs, comp decisions, adjustments, source references, calculation version, and a reproducibility checksum. Build a seller-facing report without silently recomputing yesterday's decision using tomorrow's data.
 
+Any saved snapshot can be **replayed**: Ascent recomputes it from the evidence it archived at save time, checks that the archive still matches its own checksum, and reports either *Reproduced* or exactly where the replay departs. Replay reads the archive only; changing today's records never changes the verdict.
+
 ### 04 · Continue the work
 
 Carry that context into client notes, listing reviews, offer comparisons, counter drafts, transaction milestones, and an evidence-linked decision graph. Significant approvals are explicit; **Ascent does not send a client message, accept an offer, or execute a contract for you.**
@@ -82,7 +86,7 @@ Ask Ascent draws on authorized workspace records. Deterministic evidence mode wo
 
 **The math is inspectable.** Pricing calculations are deterministic, with visible assumptions and signed adjustments. Model-generated prose does not set valuation figures.
 
-**The history is reproducible.** A saved analysis freezes the evidence and computation that produced it. The checksum supports replay, not cryptographic proof against tampering.
+**The history is reproducible.** A saved analysis freezes the evidence and computation that produced it, and a one-click replay proves it still recomputes to the same checksum. The checksum supports replay and detects accidental drift; it is not cryptographic proof against a determined adversary.
 
 **The user remains the decision-maker.** Suggestions and drafts stop short of consequential actions. A review is recorded instead of quietly sending or signing something.
 
@@ -108,7 +112,7 @@ Open **http://localhost:3040**.
 
 On Windows PowerShell, use `Copy-Item .env.example .env.local` instead of `cp` if preferred, and `npm.cmd` in place of `npm` if script execution is blocked.
 
-Create a local account or use the application's demo workflow to explore. Local SQLite data is stored in the ignored `.data/ascent.sqlite`; keep `.data/` and `.env.local` private. No external property-data key or AI key is required to explore the synthetic demo and deterministic workflows.
+Choose **Explore the working demo** for a fixture-filled practice workspace, or **Create an account** for a workspace that starts empty and fills only with evidence you bring in (the overview offers three honest starting points: provider research, a previewed import, or the labeled practice fixture). Local SQLite data is stored in the ignored `.data/ascent.sqlite`; keep `.data/` and `.env.local` private. No external property-data key or AI key is required to explore the synthetic demo and deterministic workflows.
 
 **Production is different:** production uses PostgreSQL with tenant isolation, appropriate encryption/configuration, and an authorized deployment. Do not deploy the local SQLite setup as a customer service. See [architecture and security](docs/engineering.md), [PostgreSQL setup](docs/postgres-connection.md), and [Vercel guidance](docs/vercel-hobby.md).
 
@@ -164,7 +168,7 @@ Once those are in place, open an issue describing a proposed change, its evidenc
 
 Ascent deliberately makes a distinction between **software that runs** and **claims that have been validated in the real world**:
 
-- **Demo data is fictional.** The public pricing example and seeded demonstrations are illustrative; a new private workspace does not claim to contain live clients or authentic transactions.
+- **Demo data is fictional, and only the demo has it.** The public pricing example and the demonstration workspace are illustrative and labeled synthetic on every screen. A new private account contains nothing until its owner adds evidence; fixture records enter it only by an explicit, audited request.
 - **No MLS rights are bundled.** RentCast is a separate property-data provider. Any live source requires its own permissions and appropriate professional eligibility.
 - **No appraisal or legal opinion is produced.** CMA calculations and date extraction are decision aids requiring qualified review. Scanned-document OCR and comprehensive holiday calendars are not available.
 - **No proven predictive accuracy or business outcome is claimed.** Adjusted-comp ranges, offer scores, scenario calculations, and synthetic outcomes are not calibrated future-sale probabilities.

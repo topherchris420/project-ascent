@@ -965,17 +965,25 @@ export function bootstrapFabric(workspace: Workspace): FabricState {
         record.propertyId = record.provenance.find(entry => entry.sourceId === source.id)!.externalId;
     }
   }
-  if (!fabric.records.some(record => record.regionId === 'dmv'))
-    ingestBatch(
-      fabric,
-      demoSource('dmv'),
-      'dmv',
-      syntheticRegionPayload('dmv'),
-      { credentialVerified: false },
-      DEMO_AS_OF,
-    );
+  // Only a demonstration workspace receives fictional regional records on its own. A professional
+  // workspace stays empty until its owner imports, researches, or explicitly loads the labeled fixture.
+  if (workspace.mode === 'demo') ensureDemoRegion(fabric, 'dmv', DEMO_AS_OF);
   workspace.fabric = fabric;
   return fabric;
+}
+
+/** Ingest the authored fictional fixture for a region once; a region that already has synthetic records is left alone. */
+export function ensureDemoRegion(fabric: FabricState, regionId: RegionId, asOf: string): boolean {
+  if (fabric.records.some(record => record.regionId === regionId && record.synthetic)) return false;
+  ingestBatch(
+    fabric,
+    demoSource(regionId),
+    regionId,
+    syntheticRegionPayload(regionId),
+    { credentialVerified: false },
+    asOf,
+  );
+  return true;
 }
 
 export function applyFabricProjection(workspace: Workspace, context: FabricAccessContext, asOf = workspace.asOf) {

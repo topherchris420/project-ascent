@@ -58,6 +58,7 @@ const restricted = (): FabricSource => ({
 
 test('opening a workspace repairs missing demo projections after provider-first fabric initialization without replacing prior work', async () => {
   const account = await register({
+    seed: 'demo',
     name: 'Provider first fixture',
     email: `${randomUUID()}@example.test`,
     password: 'provider first passphrase 1234',
@@ -384,6 +385,7 @@ test('provider transport accepts only explicit HTTPS host configuration and disa
 
 test('persisted fabric region changes survive reload, preserve audit integrity and deny viewer mutation', async () => {
   const account = await register({
+    seed: 'demo',
     name: 'Fabric Test',
     email: `${randomUUID()}@example.test`,
     password: 'long test password 12345',
@@ -410,6 +412,7 @@ test('persisted fabric region changes survive reload, preserve audit integrity a
 
 test('trusted provider grant review is independent of workspace ownership, professional verification and subscription', async () => {
   const account = await register({
+    seed: 'demo',
     name: 'Grant Test',
     email: `${randomUUID()}@example.test`,
     password: 'long test password 12345',
@@ -642,6 +645,7 @@ test('regional defaults are declared analyst assumptions and can be overridden u
 
 test('scheduled sync is off by default, skips fresh observations, and records bounded stale-source failures without losing prior data', async () => {
   const account = await register({
+    seed: 'demo',
     name: 'Scheduled Fabric',
     email: `${randomUUID()}@example.test`,
     password: 'long test password 12345',

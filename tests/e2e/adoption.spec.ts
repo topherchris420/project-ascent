@@ -38,6 +38,9 @@ test('onboarding acceptance: useful CMA in under two minutes with pending profes
   await page.getByLabel('Password', { exact: true }).fill('Independent-Free-Explorer!');
   await page.getByRole('button', { name: 'Create workspace' }).click();
   await expect(page.getByRole('heading', { name: /Good (morning|afternoon|evening), Taylor/ })).toBeVisible();
+  // A new account starts empty; the labeled fixture is an explicit choice, not a default.
+  await expect(page.getByRole('combobox', { name: 'Market region' })).toHaveCount(0);
+  await page.getByRole('button', { name: 'Practice on the labeled fixture' }).click();
   await expect(page.getByRole('combobox', { name: 'Market region' })).toHaveValue('dmv');
   await page.getByRole('button', { name: 'WORKSPACE TOOLS' }).click();
   await page
@@ -61,7 +64,8 @@ test('onboarding acceptance: useful CMA in under two minutes with pending profes
   const data = await response.json();
   expect(data.workspace.platform.verification.status).toBe('pending');
   expect(data.workspace.platform.plan).toBe('free');
-  expect(data.workspace.cmas.length).toBeGreaterThan(2);
+  // Exactly the analysis the user saved: an empty account never receives an invented CMA.
+  expect(data.workspace.cmas.length).toBe(1);
   await writeFile(
     'evidence/onboarding-acceptance.json',
     JSON.stringify(
@@ -72,7 +76,7 @@ test('onboarding acceptance: useful CMA in under two minutes with pending profes
         registered: true,
         verification: 'pending',
         plan: 'free',
-        usefulWorkflow: 'DMV synthetic CMA saved with printable report',
+        usefulWorkflow: 'Empty account, explicit practice-fixture load, DMV synthetic CMA saved with printable report',
         underTwoMinutes: elapsedMs < 120000,
       },
       null,

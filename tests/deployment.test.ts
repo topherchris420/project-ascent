@@ -61,11 +61,14 @@ test('a Vercel deployment accepts platform-owned HTTPS origins without weakening
   assert.deepEqual(allowedAppOrigins({ ...vercel, APP_ORIGIN: 'https://ascent.example.invalid' }), [
     'https://ascent.example.invalid',
   ]);
-  assert.deepEqual(allowedAppOrigins({
-    ...vercel,
-    VERCEL_URL: 'evil.example@another.example',
-    VERCEL_PROJECT_PRODUCTION_URL: 'https://fake.example',
-  }), []);
+  assert.deepEqual(
+    allowedAppOrigins({
+      ...vercel,
+      VERCEL_URL: 'evil.example@another.example',
+      VERCEL_PROJECT_PRODUCTION_URL: 'https://fake.example',
+    }),
+    [],
+  );
 });
 
 test('production origin, database protocol and document encryption configuration are validated without exposing values', () => {
@@ -128,6 +131,7 @@ test('document boundaries leave multipart headroom below the hosting platform pa
 
 const account = () =>
   register({
+    seed: 'demo',
     name: 'Hobby fixture user',
     email: `${randomUUID()}@example.test`,
     password: 'synthetic hosting acceptance passphrase',

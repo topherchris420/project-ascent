@@ -14,6 +14,7 @@ delete process.env.DATABASE_URL;
 after(closeDatabase);
 const owner = () =>
   register({
+    seed: 'demo',
     name: 'Client workflow test',
     email: `${randomUUID()}@example.test`,
     password: 'client workflow private passphrase 123',

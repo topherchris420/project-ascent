@@ -1,7 +1,7 @@
 import { createHash, randomBytes, randomUUID, scrypt as scryptCallback, timingSafeEqual } from 'node:crypto';
 import { promisify } from 'node:util';
 import { syncPropertyLocations, transaction } from './db';
-import { createDemoWorkspace } from './seed';
+import { createDemoWorkspace, createEmptyWorkspace } from './seed';
 import type { Actor } from './types';
 
 const scrypt = promisify(scryptCallback);
@@ -61,7 +61,21 @@ export async function createSession(user: Actor) {
   return { user, token };
 }
 
-export async function register(input: { name: string; email: string; password: string; organization?: string }) {
+/**
+ * What a new tenant starts with. `empty` is the default for real accounts: the workspace holds only
+ * what its owner brings in. `demo` loads the labeled fictional fixture and is reserved for the
+ * isolated demonstration tenants created by `demoSession`, or for tests and local exploration.
+ */
+export type WorkspaceSeed = 'empty' | 'demo';
+
+export async function register(input: {
+  name: string;
+  email: string;
+  password: string;
+  organization?: string;
+  seed?: WorkspaceSeed;
+}) {
+  const seed: WorkspaceSeed = input.seed ?? 'empty';
   const tenantId = randomUUID();
   const id = randomUUID();
   const email = input.email.toLowerCase().trim();
@@ -74,7 +88,7 @@ export async function register(input: { name: string; email: string; password: s
       'INSERT INTO users(id,tenant_id,name,email,role,password_hash,created_at) VALUES($1,$2,$3,$4,$5,$6,$7)',
       [id, tenantId, input.name, email, 'owner', passwordHash, new Date().toISOString()],
     );
-    const workspace = createDemoWorkspace();
+    const workspace = seed === 'demo' ? createDemoWorkspace() : createEmptyWorkspace();
     if (input.organization) workspace.settings.organization = input.organization;
     const audit = {
       id: randomUUID(),
@@ -82,7 +96,10 @@ export async function register(input: { name: string; email: string; password: s
       action: 'registerWorkspace',
       entityId: tenantId,
       at: new Date().toISOString(),
-      details: 'Private tenant created with explicitly synthetic demonstration records.',
+      details:
+        seed === 'demo'
+          ? 'Private tenant created with explicitly synthetic demonstration records.'
+          : 'Private tenant created empty. Records arrive only from authorized imports, your own entries, a configured provider, or an explicit request to load the labeled fictional fixture.',
       previousHash: 'genesis',
     };
     workspace.audit.push({ ...audit, hash: auditDigest(audit) });
@@ -115,6 +132,7 @@ export async function demoSession(name = 'Alex Morgan') {
     email: `demo-${randomUUID()}@demo.invalid`,
     password: randomBytes(32).toString('base64url'),
     organization: 'Ascent Demonstration',
+    seed: 'demo',
   });
 }
 

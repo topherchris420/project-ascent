@@ -22,6 +22,7 @@ delete process.env.APP_ORIGIN;
 after(async () => closeDatabase());
 const owner = () =>
   register({
+    seed: 'demo',
     name: 'Trust Test Owner',
     email: `${randomUUID()}@example.test`,
     password: 'private trust passphrase 1234',

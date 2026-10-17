@@ -21,8 +21,11 @@ export async function POST(request: Request, context: { params: Promise<{ action
     if (action === 'login') {
       const input = await readJson(request, loginSchema);
       result = await login(input.email, input.password);
-    } else if (action === 'register') result = await register(await readJson(request, registration));
-    else if (action === 'demo') {
+    } else if (action === 'register') {
+      // Real accounts always start empty; the seed is never accepted from a request body.
+      const { name, email, password, organization } = await readJson(request, registration);
+      result = await register({ name, email, password, organization, seed: 'empty' });
+    } else if (action === 'demo') {
       const existing = await authenticate(request).catch(() => null);
       if (existing) return json({ user: existing });
       // Per-request private tenant. Browser retries can safely reuse an existing authenticated demo.

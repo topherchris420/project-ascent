@@ -19,6 +19,7 @@ delete process.env.DATABASE_URL;
 after(async () => closeDatabase());
 const owner = () =>
   register({
+    seed: 'demo',
     name: 'Import Owner',
     email: `${randomUUID()}@example.test`,
     password: 'private migration passphrase 1234',

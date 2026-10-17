@@ -29,6 +29,7 @@ delete process.env.APP_ORIGIN;
 after(async () => closeDatabase());
 const owner = () =>
   register({
+    seed: 'demo',
     name: 'Provider Test Owner',
     email: `${randomUUID()}@example.test`,
     password: 'private provider passphrase 1234',

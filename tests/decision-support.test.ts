@@ -18,6 +18,7 @@ delete process.env.DATABASE_URL;
 after(closeDatabase);
 const owner = () =>
   register({
+    seed: 'demo',
     name: 'Decision support test',
     email: `${randomUUID()}@example.test`,
     password: 'decision support private passphrase 123',

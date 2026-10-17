@@ -1,10 +1,10 @@
 {
-  "at": "2026-10-16T22:31:41.341Z",
+  "at": "2026-10-17T00:55:27.997Z",
   "environment": "Local development browser; fictional records; not a human usability study",
-  "elapsedMs": 5591,
+  "elapsedMs": 5993,
   "registered": true,
   "verification": "pending",
   "plan": "free",
-  "usefulWorkflow": "DMV synthetic CMA saved with printable report",
+  "usefulWorkflow": "Empty account, explicit practice-fixture load, DMV synthetic CMA saved with printable report",
   "underTwoMinutes": true
 }

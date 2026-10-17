@@ -45,6 +45,87 @@ const finite = (value: number, label: string, min = 0) => {
     throw new Error(`${label} must be a finite number greater than or equal to ${min}.`);
 };
 /** Stable, non-cryptographic checksum for calculation reproducibility; not a security control. */
+export type CmaReplay = {
+  /** True only when the archived inputs recomputed to a byte-identical checksum. */
+  reproduced: boolean;
+  /** Human-readable verdict, safe to show beside a saved analysis. */
+  verdict: string;
+  /** Points where the replay departed from the archived result; empty when reproduced. */
+  differences: string[];
+  recomputedHash?: string;
+  archivedHash: string;
+  elapsedMs: number;
+};
+
+/**
+ * Replay a saved analysis from the evidence it archived at save time. The inputs, assumptions and
+ * as-of date are taken from the record itself, never from current workspace state, so a replay
+ * answers one question: does this snapshot still reproduce exactly what it claims?
+ */
+export function replayCma(record: Pick<CmaRecord, 'result'>): CmaReplay {
+  const started = typeof performance !== 'undefined' ? performance.now() : Date.now();
+  const elapsed = () =>
+    Math.max(
+      0,
+      Math.round(((typeof performance !== 'undefined' ? performance.now() : Date.now()) - started) * 10) / 10,
+    );
+  const archived = record.result;
+  const snapshot = archived.inputSnapshot;
+  if (!snapshot)
+    return {
+      reproduced: false,
+      verdict: 'Cannot replay: this snapshot was saved without its raw input evidence.',
+      differences: ['No archived subject and comparable inputs are attached to the result.'],
+      archivedHash: archived.calculationHash,
+      elapsedMs: elapsed(),
+    };
+  let recomputed: CmaResult;
+  try {
+    recomputed = calculateCma(snapshot.subject, snapshot.candidates, archived.assumptions, archived.asOf);
+  } catch (error) {
+    return {
+      reproduced: false,
+      verdict: 'Cannot replay: the archived inputs no longer satisfy the current calculation rules.',
+      differences: [error instanceof Error ? error.message : String(error)],
+      archivedHash: archived.calculationHash,
+      elapsedMs: elapsed(),
+    };
+  }
+  const differences: string[] = [];
+  // Integrity first: the archived body must still hash to the checksum it carries.
+  if (calculationChecksum({ ...archived, calculationHash: '' }) !== archived.calculationHash)
+    differences.push('The archived result no longer matches its own checksum; it changed after it was saved.');
+  if (recomputed.version !== archived.version)
+    differences.push(
+      `Calculation version ${archived.version} was archived; the engine now runs ${recomputed.version}.`,
+    );
+  if (recomputed.estimate !== archived.estimate)
+    differences.push(`Estimate recomputed to ${recomputed.estimate} instead of the archived ${archived.estimate}.`);
+  if (recomputed.low !== archived.low || recomputed.high !== archived.high)
+    differences.push(
+      `Observed range recomputed to ${recomputed.low}–${recomputed.high} instead of ${archived.low}–${archived.high}.`,
+    );
+  if (recomputed.comps.length !== archived.comps.length)
+    differences.push(
+      `${recomputed.comps.length} comparables qualified on replay; ${archived.comps.length} were archived.`,
+    );
+  if (recomputed.calculationHash !== archived.calculationHash && !differences.length)
+    differences.push(
+      'The checksum differs although the headline figures agree; an adjustment, weight or warning changed.',
+    );
+  const reproduced = recomputed.calculationHash === archived.calculationHash && !differences.length;
+  return {
+    reproduced,
+    verdict: reproduced
+      ? `Reproduced from archived inputs. ${archived.comps.length} comparables recomputed to the same checksum.`
+      : 'Replay does not match the archived result. Treat this snapshot as historical, not current.',
+    differences,
+    recomputedHash: recomputed.calculationHash,
+    archivedHash: archived.calculationHash,
+    elapsedMs: elapsed(),
+  };
+}
+
 export function calculationChecksum(value: unknown): string {
   const canonical = (item: unknown): string => {
     if (Array.isArray(item)) return `[${item.map(canonical).join(',')}]`;

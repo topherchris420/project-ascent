@@ -186,6 +186,7 @@ test('pending proposals do not alter active practice rules and expired independe
 
 async function account() {
   return register({
+    seed: 'demo',
     name: 'Domain Test Owner',
     email: `${randomUUID()}@example.test`,
     password: 'long test password 12345',
