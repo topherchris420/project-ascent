@@ -1,0 +1,32 @@
+{
+  "datasetId": "dc-residential-properties",
+  "title": "District of Columbia single-family residential parcels with active street addresses",
+  "publisher": "District of Columbia (Office of Tax and Revenue; Office of the Chief Technology Officer), via opendata.dc.gov",
+  "license": "CC-BY-4.0",
+  "attribution": "Contains District of Columbia open data licensed under CC BY 4.0: Computer Assisted Mass Appraisal - Residential, Address Points. Joined and filtered by Ascent.",
+  "sources": {
+    "characteristics": "https://maps2.dcgis.dc.gov/dcgis/rest/services/DCGIS_DATA/Property_and_Land_WebMercator/FeatureServer/25",
+    "locations": "https://maps2.dcgis.dc.gov/dcgis/rest/services/DCGIS_DATA/Location_WebMercator/FeatureServer/0"
+  },
+  "fetchedAt": "2026-10-17T15:13:06Z",
+  "sourceRows": {
+    "characteristics": 109395,
+    "activeAddressPoints": 141639
+  },
+  "rows": 92142,
+  "removed": {
+    "missingCharacteristics": 1932,
+    "multiUnitBuilding": 14525,
+    "multipleBuildingsOnLot": 102,
+    "noActiveAddressPoint": 584
+  },
+  "csvSha256": "11abe9d2cad7a87a7aeb1fc03db5d7ef11b6b3a0b78450374dd304241d97d913",
+  "fingerprintBasis": "SHA-256 of the decompressed CSV bytes.",
+  "conditionScale": "DC CAMA CNDTN code (1 Poor, 2 Fair, 3 Average, 4 Good, 5 Very Good, 6 Excellent), used as condition points.",
+  "derivation": "scripts/datasets/fetch-dc-properties.py; baths = full + 0.5 x half; sqft = gross building area (GBA); coordinates = mean of the lot's active address points; first address alphabetically is shown, others kept as search aliases.",
+  "limitations": [
+    "Characteristics are the assessor's current record, not an inspection; renovations not yet recorded are missing.",
+    "Condominiums, multi-unit buildings and multi-building lots are out of scope, matching the validated sales snapshot.",
+    "No owner, tax, permit or listing information is included."
+  ]
+}

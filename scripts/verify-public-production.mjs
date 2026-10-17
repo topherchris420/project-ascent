@@ -34,6 +34,11 @@ try {
     ['/api/demo/report', 200],
     ['/api/demo/report?state=invalid', 400],
     ['/api/workspace', 401],
+    ['/dc', 200],
+    ['/api/dc/search?q=313%20shepherd', 200],
+    ['/api/dc/property?parcel=3313____0047', 200],
+    ['/api/dc/property?parcel=not-a-parcel', 404],
+    ['/api/dc/report?parcel=3313____0047', 200],
   ]) {
     const started = performance.now(),
       response = await fetch(origin + path),

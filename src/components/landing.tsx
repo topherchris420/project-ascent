@@ -673,7 +673,7 @@ const faqs = [
   },
   {
     q: 'Where does the data come from?',
-    a: 'The demo uses fictional records for the Washington, DC area and Austin, labeled as fictional throughout. When an operator configures a licensed provider, research results arrive with their source, date and usage rights. No MLS feed is bundled.',
+    a: "Pricing a real home uses District of Columbia public records under CC BY 4.0: recorded sales the District marks as arm's-length, plus assessor characteristics and addresses. The practice sample and demo workspace use fictional records, labeled throughout. When an operator configures a licensed provider, research results arrive with their source, date and usage rights. No MLS feed is bundled.",
   },
   {
     q: 'How is the price calculated?',
@@ -724,7 +724,7 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAv
             <button type="button" className="lp-btn lp-btn-ghost lp-nav-login" onClick={onSignIn}>
               Log in
             </button>
-            <Link className="lp-btn lp-btn-primary lp-btn-sm" href="/demo">
+            <Link className="lp-btn lp-btn-primary lp-btn-sm" href="/dc">
               Analyze a property
             </Link>
           </div>
@@ -749,7 +749,7 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAv
                 decision record you can reproduce months later, through clients, offers and closing.
               </p>
               <p className="lp-lede lp-lede-strong">
-                Inspect a sale. Test a decision. Open your report. No account needed.
+                Search any single-family home in Washington, DC, priced from public records. No account needed.
               </p>
               {error && (
                 <div role="alert" className="lp-error">
@@ -757,7 +757,7 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAv
                 </div>
               )}
               <div className="lp-cta-row">
-                <Link className="lp-btn lp-btn-primary lp-btn-lg" href="/demo">
+                <Link className="lp-btn lp-btn-primary lp-btn-lg" href="/dc">
                   Analyze a property <ArrowRight size={17} aria-hidden="true" />
                 </Link>
                 {workspaceAvailable && (
@@ -767,16 +767,20 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAv
                 )}
               </div>
               <p className="lp-fine">
-                {workspaceAvailable ? (
+                Outside DC, or want to practise first?{' '}
+                <Link className="lp-link" href="/demo">
+                  Try the fictional sample
+                </Link>
+                .
+                {workspaceAvailable && (
                   <>
-                    The demo opens a private workspace with fictional properties and clients.{' '}
+                    {' '}
+                    The demo workspace adds fictional clients, offers and deadlines.{' '}
                     <button type="button" className="lp-link" onClick={onRegister}>
                       Create an account
                     </button>{' '}
                     to start your own.
                   </>
-                ) : (
-                  'The Pricing Studio uses fictional properties and saves practice changes on this device.'
                 )}
               </p>
               {!workspaceAvailable && (
@@ -1046,7 +1050,7 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAv
                 </p>
               </div>
               <div className="lp-final-actions">
-                <Link className="lp-btn lp-btn-light lp-btn-lg" href="/demo">
+                <Link className="lp-btn lp-btn-light lp-btn-lg" href="/dc">
                   Analyze a property <ArrowRight size={17} aria-hidden="true" />
                 </Link>
                 {workspaceAvailable && (

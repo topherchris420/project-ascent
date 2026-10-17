@@ -32,7 +32,8 @@ const round = (value: number, step: number) => Math.round(value / step) * step;
  * answers "how much does this calculation depend on that assumption?" It does not forecast a sale,
  * estimate market uncertainty or rank which assumption is correct.
  */
-export function decisionDrivers(result: CmaResult): DecisionDriver[] {
+export function decisionDrivers(result: CmaResult, options: { conditionMax?: number } = {}): DecisionDriver[] {
+  const conditionMax = options.conditionMax ?? 5;
   const snapshot = result.inputSnapshot;
   if (!snapshot) return [];
   const { subject, candidates } = snapshot;
@@ -79,7 +80,7 @@ export function decisionDrivers(result: CmaResult): DecisionDriver[] {
     const condition = subject.condition;
     if (condition !== undefined && Number.isFinite(condition)) {
       const lower = Math.max(1, condition - DRIVER_STEPS.conditionPoints),
-        higher = Math.min(5, condition + DRIVER_STEPS.conditionPoints);
+        higher = Math.min(conditionMax, condition + DRIVER_STEPS.conditionPoints);
       rows.push({
         key: 'subjectCondition',
         label: 'Subject condition rating',

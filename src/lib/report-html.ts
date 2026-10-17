@@ -40,12 +40,15 @@ export type ReportInput = {
   presentation: boolean;
   generatedAt: string;
   selectedListPrice?: number;
+  /** Condition scale shown beside the subject; DC assessor grades run 1–6. */
+  conditionScale?: { max: number; note: string };
 };
 
 /** Self-contained, script-free client report. Every figure comes from the frozen calculation. */
 export function renderCmaReport(input: ReportInput): string {
   const { record, property, candidates } = input;
   const cma = record.result;
+  const calibrated = record.release?.calibratedInterval ?? null;
   const lookup = (id: string) => candidates.find(item => item.id === id) as Property | undefined;
   const selectedPrice = input.selectedListPrice ?? cma.strategies.moderate;
   const narrative = explainPricing(cma, selectedPrice, candidates as Property[], lookup);
@@ -132,6 +135,7 @@ h1,h2,h3,p{margin:0}h1{font-size:34px;line-height:1.15;letter-spacing:-.8px;font
 .range .band{position:absolute;top:24px;height:10px;border-radius:9px;background:#c9d8bf}.range .dot{position:absolute;top:22px;width:14px;height:14px;margin-left:-7px;border-radius:50%;background:#fff;border:3px solid var(--green)}
 .range .est{position:absolute;top:8px;width:2px;height:42px;background:var(--peach)}.range .est i{position:absolute;top:-18px;left:50%;transform:translateX(-50%);font:700 11px/1 sans-serif;font-style:normal;color:var(--peach);white-space:nowrap}
 .range-labels{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
+.calibrated{margin-top:12px;padding:10px 12px;border-radius:10px;background:#eef3e9;font-size:12.5px}
 .read h2{margin-bottom:6px}.read .headline{font-size:18px;font-weight:600;margin-bottom:12px}.read ul{margin:0;padding-left:18px;display:grid;gap:6px;color:#3f5446}
 .net{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}.net td{padding:9px 4px;border-bottom:1px solid var(--line)}.net td:last-child{text-align:right}.net tr.total td{font-weight:700;border-bottom:0;font-size:17px}
 .comp{border-top:1px solid var(--line);padding:16px 0}.comp:first-of-type{border-top:0;padding-top:0}.comp header{display:flex;justify-content:space-between;gap:14px}.comp header p{color:var(--muted);font-size:12px}.comp header .source-line{font-size:11.5px}
@@ -154,10 +158,10 @@ body.presentation .estimate strong{font-size:64px}body.presentation .read .headl
 <p class="print-hint">Use your browser’s Print → Save as PDF for a client copy.${input.presentation ? '' : ' Add <code>&amp;view=presentation</code> to the address for a full-screen listing presentation.'}</p>
 <section class="slide"><div class="top"><div class="brand">ASCENT <span>/ ${e(input.organization)}</span></div>${status}</div>
 <h1>${e(property.address)}</h1>
-<p class="facts">${e(property.city)}, ${e(property.state)} ${e(property.zip)} · ${property.beds} beds · ${property.baths} baths · ${property.sqft.toLocaleString('en-US')} sq ft${property.condition !== undefined && cma.assumptions.conditionValue > 0 ? ` · condition ${e(property.condition)}/5 (analyst rating)` : ''}${property.yearBuilt ? ` · built ${e(property.yearBuilt)}` : ''}</p>
+<p class="facts">${e(property.city)}, ${e(property.state)} ${e(property.zip)} · ${property.beds} beds · ${property.baths} baths · ${property.sqft.toLocaleString('en-US')} sq ft${property.condition !== undefined && cma.assumptions.conditionValue > 0 ? ` · condition ${e(property.condition)}/${input.conditionScale?.max ?? 5} (${e(input.conditionScale?.note ?? 'analyst rating')})` : ''}${property.yearBuilt ? ` · built ${e(property.yearBuilt)}` : ''}</p>
 <p class="meta">${e(record.name)} · Evidence as of ${e(longDate(cma.asOf))} · Prepared by ${e(input.preparedBy)} · Generated ${e(longDate(input.generatedAt))}</p>
 ${watermark}
-<div class="block hero"><div class="estimate"><small>Comparable-supported estimate</small><strong>${usd(cma.estimate)}</strong><p class="fine">Adjusted range ${usd(cma.low)} – ${usd(cma.high)} from ${cma.comps.length} closed sale${cma.comps.length === 1 ? '' : 's'}.</p>
+<div class="block hero"><div class="estimate"><small>Comparable-supported estimate</small><strong>${usd(cma.estimate)}</strong><p class="fine">Adjusted range ${usd(cma.low)} – ${usd(cma.high)} from ${cma.comps.length} closed sale${cma.comps.length === 1 ? '' : 's'}.</p>${calibrated ? `<p class="calibrated"><strong>Calibrated ${Math.round(calibrated.target * 100)}% range ${usd(calibrated.low)} – ${usd(calibrated.high)}</strong> · ${e(calibrated.market)}-validated settings; in the published holdout this range held ${(calibrated.holdoutCoverage * 100).toFixed(1)}% of sales with ${e(calibrated.tier)} evidence like this. Not a guarantee for this home.</p>` : ''}
 <div class="range" aria-hidden="true"><span class="track"></span><span class="band" style="left:${at(cma.low)};width:${(((cma.high - cma.low) / axisSpan) * 100).toFixed(2)}%"></span>${dots}<span class="est" style="left:${at(cma.estimate)}"><i>Estimate</i></span></div>
 <div class="range-labels"><span>${usd(cma.low)}</span><span>${usd(cma.high)}</span></div></div>
 <div class="positions">${positions.map(key => `<div class="position ${key} ${selectedPrice === cma.strategies[key] ? 'selected' : ''}"><b>${positionLabel[key]}</b><span>${e(narrative.tradeoffs[key])}</span></div>`).join('')}</div></div></section>

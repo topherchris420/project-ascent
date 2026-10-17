@@ -18,7 +18,7 @@ for (const viewport of [
     });
     const started = Date.now();
     await page.goto('/');
-    await page.getByRole('link', { name: 'Analyze a property', exact: true }).first().click();
+    await page.getByRole('link', { name: 'Try the fictional sample', exact: true }).click();
     await expect(page.getByTestId('studio-estimate')).toHaveText('$963,010');
     const meaningfulMs = Date.now() - started;
     if (viewport.width === 1440) await page.screenshot({ path: 'evidence/ascent-studio-preview.png', fullPage: false });
