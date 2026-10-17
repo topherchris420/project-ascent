@@ -1,17 +1,43 @@
 export type DeploymentCheck = { name: string; required: boolean; ok: boolean; message: string };
 type Environment = Record<string, string | undefined>;
 
+/** Strictly validate HTTPS origins; never derive an auth origin from an untrusted request Host header. */
+function validHttpsOrigin(value: string): string | null {
+  try {
+    const url = new URL(value);
+    return url.protocol === 'https:' && url.origin === value && !url.username && !url.password
+      ? url.origin
+      : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Explicit configuration takes precedence. Otherwise Vercel's deployment-owned URLs are safe
+ * alternatives so deployments work on their production alias as well as immutable preview URLs.
+ * A malformed explicit APP_ORIGIN is a configuration error, not an invitation to fall back.
+ */
+export function allowedAppOrigins(env: Environment = process.env): string[] {
+  if (env.APP_ORIGIN) {
+    const origin = validHttpsOrigin(env.APP_ORIGIN);
+    return origin ? [origin] : [];
+  }
+  if (env.VERCEL !== '1') return [];
+  const origins = [env.VERCEL_PROJECT_PRODUCTION_URL, env.VERCEL_URL]
+    .filter((host): host is string => !!host && !host.includes('/') && !host.includes('\\') && !host.includes('@'))
+    .map(host => validHttpsOrigin(`https://${host}`))
+    .filter((origin): origin is string => origin !== null);
+  return [...new Set(origins)];
+}
+
 /** Configuration only: no database/provider call and no credential value in the result. */
 export function checkDeployment(env: Environment = process.env) {
-  let databaseOk = false,
-    originOk = false;
+  let databaseOk = false;
+  const originOk = allowedAppOrigins(env).length > 0;
   try {
     const url = new URL(env.DATABASE_URL || '');
     databaseOk = ['postgres:', 'postgresql:'].includes(url.protocol) && !!url.hostname;
-  } catch {}
-  try {
-    const url = new URL(env.APP_ORIGIN || '');
-    originOk = url.protocol === 'https:' && url.origin === env.APP_ORIGIN && !url.username && !url.password;
   } catch {}
   const key = env.APP_ENCRYPTION_KEY || '';
   const encryptionOk = /^[A-Za-z0-9+/]{43}=$/.test(key) && Buffer.from(key, 'base64').length === 32;
@@ -26,7 +52,7 @@ export function checkDeployment(env: Environment = process.env) {
       name: 'APP_ORIGIN',
       required: true,
       ok: originOk,
-      message: 'Use the exact HTTPS site origin, without a trailing slash or path.',
+      message: 'Use the exact HTTPS site origin or verified Vercel deployment URLs, without a trailing slash or path.',
     },
     {
       name: 'APP_ENCRYPTION_KEY',
