@@ -2,6 +2,11 @@
   "reportDigest": "sha256-11e488dbc7d020732b9e35556e561f7608b448d02a3d5fb8d4b66e4c99c32c53",
   "protocolDigest": "sha256-6c0c2beff9ccad1779427a4a656cf824629e33e06646cf0d2dbd8e87a1197512",
   "protocolId": "ascent-valuation-validation-1",
+  "market": {
+    "id": "king-county",
+    "label": "King County, WA",
+    "state": "WA"
+  },
   "accepted": false,
   "dataset": {
     "id": "king-county-wa-residential-sales-2014-2015",
@@ -15,6 +20,24 @@
     "to": "2015-05-27",
     "sales": 6975
   },
+  "windows": {
+    "fit": {
+      "from": "2014-05-02",
+      "to": "2014-08-31"
+    },
+    "select": {
+      "from": "2014-09-01",
+      "to": "2014-10-31"
+    },
+    "calibrate": {
+      "from": "2014-11-01",
+      "to": "2014-12-31"
+    },
+    "test": {
+      "from": "2015-01-01",
+      "to": "2015-05-27"
+    }
+  },
   "engine": {
     "version": "ascent-cma-1.0",
     "fingerprint": "fnv1a32-49f0c98b"
@@ -27,6 +50,10 @@
     "mdapeCi95": [
       0.10271,
       0.108749
+    ],
+    "ppe10Ci95": [
+      0.465842,
+      0.48972
     ],
     "ppe5": 0.25882,
     "ppe10": 0.478006,
@@ -43,6 +70,10 @@
     "mdapeCi95": [
       0.1124,
       0.118704
+    ],
+    "ppe10Ci95": [
+      0.429535,
+      0.453215
     ],
     "ppe5": 0.233352,
     "ppe10": 0.441447,
@@ -99,7 +130,9 @@
       "mdape": 0.156898,
       "coverage": 0.814448,
       "lowerPercent": -28.79,
-      "upperPercent": 41.53
+      "upperPercent": 41.53,
+      "lowerLogRatio": -0.339508,
+      "upperLogRatio": 0.347319
     },
     {
       "id": "moderate",
@@ -108,7 +141,9 @@
       "mdape": 0.109121,
       "coverage": 0.778287,
       "lowerPercent": -24.3,
-      "upperPercent": 21.02
+      "upperPercent": 21.02,
+      "lowerLogRatio": -0.278341,
+      "upperLogRatio": 0.19079
     },
     {
       "id": "dense",
@@ -117,7 +152,9 @@
       "mdape": 0.09577,
       "coverage": 0.762989,
       "lowerPercent": -21.52,
-      "upperPercent": 15.68
+      "upperPercent": 15.68,
+      "lowerLogRatio": -0.242268,
+      "upperLogRatio": 0.145622
     }
   ],
   "fittedAssumptions": {

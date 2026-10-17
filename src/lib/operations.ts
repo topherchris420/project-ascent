@@ -1,6 +1,6 @@
 import { transaction } from './db';
 import { allowedAppOrigins } from './deployment';
-import { engineIntegrity, valuationBenchmark, valuationReleaseSwitch } from './valuation-safeguards';
+import { engineIntegrity, valuationBenchmarks, valuationReleaseSwitch } from './valuation-safeguards';
 
 export type HealthCheck = { id: string; status: 'pass' | 'warn' | 'fail'; detail: string; latencyMs?: number };
 export type HealthReport = { status: 'ok' | 'degraded' | 'unavailable'; checkedAt: string; checks: HealthCheck[] };
@@ -47,13 +47,17 @@ export async function operationalHealth(
       : 'Valuation approval is paused by the operator; calculation remains available.',
   });
   // The accuracy verdict is a disclosure, not an outage: the check fails only when the evidence is missing.
-  const met = valuationBenchmark.acceptance?.filter(item => item.passed).length ?? 0;
-  const present = /^sha256-[0-9a-f]{64}$/.test(valuationBenchmark.reportDigest ?? '');
+  const present = valuationBenchmarks.filter(item => /^sha256-[0-9a-f]{64}$/.test(item.reportDigest ?? ''));
   checks.push({
     id: 'validation-evidence',
-    status: present ? 'pass' : 'warn',
-    detail: present
-      ? `${valuationBenchmark.protocolId} report ${valuationBenchmark.reportDigest} is loaded; it met ${met} of ${valuationBenchmark.acceptance.length} pre-registered criteria.`
+    status: present.length === valuationBenchmarks.length ? 'pass' : 'warn',
+    detail: present.length
+      ? present
+          .map(
+            item =>
+              `${item.market.label}: report ${item.reportDigest.slice(0, 19)}… met ${item.acceptance.filter(criterion => criterion.passed).length} of ${item.acceptance.length} pre-registered criteria`,
+          )
+          .join('; ') + '.'
       : 'No validation report is bundled with this build.',
   });
   const production = env.NODE_ENV === 'production';

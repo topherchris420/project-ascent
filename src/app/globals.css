@@ -5504,3 +5504,9 @@ summary {
 .release-gate p {
   margin-top: 8px;
 }
+.assumption-actions {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}

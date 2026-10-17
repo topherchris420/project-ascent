@@ -8,7 +8,12 @@ import {
   assessValuationRelease,
   engineFingerprint,
   engineIntegrity,
+  benchmarkForState,
+  dcBenchmark,
+  kingCountyBenchmark,
+  validatedAssumptions,
   valuationBenchmark,
+  valuationBenchmarks,
   valuationReleaseSwitch,
 } from '../src/lib/valuation-safeguards';
 import { operationalHealth } from '../src/lib/operations';
@@ -63,7 +68,8 @@ const steady = [
 const enabled = { enabled: true, reason: '' };
 
 test('engine fingerprint is pinned to the build the published benchmark measured', () => {
-  assert.equal(engineFingerprint().fingerprint, valuationBenchmark.engine.fingerprint);
+  for (const benchmark of valuationBenchmarks)
+    assert.equal(engineFingerprint().fingerprint, benchmark.engine.fingerprint);
   assert.equal(engineIntegrity().passed, true);
 });
 
@@ -74,7 +80,63 @@ test('well-supported valuations release; the decision never alters the estimate'
   assert.equal(assessment.decision, 'release', assessment.summary);
   assert.deepEqual(result, before);
   assert.ok(assessment.checks.some(check => check.id === 'measured-accuracy' && check.status === 'context'));
-  assert.equal(assessment.reference?.reportDigest, valuationBenchmark.reportDigest);
+  // A King County subject is referenced against King County, never against another market's figures.
+  assert.equal(assessment.reference?.reportDigest, kingCountyBenchmark.reportDigest);
+});
+
+// Recorded-sale shape near Capitol Hill; numbers are invented for the test, the location rule is what matters.
+const dcSubject: ValuationProperty = { ...subject, state: 'DC', zip: '20003', lat: 38.886, lng: -76.996, condition: 4 };
+const dcComps = [600, 625, 640, 655, 610].map((thousands, i): ValuationProperty => ({
+  ...dcSubject,
+  id: `dc-${i}`,
+  address: `dc-${i}`,
+  lat: dcSubject.lat + i * 0.001,
+  status: 'sold',
+  soldAt: '2026-09-15T12:00:00Z',
+  soldPrice: thousands * 1000,
+}));
+
+test('DC is the home market: DC subjects on the validated configuration get the calibrated interval', () => {
+  assert.equal(valuationBenchmark, dcBenchmark);
+  assert.equal(benchmarkForState('dc'), dcBenchmark);
+  assert.equal(benchmarkForState('VA'), null);
+  const result = calculateCma(dcSubject, dcComps, validatedAssumptions(dcBenchmark), DEMO_AS_OF);
+  const assessment = assessValuationRelease(result, { sources: [licensed], release: enabled });
+  const interval = assessment.calibratedInterval!;
+  const tier = dcBenchmark.tiers.find(item => result.comps.length <= (item.maxComps ?? Infinity))!;
+  assert.equal(interval.market, 'Washington, DC');
+  assert.equal(interval.tier, tier.id);
+  assert.equal(interval.low, Math.round(result.estimate * Math.exp(tier.lowerLogRatio)));
+  assert.equal(interval.high, Math.round(result.estimate * Math.exp(tier.upperLogRatio)));
+  assert.ok(interval.low < result.estimate && result.estimate < interval.high);
+  assert.match(
+    assessment.checks.find(check => check.id === 'measured-accuracy')!.detail,
+    /exact Washington, DC-validated/,
+  );
+});
+
+test('editing any validated assumption, or leaving DC, removes the calibrated interval', () => {
+  const edited = calculateCma(
+    dcSubject,
+    dcComps,
+    { ...validatedAssumptions(dcBenchmark), sqftRate: dcBenchmark.fittedAssumptions.sqftRate + 1 },
+    DEMO_AS_OF,
+  );
+  const editedAssessment = assessValuationRelease(edited, { release: enabled });
+  assert.equal(editedAssessment.calibratedInterval, null);
+  assert.match(
+    editedAssessment.checks.find(check => check.id === 'measured-accuracy')!.detail,
+    /differ from the validated/,
+  );
+
+  const virginia = { ...dcSubject, state: 'VA' };
+  const outside = calculateCma(virginia, dcComps, validatedAssumptions(dcBenchmark), DEMO_AS_OF);
+  const outsideAssessment = assessValuationRelease(outside, { release: enabled });
+  assert.equal(outsideAssessment.calibratedInterval, null);
+  assert.match(
+    outsideAssessment.checks.find(check => check.id === 'measured-accuracy')!.detail,
+    /No published validation covers this location/,
+  );
 });
 
 test('sparse, stale, disagreeing or anomalous evidence is held for named review', () => {

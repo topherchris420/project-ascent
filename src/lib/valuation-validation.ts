@@ -47,7 +47,24 @@ export type AcceptanceCriterion = {
   basis: string;
 };
 
-export const validationProtocol = {
+export type ValidationProtocol = {
+  id: string;
+  dataset: { id: string; csvSha256: string; license: string; sourceId: string };
+  windows: { fit: Window; select: Window; calibrate: Window; test: Window };
+  screening: { minBeds: number; maxBeds: number; minBaths: number; minSqft: number };
+  excludeSameParcel: boolean;
+  asOfOffsetMs: number;
+  fit: { neighbours: number; search: SearchConfig; huberIterations: number; huberK: number };
+  selectionGrid: readonly SearchConfig[];
+  selectionMinValuedShare: number;
+  interval: { target: number; minTierSize: number; tiers: readonly { id: string; maxComps: number | null }[] };
+  bootstrap: { resamples: number; seed: number };
+  primaryVariant: string;
+  acceptance: readonly AcceptanceCriterion[];
+};
+
+/** King County, WA (2014–15). Frozen: its report digest covers this exact object. */
+export const kingCountyProtocol = {
   id: 'ascent-valuation-validation-1',
   dataset: {
     id: 'king-county-wa-residential-sales-2014-2015',
@@ -156,8 +173,33 @@ export const validationProtocol = {
       basis: 'Out-of-sample coverage of the calibrated interval must land within five points of its 80% target.',
     },
   ] satisfies AcceptanceCriterion[],
-} as const;
-export type ValidationProtocol = typeof validationProtocol;
+} as const satisfies ValidationProtocol;
+/** @deprecated Name kept for the first published report; prefer `kingCountyProtocol`. */
+export const validationProtocol = kingCountyProtocol;
+
+/**
+ * District of Columbia. Declared before any DC valuation was run: windows were set from monthly sale
+ * volume alone, and method, screening and every acceptance threshold are King County's, unchanged, so
+ * the two markets are scored against the same bars. The partial final month of the snapshot is excluded.
+ */
+export const dcProtocol = {
+  ...kingCountyProtocol,
+  id: 'ascent-valuation-validation-dc-1',
+  dataset: {
+    id: 'dc-residential-sales',
+    csvSha256: 'eebe47197b9c815ffc9c2c98f27dd8226bc588418b06d3b3db5d245353650b1f',
+    license: 'CC-BY-4.0',
+    sourceId: 'dc-public-record',
+  },
+  windows: {
+    fit: { from: '2022-07-01', to: '2024-06-30' },
+    select: { from: '2024-07-01', to: '2024-12-31' },
+    calibrate: { from: '2025-01-01', to: '2025-09-30' },
+    test: { from: '2025-10-01', to: '2026-09-30' },
+  },
+} as const satisfies ValidationProtocol;
+
+export const validationProtocols: readonly ValidationProtocol[] = [dcProtocol, kingCountyProtocol];
 
 const DAY = 86_400_000;
 const round = (value: number, digits: number) => Number(value.toFixed(digits));
@@ -176,7 +218,7 @@ export function canonicalJson(value: unknown): string {
   return JSON.stringify(value) ?? 'null';
 }
 export const digestOf = (value: unknown) => `sha256-${sha256(canonicalJson(value))}`;
-export const protocolDigest = (protocol: ValidationProtocol = validationProtocol) => digestOf(protocol);
+export const protocolDigest = (protocol: ValidationProtocol = kingCountyProtocol) => digestOf(protocol);
 
 const CSV_HEADER = 'sale_id,parcel_id,sold_on,price,beds,baths,sqft,condition,lat,lng,zip';
 export function parseValidationCsv(text: string): ValidationSale[] {
@@ -201,14 +243,16 @@ export function parseValidationCsv(text: string): ValidationSale[] {
 
 const inWindow = (sale: ValidationSale, window: Window) => sale.soldOn >= window.from && sale.soldOn <= window.to;
 const saleTime = (sale: ValidationSale) => Date.parse(`${sale.soldOn}T00:00:00.000Z`);
-const asOfFor = (sale: ValidationSale) => new Date(saleTime(sale) + validationProtocol.asOfOffsetMs).toISOString();
+const asOfFor = (sale: ValidationSale, protocol: ValidationProtocol) =>
+  new Date(saleTime(sale) + protocol.asOfOffsetMs).toISOString();
 
-function asComparable(sale: ValidationSale): ValuationProperty {
+// Only numeric fields reach the arithmetic; the place labels are descriptive and never affect an estimate.
+function asComparable(sale: ValidationSale, sourceId: string): ValuationProperty {
   return {
     id: sale.saleId,
     address: `Recorded sale ${sale.saleId}`,
-    city: 'King County',
-    state: 'WA',
+    city: 'Validation market',
+    state: 'NA',
     zip: sale.zip,
     lat: sale.lat,
     lng: sale.lng,
@@ -219,12 +263,12 @@ function asComparable(sale: ValidationSale): ValuationProperty {
     status: 'sold',
     soldAt: `${sale.soldOn}T00:00:00.000Z`,
     soldPrice: sale.price,
-    sourceId: validationProtocol.dataset.sourceId,
+    sourceId,
   };
 }
 /** The subject carries no price: the engine must not see the outcome it is scored against. */
-function asSubject(sale: ValidationSale): ValuationProperty {
-  const { status: _status, soldAt: _soldAt, soldPrice: _soldPrice, ...subject } = asComparable(sale);
+function asSubject(sale: ValidationSale, sourceId: string): ValuationProperty {
+  const { status: _status, soldAt: _soldAt, soldPrice: _soldPrice, ...subject } = asComparable(sale, sourceId);
   return { ...subject, id: `subject:${sale.saleId}` };
 }
 
@@ -240,7 +284,7 @@ class SaleIndex {
       else this.cells.set(key, [index]);
     });
   }
-  near(subject: ValidationSale, search: SearchConfig): ValidationSale[] {
+  near(subject: ValidationSale, search: SearchConfig, excludeSameParcel = true): ValidationSale[] {
     const latSpan = (search.maxDistanceMiles / 68.7) * 1.02;
     const lngSpan = (search.maxDistanceMiles / (69.2 * Math.cos((subject.lat * Math.PI) / 180))) * 1.02;
     const before = saleTime(subject);
@@ -260,15 +304,15 @@ class SaleIndex {
           const candidate = this.sales[index];
           const time = saleTime(candidate);
           if (time >= before || time < earliest) continue;
-          if (validationProtocol.excludeSameParcel && candidate.parcelId === subject.parcelId) continue;
+          if (excludeSameParcel && candidate.parcelId === subject.parcelId) continue;
           found.push(candidate);
         }
     return found.sort((a, b) => (a.saleId < b.saleId ? -1 : 1));
   }
 }
 
-export function screenSales(sales: ValidationSale[]) {
-  const { minBeds, maxBeds, minBaths, minSqft } = validationProtocol.screening;
+export function screenSales(sales: ValidationSale[], protocol: ValidationProtocol = kingCountyProtocol) {
+  const { minBeds, maxBeds, minBaths, minSqft } = protocol.screening;
   const kept: ValidationSale[] = [];
   const removed: Record<string, number> = { bedrooms: 0, bathrooms: 0, livingArea: 0, duplicateSale: 0 };
   const seen = new Set<string>();
@@ -314,17 +358,24 @@ export type FittedRates = Pick<
  * fit) and Huber-reweighted so a handful of estates cannot set the market's rates. Feature rates are
  * constrained to be non-negative, as the engine requires; the monthly trend may be negative.
  */
-export function fitAdjustmentRates(sales: ValidationSale[], index: SaleIndexLike, window: Window): FittedRates {
-  const { neighbours, search, huberIterations, huberK } = validationProtocol.fit;
+export function fitAdjustmentRates(
+  sales: ValidationSale[],
+  index: SaleIndexLike,
+  window: Window,
+  protocol: ValidationProtocol = kingCountyProtocol,
+): FittedRates {
+  const { neighbours, search, huberIterations, huberK } = protocol.fit;
+  const sourceId = protocol.dataset.sourceId;
   const rows: { x: number[]; y: number; scale: number }[] = [];
   for (const sale of sales.filter(item => inWindow(item, window))) {
-    const subject = asSubject(sale);
-    const asOf = saleTime(sale) + validationProtocol.asOfOffsetMs;
+    const subject = asSubject(sale, sourceId);
+    const asOf = saleTime(sale) + protocol.asOfOffsetMs;
     const eligible = index
-      .near(sale, search)
+      .near(sale, search, protocol.excludeSameParcel)
       .filter(candidate => inWindow(candidate, window))
       .filter(
-        candidate => !comparableExclusion(subject, asComparable(candidate), { ...search, conditionValue: 1 }, asOf),
+        candidate =>
+          !comparableExclusion(subject, asComparable(candidate, sourceId), { ...search, conditionValue: 1 }, asOf),
       )
       .map(candidate => ({ candidate, distance: distanceMiles(sale, candidate) }))
       .sort((a, b) => a.distance - b.distance || (a.candidate.saleId < b.candidate.saleId ? -1 : 1))
@@ -434,17 +485,19 @@ export function valueSale(
   variants: EngineVariant[],
   primaryId: string,
   zipHistory: Map<string, ValidationSale[]>,
+  protocol: ValidationProtocol = kingCountyProtocol,
 ): ValuationRow {
-  const subject = asSubject(sale);
-  const asOf = asOfFor(sale);
+  const sourceId = protocol.dataset.sourceId;
+  const subject = asSubject(sale, sourceId);
+  const asOf = asOfFor(sale, protocol);
   const estimates: ValuationRow['estimates'] = {};
   let comps = 0;
   let envelope: ValuationRow['envelope'] = null;
   let primaryEligible: ValuationProperty[] = [];
   for (const variant of variants) {
     const eligible = index
-      .near(sale, variant.assumptions)
-      .map(asComparable)
+      .near(sale, variant.assumptions, protocol.excludeSameParcel)
+      .map(candidate => asComparable(candidate, sourceId))
       .filter(candidate => !comparableExclusion(subject, candidate, variant.assumptions, Date.parse(asOf)));
     if (variant.id === primaryId) primaryEligible = eligible;
     if (!eligible.length) {
@@ -558,15 +611,19 @@ type Calibration = {
     pooled: boolean;
   }[];
 };
-const tierFor = (comps: number) =>
-  validationProtocol.interval.tiers.find(tier => comps <= (tier.maxComps ?? Infinity))!.id;
+const tierFor = (comps: number, protocol: ValidationProtocol) =>
+  protocol.interval.tiers.find(tier => comps <= (tier.maxComps ?? Infinity))!.id;
 /**
  * Split-conformal (Mondrian by evidence tier) interval on log(actual / estimate). With n calibration
  * residuals the finite-sample order statistics ⌊(n+1)α/2⌋ and ⌈(n+1)(1−α/2)⌉ give at least the
  * target coverage for exchangeable future sales. Sparse tiers borrow the pooled quantiles.
  */
-export function calibrateIntervals(rows: ValuationRow[], primaryId: string): Calibration {
-  const { target, minTierSize, tiers } = validationProtocol.interval;
+export function calibrateIntervals(
+  rows: ValuationRow[],
+  primaryId: string,
+  protocol: ValidationProtocol = kingCountyProtocol,
+): Calibration {
+  const { target, minTierSize, tiers } = protocol.interval;
   const alpha = 1 - target;
   const residualsFor = (subset: ValuationRow[]) =>
     subset.map(row => Math.log(row.actual / row.estimates[primaryId]!)).sort((a, b) => a - b);
@@ -583,7 +640,7 @@ export function calibrateIntervals(rows: ValuationRow[], primaryId: string): Cal
   return {
     target,
     tiers: tiers.map(tier => {
-      const members = valued.filter(row => tierFor(row.comps) === tier.id);
+      const members = valued.filter(row => tierFor(row.comps, protocol) === tier.id);
       return {
         id: tier.id,
         maxComps: tier.maxComps,
@@ -700,19 +757,40 @@ export function samplesCsv(rows: ValuationRow[], variantIds: string[]): string {
   return [header.join(','), ...body].join('\n') + '\n';
 }
 
+/** Report text per protocol; kept outside the protocol objects so the published King County digest is unchanged. */
+const protocolLimitations: Record<string, string[]> = {
+  'ascent-valuation-validation-dc-1': [
+    'District of Columbia only, October 2025 – September 2026. Maryland and Virginia suburbs are not covered by this result.',
+    'Single-unit, single-building residential lots only; condominiums and multi-unit buildings are out of scope.',
+    'Assessor characteristics are current rather than as of each sale. Sales in or before a recorded build or remodel year are removed, but unrecorded renovations remain and add error.',
+    'Only living area, bedrooms, bathrooms, condition, location and sale date are used, matching the production engine; lot, parking, basement finish, historic district and renovation quality are not modeled.',
+    'Assessor-qualified sales only; concessions are not recorded. Every qualified sale is scored, including outliers.',
+    'A home’s own prior sale is withheld from its comparables; the production engine can use it when it is supplied as a separate record.',
+    'Calibrated intervals assume future sales resemble the calibration window; they apply only to this market, period and configuration.',
+  ],
+  'ascent-valuation-validation-1': [
+    'One county (King County, Washington) and one period (May 2014 – May 2015). Accuracy in other markets or years is unmeasured until the same protocol is run on their recorded sales.',
+    'Only living area, bedrooms, bathrooms, condition, location and sale date are used. View, waterfront, construction grade, lot and renovations are deliberately not modeled, matching the production engine.',
+    'Recorded prices are not screened for non-arm’s-length transfers, concessions or data-entry errors; all screened sales are scored, including outliers.',
+    'A home’s own prior sale is withheld from its comparables; the production engine can use it when it is supplied as a separate record.',
+    'Calibrated intervals assume future sales resemble the calibration window; they apply only to this market, period and configuration.',
+  ],
+};
+
 export type ValidationRun = { report: ValidationReport; samples: string };
 export type ValidationOptions = {
+  protocol?: ValidationProtocol;
   samplesFile?: string;
   onProgress?: (stage: string, done: number, total: number) => void;
 };
 
 export function runValuationValidation(csvText: string, options: ValidationOptions = {}): ValidationRun {
-  const protocol = validationProtocol;
+  const protocol = options.protocol ?? kingCountyProtocol;
   const csvSha256 = sha256(csvText);
   if (csvSha256 !== protocol.dataset.csvSha256)
     throw new Error(`Dataset fingerprint ${csvSha256} does not match the protocol's ${protocol.dataset.csvSha256}.`);
   const all = parseValidationCsv(csvText);
-  const { kept, removed } = screenSales(all);
+  const { kept, removed } = screenSales(all, protocol);
   const index = new SaleIndex(kept);
   const progress = options.onProgress ?? (() => undefined);
   const windowSales = Object.fromEntries(
@@ -721,7 +799,7 @@ export function runValuationValidation(csvText: string, options: ValidationOptio
 
   // 1. Fit adjustment rates on the fit window only.
   progress('fit', 0, 1);
-  const fitted = fitAdjustmentRates(kept, index, protocol.windows.fit);
+  const fitted = fitAdjustmentRates(kept, index, protocol.windows.fit, protocol);
   const rates = {
     sqftRate: fitted.sqftRate,
     bedroomValue: fitted.bedroomValue,
@@ -740,7 +818,7 @@ export function runValuationValidation(csvText: string, options: ValidationOptio
       label: 'candidate',
       assumptions: { ...defaultAssumptions, ...rates, ...search },
     };
-    const rows = windowSales.select.map(sale => valueSale(sale, index, [variant], 'candidate', zipHistory));
+    const rows = windowSales.select.map(sale => valueSale(sale, index, [variant], 'candidate', zipHistory, protocol));
     progress('select', i + 1, protocol.selectionGrid.length);
     const pairs = pairsFor(rows, 'candidate');
     return { search, valuedShare: round(pairs.length / rows.length, 6), mdape: ratioMetrics(pairs).mdape };
@@ -773,14 +851,15 @@ export function runValuationValidation(csvText: string, options: ValidationOptio
       variants.filter(variant => variant.id === primaryId),
       primaryId,
       zipHistory,
+      protocol,
     );
   });
-  const calibration = calibrateIntervals(calibrationRows, primaryId);
+  const calibration = calibrateIntervals(calibrationRows, primaryId, protocol);
 
   // 4. Score the holdout once.
   const rows = windowSales.test.map((sale, i) => {
     if (i % 250 === 0) progress('test', i, windowSales.test.length);
-    const row = valueSale(sale, index, variants, primaryId, zipHistory);
+    const row = valueSale(sale, index, variants, primaryId, zipHistory, protocol);
     const estimate = row.estimates[primaryId];
     if (estimate !== null) row.interval = applyCalibration(estimate, row.comps, calibration);
     return row;
@@ -937,13 +1016,7 @@ export function runValuationValidation(csvText: string, options: ValidationOptio
       sha256: sha256(samples),
       rows: rows.length,
     },
-    limitations: [
-      'One county (King County, Washington) and one period (May 2014 – May 2015). Accuracy in other markets or years is unmeasured until the same protocol is run on their recorded sales.',
-      'Only living area, bedrooms, bathrooms, condition, location and sale date are used. View, waterfront, construction grade, lot and renovations are deliberately not modeled, matching the production engine.',
-      'Recorded prices are not screened for non-arm’s-length transfers, concessions or data-entry errors; all screened sales are scored, including outliers.',
-      'A home’s own prior sale is withheld from its comparables; the production engine can use it when it is supplied as a separate record.',
-      'Calibrated intervals assume future sales resemble the calibration window; they apply only to this market, period and configuration.',
-    ],
+    limitations: [...(protocolLimitations[protocol.id] ?? [])],
   };
   return { report: { ...report, reportDigest: digestOf(report) }, samples };
 }
@@ -965,9 +1038,13 @@ export function verifyValidationReport(report: ValidationReport, samplesText: st
     protocolDigest(report.protocol) === report.protocolDigest,
     'Protocol and acceptance thresholds are unchanged since the report was produced.',
   );
+  const declared = validationProtocols.find(protocol => protocol.id === report.protocol.id);
   check(
     'Protocol matches this build',
-    protocolDigest() === report.protocolDigest,
+    // Both the claimed digest and the embedded protocol object must equal what this build declares.
+    !!declared &&
+      protocolDigest(declared) === report.protocolDigest &&
+      protocolDigest(declared) === protocolDigest(report.protocol),
     'The report was produced under the protocol this code declares.',
   );
   const samplesHash = sha256(samplesText);

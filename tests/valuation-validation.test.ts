@@ -13,18 +13,37 @@ import {
   ratioMetrics,
   screenSales,
   validationProtocol,
+  validationProtocols,
+  dcProtocol,
+  kingCountyProtocol,
   valueSale,
   verifyAttestation,
   verifyValidationReport,
+  type ValidationProtocol,
   type ValidationReport,
   type ValidationSale,
   type ValuationRow,
 } from '../src/lib/valuation-validation';
-import { benchmarkFromReport, valuationBenchmark } from '../src/lib/valuation-safeguards';
+import { benchmarkFromReport, dcBenchmark, kingCountyBenchmark } from '../src/lib/valuation-safeguards';
 import { defaultAssumptions } from '../src/lib/analytics';
 
-const report = JSON.parse(readFileSync('evidence/valuation-validation.json', 'utf8')) as ValidationReport;
-const samples = gunzipSync(readFileSync('evidence/valuation-validation-samples.csv.gz')).toString('utf8');
+const load = (reportPath: string, samplesPath: string) => ({
+  report: JSON.parse(readFileSync(reportPath, 'utf8')) as ValidationReport,
+  samples: gunzipSync(readFileSync(samplesPath)).toString('utf8'),
+});
+const evidence = {
+  dc: {
+    protocol: dcProtocol,
+    benchmark: dcBenchmark,
+    ...load('evidence/valuation-validation-dc.json', 'evidence/valuation-validation-dc-samples.csv.gz'),
+  },
+  'king-county': {
+    protocol: kingCountyProtocol,
+    benchmark: kingCountyBenchmark,
+    ...load('evidence/valuation-validation.json', 'evidence/valuation-validation-samples.csv.gz'),
+  },
+};
+const { report, samples } = evidence['king-county'];
 
 const sale = (id: string, overrides: Partial<ValidationSale> = {}): ValidationSale => ({
   saleId: id,
@@ -41,21 +60,68 @@ const sale = (id: string, overrides: Partial<ValidationSale> = {}): ValidationSa
   ...overrides,
 });
 
-test('committed validation evidence verifies independently of the code that produced it', () => {
-  const checks = verifyValidationReport(report, samples);
-  for (const check of checks) assert.equal(check.passed, true, `${check.label}: ${check.detail}`);
-  assert.ok(checks.some(check => check.label === 'Recomputed locally-calibrated'));
-  assert.equal(report.dataset.csvSha256, validationProtocol.dataset.csvSha256);
-  assert.equal(report.protocolDigest, protocolDigest());
+for (const [market, { protocol, benchmark, report, samples }] of Object.entries(evidence)) {
+  test(`${market}: committed validation evidence verifies independently of the code that produced it`, () => {
+    const checks = verifyValidationReport(report, samples);
+    for (const check of checks) assert.equal(check.passed, true, `${check.label}: ${check.detail}`);
+    assert.ok(checks.some(check => check.label === 'Recomputed locally-calibrated'));
+    assert.equal(report.dataset.csvSha256, protocol.dataset.csvSha256);
+    assert.equal(report.protocolDigest, protocolDigest(protocol));
+  });
+
+  test(`${market}: the in-app benchmark is derived from the committed report, not typed by hand`, () => {
+    assert.deepEqual(benchmark, JSON.parse(JSON.stringify(benchmarkFromReport(report))));
+    assert.equal(benchmark.holdout.sales, report.holdout.screenedSales);
+    assert.equal(
+      benchmark.accepted,
+      report.acceptance.every(item => item.passed),
+    );
+  });
+
+  test(`${market}: acceptance thresholds are fixed before results and every verdict follows from them`, () => {
+    assert.equal(report.acceptance.length, protocol.acceptance.length);
+    for (const item of report.acceptance) {
+      const declared = protocol.acceptance.find(criterion => criterion.id === item.id)!;
+      assert.equal(item.min, declared.min);
+      assert.equal(item.max, declared.max);
+      assert.equal(
+        item.passed,
+        (item.min === undefined || item.value >= item.min) && (item.max === undefined || item.value <= item.max),
+      );
+    }
+    assert.equal(
+      report.accepted,
+      report.acceptance.every(item => item.passed),
+    );
+  });
+
+  test(`${market}: windows are disjoint and ordered: fit, select, calibrate, then the scored holdout`, () => {
+    const windows = [protocol.windows.fit, protocol.windows.select, protocol.windows.calibrate, protocol.windows.test];
+    for (let i = 1; i < windows.length; i++) assert.ok(windows[i - 1].to < windows[i].from);
+    const holdoutDates = samples
+      .split('\n')
+      .slice(1, -1)
+      .map(line => line.split(',')[2]);
+    assert.ok(holdoutDates.every(date => date >= protocol.windows.test.from && date <= protocol.windows.test.to));
+  });
+}
+
+test('the first published King County protocol is frozen byte for byte', () => {
+  assert.equal(validationProtocol, kingCountyProtocol);
+  assert.equal(protocolDigest(kingCountyProtocol), report.protocolDigest);
+  assert.equal(report.reportDigest, 'sha256-11e488dbc7d020732b9e35556e561f7608b448d02a3d5fb8d4b66e4c99c32c53');
 });
 
-test('the in-app benchmark is derived from the committed report, not typed by hand', () => {
-  assert.deepEqual(valuationBenchmark, JSON.parse(JSON.stringify(benchmarkFromReport(report))));
-  assert.equal(valuationBenchmark.holdout.sales, report.holdout.screenedSales);
-  assert.equal(
-    valuationBenchmark.accepted,
-    report.acceptance.every(item => item.passed),
+test('DC is scored against the same method and the same bars as King County', () => {
+  const shared = ({ id: _id, dataset: _dataset, windows: _windows, ...rest }: ValidationProtocol) => rest;
+  assert.deepEqual(shared(dcProtocol), shared(kingCountyProtocol));
+  assert.equal(dcProtocol.dataset.license, 'CC-BY-4.0');
+  assert.deepEqual(
+    validationProtocols.map(protocol => protocol.id),
+    [dcProtocol.id, kingCountyProtocol.id],
   );
+  // The partial final month of the snapshot is outside the holdout.
+  assert.ok(dcProtocol.windows.test.to < '2026-10-01');
 });
 
 test('tampering with any published estimate or threshold is detected', () => {
@@ -71,34 +137,7 @@ test('tampering with any published estimate or threshold is detected', () => {
   const movedChecks = verifyValidationReport(moved, samples);
   assert.equal(movedChecks.find(check => check.label === 'Report digest')!.passed, false);
   assert.equal(movedChecks.find(check => check.label === 'Protocol digest')!.passed, false);
-});
-
-test('acceptance thresholds are fixed before results and every verdict follows from them', () => {
-  assert.equal(report.acceptance.length, validationProtocol.acceptance.length);
-  for (const item of report.acceptance) {
-    const declared = validationProtocol.acceptance.find(criterion => criterion.id === item.id)!;
-    assert.equal(item.min, 'min' in declared ? declared.min : undefined);
-    assert.equal(item.max, 'max' in declared ? declared.max : undefined);
-    assert.equal(
-      item.passed,
-      (item.min === undefined || item.value >= item.min) && (item.max === undefined || item.value <= item.max),
-    );
-  }
-  assert.equal(
-    report.accepted,
-    report.acceptance.every(item => item.passed),
-  );
-});
-
-test('windows are disjoint and ordered: fit, select, calibrate, then the scored holdout', () => {
-  const windows = Object.values(validationProtocol.windows);
-  for (let i = 1; i < windows.length; i++) assert.ok(windows[i - 1].to < windows[i].from);
-  assert.ok(
-    samples
-      .split('\n')
-      .slice(1, -1)
-      .every(line => line.split(',')[2] >= validationProtocol.windows.test.from),
-  );
+  assert.equal(movedChecks.find(check => check.label === 'Protocol matches this build')!.passed, false);
 });
 
 test('a holdout valuation never sees its own price, a later sale, a same-day sale or its own parcel', () => {

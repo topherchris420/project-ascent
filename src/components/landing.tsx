@@ -660,7 +660,7 @@ const faqs = [
   },
   {
     q: 'How accurate is it?',
-    a: `We measured it, and we publish the result even where it falls short. On ${valuationBenchmark.holdout.sales.toLocaleString('en-US')} recorded King County, Washington sales the engine never saw, the median error was ${(valuationBenchmark.primary.mdape * 100).toFixed(1)}%, and its calibrated ${valuationBenchmark.intervals.target * 100}% range held ${(valuationBenchmark.intervals.calibratedCoverage * 100).toFixed(1)}% of sales. It met ${valuationBenchmark.acceptance.filter(item => item.passed).length} of ${valuationBenchmark.acceptance.length} pre-registered criteria. The scorecard above names the misses, and anyone can re-run the test to check it.`,
+    a: `We measured it on the District's own records. On ${valuationBenchmark.holdout.sales.toLocaleString('en-US')} recorded ${valuationBenchmark.market.label} home sales the engine never saw, the median error was ${(valuationBenchmark.primary.mdape * 100).toFixed(1)}%, ${(valuationBenchmark.primary.ppe10 * 100).toFixed(1)}% landed within ±10%, and the calibrated ${valuationBenchmark.intervals.target * 100}% range held ${(valuationBenchmark.intervals.calibratedCoverage * 100).toFixed(1)}% of sales. It met ${valuationBenchmark.acceptance.filter(item => item.passed).length} of ${valuationBenchmark.acceptance.length} pre-registered criteria, some narrowly, as the scorecard notes. Accuracy applies to the validated DC configuration; Maryland and Virginia are not yet validated. Anyone can re-run the test.`,
   },
   {
     q: 'Does the AI set prices?',
@@ -962,10 +962,10 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAv
           <div className="lp-wrap">
             <div className="lp-section-head">
               <span className="lp-eyebrow">Measured, not claimed</span>
-              <h2 id="lp-accuracy-title">Accuracy tested on sales it never saw, misses included.</h2>
+              <h2 id="lp-accuracy-title">Tested on DC sales it never saw. Published either way.</h2>
               <p>
-                Most pricing tools never publish an error rate. Ascent&apos;s engine was scored once on a public-record
-                holdout against thresholds fixed in advance, and anyone can re-run the test to check the result.
+                Most pricing tools never publish an error rate. Ascent&apos;s engine was scored once on the District of
+                Columbia&apos;s own recorded sales, against thresholds fixed in advance, and anyone can re-run the test.
               </p>
             </div>
             <AccuracyScorecard />

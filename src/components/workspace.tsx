@@ -69,7 +69,13 @@ import {
   replayCma,
   type CmaReplay,
 } from '@/lib/analytics';
-import { assessAccuracyDrift, assessValuationRelease } from '@/lib/valuation-safeguards';
+import {
+  assessAccuracyDrift,
+  assessValuationRelease,
+  benchmarkForState,
+  usesValidatedConfiguration,
+  validatedAssumptions,
+} from '@/lib/valuation-safeguards';
 import {
   AccessView,
   BillingView,
@@ -529,6 +535,7 @@ export default function WorkspaceApp({ workspaceAvailable = true }: { workspaceA
     }
   }, [ws, property, compIds, assumptions, valuationProperties]);
   const cma = cmaState.result;
+  const validatedMarket = benchmarkForState(property?.state);
   const authorizedValuation = useMemo(() => ws ? scopeWorkspaceForAccess(ws, 'valuation') : null, [ws]);
   const visibleCmaSnapshots = useMemo(
     () => authorizedValuation?.cmas.filter(saved => saved.propertyId === property?.id) || [],
@@ -1954,15 +1961,29 @@ export default function WorkspaceApp({ workspaceAvailable = true }: { workspaceA
                       <span className="eyebrow">YOU CONTROL THE ASSUMPTIONS</span>
                       <h2>Adjustment model</h2>
                     </div>
-                    <button
-                      className="text-button"
-                      onClick={() => {
-                        setAssumptions(regionalAssumptions(ws.fabric?.selectedRegionId || 'austin'));
-                        setCompIds(null);
-                      }}
-                    >
-                      Reset
-                    </button>
+                    <div className="assumption-actions">
+                      {validatedMarket && (
+                        <button
+                          className="text-button"
+                          title={`Load the configuration scored on ${validatedMarket.holdout.sales.toLocaleString('en-US')} ${validatedMarket.market.label} holdout sales; saved analyses then carry its calibrated interval.`}
+                          onClick={() => {
+                            setAssumptions(validatedAssumptions(validatedMarket));
+                            setSavedCmaId('');
+                          }}
+                        >
+                          Use {validatedMarket.market.label}-validated
+                        </button>
+                      )}
+                      <button
+                        className="text-button"
+                        onClick={() => {
+                          setAssumptions(regionalAssumptions(ws.fabric?.selectedRegionId || 'austin'));
+                          setCompIds(null);
+                        }}
+                      >
+                        Reset
+                      </button>
+                    </div>
                   </div>
                   <div className="assumptions-grid">
                     {[
@@ -1990,8 +2011,9 @@ export default function WorkspaceApp({ workspaceAvailable = true }: { workspaceA
                     ))}
                   </div>
                   <p className="fine">
-                    These are explicit analyst assumptions, not fitted market coefficients. Condition is a subjective
-                    1–5 rating. Adjustments are relative to the subject; verify every input.
+                    {validatedMarket && usesValidatedConfiguration(assumptions, validatedMarket)
+                      ? `These are the ${validatedMarket.market.label}-validated rates, fitted on earlier recorded sales and scored out of sample (${(validatedMarket.primary.mdape * 100).toFixed(1)}% median error). Editing any value leaves the validated configuration.`
+                      : 'These are explicit analyst assumptions, not fitted market coefficients. Condition is a subjective 1–5 rating. Adjustments are relative to the subject; verify every input.'}
                   </p>
                 </section>
                 <section className="panel">
@@ -2131,7 +2153,18 @@ export default function WorkspaceApp({ workspaceAvailable = true }: { workspaceA
                               </li>
                             ))}
                           </ul>
-                          {gate.reference && (
+                          {gate.calibratedInterval && (
+                            <p>
+                              <strong>
+                                Calibrated {(gate.calibratedInterval.target * 100).toFixed(0)}% interval:{' '}
+                                {money(gate.calibratedInterval.low)}–{money(gate.calibratedInterval.high)}
+                              </strong>{' '}
+                              ({gate.calibratedInterval.market}-validated configuration, {gate.calibratedInterval.tier}{' '}
+                              evidence; it held {(gate.calibratedInterval.holdoutCoverage * 100).toFixed(1)}% of
+                              comparable holdout sales).
+                            </p>
+                          )}
+                          {gate.reference && !gate.calibratedInterval && (
                             <p>
                               Measured reference ({gate.reference.market}, {gate.reference.tier} evidence,{' '}
                               {gate.reference.holdoutSales.toLocaleString('en-US')} holdout sales): median error{' '}

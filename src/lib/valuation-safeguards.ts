@@ -1,7 +1,8 @@
 import { calculateCma, defaultAssumptions, type OutcomeEvaluation } from './analytics';
 import type { CmaResult, Source, ValuationProperty } from './types';
 import type { ValidationReport } from './valuation-validation';
-import benchmarkJson from './valuation-benchmark.json';
+import kingCountyJson from './valuation-benchmark.json';
+import dcJson from './valuation-benchmark-dc.json';
 
 /**
  * Production safeguards around a computed valuation: a release gate run before a CMA can be approved,
@@ -17,9 +18,12 @@ export type ValuationBenchmark = {
   reportDigest: string;
   protocolDigest: string;
   protocolId: string;
+  /** The market the holdout measured; its calibration applies only to subjects located there. */
+  market: { id: string; label: string; state: string };
   accepted: boolean;
   dataset: { id: string; label: string; license: string; csvSha256: string; screened: number };
   holdout: { from: string; to: string; sales: number };
+  windows: Record<'fit' | 'select' | 'calibrate' | 'test', { from: string; to: string }>;
   engine: { version: string; fingerprint: string };
   primary: BenchmarkVariant;
   shipped: BenchmarkVariant;
@@ -34,6 +38,8 @@ export type ValuationBenchmark = {
     coverage: number;
     lowerPercent: number;
     upperPercent: number;
+    lowerLogRatio: number;
+    upperLogRatio: number;
   }[];
   fittedAssumptions: Record<string, number>;
   acceptance: { id: string; label: string; value: number; min?: number; max?: number; passed: boolean }[];
@@ -44,6 +50,7 @@ type BenchmarkVariant = {
   valuedShare: number;
   mdape: number;
   mdapeCi95: [number, number];
+  ppe10Ci95: [number, number];
   ppe5: number;
   ppe10: number;
   ppe20: number;
@@ -52,7 +59,20 @@ type BenchmarkVariant = {
   prd: number;
 };
 
+const markets: Record<string, { market: ValuationBenchmark['market']; dataset: string }> = {
+  'ascent-valuation-validation-1': {
+    market: { id: 'king-county', label: 'King County, WA', state: 'WA' },
+    dataset: 'King County, WA recorded sales',
+  },
+  'ascent-valuation-validation-dc-1': {
+    market: { id: 'dc', label: 'Washington, DC', state: 'DC' },
+    dataset: 'District of Columbia recorded sales',
+  },
+};
+
 export function benchmarkFromReport(report: ValidationReport): ValuationBenchmark {
+  const place = markets[report.protocol.id];
+  if (!place) throw new Error(`No market label is declared for ${report.protocol.id}.`);
   const variant = (id: string): BenchmarkVariant => {
     const item = report.holdout.perVariant[id];
     const label = report.variants.find(entry => entry.id === id)!.label;
@@ -63,6 +83,7 @@ export function benchmarkFromReport(report: ValidationReport): ValuationBenchmar
       valuedShare: item.valuedShare,
       mdape,
       mdapeCi95: item.mdapeCi95,
+      ppe10Ci95: item.ppe10Ci95,
       ppe5,
       ppe10,
       ppe20,
@@ -77,15 +98,17 @@ export function benchmarkFromReport(report: ValidationReport): ValuationBenchmar
     reportDigest: report.reportDigest,
     protocolDigest: report.protocolDigest,
     protocolId: report.protocol.id,
+    market: place.market,
     accepted: report.accepted,
     dataset: {
       id: report.protocol.dataset.id,
-      label: 'King County, WA recorded sales',
+      label: place.dataset,
       license: report.protocol.dataset.license,
       csvSha256: report.dataset.csvSha256,
       screened: report.dataset.screened,
     },
     holdout: { from: report.holdout.window.from, to: report.holdout.window.to, sales: report.holdout.screenedSales },
+    windows: report.protocol.windows,
     engine: report.engine,
     primary: variant(primaryId),
     shipped: variant('shipped-defaults'),
@@ -117,6 +140,8 @@ export function benchmarkFromReport(report: ValidationReport): ValuationBenchmar
         coverage: holdout.coverage,
         lowerPercent: Number(((Math.exp(tier.lowerLogRatio) - 1) * 100).toFixed(2)),
         upperPercent: Number(((Math.exp(tier.upperLogRatio) - 1) * 100).toFixed(2)),
+        lowerLogRatio: tier.lowerLogRatio,
+        upperLogRatio: tier.upperLogRatio,
       };
     }),
     fittedAssumptions: { ...primaryAssumptions },
@@ -131,7 +156,31 @@ export function benchmarkFromReport(report: ValidationReport): ValuationBenchmar
   };
 }
 
-export const valuationBenchmark = benchmarkJson as unknown as ValuationBenchmark;
+export const dcBenchmark = dcJson as unknown as ValuationBenchmark;
+export const kingCountyBenchmark = kingCountyJson as unknown as ValuationBenchmark;
+/** Every market with a published holdout, home market first. */
+export const valuationBenchmarks: readonly ValuationBenchmark[] = [dcBenchmark, kingCountyBenchmark];
+/** Ascent's home market (DC), the default reference for drift and public figures. */
+export const valuationBenchmark = dcBenchmark;
+export const benchmarkForState = (state?: string) =>
+  valuationBenchmarks.find(item => item.market.state === (state ?? '').trim().toUpperCase()) ?? null;
+
+const ASSUMPTION_KEYS = [
+  'sqftRate',
+  'bedroomValue',
+  'bathroomValue',
+  'conditionValue',
+  'monthlyTrend',
+  'maxDistanceMiles',
+  'maxAgeDays',
+  'maxSizeRatio',
+] as const;
+/** The calibration describes one exact configuration; any edited assumption makes it inapplicable. */
+export const usesValidatedConfiguration = (assumptions: CmaResult['assumptions'], benchmark: ValuationBenchmark) =>
+  ASSUMPTION_KEYS.every(key => Math.abs(assumptions[key] - benchmark.fittedAssumptions[key]) < 1e-9);
+/** The validated assumptions for a market, ready to load into the pricing studio. */
+export const validatedAssumptions = (benchmark: ValuationBenchmark): CmaResult['assumptions'] =>
+  Object.fromEntries(ASSUMPTION_KEYS.map(key => [key, benchmark.fittedAssumptions[key]])) as CmaResult['assumptions'];
 
 /** A small frozen case whose checksum changes whenever any part of the engine's arithmetic changes. */
 export function engineFingerprint(): { version: string; fingerprint: string } {
@@ -199,7 +248,7 @@ export function engineIntegrity() {
       // A throwing engine fails the self-test below.
     }
     engineSelfTest = {
-      passed: fingerprint === valuationBenchmark.engine.fingerprint,
+      passed: valuationBenchmarks.every(benchmark => benchmark.engine.fingerprint === fingerprint),
       fingerprint,
       expected: valuationBenchmark.engine.fingerprint,
     };
@@ -230,6 +279,19 @@ export type ReleaseAssessment = {
   decision: 'release' | 'review' | 'withhold';
   summary: string;
   checks: ReleaseCheck[];
+  /**
+   * Present only for a subject in a validated market analysed with that market's exact validated
+   * configuration: the split-conformal interval measured out of sample for this evidence tier.
+   */
+  calibratedInterval?: {
+    low: number;
+    high: number;
+    target: number;
+    tier: string;
+    holdoutCoverage: number;
+    market: string;
+    reportDigest: string;
+  } | null;
   /** Holdout-measured error for sales with the same evidence density, labeled with the market it was measured in. */
   reference: {
     market: string;
@@ -273,7 +335,9 @@ export function assessValuationRelease(
     benchmark?: ValuationBenchmark;
   } = {},
 ): ReleaseAssessment {
-  const benchmark = context.benchmark ?? valuationBenchmark;
+  const located = benchmarkForState(result.inputSnapshot?.subject.state);
+  const benchmark = context.benchmark ?? located ?? valuationBenchmark;
+  const inMarket = !!context.benchmark || !!located;
   const release = context.release ?? valuationReleaseSwitch();
   const integrity = context.integrity ?? engineIntegrity();
   const t = SAFEGUARD_THRESHOLDS;
@@ -402,11 +466,30 @@ export function assessValuationRelease(
       'Illustrative evidence',
       'Inputs include fictional records; this result demonstrates the method, not a market value.',
     );
+  const validated = inMarket && usesValidatedConfiguration(result.assumptions, benchmark);
+  const calibratedInterval =
+    validated && tier && n > 0
+      ? {
+          low: Math.round(result.estimate * Math.exp(tier.lowerLogRatio)),
+          high: Math.round(result.estimate * Math.exp(tier.upperLogRatio)),
+          target: benchmark.intervals.target,
+          tier: tier.id,
+          holdoutCoverage: tier.coverage,
+          market: benchmark.market.label,
+          reportDigest: benchmark.reportDigest,
+        }
+      : null;
+  const record = `${benchmark.acceptance.filter(item => item.passed).length} of ${benchmark.acceptance.length} pre-registered criteria`;
+  const measured = `In the published ${benchmark.dataset.label} holdout (${benchmark.holdout.sales.toLocaleString('en-US')} sales), the validated configuration's median error was ${percent(benchmark.primary.mdape)}${tier?.mdape != null ? ` overall and ${percent(tier.mdape)} for sales with ${tier.id} evidence like this one` : ''}; it met ${record}.`;
   add(
     'measured-accuracy',
     'context',
     'Measured accuracy reference',
-    `In the published ${benchmark.dataset.label} holdout (${benchmark.holdout.sales.toLocaleString('en-US')} sales), the locally calibrated engine's median error was ${percent(benchmark.primary.mdape)}${tier?.mdape != null ? ` overall and ${percent(tier.mdape)} for sales with ${tier.id} evidence like this one` : ''}; it ${benchmark.accepted ? 'met' : `met ${benchmark.acceptance.filter(item => item.passed).length} of ${benchmark.acceptance.length}`} pre-registered criteria. That market's calibration does not transfer here: this range stays an uncalibrated comparable envelope until this market is validated.`,
+    calibratedInterval
+      ? `${measured} This analysis uses the exact ${benchmark.market.label}-validated configuration, so its calibrated ${percent(calibratedInterval.target)} interval is ${calibratedInterval.low.toLocaleString('en-US')}–${calibratedInterval.high.toLocaleString('en-US')} (it held ${percent(tier!.coverage)} of comparable holdout sales).`
+      : inMarket
+        ? `${measured} These assumptions differ from the validated ${benchmark.market.label} configuration, so no calibrated interval applies; load the validated assumptions to get one.`
+        : `No published validation covers this location (validated: ${valuationBenchmarks.map(item => item.market.label).join(', ')}). For scale only: ${measured} This range stays an uncalibrated comparable envelope.`,
   );
   const blocking = checks.filter(check => check.status === 'block');
   const reviews = checks.filter(check => check.status === 'review');
@@ -421,6 +504,7 @@ export function assessValuationRelease(
           ? `Approval requires acknowledging ${reviews.length} review item${reviews.length === 1 ? '' : 's'}: ${reviews.map(check => check.label.toLowerCase()).join('; ')}.`
           : 'All release checks passed. Professional judgment is still required.',
     checks,
+    calibratedInterval,
     reference: tier
       ? {
           market: benchmark.dataset.label,

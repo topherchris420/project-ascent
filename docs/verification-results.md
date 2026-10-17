@@ -111,6 +111,23 @@ Executed in a Linux cloud container with Node 22.22.0. Details are in [valuation
 | Accessibility | **22/22 configurations**, zero Axe violations, no horizontal overflow (includes the new landing accuracy section) |
 | Production build and typecheck | Pass; `/api/health` route generated |
 
+## October 17, 2026 Washington, DC validation
+
+Executed in a Linux cloud container with Node 22.22.0. Details are in [valuation validation](valuation-validation.md#washington-dc-protocol-ascent-valuation-validation-dc-1).
+
+| Check | Result |
+| --- | --- |
+| DC data snapshot | 45,425 District recorded sales since Jan 2022 → **10,174** assessor-qualified single-unit residential sales after documented record rules (CC BY 4.0; owner names never downloaded). CSV `sha256 eebe4719…` |
+| DC out-of-sample accuracy | 2,254 recorded sales (Oct 2025 – Sep 2026) scored once under `ascent-valuation-validation-dc-1`: **MdAPE 9.98%** (95% CI 9.42–10.63), PPE10 50.2% (48.1–52.2), COD 13.9, PRD 1.0295, median bias +1.7%, calibrated 80% coverage 76.7%. **9 of 9 pre-registered criteria met; A2, A3 and A5 narrowly.** Report `sha256-d4acbe70…` |
+| DC baseline comparison | Beats median $/sqft of the same comparables by 4.1 MdAPE points (paired 95% upper bound −3.2) and the trailing ZIP median by 12.4 points. Untuned shipped defaults: 16.3%, worse than median $/sqft |
+| Independent re-derivation (`--check`, both markets) | **24/24** checks pass (12 per market) |
+| Full DC re-run (`--verify --market dc`) | **Pass**: report digest and all 2,254 per-sale estimates reproduced byte for byte in 61 s (14/14 checks) |
+| King County report | Unchanged: protocol digest and report `sha256-11e488db…` still verify after the multi-market refactor |
+| Unit/integration suite | **294/294 passed**, including market-aware gate, DC calibrated-interval and frozen-protocol tests |
+| Browser suite (affected specs) | **10/10 passed** |
+| Accessibility | **22/22 configurations**, zero Axe violations, no horizontal overflow |
+| Production build and typecheck | Pass |
+
 ## Reproduce
 
 ```powershell
