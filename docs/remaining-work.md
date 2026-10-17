@@ -6,7 +6,7 @@ Added on top of the Pricing Studio slice: the one-axis range chart linked to the
 
 External dependencies that remain with the owner:
 
-- **Hosted accounts.** Configured and redeployed on October 17 with production-only secrets; the demo workflow passes on the live site ([results](verification-results.md#october-17-2026-hosted-production-configuration)). Still to do: verify registration, password sign-in and cross-tenant isolation on the deployed site, and move local development and tests to a separate database or branch. The Hobby plan permits personal, non-commercial use only.
+- **Hosted accounts.** Configured and redeployed on October 17 with production-only secrets; the demo workflow passes on the live site ([results](verification-results.md#october-17-2026-hosted-production-configuration)). Database acceptance against the production database passed 6/6 with cleanup. Still to do: one manual registration and password sign-in through the deployed pages, and moving local development and tests to a separate database or branch. The Hobby plan permits personal, non-commercial use only.
 - **Unmerged parallel work.** The remote branch `claude/exciting-lamport-3153iy` adds valuation backtests on public DC and King County sales and an accuracy scorecard. It is not on `master` and also edits the landing page and workspace; merging it requires reconciling those files and reviewing its accuracy claims before they appear in the product.
 - **Licensed history.** Asking-position outcomes (days on market or under-contract rates by distance above estimate), permits, assessor condition grades and mortgage-rate context require licensed or public-record sources that are not configured.
 
