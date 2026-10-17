@@ -729,3 +729,41 @@ test('authorized provider fixtures are read-only evidence; any real provider cac
   assert.equal(calls, 0);
   assert.ok(answer.tools.includes('licensed-model-sharing-blocked'));
 });
+
+test('answers separate recorded facts, calculations, assumptions, interpretation and unknowns', async () => {
+  const workspace = createDemoWorkspace();
+  const deterministic = answerFromEvidence(workspace, 'Explain the pricing assumptions', {
+    cmaId: 'cma-01',
+    propertyId: workspace.cmas.find(c => c.id === 'cma-01')!.propertyId,
+  });
+  const kinds = new Set(deterministic.statements!.map(s => s.kind));
+  for (const kind of ['fact', 'calculation', 'assumption'] as const) assert.ok(kinds.has(kind), kind);
+  assert.ok(!kinds.has('interpretation'), 'deterministic mode never claims model interpretation');
+  // The labeled statements are the answer, not a second version of it.
+  assert.equal(deterministic.answer, deterministic.statements!.map(s => s.text).join('\n\n'));
+  assert.ok(deterministic.missingInformation.length > 0);
+  assert.ok(deterministic.statements!.filter(s => s.kind === 'calculation').some(s => /weighted mean/.test(s.text)));
+  const draft = answerFromEvidence(workspace, 'Draft an email to my seller', { cmaId: 'cma-01' });
+  assert.ok(draft.statements!.some(s => s.kind === 'draft' && s.text.includes('{client_first_name}')));
+
+  const bodies: string[] = [];
+  const mock: typeof fetch = async (_url, init) => {
+    bodies.push(String(init?.body));
+    const body = JSON.parse(String(init?.body));
+    if (!body.response_format) return completion('Evidence is sufficient.');
+    return completion(
+      JSON.stringify({
+        sections: [{ text: 'The stored analysis is a calculation, not a guaranteed sale.', citationIds: ['cma-01'] }],
+        missingInformation: [],
+        suggestedActions: [],
+      }),
+    );
+  };
+  const model = await answerAssistant(workspace, 'Explain the property evidence', { cmaId: 'cma-01' }, mock);
+  assert.equal(model.mode, 'model');
+  assert.equal(model.statements![0].kind, 'interpretation');
+  assert.deepEqual(model.statements![0].refs, ['cma-01']);
+  assert.ok(model.statements!.some(s => s.kind === 'calculation'));
+  // Labeled copies are presentation only: they are never sent to, or billed by, the model provider.
+  assert.ok(bodies.length > 0 && bodies.every(body => !body.includes('"statements"')));
+});

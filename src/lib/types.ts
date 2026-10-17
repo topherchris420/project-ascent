@@ -219,6 +219,8 @@ export type CmaRecord = {
   propertyId: string;
   createdAt: string;
   result: CmaResult;
+  /** Analyst rationale, separate from source facts and the deterministic calculation. */
+  reviewNotes?: { propertyId: string; reason: string }[];
   providerContext?: {
     normalizationWarnings: string[];
     incomplete: { id: string; missingFields: string[] }[];
@@ -356,9 +358,20 @@ export type Scenario = {
   warnings: string[];
   evidenceIds: string[];
 };
+/**
+ * One part of an answer, labeled by how it is known: a stored record, deterministic arithmetic, an analyst
+ * assumption, model-generated interpretation, a draft for review, or a stated boundary of the evidence.
+ * Unknown or missing evidence stays in AssistantResponse.missingInformation.
+ */
+export type AssistantStatement = {
+  kind: 'fact' | 'calculation' | 'assumption' | 'interpretation' | 'draft' | 'boundary';
+  text: string;
+  refs?: string[];
+};
 export type AssistantResponse = {
   mode: 'evidence' | 'model';
   answer: string;
+  statements?: AssistantStatement[];
   citations: { id: string; label: string; detail: string }[];
   missingInformation: string[];
   suggestedActions: string[];

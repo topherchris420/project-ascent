@@ -103,7 +103,7 @@ async function main() {
   const accounts: Awaited<ReturnType<typeof register>>[] = [];
   await check('instant registration and session authentication', async () => {
     for (const email of emails)
-      accounts.push(await register({ name: 'Synthetic PostgreSQL acceptance', email, password }));
+      accounts.push(await register({ seed: 'demo', name: 'Synthetic PostgreSQL acceptance', email, password }));
     assert.equal((await authenticate(request(accounts[0].token))).tenantId, accounts[0].user.tenantId);
     const loggedIn = await login(emails[0], password);
     assert.equal(loggedIn.user.id, accounts[0].user.id);

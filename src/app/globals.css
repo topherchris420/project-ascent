@@ -5478,3 +5478,60 @@ summary {
   background: #fbefe3;
   color: #8a4b1d;
 }
+/* Ask Ascent answers grouped by how each part is known. Markers pair color with position and a text label. */
+.answer-anatomy {
+  display: grid;
+  gap: 12px;
+  margin: 14px 0 18px;
+}
+.anatomy-group h4 {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0;
+  font-size: 11px;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+.anatomy-group h4 i {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  background: #8a9a82;
+}
+.anatomy-interpretation h4 i {
+  background: #c0682f;
+  border-radius: 50%;
+}
+.anatomy-calculation h4 i {
+  background: #2e8a5f;
+}
+.anatomy-assumption h4 i {
+  background: #fff;
+  border: 2px solid #2e8a5f;
+}
+.anatomy-group > small {
+  display: block;
+  font-size: 10.5px;
+  color: var(--muted);
+  margin: 2px 0 0 15px;
+}
+.anatomy-group .answer-text {
+  margin: 6px 0 0 15px;
+  line-height: 1.75;
+}
+.anatomy-interpretation {
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #fbf3ec;
+}
+.anatomy-boundary .answer-text {
+  font-size: 11.5px;
+}
+.anatomy-refs {
+  display: block;
+  margin-top: 4px;
+  font-size: 10.5px;
+  color: var(--muted);
+}

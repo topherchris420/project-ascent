@@ -57,6 +57,7 @@ export async function GET(request: Request) {
       payoff: number('payoff', 1_000_000_000) ?? 0,
       presentation: url.searchParams.get('view') === 'presentation',
       generatedAt: new Date().toISOString(),
+      selectedListPrice: number('asking', 100_000_000),
     });
     return new Response(verifiedHtml, {
       headers: {
