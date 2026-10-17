@@ -1,6 +1,7 @@
 import { createHash, randomUUID } from 'node:crypto';
 import { z } from 'zod';
 import { calculateCma } from './analytics';
+import { assessValuationRelease } from './valuation-safeguards';
 import { HttpError, requireEditor } from './auth';
 import { getWorkspace, mutateWorkspace, transaction } from './db';
 import { bootstrapFabric } from './fabric';
@@ -882,6 +883,7 @@ async function saveProviderCma(
         incomplete: normalized.incomplete,
         recordIds: [...new Set([subject.id, ...candidates.map(candidate => candidate.id)])],
       },
+      release: assessValuationRelease(result, { sources: workspace.sources, now: asOf }),
     };
     workspace.cmas.push(cma);
     appendAudit(

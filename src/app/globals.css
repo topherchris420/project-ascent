@@ -5535,3 +5535,36 @@ summary {
   font-size: 10.5px;
   color: var(--muted);
 }
+
+/* Valuation release gate beside a preserved pricing snapshot */
+.release-gate {
+  padding: 0 23px 14px;
+  font-size: 11.5px;
+  color: #53634d;
+}
+.release-gate summary {
+  cursor: pointer;
+  line-height: 1.5;
+}
+.release-gate ul {
+  margin: 8px 0 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 4px;
+}
+.release-gate li.release-review strong,
+.release-gate li.release-block strong {
+  color: #8a4b1d;
+}
+.release-gate li.release-pass strong {
+  color: #456a43;
+}
+.release-gate p {
+  margin-top: 8px;
+}
+.assumption-actions {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}

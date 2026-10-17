@@ -95,6 +95,10 @@ Ask Ascent draws on authorized workspace records. Deterministic evidence mode wo
 
 **The math is inspectable.** Pricing calculations are deterministic, with visible assumptions and signed adjustments. Model-generated prose does not set valuation figures.
 
+**The accuracy is measured in DC, not claimed.** On 2,254 District of Columbia home sales recorded from October 2025 to September 2026, which the engine never saw, the DC-validated configuration had a 10.0% median error. 50.2% of sales landed within ±10%, and the calibrated 80% range held 76.7%. It beat median $/sqft of the same comparables by 4.1 points and met all nine pre-registered criteria, three of them narrowly, as the report states. It uses the District's own deed and assessor records (CC BY 4.0). A second market, King County, WA, met 5 of 9, and its misses are published too. `npm run validate:valuation -- --verify --market dc` reproduces the DC report byte for byte. See [valuation validation](docs/valuation-validation.md).
+
+**Valuations pass a release gate.** Before a price can be approved, named checks look at comparable count, agreement, adjustment size, freshness, outliers, an independent $/sqft cross-check and engine integrity. Concerns must be acknowledged, and an operator switch (`ASCENT_VALUATION_RELEASE=disabled`) can pause approval everywhere. `/api/health` exposes readiness without secrets.
+
 **The history is reproducible.** A saved analysis freezes the evidence and computation that produced it, and a one-click replay proves it still recomputes to the same checksum. The checksum supports replay and detects accidental drift; it is not cryptographic proof against a determined adversary.
 
 **The user remains the decision-maker.** Suggestions and drafts stop short of consequential actions. A review is recorded instead of quietly sending or signing something.
@@ -159,6 +163,7 @@ npm test
 npm run test:e2e
 npm run benchmark
 npm run evaluate:domain
+npm run validate:valuation -- --check
 npm run evaluate:ai
 npm run build
 ```
@@ -180,7 +185,7 @@ Ascent deliberately makes a distinction between **software that runs** and **cla
 - **Demo data is fictional, and only the demo has it.** The public pricing example and the demonstration workspace are illustrative and labeled synthetic on every screen. A new private account contains nothing until its owner adds evidence; fixture records enter it only by an explicit, audited request.
 - **No MLS rights are bundled.** RentCast is a separate property-data provider. Any live source requires its own permissions and appropriate professional eligibility.
 - **No appraisal or legal opinion is produced.** CMA calculations and date extraction are decision aids requiring qualified review. Scanned-document OCR and comprehensive holiday calendars are not available.
-- **No proven predictive accuracy or business outcome is claimed.** Adjusted-comp ranges, offer scores, scenario calculations, and synthetic outcomes are not calibrated future-sale probabilities.
+- **Accuracy is measured in two markets only.** DC (single-unit residential, Oct 2025 – Sep 2026; 9 of 9 criteria, three narrowly) and King County, WA (2015; 5 of 9). Maryland, Virginia, Austin and condominiums are unmeasured, and outside a validated market and configuration the range stays an uncalibrated comparable envelope. Offer scores, scenario calculations and synthetic outcomes are not calibrated probabilities, and no business outcome is claimed.
 - **Model output is not a substitute for evidence.** Cited AI explanations can still be wrong. External model use must respect data-sharing restrictions.
 - **Production readiness is still being established.** Hosted database acceptance and bounded integration checks are documented; deployment configuration, provider rights, payment settlement, reliability, and operational security still have outstanding gates.
 

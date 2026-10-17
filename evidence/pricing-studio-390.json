@@ -1,5 +1,5 @@
 {
-  "at": "2026-10-17T13:54:17.294Z",
+  "at": "2026-10-17T15:12:37.763Z",
   "baselineCommit": "4c66ee6",
   "viewport": {
     "width": 390,
@@ -15,8 +15,8 @@
   "node": "v24.19.0",
   "environment": "Local Next.js development server, installed Chrome, fictional authored data, scripted warm/cold compile conditions uncontrolled; not human study or production SLA",
   "sampleSize": 1,
-  "meaningfulMs": 1776,
-  "reportMs": 5760,
+  "meaningfulMs": 1739,
+  "reportMs": 5604,
   "accountRequired": false,
   "workspaceProviderModelCalls": 0,
   "axeViolations": 0,
