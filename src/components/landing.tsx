@@ -627,6 +627,10 @@ const faqs = [
 ];
 
 export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAvailable = true }: LandingProps) {
+  const startDemo = () => {
+    if (workspaceAvailable) onDemo();
+    else document.getElementById('pricing-example')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
   const demoLabel = (
     <>
       {busy ? (
@@ -634,7 +638,7 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAv
       ) : (
         <Sparkles size={18} aria-hidden="true" />
       )}
-      <span>Explore the working demo</span>
+      <span>{workspaceAvailable ? 'Explore the working demo' : 'Try the interactive pricing demo'}</span>
       <ArrowRight size={16} aria-hidden="true" />
     </>
   );
@@ -660,17 +664,17 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAv
               type="button"
               className="lp-btn lp-btn-ghost lp-nav-login"
               onClick={onSignIn}
-              disabled={!workspaceAvailable}
+              
             >
               Log in
             </button>
             <button
               type="button"
               className="lp-btn lp-btn-primary lp-btn-sm"
-              onClick={onDemo}
-              disabled={busy || !workspaceAvailable}
+              onClick={startDemo}
+              disabled={busy}
             >
-              Try the demo
+              {workspaceAvailable ? 'Try the demo' : 'Try pricing'}
             </button>
           </div>
         </div>
@@ -697,9 +701,7 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAv
               {!workspaceAvailable && (
                 <div role="status" className="lp-setup">
                   <strong>Workspace setup is in progress.</strong>
-                  <p>
-                    Account access will be available after setup. You can still explore the fictional pricing example.
-                  </p>
+                  <p>Account storage is not ready. You can explore the interactive pricing example while the full workspace is configured.</p>
                   <a href="#pricing-example">Try the pricing example</a>
                 </div>
               )}
@@ -712,8 +714,8 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAv
                 <button
                   type="button"
                   className="lp-btn lp-btn-primary lp-btn-lg"
-                  onClick={onDemo}
-                  disabled={busy || !workspaceAvailable}
+                  onClick={startDemo}
+                  disabled={busy}
                 >
                   {demoLabel}
                 </button>
@@ -721,14 +723,14 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAv
                   type="button"
                   className="lp-btn lp-btn-outline lp-btn-lg"
                   onClick={onSignIn}
-                  disabled={!workspaceAvailable}
+                  
                 >
                   Sign in
                 </button>
               </div>
               <p className="lp-fine">
-                The demo opens a private workspace with fictional properties and clients.{' '}
-                <button type="button" className="lp-link" onClick={onRegister} disabled={!workspaceAvailable}>
+                {workspaceAvailable ? 'The demo opens a private workspace with fictional properties and clients. ' : 'The interactive example uses fictional properties. A full account requires workspace setup. '}
+                <button type="button" className="lp-link" onClick={onRegister} >
                   Create an account
                 </button>{' '}
                 to start your own.
@@ -986,21 +988,21 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAv
                 <button
                   type="button"
                   className="lp-btn lp-btn-light lp-btn-lg"
-                  onClick={onDemo}
-                  disabled={busy || !workspaceAvailable}
+                  onClick={startDemo}
+                  disabled={busy}
                 >
                   {busy ? (
                     <LoaderCircle className="spin" size={18} aria-hidden="true" />
                   ) : (
                     <Handshake size={18} aria-hidden="true" />
                   )}
-                  Open a demo workspace
+                  {workspaceAvailable ? 'Open a demo workspace' : 'Try the pricing example'}
                 </button>
                 <button
                   type="button"
                   className="lp-btn lp-btn-onDark lp-btn-lg"
                   onClick={onRegister}
-                  disabled={!workspaceAvailable}
+                  
                 >
                   Create an account <ArrowUpRight size={16} aria-hidden="true" />
                 </button>
