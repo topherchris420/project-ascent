@@ -701,7 +701,7 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAv
                 <div role="status" className="lp-setup">
                   <strong>Workspace setup is in progress.</strong>
                   <p>
-                    Account storage is not ready. You can explore the interactive pricing example while the full
+                    Hosted account services are not ready. You can explore the interactive pricing example while the full
                     workspace is configured.
                   </p>
                   <a href="#pricing-example">Try the pricing example</a>
