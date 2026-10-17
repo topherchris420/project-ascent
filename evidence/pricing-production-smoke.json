@@ -1,0 +1,45 @@
+{
+  "at": "2026-10-17T13:49:54.555Z",
+  "environment": "Local optimized Next.js production build; no hosted Vercel acceptance, no real provider/model requests",
+  "platform": "win32",
+  "arch": "arm64",
+  "node": "v24.19.0",
+  "checks": [
+    {
+      "path": "/",
+      "status": 200,
+      "elapsedMs": 25.4
+    },
+    {
+      "path": "/demo",
+      "status": 200,
+      "elapsedMs": 21.9
+    },
+    {
+      "path": "/api/demo/report",
+      "status": 200,
+      "elapsedMs": 35.9
+    },
+    {
+      "path": "/api/demo/report?state=invalid",
+      "status": 400,
+      "elapsedMs": 8.7
+    },
+    {
+      "path": "/api/workspace",
+      "status": 401,
+      "elapsedMs": 38.3
+    },
+    {
+      "path": "/api/auth/demo",
+      "status": 503,
+      "note": "Missing production database remains explicit; no SQLite fallback."
+    }
+  ],
+  "secretScan": {
+    "artifacts": 63,
+    "credentialValuesDisclosed": false,
+    "matches": 0
+  },
+  "sampleSizePerRequest": 1
+}

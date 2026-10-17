@@ -1,5 +1,24 @@
 # Capability and evidence matrix
 
+## October 17 Pricing Studio slice
+
+| Capability | Implementation | Boundary |
+| --- | --- | --- |
+| Complete account-free pricing | `/demo`: evidence inspector, sensitivity, assumption edits, exclusion reasons, strategy costs, practice persistence, report and JSON decision | Known fictional fixture only; no general address lookup or account synchronization |
+| Comparable explanation | Sold/adjusted chart, formula disclosure, distance, age, size, weights and source observation | Model influence is not data-quality certification |
+| Decision Time Machine arithmetic | Per-sale adjusted-value and weight/eligibility effects, explicit rounding reconciliation | Arithmetic attribution; no causal market explanation |
+| Contextual draft explanation | Four deterministic questions update with the calculation currently on screen and link to references | Bounded evidence templates, separate from free-text Groq; no model quality claim |
+| Faithful seller scenario | Selected asking price/costs/payoff carry into HTML report; practice JSON replays | Human review, current export rights and existing renderer limitations still apply |
+| Navigation and entry | Deferred workspace loading; task/property URLs; history/reload; sign-out reset; invitation handoff | Hosted accounts still require production configuration |
+| Range chart and inspector | One price axis with every adjusted sale (sized by weight), the estimate and the asking price; a selected sale opens in the inspector; same component in `/demo` and the workspace | Chart covers adjusted values; sold-to-adjusted movement stays in the inspector |
+| Input sensitivity ("What changes my decision?") | `decision-drivers.ts`: one-input-at-a-time recalculation on frozen evidence, ranked; unavailable when a filter empties the set; `decision-drivers.test.ts` and browser checks | Disclosed review steps, not market uncertainty or a recommended setting |
+| Seller plan | `seller-plan.ts`: anchors, selected price, reduction to the next search threshold and the equal credit, exact credit penalty; mobile card layout | No timing, buyer response, appraisal or loan-program credit limits; threshold convention is disclosed, not measured |
+| Practice evidence entries | Up to three user-entered sales labeled `user` and "unverified" in the studio, report and JSON; bounded server validation | Distance-only location; practice slice only, not a licensed manual-comparable permission system |
+| Labeled assistant answers | `AssistantResponse.statements`: facts, calculations, assumptions, interpretation, drafts, limits; unknowns stay separate; labels stripped before provider requests; `inference.test.ts` | Labels describe provenance, not semantic correctness of model interpretation |
+| Workspace pricing layout | Decide / Evidence / Challenge / History sections with sticky navigation; real valuation counts replace a decorative range bar; trend entered as % per month | Same calculation and saved-snapshot format |
+
+See [implementation and limits](pricing-studio.md), [public competitor scorecard](competitive-scorecard.md) and the dated [verification results](verification-results.md). These additions do not imply complete live property intelligence, new provider rights, professional adoption or achieved competitive preference.
+
 Ascent is an independent product. The matrix records implemented behavior, supporting tests and remaining limits. See [verification results](verification-results.md) for executed checks. Fixtures and local timings do not establish production reliability or market accuracy.
 
 ## Evidence fitness and historical decision review

@@ -1,5 +1,19 @@
 # Domain intelligence: validation and limits
 
+## Independent Ascent / HomeSolo task study (not yet conducted)
+
+The primary preference target is **at least 7 of 10 experienced real estate professionals choosing Ascent after using both products**. Participants to date: **0**. This is a future validation target, not a product result. The [public scorecard](competitive-scorecard.md) distinguishes directly observed demonstrations from private behavior that remains unverified.
+
+Before recruitment, an independent facilitator must preregister the protocol, neutral task wording, dataset rights, thresholds, exclusions and scoring. Obtain access to both working products with equivalent capabilities and the **same legally permitted frozen evidence**. If HomeSolo cannot accept that evidence or access is unavailable, mark that task unverified; do not score its marketing page against Ascent's unlocked workspace or substitute different fixtures and call it a fair comparison.
+
+Recruit ten licensed, experienced professionals independent of the development team, with buyer/listing roles and DMV experience represented. Randomize and counterbalance product order (five start with each), provide equal familiarization, prohibit developer coaching, and disclose sponsorship. Record device/browser/network, input versions, source rights, training time, task order and any outages. Use objective property facts only; do not introduce protected-trait targeting.
+
+Give each participant six paired tasks: (1) make a pricing decision and explain the influential sale, (2) exclude a questionable sale and explain the arithmetic change, (3) create a report with explicit seller costs, (4) compare offer proceeds and unknown terms, (5) review a document-linked deadline and correct a proposed date, and (6) explain a changed decision from frozen versus current evidence. A blinded qualified reviewer scores arithmetic, source support, uncertainty comprehension and whether the requested deliverable is actually usable. Time ends at a correct deliverable, not a button click. Capture corrections, abandoned tasks, assistance, source discrepancies and confidence about unknowns.
+
+Prespecified engineering/user-task goals: at least 57/60 successful Ascent tasks (95%), zero critical arithmetic errors or unauthorized disclosures in tested paths, and no major accessibility regression in the studied states. Record the first meaningful demo result and first CMA/report distributions against the 30-second and 120-second targets; automated local timings do not establish human completion time. Do not remove failed or unavailable tasks from the denominator silently.
+
+After both products, ask the neutral forced-preference question with Ascent / HomeSolo / no preference, plus the reasons and observed friction. The primary denominator is ten completers; ties count as not preferring Ascent. Preregister handling of withdrawals before data collection. Report each outcome, counts, paired task distributions and uncertainty; 7/10 alone does not establish population-wide superiority or valuation accuracy. Keep independent outcomes separate from internally authored acceptance tests and publish neither participant identities nor restricted records without authorization.
+
 The implementation adds a deterministic professional-practice layer, rather than claiming that a language model has acquired expert judgment. Real customer outcomes and independent expert agreement remain unmeasured.
 
 ## Working foundation
