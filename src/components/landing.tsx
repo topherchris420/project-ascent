@@ -25,6 +25,7 @@ import {
   Users,
 } from 'lucide-react';
 import { calculateCma, defaultAssumptions, simulatePricing } from '@/lib/analytics';
+import { assessCmaEvidence, compareCmaDecisions } from '@/lib/decision-review';
 import type { ValuationProperty } from '@/lib/types';
 
 export type LandingProps = {
@@ -123,6 +124,20 @@ function readPosition(price: number, low: number, estimate: number, high: number
 
 function PricingCard() {
   const cma = useMemo(() => calculateCma(subject, candidates, defaultAssumptions, SAMPLE_AS_OF), []);
+  const evidenceAssessment = useMemo(() => assessCmaEvidence(cma, [{
+    id: SOURCE, label: 'Clearly fictional Arlington sample', kind: 'synthetic',
+    observedAt: SAMPLE_AS_OF, license: 'Practice-only fictional evidence', confidence: 1,
+  }]), [cma]);
+  // Demonstrate a revision to an input record, not a purported historical market price movement.
+  const earlierSample = useMemo(() => calculateCma(
+    subject,
+    candidates.map(candidate => candidate.id === 'landing-c2'
+      ? { ...candidate, soldPrice: candidate.soldPrice! - 15000 }
+      : candidate),
+    defaultAssumptions,
+    SAMPLE_AS_OF,
+  ), []);
+  const recordedRevision = useMemo(() => compareCmaDecisions(earlierSample, cma), [earlierSample, cma]);
   const positions = useMemo(
     () =>
       [
@@ -248,6 +263,27 @@ function PricingCard() {
           </dd>
         </div>
       </dl>
+
+      <details className="lp-math">
+        <summary>
+          <ShieldCheck size={14} aria-hidden="true" /> Inspect evidence fitness and a sample revision
+        </summary>
+        <div className="lp-math-body">
+          <p><strong>{evidenceAssessment.label}.</strong> {evidenceAssessment.comparableCount} eligible fictional sales, {evidenceAssessment.effectiveComparableCount.toFixed(1)} effective after weighting, largest weight {evidenceAssessment.largestWeightPercent.toFixed(1)}%, and adjusted spread {evidenceAssessment.adjustedSpreadPercent.toFixed(1)}% of the estimate.</p>
+          <ul className="lp-comps">
+            {evidenceAssessment.findings.map(finding => (
+              <li key={finding.label}><strong>{finding.label}:</strong> {finding.detail}</li>
+            ))}
+          </ul>
+          <p><strong>Decision Time Machine, miniature example.</strong> Compare this fictional calculation with a deliberately altered practice snapshot in which one fictional sale was entered $15,000 lower. Neither snapshot represents an actual market change.</p>
+          <dl className="lp-facts">
+            <div><dt>Earlier practice estimate</dt><dd>{money(recordedRevision.previousEstimate)}</dd></div>
+            <div><dt>Current practice estimate</dt><dd>{money(recordedRevision.currentEstimate)}</dd></div>
+            <div><dt>Revised sale facts</dt><dd>{recordedRevision.revisedSharedSales.length}</dd></div>
+          </dl>
+          <p className="lp-math-assumptions">Observed estimate difference: {signed(recordedRevision.estimateChange)}. A changed calculation is not proof that any real home gained or lost value. Saved workspace analyses can be replayed against their archived input evidence.</p>
+        </div>
+      </details>
 
       <details className="lp-math">
         <summary>

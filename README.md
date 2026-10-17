@@ -32,7 +32,7 @@ And it doesn't stop at pricing. Clients, offers, transaction deadlines, saved re
 
 The public site includes a **working, interactive pricing example** using a clearly fictional home in Arlington, Virginia. Explore conservative, moderate, and aggressive asking-price positions, adjust the slider, and open **Show the math** to inspect the comparable sales and signed adjustments.
 
-The sample uses Ascent's actual deterministic pricing engine, **not a generated image or fabricated AI answer**. Its properties and prices are illustrative, not real market research.
+The sample uses Ascent's actual deterministic pricing engine, **not a generated image or fabricated AI answer**. Its properties and prices are illustrative, not real market research. Expand **Inspect evidence fitness and a sample revision** to see source-quality review heuristics and an explicitly fictional before/after decision comparison without creating an account.
 
 **Two ways in, with different honesty rules.** *Explore the working demo* opens an isolated, persistent workspace preloaded with a clearly fictional fixture (frozen in time so its deadlines stay meaningful). *Create an account* opens a workspace that starts **empty on purpose**: no invented properties, people, offers or transactions. Evidence arrives only through authorized imports, your own entries, a configured property-data provider, or an explicit, audited choice to load the labeled practice fixture.
 
