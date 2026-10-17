@@ -2,7 +2,7 @@ import test, { after } from 'node:test';
 import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
 import { resolve } from 'node:path';
-import { checkDeployment, workspaceIsAvailable } from '../src/lib/deployment';
+import { allowedAppOrigins, checkDeployment, workspaceIsAvailable } from '../src/lib/deployment';
 import { databasePoolOptions } from '../src/lib/database-config';
 import {
   DOCUMENT_LIMIT_LABEL,
@@ -40,6 +40,32 @@ test('deployment readiness refuses incomplete production configuration while loc
     false,
     'configuration is not proof a database was migrated',
   );
+});
+
+test('a Vercel deployment accepts platform-owned HTTPS origins without weakening origin validation', () => {
+  const vercel = {
+    ...configured,
+    APP_ORIGIN: undefined,
+    VERCEL: '1',
+    VERCEL_URL: 'ascent-unique-deployment.vercel.app',
+    VERCEL_PROJECT_PRODUCTION_URL: 'project-ascent-theta.vercel.app',
+  };
+  assert.deepEqual(allowedAppOrigins(vercel), [
+    'https://project-ascent-theta.vercel.app',
+    'https://ascent-unique-deployment.vercel.app',
+  ]);
+  assert.equal(checkDeployment(vercel).configured, true);
+  assert.equal(workspaceIsAvailable(vercel), true);
+  assert.equal(checkDeployment({ ...vercel, VERCEL: undefined }).configured, false);
+  assert.equal(checkDeployment({ ...vercel, APP_ORIGIN: 'https://bad.example/path' }).configured, false);
+  assert.deepEqual(allowedAppOrigins({ ...vercel, APP_ORIGIN: 'https://ascent.example.invalid' }), [
+    'https://ascent.example.invalid',
+  ]);
+  assert.deepEqual(allowedAppOrigins({
+    ...vercel,
+    VERCEL_URL: 'evil.example@another.example',
+    VERCEL_PROJECT_PRODUCTION_URL: 'https://fake.example',
+  }), []);
 });
 
 test('production origin, database protocol and document encryption configuration are validated without exposing values', () => {
