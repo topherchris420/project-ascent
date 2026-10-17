@@ -6,7 +6,7 @@ Added on top of the Pricing Studio slice: the one-axis range chart linked to the
 
 External dependencies that remain with the owner:
 
-- **Hosted accounts.** The Vercel project has no environment variables, so production correctly shows the account-free studio and disables workspace sign-in. Enabling accounts needs `DATABASE_URL` (restricted runtime role), a new production `APP_ENCRYPTION_KEY`, `CRON_SECRET` and `PGSSL`, then a redeploy and hosted acceptance ([steps](vercel-hobby.md#connect-the-backend)). Use a database or branch separate from the one local development and browser tests write to, and a key that is not the development key. The Hobby plan permits personal, non-commercial use only.
+- **Hosted accounts.** Configured and redeployed on October 17 with production-only secrets; the demo workflow passes on the live site ([results](verification-results.md#october-17-2026-hosted-production-configuration)). Still to do: verify registration, password sign-in and cross-tenant isolation on the deployed site, and move local development and tests to a separate database or branch. The Hobby plan permits personal, non-commercial use only.
 - **Unmerged parallel work.** The remote branch `claude/exciting-lamport-3153iy` adds valuation backtests on public DC and King County sales and an accuracy scorecard. It is not on `master` and also edits the landing page and workspace; merging it requires reconciling those files and reviewing its accuracy claims before they appear in the product.
 - **Licensed history.** Asking-position outcomes (days on market or under-contract rates by distance above estimate), permits, assessor condition grades and mortgage-rate context require licensed or public-record sources that are not configured.
 

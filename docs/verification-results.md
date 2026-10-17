@@ -120,6 +120,19 @@ The separate workspace onboarding acceptance (registration → pending verificat
 
 Corrections found during this cycle: the account-free entry did not read the demo sign-in response body on success, so Chromium held the request open and "network idle" never arrived; the page-by-page accessibility script timed out on it. The body is now always read and the scan completes. A development-server hot reload once dropped the dynamically loaded workspace stylesheet; a restart restored it and the production build bundles it. Playwright captures taller than the viewport showed the off-screen skip link mid-page; its real position was verified at −60 px. No failing test was removed or weakened.
 
+## October 17, 2026 hosted production configuration
+
+The owner set five production variables in Vercel with a local script that prints no values: `DATABASE_URL` (the restricted, pooled, `verify-full` runtime role on the dedicated Neon database), a newly generated production `APP_ENCRYPTION_KEY` and `CRON_SECRET` (not the development values), `PGSSL` and `APP_ORIGIN=https://project-ascent-theta.vercel.app`. The three secrets are stored as Vercel sensitive variables. Before configuration, `check:deploy --database` passed against that role: connectivity, restricted runtime identity, six forced RLS tables and PostGIS. Production (master `4c66ee6`) was redeployed by the owner.
+
+| Check on `https://project-ascent-theta.vercel.app` | Result |
+| --- | --- |
+| Account availability | Setup notice gone; workspace actions enabled |
+| Safety responses | Anonymous workspace 401; cross-origin demo request 403; scheduled job without its secret 401 |
+| Demo workflow (headless Chrome, no credentials) | Demo opened (4.96 s first run, 1.24 s second); CMA saved; client report 200 with fictional watermark; snapshot present after reload; sign-out returns workspace 401; zero page errors |
+| Runtime errors | None reported by Vercel in the hour after deployment |
+
+Not yet verified on the deployed site: registration, password sign-in and cross-tenant isolation through the hosted pages. Rerun `npm run verify:postgres -- --database=ascent` (database acceptance with cleanup) and a manual registration, sign-in and sign-out. Local development and browser tests use the same database as production; their tenants are fictional and isolated by row-level security, but a separate production database or branch remains the cleaner arrangement. The second production domain, `v0-vers3dynamics-ascent.vercel.app`, rejects sign-in because only the `APP_ORIGIN` origin is trusted.
+
 ## Reproduce
 
 ```powershell
