@@ -22,13 +22,25 @@ The application includes a Hobby-compatible deployment profile for personal, non
 | Variable | Value |
 | --- | --- |
 | `DATABASE_URL` | Hosted database/pool URL for the restricted runtime identity |
-| `APP_ORIGIN` | Exact HTTPS site origin, e.g. `https://your-project.vercel.app`, without a trailing slash or path |
+| `APP_ORIGIN` | Recommended: exact HTTPS site origin, e.g. `https://your-project.vercel.app`, without a trailing slash or path. If absent, Ascent can use the deployment-owned `VERCEL_PROJECT_PRODUCTION_URL` and `VERCEL_URL` that Vercel provides. |
 | `APP_ENCRYPTION_KEY` | Base64 encoding of 32 random bytes; keep it stable and securely backed up |
 | `CRON_SECRET` | Independently generated random secret of at least 32 characters |
 | `PGSSL` | `require` where required by the database provider; configure certificate-verified TLS |
 | `PG_POOL_MAX` | Optional; `2` is the production default |
 
 Keep the privileged migration URL off the runtime. Never use `NEXT_PUBLIC_` for secrets. Do not copy the local-development provider policy to production. Do not blindly reuse a production origin in a preview deployment: mutation origin checks intentionally require the current site's exact origin. New environment settings require a new deployment.
+
+### If demo and sign-in are unavailable
+
+The landing page intentionally requires a working account backend for private demo workspaces and sign-in. **A publicly visible landing page does not mean the database is ready.** Verify these production settings in Vercel, not in a committed file:
+
+1. `DATABASE_URL`: the deployed app's restricted, TLS-enabled PostgreSQL connection string with all migrations applied.
+2. `APP_ENCRYPTION_KEY`: base64 encoding of exactly 32 random bytes. Save the original key securely so existing documents stay decryptable.
+3. `APP_ORIGIN`: the exact public HTTPS origin, or leave it unset only if Vercel supplies `VERCEL_URL` or `VERCEL_PROJECT_PRODUCTION_URL`. Never derive allowed origins from request headers.
+
+Set the values for the deployment's **Production** environment, redeploy, and then verify demo creation, registration, sign-in, sign-out, and tenant isolation. `CRON_SECRET` protects scheduled jobs, while RentCast, Groq, and Stripe are optional; none is necessary for the fictional demo. If the website still shows a setup warning, run the private `check:deploy` command below and inspect only its field status, not the secret values.
+
+When account storage is not configured, the homepage now keeps **Sign in** navigable and routes **Try the interactive pricing demo** to its real client-side calculator instead of showing a dead button. This fallback does not create an account or replace the database-backed workspace.
 
 4. Check configuration from a private terminal using the same environment. The command reports field names and status, never credential values:
 
