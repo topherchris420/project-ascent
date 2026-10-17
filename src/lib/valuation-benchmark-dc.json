@@ -1,0 +1,237 @@
+{
+  "reportDigest": "sha256-d4acbe7087a2419bd44ffced094a237700727dceea2a459cfd90e219b7acaf45",
+  "protocolDigest": "sha256-614749f2007f84656588e2bfef46d27c86b9fecf1ff01655e9e58ab5aa91b7d2",
+  "protocolId": "ascent-valuation-validation-dc-1",
+  "market": {
+    "id": "dc",
+    "label": "Washington, DC",
+    "state": "DC"
+  },
+  "accepted": true,
+  "dataset": {
+    "id": "dc-residential-sales",
+    "label": "District of Columbia recorded sales",
+    "license": "CC-BY-4.0",
+    "csvSha256": "eebe47197b9c815ffc9c2c98f27dd8226bc588418b06d3b3db5d245353650b1f",
+    "screened": 10169
+  },
+  "holdout": {
+    "from": "2025-10-01",
+    "to": "2026-09-30",
+    "sales": 2254
+  },
+  "windows": {
+    "fit": {
+      "from": "2022-07-01",
+      "to": "2024-06-30"
+    },
+    "select": {
+      "from": "2024-07-01",
+      "to": "2024-12-31"
+    },
+    "calibrate": {
+      "from": "2025-01-01",
+      "to": "2025-09-30"
+    },
+    "test": {
+      "from": "2025-10-01",
+      "to": "2026-09-30"
+    }
+  },
+  "engine": {
+    "version": "ascent-cma-1.0",
+    "fingerprint": "fnv1a32-49f0c98b"
+  },
+  "primary": {
+    "id": "locally-calibrated",
+    "label": "Engine with locally fitted rates and selected search filters",
+    "valuedShare": 0.933008,
+    "mdape": 0.099781,
+    "mdapeCi95": [
+      0.094217,
+      0.106341
+    ],
+    "ppe10Ci95": [
+      0.48073,
+      0.522111
+    ],
+    "ppe5": 0.278174,
+    "ppe10": 0.501664,
+    "ppe20": 0.776034,
+    "medianSignedError": 0.017312,
+    "cod": 13.9352,
+    "prd": 1.029464
+  },
+  "shipped": {
+    "id": "shipped-defaults",
+    "label": "Engine with shipped default assumptions (untuned)",
+    "valuedShare": 1,
+    "mdape": 0.163011,
+    "mdapeCi95": [
+      0.15349,
+      0.172444
+    ],
+    "ppe10Ci95": [
+      0.315439,
+      0.354925
+    ],
+    "ppe5": 0.175688,
+    "ppe10": 0.334516,
+    "ppe20": 0.587844,
+    "medianSignedError": 0.057451,
+    "cod": 21.2674,
+    "prd": 1.111743
+  },
+  "baselines": [
+    {
+      "id": "baseline-median-ppsf",
+      "label": "Median $/sqft of the primary configuration’s comparables × subject sqft",
+      "mdape": 0.140605,
+      "ppe10": 0.366619
+    },
+    {
+      "id": "baseline-zip-median",
+      "label": "Median recorded price in the same ZIP over the prior 180 days",
+      "mdape": 0.227314,
+      "ppe10": 0.238116
+    }
+  ],
+  "paired": [
+    {
+      "baseline": "baseline-median-ppsf",
+      "mdapeDelta": -0.040825,
+      "ci95": [
+        -0.047743,
+        -0.032435
+      ],
+      "winRate": 0.654303
+    },
+    {
+      "baseline": "baseline-zip-median",
+      "mdapeDelta": -0.123669,
+      "ci95": [
+        -0.135653,
+        -0.112326
+      ],
+      "winRate": 0.740124
+    }
+  ],
+  "intervals": {
+    "target": 0.8,
+    "calibratedCoverage": 0.766524,
+    "calibratedMedianWidth": 0.40072,
+    "envelopeCoverage": 0.640514
+  },
+  "tiers": [
+    {
+      "id": "sparse",
+      "maxComps": 2,
+      "holdoutSales": 425,
+      "mdape": 0.131769,
+      "coverage": 0.781176,
+      "lowerPercent": -24.53,
+      "upperPercent": 26.41,
+      "lowerLogRatio": -0.281383,
+      "upperLogRatio": 0.234337
+    },
+    {
+      "id": "moderate",
+      "maxComps": 9,
+      "holdoutSales": 1064,
+      "mdape": 0.099362,
+      "coverage": 0.792293,
+      "lowerPercent": -19.32,
+      "upperPercent": 20.75,
+      "lowerLogRatio": -0.214667,
+      "upperLogRatio": 0.188577
+    },
+    {
+      "id": "dense",
+      "maxComps": null,
+      "holdoutSales": 614,
+      "mdape": 0.089026,
+      "coverage": 0.711726,
+      "lowerPercent": -16.03,
+      "upperPercent": 13.35,
+      "lowerLogRatio": -0.174685,
+      "upperLogRatio": 0.125269
+    }
+  ],
+  "fittedAssumptions": {
+    "sqftRate": 233.79,
+    "bedroomValue": 24456,
+    "bathroomValue": 40058,
+    "conditionValue": 87947,
+    "monthlyTrend": 0.00207,
+    "maxDistanceMiles": 0.5,
+    "maxAgeDays": 90,
+    "maxSizeRatio": 1.35
+  },
+  "acceptance": [
+    {
+      "id": "A1",
+      "label": "Holdout sales valued",
+      "value": 0.933008,
+      "min": 0.9,
+      "passed": true
+    },
+    {
+      "id": "A2",
+      "label": "Median absolute percentage error",
+      "value": 0.099781,
+      "max": 0.1,
+      "passed": true
+    },
+    {
+      "id": "A3",
+      "label": "Share within ±10% of sale price",
+      "value": 0.501664,
+      "min": 0.5,
+      "passed": true
+    },
+    {
+      "id": "A4",
+      "label": "Coefficient of dispersion (COD)",
+      "value": 13.9352,
+      "max": 15,
+      "passed": true
+    },
+    {
+      "id": "A5",
+      "label": "Price-related differential (PRD)",
+      "value": 1.029464,
+      "min": 0.98,
+      "max": 1.03,
+      "passed": true
+    },
+    {
+      "id": "A6",
+      "label": "Absolute median signed error",
+      "value": 0.017312,
+      "max": 0.03,
+      "passed": true
+    },
+    {
+      "id": "A7",
+      "label": "Beats median $/sqft of the same comparables",
+      "value": -0.032435,
+      "max": 0,
+      "passed": true
+    },
+    {
+      "id": "A8",
+      "label": "Beats trailing ZIP median price",
+      "value": -0.112326,
+      "max": 0,
+      "passed": true
+    },
+    {
+      "id": "A9",
+      "label": "Calibrated 80% interval coverage",
+      "value": 0.766524,
+      "min": 0.75,
+      "max": 0.85,
+      "passed": true
+    }
+  ]
+}

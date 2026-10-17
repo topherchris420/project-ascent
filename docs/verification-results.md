@@ -133,6 +133,39 @@ The owner set five production variables in Vercel with a local script that print
 
 After configuration, the owner ran `npm run verify:postgres -- --database=ascent` against the production database: **6/6 checks passed** (restricted role, forced RLS, migrations and PostGIS; registration and session authentication; RLS denial of cross-tenant reads, writes and unscoped access; PostGIS search and concurrent edits; encrypted documents and reviewed dates; reproducible saved CMA, scenarios, evidence assistant and report export), with cleanup passed. This exercises the application code against the hosted database from the workstation; registration and password sign-in through the deployed pages still need one manual check. Local development and browser tests use the same database as production; their tenants are fictional and isolated by row-level security, but a separate production database or branch remains the cleaner arrangement. The second production domain, `v0-vers3dynamics-ascent.vercel.app`, rejects sign-in because only the `APP_ORIGIN` origin is trusted.
 
+## October 17, 2026 valuation validation and production safeguards
+
+Executed in a Linux cloud container with Node 22.22.0. Details are in [valuation validation](valuation-validation.md).
+
+| Check | Result |
+| --- | --- |
+| Out-of-sample valuation accuracy | 6,975 recorded King County, WA sales (Jan–May 2015) scored once under protocol `ascent-valuation-validation-1`: **MdAPE 10.6%** (95% CI 10.3–10.9), PPE10 47.8%, COD 15.2, PRD 1.040, median bias −0.17%, calibrated 80% interval coverage 77.5%. **5 of 9 pre-registered criteria met** (MdAPE, PPE10, COD and PRD missed). Report `sha256-11e488db…` |
+| Baseline comparison | Beats trailing ZIP median by 9.4 MdAPE points and median $/sqft of the same comparables by 0.7 points (paired bootstrap 95% upper bounds −8.7 and −0.44). The untuned shipped defaults do not beat median $/sqft |
+| Independent re-derivation (`--check`) | All 12 checks pass: report, protocol, sample and engine digests; metrics recomputed from per-sale samples by separate code; acceptance verdicts; in-app benchmark derivation |
+| Full re-run (`--verify`) | **Pass**: report digest and all 6,975 per-sale estimates reproduced byte for byte in 187 s (14/14 checks) |
+| Third-party attestation | **None recorded yet**; Ed25519 mechanism tested |
+| Unit/integration suite | **286/286 passed**, including 19 new validation, release-gate, drift, health and approval-gate tests |
+| Browser suite (affected specs) | **10/10 passed**: workspace, decision-support, adoption and Hobby specs, including approve-from-snapshot |
+| Accessibility | **22/22 configurations**, zero Axe violations, no horizontal overflow (includes the new landing accuracy section) |
+| Production build and typecheck | Pass; `/api/health` route generated |
+
+## October 17, 2026 Washington, DC validation
+
+Executed in a Linux cloud container with Node 22.22.0. Details are in [valuation validation](valuation-validation.md#washington-dc-protocol-ascent-valuation-validation-dc-1).
+
+| Check | Result |
+| --- | --- |
+| DC data snapshot | 45,425 District recorded sales since Jan 2022 → **10,174** assessor-qualified single-unit residential sales after documented record rules (CC BY 4.0; owner names never downloaded). CSV `sha256 eebe4719…` |
+| DC out-of-sample accuracy | 2,254 recorded sales (Oct 2025 – Sep 2026) scored once under `ascent-valuation-validation-dc-1`: **MdAPE 9.98%** (95% CI 9.42–10.63), PPE10 50.2% (48.1–52.2), COD 13.9, PRD 1.0295, median bias +1.7%, calibrated 80% coverage 76.7%. **9 of 9 pre-registered criteria met; A2, A3 and A5 narrowly.** Report `sha256-d4acbe70…` |
+| DC baseline comparison | Beats median $/sqft of the same comparables by 4.1 MdAPE points (paired 95% upper bound −3.2) and the trailing ZIP median by 12.4 points. Untuned shipped defaults: 16.3%, worse than median $/sqft |
+| Independent re-derivation (`--check`, both markets) | **24/24** checks pass (12 per market) |
+| Full DC re-run (`--verify --market dc`) | **Pass**: report digest and all 2,254 per-sale estimates reproduced byte for byte in 61 s (14/14 checks) |
+| King County report | Unchanged: protocol digest and report `sha256-11e488db…` still verify after the multi-market refactor |
+| Unit/integration suite | **294/294 passed**, including market-aware gate, DC calibrated-interval and frozen-protocol tests |
+| Browser suite (affected specs) | **10/10 passed** |
+| Accessibility | **22/22 configurations**, zero Axe violations, no horizontal overflow |
+| Production build and typecheck | Pass |
+
 ## Reproduce
 
 ```powershell
