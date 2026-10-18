@@ -16,7 +16,7 @@ test('professional workflow: sign in, research, price, client, offers, transacti
   const errors: string[] = [];
   page.on('pageerror', e => errors.push(e.message));
   await page.goto('/');
-  await expect(page.getByRole('heading', { level: 1, name: /Price with proof/ })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: /Know the price/ })).toBeVisible();
   await page.getByRole('button', { name: 'Explore the working demo' }).click();
   await expect(page.getByRole('heading', { name: /Good (morning|afternoon|evening), Alex/ })).toBeVisible();
   await expect(page.getByText('SYNTHETIC DEMO', { exact: true })).toBeVisible();
@@ -151,7 +151,7 @@ test('registration, logout, password login and tenant-private workspace', async 
   await page.getByRole('button', { name: 'Create workspace' }).click();
   await expect(page.getByRole('heading', { name: /Good (morning|afternoon|evening), Casey/ })).toBeVisible();
   await page.getByRole('button', { name: 'Sign out', exact: true }).click();
-  await expect(page.getByRole('heading', { name: 'Good to have you here.' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Sign in to Ascent.' })).toBeVisible();
   await page.getByLabel('Email address').fill(email);
   await page.getByLabel('Password', { exact: true }).fill('Correct-battery-42!');
   await page.getByRole('button', { name: 'Sign in', exact: true }).click();
@@ -214,7 +214,7 @@ test('sign-out clears copilot context and ignores a previous tenant’s late res
   await page.getByRole('button', { name: 'Send question' }).click();
   await intercepted;
   await page.getByRole('button', { name: 'Sign out', exact: true }).click();
-  await expect(page.getByRole('heading', { name: 'Good to have you here.' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Sign in to Ascent.' })).toBeVisible();
   await page.getByRole('button', { name: 'Explore the working demo' }).click();
   await expect(page.getByRole('combobox', { name: 'Market region' })).toHaveValue('dmv');
   const delivered = page.waitForResponse(response => response.url().endsWith('/api/assistant'));

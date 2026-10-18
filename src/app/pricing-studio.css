@@ -1431,3 +1431,20 @@
     padding: 20px 16px;
   }
 }
+
+.dc-search-example,
+.dc-search-recovery {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 14px;
+}
+.dc-search-example {
+  color: var(--muted);
+  font-size: 14px;
+}
+.dc-search-recovery a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}

@@ -208,7 +208,7 @@
 /* Hero */
 .landing .lp-hero {
   position: relative;
-  padding: 76px 0 104px;
+  padding: 48px 0 64px;
   isolation: isolate;
 }
 .landing .lp-hero-bg {
@@ -232,8 +232,8 @@
 .landing .lp-hero-grid {
   display: grid;
   grid-template-columns: minmax(0, 1.12fr) minmax(0, 0.88fr);
-  gap: 56px;
-  align-items: center;
+  gap: 48px;
+  align-items: start;
 }
 .landing .lp-eyebrow {
   display: inline-flex;
@@ -1884,4 +1884,101 @@
   color: #6f4a1f;
   font-size: 13px;
   line-height: 1.5;
+}
+
+/* The first screen puts the two account-free paths before the detailed example. */
+.landing .lp-workspace-entry {
+  margin-top: 28px;
+  padding-top: 22px;
+  border-top: 1px solid var(--lp-line);
+}
+.landing .lp-workspace-entry p {
+  margin: 8px 0;
+  font-size: 14px;
+}
+.landing .lp-workspace-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 22px;
+}
+.landing .lp-workspace-links .lp-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+}
+.landing .lp-interaction-hint {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 14px;
+  font-size: 13px;
+  color: var(--lp-soft);
+}
+.landing .lp-card-open {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 12px;
+  margin-top: 14px;
+  border: 1px solid var(--lp-line);
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+}
+.landing .lp-loop {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.landing .lp-evidence-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+}
+.landing .lp-evidence-stats > div {
+  display: grid;
+  padding: 22px 0;
+  border-top: 2px solid var(--lp-line);
+}
+.landing .lp-evidence-stats strong {
+  font-size: clamp(32px, 4vw, 48px);
+  line-height: 1.2;
+  letter-spacing: -0.04em;
+}
+.landing .lp-evidence-stats span {
+  color: var(--lp-soft);
+  margin-top: 8px;
+  font-size: 14px;
+}
+.landing .lp-methodology {
+  margin-top: 24px;
+  border: 1px solid var(--lp-line);
+  border-radius: 14px;
+  padding: 16px 20px;
+}
+.landing .lp-methodology summary {
+  cursor: pointer;
+  font-weight: 600;
+  min-height: 28px;
+}
+.landing .lp-methodology[open] summary {
+  margin-bottom: 24px;
+}
+@media (max-width: 640px) {
+  .landing .lp-loop {
+    grid-template-columns: 1fr;
+  }
+  .landing .lp-evidence-stats {
+    gap: 16px;
+  }
+  .landing .lp-evidence-stats strong {
+    font-size: 30px;
+  }
+  .landing .lp-evidence-stats span {
+    font-size: 12px;
+  }
+  .landing .lp-methodology {
+    padding: 14px;
+  }
 }

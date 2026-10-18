@@ -9,16 +9,11 @@ import {
   CalendarClock,
   Check,
   CheckCircle2,
-  Database,
-  EyeOff,
   FileText,
   Fingerprint,
   Handshake,
-  History,
   Layers3,
-  LoaderCircle,
   Lock,
-  Minus,
   Scale,
   ShieldCheck,
   SlidersHorizontal,
@@ -621,83 +616,26 @@ function Journey() {
   );
 }
 
-const comparison: { row: string; ascent: string; typical: string; typicalHas: boolean | 'partial' }[] = [
-  {
-    row: 'Why this price?',
-    ascent: 'Inspect sold values, signed adjustments and weights',
-    typical: 'Adjustment rates are analyst assumptions, not fitted coefficients',
-    typicalHas: 'partial',
-  },
-  {
-    row: 'What could change it?',
-    ascent: 'Exclude sales and test assumptions against frozen evidence',
-    typical: 'Alternative calculations do not forecast market outcomes',
-    typicalHas: 'partial',
-  },
-  {
-    row: 'How accurate is it?',
-    ascent: 'Pre-registered holdout on DC recorded sales, misses published',
-    typical: 'Measured for DC single-family homes on the DC-calibrated settings only',
-    typicalHas: 'partial',
-  },
-  {
-    row: 'Can a weak price slip through?',
-    ascent: 'Named release checks before approval, plus an operator pause switch',
-    typical: 'Checks flag what needs review; they do not certify a price',
-    typicalHas: 'partial',
-  },
-  {
-    row: 'What changed since last time?',
-    ascent: 'Replay snapshots and reconcile comparable contributions',
-    typical: 'A changed estimate does not prove a market move',
-    typicalHas: 'partial',
-  },
-  {
-    row: 'Can I explain it to my seller?',
-    ascent: 'Open a report with selected price, costs and source references',
-    typical: 'Drafts require professional review; examples are fictional',
-    typicalHas: 'partial',
-  },
-  {
-    row: 'Can I keep the reasoning?',
-    ascent: 'Export a decision with frozen inputs and a replay checksum',
-    typical: 'Export of real evidence requires current source rights',
-    typicalHas: 'partial',
-  },
-];
-
 const faqs = [
   {
-    q: 'Is this a working product or a mockup?',
-    a: 'It works. The account-free Pricing Studio calculates, inspects and exports a fictional pricing decision. Where hosted account services are configured, the separate workspace demo adds persistent clients, offers and transaction workflows.',
+    q: 'Can I use my own address?',
+    a: 'Yes, for covered single-family homes in Washington, DC. Search District public records without an account. Condos, multi-unit buildings, Maryland and Virginia are not covered by the public studio. The fictional sample works for anyone.',
   },
   {
-    q: 'Where does the data come from?',
-    a: "Pricing a real home uses District of Columbia public records under CC BY 4.0: recorded sales the District marks as arm's-length, plus assessor characteristics and addresses. The practice sample and demo workspace use fictional records, labeled throughout. When an operator configures a licensed provider, research results arrive with their source, date and usage rights. No MLS feed is bundled.",
+    q: 'Where does the price come from?',
+    a: 'Recorded closed sales, adjusted for property differences and weighted by distance, recency and size. You can inspect every adjustment and change the assumptions. AI does not set the price.',
   },
   {
-    q: 'How is the price calculated?',
-    a: 'Closed sales are adjusted for living area, bedrooms, bathrooms, condition and time, then weighted by distance, recency and size similarity. The range is the spread of adjusted sales, and every rate and filter can be edited.',
-  },
-  {
-    q: 'How accurate is it?',
-    a: `We measured it on the District's own records. On ${valuationBenchmark.holdout.sales.toLocaleString('en-US')} recorded ${valuationBenchmark.market.label} home sales the engine never saw, the median error was ${(valuationBenchmark.primary.mdape * 100).toFixed(1)}%, ${(valuationBenchmark.primary.ppe10 * 100).toFixed(1)}% landed within ±10%, and the calibrated ${valuationBenchmark.intervals.target * 100}% range held ${(valuationBenchmark.intervals.calibratedCoverage * 100).toFixed(1)}% of sales. It met ${valuationBenchmark.acceptance.filter(item => item.passed).length} of ${valuationBenchmark.acceptance.length} pre-registered criteria, some narrowly, as the scorecard notes. These figures use the DC-calibrated settings, which could value ${(valuationBenchmark.primary.valuedShare * 100).toFixed(1)}% of those sales; with Ascent's general default settings the median error was ${(valuationBenchmark.shipped.mdape * 100).toFixed(1)}%. Maryland and Virginia are not yet validated. Anyone can re-run the test.`,
-  },
-  {
-    q: 'Does the AI set prices?',
-    a: 'No. Pricing math is deterministic. The assistant explains results with citations and drafts messages for your review. It cannot change records, send messages or approve anything.',
+    q: 'What can I keep?',
+    a: 'Open a printable pricing report or download the decision as JSON. Studio drafts stay in this browser on this device. A configured private workspace adds saved analyses, clients, offers and transaction records.',
   },
   {
     q: 'Is this an appraisal?',
-    a: 'No. Ascent is a pricing and decision aid for real estate professionals. Your professional review comes before anything reaches a client.',
+    a: 'No. This is a decision aid. Public records can lag and omit interior condition, concessions and listing history. Review the evidence before using a draft with a client. No sale price or outcome is guaranteed.',
   },
   {
-    q: 'Can my team use it?',
-    a: 'Yes. Workspaces support owner, agent and viewer roles, one-time team invitations and shared history. Allowances per plan are configurable.',
-  },
-  {
-    q: 'Can I take my data with me?',
-    a: 'Yes. Export standard records as CSV or JSON. Imports are previewed, conflicts are shown before you confirm, and unchanged imports can be rolled back.',
+    q: 'What does the workspace add?',
+    a: 'Keep clients, pricing snapshots, offer comparisons and deadlines together. Ask Ascent explains the records and drafts text for review. It cannot send messages, accept offers or sign contracts. New accounts start empty; the workspace demo is fictional.',
   },
 ];
 
@@ -709,23 +647,20 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAv
       </a>
       <header className="lp-nav">
         <div className="lp-wrap lp-nav-inner">
-          <a className="brand lp-brand" href="/" aria-label="Ascent home">
+          <Link className="brand lp-brand" href="/" aria-label="Ascent home">
             <span className="brand-mark">A</span>ascent<span className="brand-dot">.</span>
-          </a>
+          </Link>
           <nav className="lp-links" aria-label="Sections">
-            <a href="#workflow">Workflow</a>
-            <a href="#assistant">Ask Ascent</a>
-            <a href="#compare">Compare</a>
+            <a href="#workflow">How it works</a>
             <a href="#accuracy">Accuracy</a>
-            <a href="#trust">Trust</a>
-            <a href="#faq">FAQ</a>
+            <a href="#faq">Questions</a>
           </nav>
           <div className="lp-nav-actions">
             <button type="button" className="lp-btn lp-btn-ghost lp-nav-login" onClick={onSignIn}>
               Log in
             </button>
             <Link className="lp-btn lp-btn-primary lp-btn-sm" href="/dc">
-              Analyze a property
+              Analyze a DC home
             </Link>
           </div>
         </div>
@@ -737,126 +672,107 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAv
           <div className="lp-wrap lp-hero-grid">
             <div className="lp-hero-copy">
               <span className="lp-eyebrow">
-                <span className="lp-pulse" aria-hidden="true" /> Real estate decision workspace
+                <span className="lp-pulse" aria-hidden="true" /> Real estate, reasoned.
               </span>
               <h1 id="lp-hero-title">
-                Price with proof.
+                Know the price.
                 <br />
-                <span>Close with confidence.</span>
+                <span>Show the why.</span>
               </h1>
               <p className="lp-lede">
-                Ascent shows exactly which sales support a price, lets you challenge every assumption, and keeps a
-                decision record you can reproduce months later, through clients, offers and closing.
+                Explore the sales behind a home’s price. Test your assumptions. Take a clear, source-linked report into
+                your next conversation.
               </p>
-              <p className="lp-lede lp-lede-strong">
-                Search any single-family home in Washington, DC, priced from public records. No account needed.
-              </p>
-              {error && (
-                <div role="alert" className="lp-error">
-                  {error}
-                </div>
-              )}
               <div className="lp-cta-row">
                 <Link className="lp-btn lp-btn-primary lp-btn-lg" href="/dc">
-                  Analyze a property <ArrowRight size={17} aria-hidden="true" />
+                  Analyze a DC home <ArrowRight size={17} aria-hidden="true" />
                 </Link>
-                {workspaceAvailable && (
-                  <button type="button" className="lp-btn lp-btn-outline lp-btn-lg" onClick={onDemo} disabled={busy}>
-                    {busy ? 'Opening workspace…' : 'Explore the working demo'}
-                  </button>
-                )}
+                <Link className="lp-btn lp-btn-outline lp-btn-lg" href="/demo">
+                  Try the sample
+                </Link>
               </div>
-              <p className="lp-fine">
-                Outside DC, or want to practise first?{' '}
-                <Link className="lp-link" href="/demo">
-                  Try the fictional sample
-                </Link>
-                .
-                {workspaceAvailable && (
-                  <>
-                    {' '}
-                    The demo workspace adds fictional clients, offers and deadlines.{' '}
-                    <button type="button" className="lp-link" onClick={onRegister}>
-                      Create an account
-                    </button>{' '}
-                    to start your own.
-                  </>
-                )}
-              </p>
-              {!workspaceAvailable && (
-                <div role="status" className="lp-setup">
-                  <strong>Workspace setup is in progress.</strong>
-                  <p>
-                    Hosted account services are not ready. The account-free Pricing Studio and its reports are available
-                    now.
-                  </p>
-                  <Link href="/demo">Open the account-free Pricing Studio</Link>
-                </div>
-              )}
+              <p className="lp-fine">No account needed. DC homes use public records; the sample is fictional.</p>
               <ul className="lp-hero-points" aria-label="Highlights">
                 <li>
-                  <CheckCircle2 size={16} aria-hidden="true" /> Deterministic math
+                  <CheckCircle2 size={16} aria-hidden="true" /> Inspect every sale
                 </li>
                 <li>
-                  <CheckCircle2 size={16} aria-hidden="true" /> Every number sourced
+                  <CheckCircle2 size={16} aria-hidden="true" /> Adjust the assumptions
                 </li>
                 <li>
-                  <CheckCircle2 size={16} aria-hidden="true" /> You approve what goes out
+                  <CheckCircle2 size={16} aria-hidden="true" /> Keep the reasoning
                 </li>
               </ul>
+              <div className="lp-workspace-entry">
+                <span className="lp-eyebrow">Already working a deal?</span>
+                <p>Bring pricing, clients, offers and deadlines into one workspace.</p>
+                {workspaceAvailable ? (
+                  <div className="lp-workspace-links">
+                    <button type="button" className="lp-link" onClick={onDemo} disabled={busy}>
+                      {busy ? 'Opening workspace…' : 'Explore the working demo'}{' '}
+                      <ArrowUpRight size={14} aria-hidden="true" />
+                    </button>
+                    <button type="button" className="lp-link" onClick={onRegister}>
+                      Create an account
+                    </button>
+                  </div>
+                ) : (
+                  <p className="lp-fine">Workspaces are being set up. Both pricing studios are ready to use.</p>
+                )}
+                <p className="lp-fine">Demo: fictional records. Your account: your own evidence.</p>
+                {error && (
+                  <div role="alert" className="lp-error">
+                    {error} <Link href="/demo">Continue with the sample</Link>
+                  </div>
+                )}
+              </div>
             </div>
             <div className="lp-hero-visual" id="pricing-example">
+              <p className="lp-interaction-hint">
+                <SlidersHorizontal size={15} aria-hidden="true" /> Move the price. Watch the reasoning change.
+              </p>
               <PricingCard />
+              <Link className="lp-card-open" href="/demo">
+                Take this decision apart in the studio <ArrowRight size={16} aria-hidden="true" />
+              </Link>
             </div>
           </div>
         </section>
 
-        <section className="lp-proof" aria-labelledby="lp-proof-title">
-          <h2 id="lp-proof-title" className="sr-only">
-            Every pricing decision in Ascent can be explained, challenged, reproduced and improved
-          </h2>
+        <section className="lp-proof" aria-label="From evidence to a decision">
           <ol className="lp-wrap lp-proof-grid lp-loop">
             {[
               {
                 icon: Layers3,
-                verb: 'Explain',
-                title: 'Every sale in the open',
-                body: 'Sold price, signed adjustments and weight for each comparable. Deterministic math, no hidden model.',
+                title: 'See the evidence',
+                body: 'Inspect the sales and adjustments behind the estimate.',
                 href: '/demo#studio-evidence',
+                action: 'Inspect a sale',
               },
               {
                 icon: SlidersHorizontal,
-                verb: 'Challenge',
-                title: 'See what moves the price',
-                body: 'Test each assumption, exclude a sale with a reason or add one you know about.',
+                title: 'Test the decision',
+                body: 'Change an assumption. See what moves the price.',
                 href: '/demo#studio-assumptions',
+                action: 'Test an assumption',
               },
               {
-                icon: Fingerprint,
-                verb: 'Reproduce',
-                title: 'Decisions that replay',
-                body: 'Saved analyses freeze their inputs and recompute to the same checksum later.',
-              },
-              {
-                icon: History,
-                verb: 'Improve',
-                title: 'Compare then and now',
-                body: 'Set a frozen decision beside today’s evidence and see which sales and inputs changed it.',
+                icon: FileText,
+                title: 'Tell the whole story',
+                body: 'Keep the price, sources and assumptions in one report.',
+                href: '/demo#studio-report',
+                action: 'Build a report',
               },
             ].map((item, index) => (
-              <li key={item.verb} className="lp-proof-item">
+              <li key={item.title} className="lp-proof-item">
                 <item.icon size={20} aria-hidden="true" />
                 <div>
-                  <span className="lp-loop-verb">
-                    {String(index + 1).padStart(2, '0')} · {item.verb}
-                  </span>
+                  <span className="lp-loop-verb">0{index + 1}</span>
                   <h3>{item.title}</h3>
                   <p>{item.body}</p>
-                  {item.href && (
-                    <Link className="lp-loop-link" href={item.href}>
-                      Try it on the sample <ArrowRight size={13} aria-hidden="true" />
-                    </Link>
-                  )}
+                  <Link className="lp-loop-link" href={item.href}>
+                    {item.action} <ArrowRight size={13} aria-hidden="true" />
+                  </Link>
                 </div>
               </li>
             ))}
@@ -866,12 +782,9 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAv
         <section id="workflow" className="lp-section" aria-labelledby="lp-workflow-title">
           <div className="lp-wrap">
             <div className="lp-section-head">
-              <span className="lp-eyebrow">The connected workspace</span>
-              <h2 id="lp-workflow-title">The reasoning travels with the deal.</h2>
-              <p>
-                A frozen pricing decision carries into clients, offers and deadlines with its sources attached. Nothing
-                is retyped, and nothing loses where it came from.
-              </p>
+              <span className="lp-eyebrow">Beyond the estimate</span>
+              <h2 id="lp-workflow-title">One deal. A connected story.</h2>
+              <p>Carry the evidence from your first pricing conversation to your next offer or deadline.</p>
             </div>
             <Journey />
           </div>
@@ -881,28 +794,16 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAv
           <div className="lp-wrap lp-split">
             <div className="lp-split-copy">
               <span className="lp-eyebrow">Ask Ascent</span>
-              <h2 id="lp-assistant-title">Answers that say how they know.</h2>
+              <h2 id="lp-assistant-title">
+                Ask why.
+                <br />
+                Get the working.
+              </h2>
               <p>
-                Ask about the property, client or deal on screen. Every answer separates what the records say, what
-                Ascent calculated, which assumptions were chosen, what a model interpreted and what is still unknown.
+                Ask about the record on screen. See the facts, calculations, assumptions and unknowns behind the answer.
               </p>
-              <ul className="lp-checks">
-                <li>
-                  <Check size={16} aria-hidden="true" /> Recorded facts, each linked to its source
-                </li>
-                <li>
-                  <Check size={16} aria-hidden="true" /> Calculations restated exactly, never estimated by a model
-                </li>
-                <li>
-                  <Check size={16} aria-hidden="true" /> Unknowns named instead of guessed
-                </li>
-                <li>
-                  <Check size={16} aria-hidden="true" /> Works without any model; optional model use is capped and
-                  redacts known client details
-                </li>
-              </ul>
               <p className="lp-note">
-                <Lock size={14} aria-hidden="true" /> It cannot send messages, change records or approve anything.
+                <Lock size={14} aria-hidden="true" /> You review the draft. You make the decision.
               </p>
             </div>
             <figure className="lp-chat" aria-labelledby="lp-chat-caption">
@@ -914,116 +815,44 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAv
           </div>
         </section>
 
-        <section id="compare" className="lp-section" aria-labelledby="lp-compare-title">
+        <section id="accuracy" className="lp-section" aria-labelledby="lp-accuracy-title">
           <div className="lp-wrap">
             <div className="lp-section-head">
-              <span className="lp-eyebrow">The difference</span>
-              <h2 id="lp-compare-title">The questions your next decision deserves.</h2>
-              <p>Built around the questions a seller, a buyer or a broker will actually ask you.</p>
+              <span className="lp-eyebrow">The published test</span>
+              <h2 id="lp-accuracy-title">Useful evidence. Visible limits.</h2>
+              <p>DC-validated settings, tested on recorded sales held out from development.</p>
             </div>
-            <div
-              className="lp-table-wrap"
-              tabIndex={0}
-              role="region"
-              aria-label="Questions, working tools and evidence boundaries"
-            >
-              <table className="lp-table">
-                <thead>
-                  <tr>
-                    <th scope="col">
-                      <span className="sr-only">Capability</span>
-                    </th>
-                    <th scope="col" className="lp-col-ascent">
-                      Ascent
-                    </th>
-                    <th scope="col">Evidence boundary</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {comparison.map(item => (
-                    <tr key={item.row}>
-                      <th scope="row">{item.row}</th>
-                      <td className="lp-col-ascent" data-label="In Ascent">
-                        <span className="lp-yes">
-                          <Check size={14} aria-hidden="true" />
-                          <span className="sr-only">Yes: </span>
-                        </span>
-                        {item.ascent}
-                      </td>
-                      <td data-label="Evidence boundary">
-                        <span className={item.typicalHas === 'partial' ? 'lp-partial' : 'lp-no'}>
-                          <Minus size={14} aria-hidden="true" />
-                          <span className="sr-only">Evidence boundary:</span>
-                        </span>
-                        {item.typical}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div className="lp-evidence-stats">
+              <div>
+                <strong>{valuationBenchmark.holdout.sales.toLocaleString('en-US')}</strong>
+                <span>DC sales in the test</span>
+              </div>
+              <div>
+                <strong>{(valuationBenchmark.primary.mdape * 100).toFixed(1)}%</strong>
+                <span>median pricing error</span>
+              </div>
+              <div>
+                <strong>{(valuationBenchmark.primary.ppe10 * 100).toFixed(1)}%</strong>
+                <span>within ±10% of the sale price</span>
+              </div>
             </div>
+            <p className="lp-fine">
+              Results apply to this market, period and configuration. They do not guarantee the price of your home. Some
+              acceptance thresholds were met narrowly.
+            </p>
+            <details className="lp-methodology">
+              <summary>Read the full accuracy report and limitations</summary>
+              <AccuracyScorecard />
+            </details>
           </div>
         </section>
 
-        <section id="accuracy" className="lp-section lp-section-tint" aria-labelledby="lp-accuracy-title">
-          <div className="lp-wrap">
-            <div className="lp-section-head">
-              <span className="lp-eyebrow">Measured, not claimed</span>
-              <h2 id="lp-accuracy-title">Tested on DC sales it never saw. Published either way.</h2>
-              <p>
-                Ascent&apos;s engine was scored once on the District of Columbia&apos;s own recorded sales, against
-                thresholds fixed in advance, and anyone can re-run the test.
-              </p>
-            </div>
-            <AccuracyScorecard />
-          </div>
-        </section>
-
-        <section id="trust" className="lp-section lp-section-dark" aria-labelledby="lp-trust-title">
-          <div className="lp-wrap">
-            <div className="lp-section-head">
-              <span className="lp-eyebrow">Data and trust</span>
-              <h2 id="lp-trust-title">Clear about what is real, careful with what is private.</h2>
-            </div>
-            <div className="lp-trust-grid">
-              {[
-                {
-                  icon: Database,
-                  title: 'Fictional by default',
-                  body: 'The demo runs on invented properties and people, labeled as fictional on every screen.',
-                },
-                {
-                  icon: FileText,
-                  title: 'Licensed research when configured',
-                  body: 'Provider data enters only with a configured key, request caps and source labels.',
-                },
-                {
-                  icon: Lock,
-                  title: 'Private by workspace',
-                  body: 'Each workspace has its own data, roles and a hash-linked audit trail.',
-                },
-                {
-                  icon: EyeOff,
-                  title: 'Models see less',
-                  body: 'Known client names and contact details are redacted before any optional model call.',
-                },
-              ].map(item => (
-                <div key={item.title} className="lp-trust-item">
-                  <item.icon size={20} aria-hidden="true" />
-                  <h3>{item.title}</h3>
-                  <p>{item.body}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section id="faq" className="lp-section" aria-labelledby="lp-faq-title">
+        <section id="faq" className="lp-section lp-section-tint" aria-labelledby="lp-faq-title">
           <div className="lp-wrap lp-faq-grid">
             <div className="lp-section-head lp-faq-head">
-              <span className="lp-eyebrow">Questions</span>
+              <span className="lp-eyebrow">Before you start</span>
               <h2 id="lp-faq-title">Straight answers.</h2>
-              <p>Still curious? The demo answers most questions faster than we can.</p>
+              <p>What you can do, where the data comes from, and what stays yours.</p>
             </div>
             <div className="lp-faq">
               {faqs.map(item => (
@@ -1042,38 +871,28 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAv
           <div className="lp-wrap">
             <div className="lp-final-inner">
               <div>
-                <h2 id="lp-final-title">See your next listing the way Ascent does.</h2>
-                <p>
-                  {workspaceAvailable
-                    ? 'Open a private workspace in seconds. Price a property, add a client, compare offers.'
-                    : 'Inspect the evidence, test a pricing decision and open a report without an account.'}
-                </p>
+                <h2 id="lp-final-title">Make your next “why this price?” an easy conversation.</h2>
+                <p>Start with the evidence. Leave with a report you can explain.</p>
               </div>
-              <div className="lp-final-actions">
-                <Link className="lp-btn lp-btn-light lp-btn-lg" href="/dc">
-                  Analyze a property <ArrowRight size={17} aria-hidden="true" />
+              <div className="lp-cta-row">
+                <Link className="lp-btn lp-btn-primary lp-btn-lg" href="/dc">
+                  Analyze a DC home <ArrowRight size={17} aria-hidden="true" />
                 </Link>
-                {workspaceAvailable && (
-                  <button type="button" className="lp-btn lp-btn-onDark lp-btn-lg" onClick={onRegister}>
-                    Create an account <ArrowUpRight size={16} aria-hidden="true" />
-                  </button>
-                )}
+                <Link className="lp-btn lp-btn-outline lp-btn-lg" href="/demo">
+                  Try the sample
+                </Link>
               </div>
             </div>
           </div>
         </section>
       </main>
-
       <footer className="lp-footer">
         <div className="lp-wrap lp-footer-inner">
-          <span className="brand lp-brand lp-brand-sm">
+          <Link className="brand lp-brand" href="/" aria-label="Ascent home">
             <span className="brand-mark">A</span>ascent<span className="brand-dot">.</span>
-          </span>
-          <p>Ascent · Independent real estate decision workspace</p>
-          <p className="lp-footer-fine">
-            <ShieldCheck size={13} aria-hidden="true" /> Demo data is fictional. Ascent is a decision aid, not an
-            appraisal.
-          </p>
+          </Link>
+          <p>Real estate, reasoned.</p>
+          <p>Decision aid, not an appraisal. Sample data is fictional.</p>
         </div>
       </footer>
     </div>

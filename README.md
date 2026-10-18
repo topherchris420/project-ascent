@@ -2,116 +2,62 @@
 
 # Ascent
 
-### Price with proof. Close with confidence.
+### Know the price. Show the why.
 
-**An independent real estate decision workspace built around evidence, not black boxes.**
+A real estate workspace that keeps the evidence behind the decision.
 
-From the first comparable sale to the final closing milestone, Ascent helps you understand the numbers, explain the tradeoffs, and keep the human in control.
+**[Analyze a DC home](https://project-ascent-theta.vercel.app/dc) · [Try the sample](https://project-ascent-theta.vercel.app/demo) · [Open Ascent](https://project-ascent-theta.vercel.app/)**
 
-[**Explore the live pricing example ↗**](https://project-ascent-theta.vercel.app/) · [Explore the code](https://github.com/topherchris420/project-ascent) · [How it works](#how-ascent-works) · [Run locally](#run-it-yourself)
-
-**Deterministic pricing · Cited evidence · Human-approved decisions · Portable records**
+No account needed for either pricing studio.
 
 </div>
 
 ---
 
-## Real estate is full of consequential decisions. The reasoning shouldn't be hidden.
+A seller asks, **“Why this price?”** Ascent gives you the working: comparable sales, adjustments, assumptions and a report you can explain.
 
-A listing price is more than a number. Behind it are comparable sales, adjustments, assumptions, market conditions, and a conversation with a real person who deserves to know *why*.
+## Start with one decision
 
-Ascent brings those pieces into one coherent workspace. Instead of handing you an unexplained recommendation, it opens up the calculation: **which sales counted, which didn't, what changed, and what the evidence can actually support.**
-
-And it doesn't stop at pricing. Clients, offers, transaction deadlines, saved reports, and evidence-aware assistance all connect to the same decision trail.
-
-> **The principle:** AI can help explain a decision. It shouldn't secretly make the decision for you.
-
-## Try it first
-
-**[Launch Ascent →](https://project-ascent-theta.vercel.app/)**
-
-Choose **Analyze a property** to price a **real single-family home in Washington, DC** (`/dc`) from District public records (CC BY 4.0), with the settings validated on DC sales the engine never saw and every recorded sale shown. No account, MLS feed or model request is involved; see [how DC pricing works](docs/dc-public-records.md). Outside DC, or to practise first, open the account-free **fictional sample** (`/demo`). Either way, in four steps you can:
-
-1. **Review the evidence**: every adjusted sale on one price axis, linked to a sale-by-sale inspector with signed adjustments, the weight formula and the source.
-2. **Choose a strategy**: conservative, balanced and aggressive positions, and what each move nets the seller, including a later reduction to the next search threshold versus the same amount as a credit.
-3. **Challenge the decision**: see which input moves the price most, change the subject's condition or any rate, exclude a sale with a reason, or add a sale you know about, then reconcile the change sale by sale.
-4. **Open your report**: a printable draft carrying your selected price, costs, reasons and every comparable's source, plus a replayable JSON decision.
-
-The studio uses Ascent's actual deterministic pricing engine, **not a generated image or fabricated AI answer**. Its authored properties and prices are illustrative, not real market research, and sales you add are labeled as unverified entries.
-
-**Two ways in, with different honesty rules.** *Explore the working demo* opens an isolated, persistent workspace preloaded with a clearly fictional fixture (frozen in time so its deadlines stay meaningful). *Create an account* opens a workspace that starts **empty on purpose**: no invented properties, people, offers or transactions. Evidence arrives only through authorized imports, your own entries, a configured property-data provider, or an explicit, audited choice to load the labeled practice fixture.
-
-**Current hosted access:** The public pricing example is always available. If hosted account services are still being configured, the site says so and the workspace buttons stay out of reach until setup is complete. For an independent workspace, [run Ascent locally](#run-it-yourself).
-
-## What can you do with Ascent?
-
-| Workspace | What it helps you do |
+| You want to… | Start here |
 | --- | --- |
-| **Pricing studio** | Inspect closed-sale comps on a range chart and sale by sale, see which input moves the estimate most, compare what each pricing move nets the seller, exclude unsuitable sales, and save reproducible comparative market analyses (CMAs). |
-| **Seller presentations** | Turn reviewed pricing work into a printable report, three-position recommendation, and transparent seller-proceeds scenario. |
-| **Market pulse** | Record weekly showings, buyer feedback, offers, and listing changes; examine evidence-linked next-step options. |
-| **Clients** | Track contacts, stages, saved searches, inventory matches, conversations, and follow-up tasks in a private workspace. |
-| **Offer room** | Compare price, credits, financing, contingencies, timing, and configurable term-strength weights. Draft counters without automatically sending them. |
-| **Transactions** | Keep milestones and private documents together; review proposed dates against cited source text before accepting them. |
-| **Ask Ascent** | Ask about the record on screen. Answers are labeled as recorded facts, calculations, assumptions, model interpretation, drafts and unknowns, with record references. |
-| **Data fabric** | Inspect property sources, freshness, record completeness, usage permissions, ingestion runs, and unresolved conflicts. |
-| **Portability & teams** | Preview and reconcile CSV imports, export supported records, manage workspace roles, and track approvals. |
+| Analyze a real home | **[DC Pricing Studio](https://project-ascent-theta.vercel.app/dc)** — search covered single-family homes in District public records. No address in mind? Try the example address. |
+| Learn by doing | **[Fictional sample](https://project-ascent-theta.vercel.app/demo)** — explore an Arlington example using the actual pricing engine. |
+| Work through a deal | **[Workspace demo](https://project-ascent-theta.vercel.app/)** — choose **Explore the working demo** for fictional clients, offers and deadlines. |
+| Bring your own evidence | Choose **Create an account** on the homepage. Your workspace starts empty. |
 
-These are implemented workflows with different verification and production-readiness levels. The [capability matrix](docs/capability-matrix.md) distinguishes tested behavior from gaps and planned integrations.
+Hosted workspaces require configured account services. Both public studios work independently.
 
-## How Ascent works
+## See it. Challenge it. Keep it.
 
-### 01 · Price the evidence
+1. **See the evidence.** Inspect each closed sale, its adjustments and its contribution to the estimate.
+2. **Test a price.** Compare pricing positions and seller proceeds under your chosen cost assumptions.
+3. **Challenge the reasoning.** Change a condition rating, adjust a rate, or exclude a sale with a reason. Added sales are marked unverified. Reset to the original analysis; undo the reset if you change your mind.
+4. **Keep the decision.** Open a printable report or export JSON with the calculation, sources and assumptions. Drafts save in this browser on this device.
 
-Start with a subject property and comparable **recorded closed sales**. Ascent applies explicit adjustments for living area, bedrooms, bathrooms, condition, and an optional time trend. Distance, recency, and size similarity affect weights. Excluded comps have reasons.
+The calculation is deterministic. AI does not set the price. An adjusted-sale range describes the comparable evidence; it is not automatically a confidence interval.
 
-The result is a weighted estimate and an **observed adjusted-comp range**, not a statistical confidence interval or an appraisal.
+## Carry the reasoning through the deal
 
-### 02 · Explore the decision
+The private workspace connects pricing snapshots, client notes, saved searches, offer comparisons and transaction milestones. **Ask Ascent** explains the record on screen, separating facts, calculations, assumptions and unknowns. Drafts and approvals stay with the user.
 
-Move among conservative, moderate, and aggressive list positions. Change the price and inspect how it relates to the adjusted comps. Edit commission, closing-cost, concession, and payoff assumptions to understand a *hypothetical* seller net.
+Saved pricing analyses freeze their inputs. Replay them later, or use the **Decision Time Machine** to see which evidence and assumptions changed. Supported CSV/JSON exports keep your work portable.
 
-The scenario calculator does **not** predict that a buyer will pay the selected price or that a listing will sell faster.
+[Explore the workflows](docs/capability-matrix.md) · [How decision replay works](docs/evidence-and-decision-time-machine.md)
 
-### 03 · Inspect evidence fitness and changing decisions
+## Useful evidence. Visible limits.
 
-The Pricing studio now exposes **reviewable evidence sufficiency**: effective sample size, weight concentration, adjusted-sale dispersion, source identity and explicit model omissions. These are analyst review heuristics, not a claimed prediction of error. The **Decision Time Machine** compares a saved CMA with today's calculation, showing which sale records entered or left, what source facts and assumptions changed, and how the valuation moved. It cannot assert market causation. [Inspect the methodology](docs/evidence-and-decision-time-machine.md).
+The published DC evaluation reports **10.0% median error across 2,254 held-out sales**, with **50.2% within ±10%** of the recorded price. These results apply to the DC-validated settings and evaluation period; some acceptance thresholds were met narrowly. They do not guarantee an individual property's price.
 
-### 04 · Keep the reasoning
+- The DC studio uses **District public records, CC BY 4.0**. Recent sales may lag; interior condition, concessions and MLS listing history are missing.
+- Public analysis covers eligible **DC single-family homes**. Condos, multi-unit buildings, Maryland and Virginia are outside its measured scope.
+- The sample and workspace demo are fictional. Optional licensed providers require their own configuration and permissions; no MLS access is bundled.
+- Reports are decision aids requiring review, **not appraisals**. Ascent does not send client messages, accept offers or sign contracts.
 
-Save a frozen CMA containing inputs, comp decisions, adjustments, source references, calculation version, and a reproducibility checksum. Build a seller-facing report without silently recomputing yesterday's decision using tomorrow's data.
+[DC data and coverage](docs/dc-public-records.md) · [Full validation and misses](docs/valuation-validation.md) · [Production readiness](docs/remaining-work.md)
 
-Any saved snapshot can be **replayed**: Ascent recomputes it from the evidence it archived at save time, checks that the archive still matches its own checksum, and reports either *Reproduced* or exactly where the replay departs. Replay reads the archive only; changing today's records never changes the verdict.
+## Run locally
 
-### 05 · Continue the work
-
-Carry that context into client notes, listing reviews, offer comparisons, counter drafts, transaction milestones, and an evidence-linked decision graph. Significant approvals are explicit; **Ascent does not send a client message, accept an offer, or execute a contract for you.**
-
-### 06 · Ask, inspect, decide
-
-Ask Ascent draws on authorized workspace records. Deterministic evidence mode works without a language-model key; optional model synthesis can help explain or draft. Source references, privacy controls, and human review remain important: a citation can identify a record without guaranteeing every sentence is correct.
-
-## What makes it different?
-
-**The math is inspectable.** Pricing calculations are deterministic, with visible assumptions and signed adjustments. Model-generated prose does not set valuation figures.
-
-**The accuracy is measured in DC, not claimed.** On 2,254 District of Columbia home sales recorded from October 2025 to September 2026, which the engine never saw, the DC-validated configuration had a 10.0% median error. 50.2% of sales landed within ±10%, and the calibrated 80% range held 76.7%. It beat median $/sqft of the same comparables by 4.1 points and met all nine pre-registered criteria, three of them narrowly, as the report states. It uses the District's own deed and assessor records (CC BY 4.0). A second market, King County, WA, met 5 of 9, and its misses are published too. `npm run validate:valuation -- --verify --market dc` reproduces the DC report byte for byte. See [valuation validation](docs/valuation-validation.md).
-
-**Valuations pass a release gate.** Before a price can be approved, named checks look at comparable count, agreement, adjustment size, freshness, outliers, an independent $/sqft cross-check and engine integrity. Concerns must be acknowledged, and an operator switch (`ASCENT_VALUATION_RELEASE=disabled`) can pause approval everywhere. `/api/health` exposes readiness without secrets.
-
-**The history is reproducible.** A saved analysis freezes the evidence and computation that produced it, and a one-click replay proves it still recomputes to the same checksum. The checksum supports replay and detects accidental drift; it is not cryptographic proof against a determined adversary.
-
-**The user remains the decision-maker.** Suggestions and drafts stop short of consequential actions. A review is recorded instead of quietly sending or signing something.
-
-**Data has a provenance trail.** Property facts retain their source, time, quality explanation, and applicable rights. Conflicts can be quarantined rather than resolved by guesswork.
-
-**Your work can leave the product.** Supported CSV/JSON exports and previewed imports reduce dependence on a single interface or vendor.
-
-**Access is designed to be progressive.** Free exploration is separate from professional verification, provider entitlements, optional AI budgets, and paid-plan configuration.
-
-## Run it yourself
-
-Requires **Node.js 24.x (24.15+ recommended)** and npm.
+Requires **Node.js 24.x** and npm.
 
 ```bash
 git clone https://github.com/topherchris420/project-ascent.git
@@ -121,86 +67,29 @@ cp .env.example .env.local
 npm run dev
 ```
 
-Open **http://localhost:3040**.
+Open **http://localhost:3040**. On PowerShell, use `Copy-Item .env.example .env.local` if needed.
 
-On Windows PowerShell, use `Copy-Item .env.example .env.local` instead of `cp` if preferred, and `npm.cmd` in place of `npm` if script execution is blocked.
+No provider or model key is required for the bundled public records, fictional sample or deterministic workflows. Local workspaces use SQLite in `.data/`; production requires PostgreSQL and deployment configuration. Keep `.env.local` and `.data/` private.
 
-Choose **Explore the working demo** for a fixture-filled practice workspace, or **Create an account** for a workspace that starts empty and fills only with evidence you bring in (the overview offers three honest starting points: provider research, a previewed import, or the labeled practice fixture). Local SQLite data is stored in the ignored `.data/ascent.sqlite`; keep `.data/` and `.env.local` private. No external property-data key or AI key is required to explore the synthetic demo and deterministic workflows.
+Optional integrations: **RentCast** for authorized property research, **Groq/OpenAI** for model-assisted explanations, and **Stripe** for configured subscriptions. Credentials stay on the server.
 
-**Production is different:** production uses PostgreSQL with tenant isolation, appropriate encryption/configuration, and an authorized deployment. Do not deploy the local SQLite setup as a customer service. See [architecture and security](docs/engineering.md), [PostgreSQL setup](docs/postgres-connection.md), and [Vercel guidance](docs/vercel-hobby.md).
+[Engineering](docs/engineering.md) · [PostgreSQL](docs/postgres-connection.md) · [Vercel](docs/vercel-hobby.md) · [Provider setup](docs/rentcast-integration.md)
 
-### Optional integrations
+## Develop and verify
 
-| Service | Purpose | Important boundary |
-| --- | --- | --- |
-| **RentCast** | Server-side property research, recorded-sale comparisons, listing/AVM context, and ZIP statistics | Requires a key, appropriate contractual rights, reviewed grants, and request/spend limits. **Not an MLS feed.** |
-| **Groq** | Optional GPT-OSS synthesis and drafting grounded in authorized records | Requires a key, explicit sharing controls, model budgets, and factual review. |
-| **OpenAI** | Optional secondary model integration | Disabled unless deliberately configured and authorized. |
-| **Stripe** | Configurable subscription checkout and lifecycle | Requires actual price IDs, keys, webhook configuration, and production acceptance. |
-
-Provider credentials belong **server-side only**. Never put keys in client code or commit them. See [RentCast boundaries](docs/rentcast-integration.md) and [AI architecture](docs/ai-architecture.md).
-
-## Built for people who want to inspect the system
-
-Ascent uses **Next.js 16, React 19, TypeScript, Zod, Node.js 24, local SQLite, and production PostgreSQL/PostGIS**. Pricing logic can run instantly in the UI and is recomputed server-side before a result is saved. Workspace authorization, database writes, provider calls, and optional model requests stay on the server.
-
-A useful map for contributors:
-
-| Where | What lives there |
-| --- | --- |
-| `src/` | Application, pricing, workspace, APIs, and UI |
-| `migrations/` | Versioned PostgreSQL schema and tenant protections |
-| `tests/` | Unit, integration, and browser coverage |
-| `scripts/` | Benchmarks, evaluations, migrations, and deployment checks |
-| `evidence/` | Recorded synthetic and bounded integration-verification artifacts |
-| `docs/` | Architecture, provider rights, operations, limitations, and validation |
-
-### Verify a change
+Next.js 16 · React 19 · TypeScript · Node.js 24
 
 ```bash
 npm run typecheck
 npm test
-npm run test:e2e
-npm run benchmark
-npm run evaluate:domain
-npm run validate:valuation -- --check
-npm run evaluate:ai
 npm run build
+npm run test:e2e
 ```
 
-Playwright requires Chrome or an appropriately configured `CHROME_PATH`. Not all checks are equivalent: synthetic benchmarks, provider smoke tests, and production acceptance answer different questions. Review [verification results](docs/verification-results.md) before interpreting performance or accuracy.
+Browser tests need Chrome configured with `CHROME_PATH`. See [verification results](docs/verification-results.md) for evaluation commands and the distinction between fixture tests and production acceptance.
 
-## Contributing and open-source status
-
-Ascent is intended to be **open-source, inspectable, and extendable**. Useful contributions include accessibility improvements, reproducibility checks, privacy boundaries, import/export adapters for authorized data, better uncertainty communication, and careful domain tests.
-
-For now, **check repository visibility and licensing before treating the source as openly reusable**. GitHub currently reports this repository as *private*, and an open-source license file was not found at the repository root during this README update. Public access to the web app alone does not grant an open-source code license. The maintainer should make the repository public and add an explicit `LICENSE` file to complete that transition.
-
-Once those are in place, open an issue describing a proposed change, its evidence, and any data-rights implications before substantial work. Please do not submit copied proprietary MLS data, private client records, access tokens, or third-party code without reuse permission.
-
-## Trust, limitations, and what's next
-
-Ascent deliberately makes a distinction between **software that runs** and **claims that have been validated in the real world**:
-
-- **Demo data is fictional, and only the demo has it.** The public pricing example and the demonstration workspace are illustrative and labeled synthetic on every screen. A new private account contains nothing until its owner adds evidence; fixture records enter it only by an explicit, audited request.
-- **No MLS rights are bundled.** RentCast is a separate property-data provider. Any live source requires its own permissions and appropriate professional eligibility.
-- **No appraisal or legal opinion is produced.** CMA calculations and date extraction are decision aids requiring qualified review. Scanned-document OCR and comprehensive holiday calendars are not available.
-- **Accuracy is measured in two markets only.** DC (single-unit residential, Oct 2025 – Sep 2026; 9 of 9 criteria, three narrowly) and King County, WA (2015; 5 of 9). Maryland, Virginia, Austin and condominiums are unmeasured, and outside a validated market and configuration the range stays an uncalibrated comparable envelope. Offer scores, scenario calculations and synthetic outcomes are not calibrated probabilities, and no business outcome is claimed.
-- **Model output is not a substitute for evidence.** Cited AI explanations can still be wrong. External model use must respect data-sharing restrictions.
-- **Production readiness is still being established.** Hosted database acceptance and bounded integration checks are documented; deployment configuration, provider rights, payment settlement, reliability, and operational security still have outstanding gates.
-
-For the exact state of the project, read the [capability matrix](docs/capability-matrix.md), [verification results](docs/verification-results.md), and [remaining production work](docs/remaining-work.md).
+Application code lives in `src/`, migrations in `migrations/`, tests in `tests/`, and research and operational notes in `docs/`. Contributions should preserve reproducibility, accessible interactions, source rights and workspace isolation. Check repository access and licensing before reusing the source; the repository does not currently include an open-source license.
 
 ---
 
-<div align="center">
-
-### Better decisions deserve visible reasoning.
-
-A real estate workspace where the evidence survives the conversation.
-
-[**Explore Ascent ↗**](https://project-ascent-theta.vercel.app/) · [Read the engineering notes](docs/engineering.md)
-
 **Ascent · Real estate, reasoned.**
-
-</div>

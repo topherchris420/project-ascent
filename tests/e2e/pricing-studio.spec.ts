@@ -18,7 +18,7 @@ for (const viewport of [
     });
     const started = Date.now();
     await page.goto('/');
-    await page.getByRole('link', { name: 'Try the fictional sample', exact: true }).click();
+    await page.getByRole('link', { name: 'Try the sample', exact: true }).first().click();
     await expect(page.getByTestId('studio-estimate')).toHaveText('$963,010');
     const meaningfulMs = Date.now() - started;
     if (viewport.width === 1440) await page.screenshot({ path: 'evidence/ascent-studio-preview.png', fullPage: false });
@@ -61,7 +61,7 @@ for (const viewport of [
     await page.getByLabel('Closing price ($)', { exact: true }).fill('1005000');
     await page.getByLabel('Closing date', { exact: true }).fill('2026-09-20');
     await page.getByLabel('Distance from subject (miles)', { exact: true }).fill('0.3');
-    await page.getByRole('button', { name: 'Add practice sale', exact: true }).click();
+    await page.getByRole('button', { name: 'Add unverified sale', exact: true }).click();
     await expect(page.locator('.studio-exclusions')).toContainText('14 Practice Entry Lane · entered by you');
     await expect(page.getByTestId('studio-estimate')).not.toHaveText(beforeEntry);
     await page.getByRole('button', { name: /Conservative \$/ }).click();
@@ -88,7 +88,7 @@ for (const viewport of [
     await report.close();
     await page.reload();
     await expect(page.getByLabel('Mortgage payoff ($)', { exact: true })).toHaveValue('300000');
-    await expect(page.getByText('Practice draft restored on this device.')).toBeVisible();
+    await expect(page.getByText('Draft restored on this device.')).toBeVisible();
     await page.getByRole('link', { name: /01 Review the evidence/ }).click();
     const axe = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze();
     expect(axe.violations.map(v => ({ id: v.id, nodes: v.nodes.map(n => n.target) }))).toEqual([]);
@@ -130,7 +130,7 @@ for (const viewport of [
 test('no-evidence recovery and corrupted device storage are explicit', async ({ page }) => {
   await page.addInitScript(() => localStorage.setItem('ascent.practice-studio.v1', '{"unrecognized":"old"}'));
   await page.goto('/demo');
-  await expect(page.getByText('An older practice draft could not be restored. A fresh sample is ready.')).toBeVisible();
+  await expect(page.getByText('An older draft could not be restored. The original analysis is ready.')).toBeVisible();
   await page.getByText('Eligibility filters: radius, sale age and size similarity', { exact: true }).click();
   await page.getByLabel('Sale age limit (days)', { exact: true }).fill('1');
   await expect(page.getByRole('alert').filter({ hasText: 'No eligible closed comparables' })).toBeVisible();

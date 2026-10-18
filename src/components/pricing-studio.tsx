@@ -90,6 +90,7 @@ export function PricingStudio(config: StudioConfig) {
     distanceMiles: '0.5',
   };
   const [state, setState] = useState<StudioState>(config.defaultState);
+  const [beforeReset, setBeforeReset] = useState<StudioState | null>(null);
   const [ready, setReady] = useState(false),
     [storageStatus, setStorageStatus] = useState('');
   const [exclusionId, setExclusionId] = useState(''),
@@ -113,8 +114,8 @@ export function PricingStudio(config: StudioConfig) {
         const parsed = schema.safeParse(JSON.parse(saved));
         if (parsed.success) {
           setState(parsed.data);
-          setStorageStatus('Practice draft restored on this device.');
-        } else setStorageStatus('An older practice draft could not be restored. A fresh sample is ready.');
+          setStorageStatus('Draft restored on this device.');
+        } else setStorageStatus('An older draft could not be restored. The original analysis is ready.');
       }
     } catch {
       setStorageStatus('Device storage is unavailable. Keep this tab open or export your decision.');
@@ -155,19 +156,22 @@ export function PricingStudio(config: StudioConfig) {
       ? 'condition unknown'
       : `condition ${value}/${conditionMax}${config.conditionLabels?.[value] ? ` (${config.conditionLabels[value]})` : ''}`;
   const patch = (next: Partial<StudioState>) => {
+    setBeforeReset(null);
+    setStorageStatus('');
     setState(s => ({ ...s, ...next }));
     setReportOpened(false);
   };
   const reset = () => {
+    setBeforeReset(state);
     setState(structuredClone(config.defaultState));
     setReportOpened(false);
     setStep(1);
     setInspectId('');
-    setStorageStatus('Practice draft reset. Original evidence restored.');
+    setStorageStatus('Original evidence restored. You can undo this reset until your next edit.');
   };
   const addSale = () => {
     const id = practiceEntryIds.find(entry => !(state.addedSales ?? []).some(s => s.id === entry));
-    if (!id) return setSaleError('Up to three practice sales can be added.');
+    if (!id) return setSaleError('Up to three unverified sales can be added.');
     const parsed = practiceSaleSchemaFor(conditionMax).safeParse({
       id,
       address: sale.address,
@@ -440,9 +444,25 @@ export function PricingStudio(config: StudioConfig) {
               <span className="eyebrow">WHAT CHANGES MY DECISION?</span>
               <h2>Challenge one assumption. See the difference.</h2>
             </div>
-            <button className="button small" onClick={reset}>
-              <RotateCcw size={15} /> Reset to original
-            </button>
+            <div className="studio-reset-actions">
+              {beforeReset ? (
+                <button
+                  className="button small"
+                  onClick={() => {
+                    setState(beforeReset);
+                    setBeforeReset(null);
+                    setReportOpened(false);
+                    setStorageStatus('Reset undone. Your previous draft is restored.');
+                  }}
+                >
+                  Undo reset
+                </button>
+              ) : (
+                <button className="button small" onClick={reset} disabled={!ready}>
+                  <RotateCcw size={15} /> Reset to original
+                </button>
+              )}
+            </div>
           </div>
           <p className="studio-muted">
             Change a rating or rate, exclude a sale with a reason, or add a sale you know about. The original
@@ -554,8 +574,8 @@ export function PricingStudio(config: StudioConfig) {
           <details className="studio-disclosure studio-add-sale" open={!!state.addedSales?.length || undefined}>
             <summary>Add a sale you know about</summary>
             <p>
-              Practice entries are labeled “entered by you, unverified” everywhere, including the report. Location is
-              your entered distance only; no map position or real record is implied.
+              Added sales are labeled “entered by you, unverified” everywhere, including the report. Location is your
+              entered distance only; no map position or real record is implied.
             </p>
             <div className="studio-assumption-fields">
               {(
@@ -594,7 +614,7 @@ export function PricingStudio(config: StudioConfig) {
               disabled={(state.addedSales?.length ?? 0) >= practiceEntryIds.length}
               onClick={addSale}
             >
-              <Plus size={15} /> Add practice sale
+              <Plus size={15} /> Add unverified sale
             </button>
           </details>
           <ul className="studio-exclusions">
@@ -706,7 +726,7 @@ export function PricingStudio(config: StudioConfig) {
             <h2>Your reasoning, ready to review.</h2>
             <p>
               The report preserves this calculation, your selected asking price, cost assumptions, excluded-sale
-              reasons, practice entries and source references.
+              reasons, added sales and source references.
             </p>
             <p className="fine">{config.reportNote}</p>
           </div>
@@ -740,7 +760,8 @@ export function PricingStudio(config: StudioConfig) {
           </div>
         </section>
         <p className="studio-device-note" role="status">
-          {storageStatus || 'Practice changes save on this device. Export a decision to keep an independent copy.'}
+          {storageStatus ||
+            'Draft changes save in this browser on this device. Export a decision to keep an independent copy.'}
         </p>
         <footer className="studio-footer">
           <Link href="/">

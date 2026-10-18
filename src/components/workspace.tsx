@@ -834,14 +834,15 @@ export default function WorkspaceApp({
           <a className="brand" href="/">
             <span className="brand-mark">A</span>ascent<span className="brand-dot">.</span>
           </a>
-          <Badge tone="light">PROPERTY INTELLIGENCE, WITH PERSPECTIVE</Badge>
+          <Badge tone="light">REAL ESTATE, REASONED.</Badge>
           <h1>
-            Every property.
-            <br />A clearer picture.
+            Your evidence.
+            <br />
+            Your next move.
           </h1>
           <p>
-            From the first comparable to the final signature. Bring your evidence, decisions, and relationships into one
-            thoughtful workspace.
+            Keep your pricing decisions, clients, offers and deadlines together. Start with your own evidence or explore
+            the fictional demo.
           </p>
           <HouseArt large />
           <div className="auth-proof">
@@ -855,8 +856,8 @@ export default function WorkspaceApp({
         </section>
         <section className="auth-form">
           <div className="auth-form-inner">
-            <span className="eyebrow">WELCOME TO YOUR NEXT CHAPTER</span>
-            <h2>{authMode === 'login' ? 'Good to have you here.' : 'Make room for better decisions.'}</h2>
+            <span className="eyebrow">YOUR PRIVATE WORKSPACE</span>
+            <h2>{authMode === 'login' ? 'Sign in to Ascent.' : 'Create your workspace.'}</h2>
             <p>
               {authMode === 'login'
                 ? 'Sign in to your professional workspace.'
@@ -869,14 +870,13 @@ export default function WorkspaceApp({
             )}
             {!workspaceAvailable && (
               <div role="status" className="error-box">
-                Hosted sign-in and private workspaces are awaiting deployment configuration. You can still explore the
-                interactive pricing example on the home page.
+                Workspaces are being set up. You can analyze a DC home or try the sample without an account.
               </div>
             )}
             <form
               onSubmit={e => {
                 e.preventDefault();
-                void authenticate(authMode, Object.fromEntries(new FormData(e.currentTarget)));
+                if (workspaceAvailable) void authenticate(authMode, Object.fromEntries(new FormData(e.currentTarget)));
               }}
             >
               {authMode === 'register' && (
@@ -906,7 +906,7 @@ export default function WorkspaceApp({
                   placeholder={authMode === 'register' ? 'At least 12 characters' : 'Your password'}
                 />
               </label>
-              <button className="button primary full" disabled={busy}>
+              <button className="button primary full" disabled={busy || !workspaceAvailable}>
                 {busy ? (
                   <LoaderCircle className="spin" size={18} />
                 ) : authMode === 'login' ? (
@@ -929,7 +929,11 @@ export default function WorkspaceApp({
             <div className="divider">
               <span>or take a look around</span>
             </div>
-            <button className="button full demo-button" disabled={busy} onClick={() => void authenticate('demo')}>
+            <button
+              className="button full demo-button"
+              disabled={busy || !workspaceAvailable}
+              onClick={() => void authenticate('demo')}
+            >
               <Sparkles size={18} />
               Explore the working demo
               <ArrowUpRight size={16} />
@@ -937,6 +941,9 @@ export default function WorkspaceApp({
             <p className="fine">
               Demo creates an isolated, persistent workspace with fictional properties and clients. No MLS credentials
               required.
+            </p>
+            <p className="fine">
+              <a href="/dc">Analyze a DC home</a> · <a href="/demo">Try the sample without an account</a>
             </p>
           </div>
         </section>

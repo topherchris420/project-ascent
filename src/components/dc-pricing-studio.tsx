@@ -22,66 +22,125 @@ type PropertyPayload = {
 };
 
 function AddressSearch({ onPick, compact }: { onPick: (parcelId: string) => void; compact?: boolean }) {
-  const [query, setQuery] = useState(''),
-    [results, setResults] = useState<SearchResult[]>([]),
-    [status, setStatus] = useState(''),
-    [busy, setBusy] = useState(false);
+  const [query, setQuery] = useState('');
+  const [results, setResults] = useState<SearchResult[]>([]);
+  const [status, setStatus] = useState('Type at least 3 characters to find a home.');
+  const [busy, setBusy] = useState(false);
+  const [failed, setFailed] = useState(false);
+  const [retry, setRetry] = useState(0);
   const request = useRef(0);
+  const field = useRef<HTMLInputElement>(null);
+  const list = useRef<HTMLUListElement>(null);
+  const changeQuery = (value: string) => {
+    // Invalidate immediately, including when a query is cleared before the effect runs.
+    request.current += 1;
+    setQuery(value);
+    setResults([]);
+    setFailed(false);
+    setBusy(value.trim().length >= 3);
+    setStatus(value.trim().length >= 3 ? 'Searching DC public records…' : 'Type at least 3 characters to find a home.');
+  };
   useEffect(() => {
+    const id = ++request.current;
     const term = query.trim();
     if (term.length < 3) {
       setResults([]);
-      setStatus('');
+      setBusy(false);
       return;
     }
-    const id = ++request.current;
+    const controller = new AbortController();
+    let active = true;
     setBusy(true);
-    const timer = setTimeout(() => {
-      fetch(`/api/dc/search?q=${encodeURIComponent(term)}`)
-        .then(response => response.json())
-        .then(body => {
-          if (id !== request.current) return;
-          const found: SearchResult[] = body.results ?? [];
-          setResults(found);
-          setStatus(
-            found.length
-              ? `${found.length} matching DC home${found.length === 1 ? '' : 's'}`
-              : 'No single-family DC home matches. Condominiums and multi-unit buildings are not covered. Try the house number and street, for example 1234 Main St NW.',
-          );
-        })
-        .catch(() => id === request.current && setStatus('Search is unavailable right now. Try again shortly.'))
-        .finally(() => id === request.current && setBusy(false));
-    }, 200);
-    return () => clearTimeout(timer);
-  }, [query]);
+    setFailed(false);
+    setStatus('Searching DC public records…');
+    const timer = setTimeout(async () => {
+      try {
+        const response = await fetch(`/api/dc/search?q=${encodeURIComponent(term)}`, { signal: controller.signal });
+        if (!response.ok) throw new Error('Search request failed.');
+        const body = await response.json();
+        if (!Array.isArray(body.results)) throw new Error('Search returned an unexpected response.');
+        if (!active || id !== request.current) return;
+        const found: SearchResult[] = body.results;
+        setResults(found);
+        setStatus(
+          found.length
+            ? `${found.length} matching DC home${found.length === 1 ? '' : 's'}. Choose an address to see its analysis.`
+            : 'No matching home in these records. Try the house number and street without the ZIP code. Condominiums and multi-unit buildings are not covered.',
+        );
+      } catch {
+        if (!active || id !== request.current) return;
+        setResults([]);
+        setFailed(true);
+        setStatus('Search is unavailable right now. Retry, or explore the fictional sample.');
+      } finally {
+        if (active && id === request.current) setBusy(false);
+      }
+    }, 250);
+    return () => {
+      active = false;
+      clearTimeout(timer);
+      controller.abort();
+    };
+  }, [query, retry]);
   return (
     <section className={`dc-search ${compact ? 'compact' : ''}`} aria-label="Find a DC home">
       <label htmlFor="dc-address">Street address in Washington, DC</label>
       <div className="dc-search-field">
         <Search size={18} aria-hidden="true" />
         <input
+          ref={field}
           id="dc-address"
           type="search"
           autoComplete="off"
-          placeholder="e.g. 3400 Macomb St NW"
+          placeholder="House number and street, e.g. 313 Shepherd St NW"
           value={query}
-          onChange={e => setQuery(e.target.value)}
+          onChange={e => changeQuery(e.target.value)}
+          onKeyDown={e => {
+            if (e.key === 'Escape') changeQuery('');
+            if (e.key === 'ArrowDown' && results.length) {
+              e.preventDefault();
+              list.current?.querySelector('button')?.focus();
+            }
+          }}
           aria-describedby="dc-search-status"
+          aria-controls={results.length ? 'dc-search-results' : undefined}
         />
         {busy && <LoaderCircle size={16} className="spin" aria-hidden="true" />}
       </div>
       <p id="dc-search-status" className="fine" role="status">
         {status}
       </p>
+      {failed && (
+        <div className="dc-search-recovery">
+          <button type="button" className="button small" onClick={() => setRetry(value => value + 1)}>
+            Retry search
+          </button>
+          <Link href="/demo">Try the sample</Link>
+        </div>
+      )}
+      {!compact && !query && (
+        <div className="dc-search-example">
+          <span>No address in mind?</span>
+          <button
+            type="button"
+            className="button small"
+            onClick={() => {
+              changeQuery('313 Shepherd');
+              field.current?.focus();
+            }}
+          >
+            Try an example address <ArrowRight size={14} aria-hidden="true" />
+          </button>
+        </div>
+      )}
       {results.length > 0 && (
-        <ul className="dc-results">
+        <ul className="dc-results" id="dc-search-results" ref={list} aria-label="Matching DC homes">
           {results.map(result => (
             <li key={result.parcelId}>
               <button
                 type="button"
                 onClick={() => {
-                  setQuery('');
-                  setResults([]);
+                  changeQuery('');
                   onPick(result.parcelId);
                 }}
               >
@@ -108,6 +167,7 @@ export function DcPricingStudio() {
     [data, setData] = useState<PropertyPayload | null>(null),
     [error, setError] = useState(''),
     [loading, setLoading] = useState(false);
+  const [retry, setRetry] = useState(0);
   const pick = (parcelId: string, push = true) => {
     setParcel(parcelId);
     if (push) {
@@ -125,12 +185,16 @@ export function DcPricingStudio() {
   useEffect(() => {
     if (!parcel) {
       setData(null);
+      setError('');
+      setLoading(false);
       return;
     }
     let live = true;
+    const controller = new AbortController();
+    setData(null);
     setLoading(true);
     setError('');
-    fetch(`/api/dc/property?parcel=${encodeURIComponent(parcel)}`)
+    fetch(`/api/dc/property?parcel=${encodeURIComponent(parcel)}`, { signal: controller.signal })
       .then(async response => {
         const body = await response.json();
         if (!response.ok) throw new Error(body.error || 'That home could not be loaded.');
@@ -140,8 +204,9 @@ export function DcPricingStudio() {
       .finally(() => live && setLoading(false));
     return () => {
       live = false;
+      controller.abort();
     };
-  }, [parcel]);
+  }, [parcel, retry]);
   const evidence = useMemo(
     () =>
       data
@@ -170,8 +235,8 @@ export function DcPricingStudio() {
         intro={{
           eyebrow: 'DISTRICT OF COLUMBIA PUBLIC RECORDS',
           titleTop: 'Price a real DC home.',
-          titleBottom: 'See every recorded sale behind it.',
-          lede: `Recorded sales and assessor characteristics from the District's open data, priced with the settings validated on ${dcBenchmark.holdout.sales.toLocaleString('en-US')} DC sales the engine never saw. Not MLS data and not an appraisal.`,
+          titleBottom: 'See the sales behind the price.',
+          lede: 'Review the recorded sales, test your assumptions, and build a report. Based on District public records; not an appraisal.',
           badgeTitle: 'Real public records',
           badgeLines: [
             'District of Columbia data, CC BY 4.0',
@@ -195,6 +260,9 @@ export function DcPricingStudio() {
     );
   return (
     <div className="studio-page">
+      <a className="skip-link" href="#studio-main">
+        Skip to property search
+      </a>
       <header className="studio-header">
         <Link className="brand" href="/" aria-label="Ascent home">
           <span className="brand-mark">A</span>ascent<span className="brand-dot">.</span>
@@ -211,12 +279,11 @@ export function DcPricingStudio() {
             <h1>
               Price a real DC home.
               <br />
-              <span>See every recorded sale behind it.</span>
+              <span>See the sales behind the price.</span>
             </h1>
             <p>
-              Search any single-family home in the District. Ascent prices it from recorded sales with settings tested
-              on {dcBenchmark.holdout.sales.toLocaleString('en-US')} DC sales it never saw, then lets you take the
-              decision apart.
+              Find a single-family home in District records. Review comparable sales, test a price, and open your
+              report.
             </p>
           </div>
           <div className="studio-sample-label">
@@ -225,7 +292,7 @@ export function DcPricingStudio() {
             <span>
               District of Columbia data, CC BY 4.0
               <br />
-              No account, MLS feed or model request
+              Free to explore · no account needed
             </span>
           </div>
         </div>
@@ -237,11 +304,17 @@ export function DcPricingStudio() {
         )}
         {error && (
           <div role="alert" className="error-box">
-            {error}
+            <p>{error}</p>
+            <div className="dc-search-recovery">
+              <button type="button" className="button small" onClick={() => setRetry(value => value + 1)}>
+                Retry this property
+              </button>
+              <Link href="/demo">Try the sample</Link>
+            </div>
           </div>
         )}
         <section className="panel dc-coverage" aria-label="What this covers">
-          <h2>What this covers, and what it does not</h2>
+          <h2>Know what you’re working with.</h2>
           <ul className="studio-findings">
             <li>
               <strong>Covered:</strong> single-family homes in Washington, DC with an active street address, priced from

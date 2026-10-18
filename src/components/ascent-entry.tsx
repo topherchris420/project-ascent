@@ -36,8 +36,14 @@ export function AscentEntry({
       workspaceAvailable={workspaceAvailable}
       busy={busy}
       error={error}
-      onSignIn={() => setEntry('login')}
-      onRegister={() => setEntry('register')}
+      onSignIn={() => {
+        setEntry('login');
+        window.scrollTo(0, 0);
+      }}
+      onRegister={() => {
+        setEntry('register');
+        window.scrollTo(0, 0);
+      }}
       onDemo={() => {
         void (async () => {
           setBusy(true);
