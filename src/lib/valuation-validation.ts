@@ -60,6 +60,8 @@ export type ValidationProtocol = {
   interval: { target: number; minTierSize: number; tiers: readonly { id: string; maxComps: number | null }[] };
   bootstrap: { resamples: number; seed: number };
   primaryVariant: string;
+  /** Unavailable inputs are neutral internal sentinels; these coefficients are never fitted or enabled. */
+  omittedFeatures?: readonly ('bedroomValue' | 'bathroomValue')[];
   acceptance: readonly AcceptanceCriterion[];
 };
 
@@ -199,7 +201,30 @@ export const dcProtocol = {
   },
 } as const satisfies ValidationProtocol;
 
-export const validationProtocols: readonly ValidationProtocol[] = [dcProtocol, kingCountyProtocol];
+/** Declared before scoring Maryland. Last complete year ends June, allowing for recording/update lag.
+ * Same nine criteria, fitting, selection grid, bootstrap and interval method as DC. Only absent room
+ * features and the chronological windows differ. No threshold will be changed after this holdout runs.
+ */
+export const marylandProtocol = {
+  ...dcProtocol,
+  id: 'ascent-valuation-validation-maryland-1',
+  dataset: {
+    id: 'maryland-montgomery-prince-georges',
+    csvSha256: '53b08d04f7444618d640cce1848aac7cf87276e1092f80e65377be013aa6850b',
+    license: 'Public Domain',
+    sourceId: 'source-maryland-public-records',
+  },
+  windows: {
+    fit: { from: '2021-01-01', to: '2023-12-31' },
+    select: { from: '2024-01-01', to: '2024-06-30' },
+    calibrate: { from: '2024-07-01', to: '2025-06-30' },
+    test: { from: '2025-07-01', to: '2026-06-30' },
+  },
+  screening: { minBeds: 0, maxBeds: 0, minBaths: 0, minSqft: 300 },
+  omittedFeatures: ['bedroomValue', 'bathroomValue'],
+} as const satisfies ValidationProtocol;
+
+export const validationProtocols: readonly ValidationProtocol[] = [dcProtocol, kingCountyProtocol, marylandProtocol];
 
 const DAY = 86_400_000;
 const round = (value: number, digits: number) => Number(value.toFixed(digits));
@@ -396,7 +421,7 @@ export function fitAdjustmentRates(
     }
   }
   const names = ['sqftRate', 'bedroomValue', 'bathroomValue', 'conditionValue', 'monthlyTrend'] as const;
-  let active = [0, 1, 2, 3, 4];
+  let active = [0, 1, 2, 3, 4].filter(i => !protocol.omittedFeatures?.some(name => name === names[i]));
   let coefficients = [0, 0, 0, 0, 0];
   const clamped: string[] = [];
   const fit = (weights: number[]) => {
@@ -759,6 +784,17 @@ export function samplesCsv(rows: ValuationRow[], variantIds: string[]): string {
 
 /** Report text per protocol; kept outside the protocol objects so the published King County digest is unchanged. */
 const protocolLimitations: Record<string, string[]> = {
+  'ascent-valuation-validation-maryland-1': [
+    'Montgomery and Prince George’s counties only; pooled county model, July 2025 – June 2026 holdout. Not statewide Maryland validation.',
+    'Bedrooms and bathrooms are unavailable. Neutral zero sentinels are internal encoding, not observed counts; both adjustment rates are fixed to zero.',
+    'The engine condition slot holds SDAT dwelling QUALITY grade (1–9), not condition, renovation or an inspection.',
+    'Only size, quality grade, location and sale timing are modeled; no lot, school boundaries, concessions or listing history.',
+    'The source retains the latest three transfers per current parcel; older history is incomplete and subject to survivorship bias.',
+    'Current assessor characteristics are not historical. Build-year screening cannot remove unrecorded renovations.',
+    'Single-unit Residential (R) and Town House (TH), positive private arms-length improved transfers only. No condominiums or multi-unit parcels.',
+    'No look-ahead within retained history: only strictly earlier sales; own parcel sales excluded. Recording-time availability is not known.',
+    'Internal reproducible validation, not independent certification. Static snapshot; future performance is unmeasured.',
+  ],
   'ascent-valuation-validation-dc-1': [
     'District of Columbia only, October 2025 – September 2026. Maryland and Virginia suburbs are not covered by this result.',
     'Single-unit, single-building residential lots only; condominiums and multi-unit buildings are out of scope.',
@@ -832,7 +868,10 @@ export function runValuationValidation(csvText: string, options: ValidationOptio
     {
       id: 'shipped-defaults',
       label: 'Engine with shipped default assumptions (untuned)',
-      assumptions: { ...defaultAssumptions },
+      assumptions: {
+        ...defaultAssumptions,
+        ...Object.fromEntries((protocol.omittedFeatures ?? []).map(name => [name, 0])),
+      },
     },
     {
       id: 'locally-calibrated',
