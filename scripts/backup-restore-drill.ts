@@ -62,6 +62,9 @@ async function main() {
       DATABASE_URL: connect(source, true),
       NODE_ENV: 'production',
       APP_ENCRYPTION_KEY: key,
+      APP_ORIGIN: 'https://ascent.example.invalid',
+      RESEND_API_KEY: 'mock-delivery-only',
+      AUTH_MAIL_FROM: 'Ascent <drill@example.invalid>',
     });
     const auth = await import('../src/lib/auth');
     const security = await import('../src/lib/account-security');
@@ -90,6 +93,7 @@ async function main() {
     await db.transaction(first.user.tenantId, tx =>
       db.storeDocument(tx, first.user.tenantId, 'synthetic-drill-document', content),
     );
+    await security.requestPasswordReset(first.user.email);
     await db.closeDatabase();
     const childEnv = {
       ...process.env,
@@ -121,6 +125,28 @@ async function main() {
       /fresh|unused/,
     );
     await auth.login(first.user.email, 'synthetic long password only', codes.recoveryCodes[1]);
+    let resetToken = '';
+    const delivery = await security.deliverAuthMail(async (_url, options) => {
+      resetToken = /#token=([A-Za-z0-9_-]{43})/.exec(JSON.parse(String(options?.body)).text)![1];
+      return Response.json({ id: 'synthetic-mail-only' });
+    });
+    assert.equal(delivery.sent, 1);
+    await security.resetPassword(resetToken, 'new synthetic restore password');
+    await assert.rejects(auth.authenticate(request(signedIn.token)), /expired/);
+    await assert.rejects(
+      security.resetPassword(resetToken, 'another synthetic restore password'),
+      /invalid or expired/,
+    );
+    await assert.rejects(auth.login(first.user.email, 'new synthetic restore password'), /code/);
+    await auth.login(first.user.email, 'new synthetic restore password', codes.recoveryCodes[2]);
+    const { providerReady } = await import('../src/lib/inference/config');
+    process.env.GROQ_API_KEY = 'mock-never-requested';
+    process.env.AI_DATA_SHARING = 'approved';
+    assert.match(
+      providerReady({ provider: 'groq', model: 'openai/gpt-oss-20b', task: 'everyday', reason: 'Synthetic check' })
+        .reason,
+      /Independent AI accuracy review/,
+    );
     const isolation = await db.transaction(first.user.tenantId, tx => tx.query('SELECT tenant_id FROM workspaces'));
     assert.equal(isolation.length, 1);
     console.log(
@@ -135,6 +161,9 @@ async function main() {
             'tenant isolation after restore',
             'sessions restored',
             'MFA recovery replay rejected after restore',
+            'encrypted recovery outbox restored and delivered through mocked transport',
+            'password reset consumes token, revokes sessions and preserves MFA in PostgreSQL',
+            'production AI review gate enforced',
           ],
           scope: 'Disposable local synthetic PostgreSQL; not a production backup or provider recovery drill.',
         },

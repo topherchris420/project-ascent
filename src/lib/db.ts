@@ -92,6 +92,13 @@ export async function transaction<T>(tenantId: string | null, callback: (tx: DbT
           throw new Error(
             'All six tenant tables must have enabled and forced RLS. Apply migrations before serving requests.',
           );
+        const identity = await client.query(
+          "SELECT tablename FROM pg_tables WHERE schemaname=current_schema() AND tablename IN ('account_security','session_assurance','password_resets','auth_mail_outbox')",
+        );
+        if (identity.rows.length !== 4)
+          throw new DatabaseConfigurationError(
+            'Apply account-security migration 004 and runtime grants before serving private accounts.',
+          );
         verifiedPool = true;
       }
       await client.query('BEGIN');

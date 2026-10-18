@@ -101,13 +101,13 @@ test('reset requests are generic; encrypted outbox, one-use links, expiry and se
   await assert.rejects(login(user.user.email, 'replacement password long enough'), /code/);
   await login(user.user.email, 'replacement password long enough', recoveryCodes[1]);
   await requestPasswordReset(user.user.email);
-  await transaction(null, tx =>
-    tx.query('UPDATE password_resets SET expires_at=$1 WHERE user_id=$2', ['2000-01-01', user.user.id]),
-  );
   await deliverAuthMail(async (_url, options) => {
     resetToken = /#token=([A-Za-z0-9_-]{43})/.exec(JSON.parse(String(options?.body)).text)![1];
     return Response.json({});
   });
+  await transaction(null, tx =>
+    tx.query('UPDATE password_resets SET expires_at=$1 WHERE user_id=$2', ['2000-01-01', user.user.id]),
+  );
   await assert.rejects(resetPassword(resetToken, password), /expired/);
 });
 

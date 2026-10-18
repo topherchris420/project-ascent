@@ -810,7 +810,14 @@ export function InviteAccept({ token, onAccepted }: { token: string; onAccepted:
             e.preventDefault();
             setBusy(true);
             try {
-              await api('/api/team/accept', { token, ...Object.fromEntries(new FormData(e.currentTarget)) });
+              const result = await api<{ requiresMfaEnrollment?: boolean }>('/api/team/accept', {
+                token,
+                ...Object.fromEntries(new FormData(e.currentTarget)),
+              });
+              if (result.requiresMfaEnrollment) {
+                window.location.assign('/account/security');
+                return;
+              }
               await onAccepted();
             } catch (e) {
               setError((e as Error).message);

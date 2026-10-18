@@ -163,24 +163,15 @@ export async function requestPasswordReset(email: string) {
     const now = iso();
     await tx.query('DELETE FROM password_resets WHERE expires_at<$1', [now]);
     await tx.query('DELETE FROM auth_mail_outbox WHERE expires_at<$1', [now]);
-    const rows = await tx.query<{ id: string; email: string }>('SELECT id,email FROM users WHERE email=$1', [
-      email.toLowerCase().trim(),
+    // Identical foreground work for existing and absent accounts. Account lookup happens after response.
+    await tx.query('INSERT INTO auth_mail_outbox(id,payload,created_at,expires_at) VALUES($1,$2,$3,$4)', [
+      randomUUID(),
+      sealSecurity(
+        JSON.stringify({ to: email.toLowerCase().trim(), url: `${origin}/account/recovery#token=${token}` }),
+      ),
+      now,
+      new Date(Date.now() + 30 * 60000).toISOString(),
     ]);
-    if (rows[0] && !rows[0].email.endsWith('@demo.invalid')) {
-      const expires = new Date(Date.now() + 30 * 60000).toISOString();
-      // Multiple outstanding links are allowed; consuming one atomically invalidates all of them.
-      await tx.query('INSERT INTO password_resets(hash,user_id,expires_at) VALUES($1,$2,$3)', [
-        digest(token),
-        rows[0].id,
-        expires,
-      ]);
-      await tx.query('INSERT INTO auth_mail_outbox(id,payload,created_at,expires_at) VALUES($1,$2,$3,$4)', [
-        randomUUID(),
-        sealSecurity(JSON.stringify({ to: rows[0].email, url: `${origin}/account/recovery#token=${token}` })),
-        now,
-        expires,
-      ]);
-    }
   });
   return { message: RESET_NOTICE };
 }
@@ -215,8 +206,8 @@ export async function deliverAuthMail(fetcher: typeof fetch = fetch) {
   for (let i = 0; i < 4; i++) {
     const item = await transaction(null, async tx => {
       await tx.query('DELETE FROM auth_mail_outbox WHERE expires_at<$1', [iso()]);
-      const rows = await tx.query<{ id: string; payload: string }>(
-        'SELECT id,payload FROM auth_mail_outbox ORDER BY created_at LIMIT 1 FOR UPDATE',
+      const rows = await tx.query<{ id: string; payload: string; expires_at: string | Date }>(
+        'SELECT id,payload,expires_at FROM auth_mail_outbox ORDER BY created_at LIMIT 1 FOR UPDATE',
       );
       if (!rows[0]) return null;
       const claimed = await tx.query('DELETE FROM auth_mail_outbox WHERE id=$1 RETURNING id', [rows[0].id]);
@@ -225,6 +216,18 @@ export async function deliverAuthMail(fetcher: typeof fetch = fetch) {
     if (!item) break;
     try {
       const { to, url } = JSON.parse(openSecurity(item.payload));
+      const token = new URLSearchParams(new URL(url).hash.slice(1)).get('token')!;
+      const recipient = await transaction(null, async tx => {
+        const users = await tx.query<{ id: string }>('SELECT id FROM users WHERE email=$1', [to]);
+        if (!users[0] || to.endsWith('@demo.invalid')) return false;
+        await tx.query('INSERT INTO password_resets(hash,user_id,expires_at) VALUES($1,$2,$3)', [
+          digest(token),
+          users[0].id,
+          new Date(item.expires_at).toISOString(),
+        ]);
+        return true;
+      });
+      if (!recipient) continue;
       const response = await fetcher('https://api.resend.com/emails', {
         method: 'POST',
         headers: {

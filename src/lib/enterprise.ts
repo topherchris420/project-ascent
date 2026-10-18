@@ -177,6 +177,14 @@ export async function authenticateIntegration(
     const scopes = z.array(z.enum(integrationScopes)).safeParse(JSON.parse(row.scopes));
     if (!scopes.success || !scopes.data.includes(requiredScope))
       throw new HttpError(403, 'Integration token does not permit this read scope.');
+    if (process.env.NODE_ENV === 'production') {
+      const security = await tx.query<{ enabled_at: string | null; is_demo: number }>(
+        'SELECT enabled_at,is_demo FROM account_security WHERE user_id=$1',
+        [row.user_id],
+      );
+      if (!security[0]?.enabled_at && security[0]?.is_demo !== 1)
+        throw new HttpError(403, 'The issuing owner must enroll in MFA before integration access can continue.');
+    }
     requireEnterprise(await workspaceInTransaction(tx, tenantId));
     return {
       actor: { id: row.user_id, tenantId, name: row.actor_name, email: row.email, role: row.role },
