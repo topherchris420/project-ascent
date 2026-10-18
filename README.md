@@ -14,7 +14,7 @@ No account needed for either pricing studio.
 
 ---
 
-A seller asks, **“Why this price?”** Ascent gives you the working: comparable sales, adjustments, assumptions and a report you can explain.
+A seller asks, **“Why this price?”** Ascent gives you the working: comparable sales, adjustments, assumptions, and a report you can explain.
 
 ## Start with one decision
 
