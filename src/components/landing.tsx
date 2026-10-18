@@ -619,8 +619,20 @@ function Journey() {
 
 const faqs = [
   {
+    q: 'Do I need a license or account?',
+    a: 'No. Anyone can use public pricing studios without signing in. Professional verification and source permissions still control access to restricted licensed data.',
+  },
+  {
     q: 'Can I use my own address?',
     a: 'Yes, for covered single-family homes in DC and in Montgomery and Prince George’s counties, Maryland. Maryland uses size, quality grade, location and sale timing only; bedroom and bathroom data are unavailable. Both markets publish their accuracy results. DC condos have a separate unvalidated studio; their ranges are uncalibrated. Virginia awaits written permission. Multi-unit buildings are excluded.',
+  },
+  {
+    q: 'Are these live MLS listings?',
+    a: 'No. Public pricing uses bounded public-record snapshots, not real-time listings. Recorded sales can lag, and current competition, concessions and interior condition may be missing.',
+  },
+  {
+    q: 'Can Ascent predict renovation returns or future prices?',
+    a: 'Not today. You can test assumptions and illustrative costs, but those scenarios are not forecasts of buyer response, renovation return or a sale price in six months.',
   },
   {
     q: 'Where does the price come from?',
@@ -652,7 +664,8 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAv
             <span className="brand-mark">A</span>ascent<span className="brand-dot">.</span>
           </Link>
           <nav className="lp-links" aria-label="Sections">
-            <a href="#workflow">How it works</a>
+            <a href="#homeowners">Start here</a>
+            <a href="#workflow">More tools</a>
             <a href="#accuracy">Accuracy</a>
             <a href="#faq">Questions</a>
           </nav>
@@ -673,26 +686,29 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAv
           <div className="lp-wrap lp-hero-grid">
             <div className="lp-hero-copy">
               <span className="lp-eyebrow">
-                <span className="lp-pulse" aria-hidden="true" /> Real estate, reasoned.
+                <span className="lp-pulse" aria-hidden="true" /> Real estate intelligence for everyone.
               </span>
               <h1 id="lp-hero-title">
-                Know the price.
+                Real estate intelligence
                 <br />
-                <span>Show the why.</span>
+                <span>belongs to homeowners.</span>
               </h1>
               <p className="lp-lede">
-                Explore the sales behind a home’s price. Test your assumptions. Take a clear, source-linked report into
-                your next conversation.
+                You should never have to accept a number you cannot understand. Explore comparable sales,
+                inspect the calculations, test your assumptions, and keep the evidence behind your decision.
               </p>
               <div className="lp-cta-row">
                 <Link className="lp-btn lp-btn-primary lp-btn-lg" href="/dc">
-                  Analyze a DC home <ArrowRight size={17} aria-hidden="true" />
+                  Explore a DC home <ArrowRight size={17} aria-hidden="true" />
                 </Link>
                 <Link className="lp-btn lp-btn-outline lp-btn-lg" href="/demo">
                   Try the sample
                 </Link>
               </div>
-              <p className="lp-fine">No account needed. DC homes use public records; the sample is fictional.</p>
+              <p className="lp-fine">
+                  Free, no license or account required for public studios. Public records are not live MLS listings.
+                  Also explore <Link href="/maryland">Maryland</Link> or <Link href="/dc/condos">DC condos</Link>.
+                </p>
               <ul className="lp-hero-points" aria-label="Highlights">
                 <li>
                   <CheckCircle2 size={16} aria-hidden="true" /> Inspect every sale
@@ -705,8 +721,8 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAv
                 </li>
               </ul>
               <div className="lp-workspace-entry">
-                <span className="lp-eyebrow">Already working a deal?</span>
-                <p>Bring pricing, clients, offers and deadlines into one workspace.</p>
+                <span className="lp-eyebrow">Need a place to keep the work?</span>
+                <p>Optional private workspaces collect pricing, contacts, offers and deadlines. Public studios need no sign-in.</p>
                 {workspaceAvailable ? (
                   <div className="lp-workspace-links">
                     <button type="button" className="lp-link" onClick={onDemo} disabled={busy}>
@@ -737,6 +753,64 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAv
                 Take this decision apart in the studio <ArrowRight size={16} aria-hidden="true" />
               </Link>
             </div>
+          </div>
+        </section>
+
+        <section id="homeowners" className="lp-section lp-homeowners" aria-labelledby="lp-homeowners-title">
+          <div className="lp-wrap">
+            <div className="lp-section-head">
+              <span className="lp-eyebrow">Start with your question</span>
+              <h2 id="lp-homeowners-title">Your next home decision deserves an explanation.</h2>
+              <p>
+                You do not need to be an agent to examine pricing evidence. Choose a covered market, or learn
+                with a fictional example before exploring a real address.
+              </p>
+            </div>
+            <div className="lp-homeowner-grid">
+              {[
+                {
+                  question: 'What is my DC home worth?',
+                  detail: 'Search eligible DC houses and rowhomes. Inspect recorded sales, adjustments and the validated settings behind the estimate.',
+                  scope: 'DC houses · Public-record snapshot',
+                  href: '/dc',
+                  action: 'Explore DC homes',
+                },
+                {
+                  question: 'What about my Maryland home?',
+                  detail: 'Explore homes in Montgomery or Prince George’s County, with transparent limitations on property fields and accuracy.',
+                  scope: 'Two MD counties · Limited property fields',
+                  href: '/maryland',
+                  action: 'Explore Maryland',
+                },
+                {
+                  question: 'How does my DC condo compare?',
+                  detail: 'Inspect unit-level recorded sales. Condo testing missed acceptance criteria, so this studio does not offer a calibrated range.',
+                  scope: 'DC condos · Experimental estimates',
+                  href: '/dc/condos',
+                  action: 'Explore DC condos',
+                },
+                {
+                  question: 'What if I change the asking price?',
+                  detail: 'Practice with a clearly fictional Arlington home. Compare prices and illustrative proceeds, then inspect the math.',
+                  scope: 'Fictional example · No sign-in',
+                  href: '/demo',
+                  action: 'Try the interactive sample',
+                },
+              ].map(item => (
+                <Link className="lp-homeowner-card" key={item.href} href={item.href}>
+                  <span className="lp-homeowner-scope">{item.scope}</span>
+                  <h3>{item.question}</h3>
+                  <p>{item.detail}</p>
+                  <span className="lp-homeowner-action">
+                    {item.action} <ArrowRight size={16} aria-hidden="true" />
+                  </span>
+                </Link>
+              ))}
+            </div>
+            <p className="lp-homeowner-note">
+              Ascent is a decision aid, not an appraisal or live listing service. Future sale prices and renovation
+              returns are not predicted. <Link href="/accuracy">Read the published accuracy results and failures.</Link>
+            </p>
           </div>
         </section>
 
@@ -783,9 +857,12 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAv
         <section id="workflow" className="lp-section" aria-labelledby="lp-workflow-title">
           <div className="lp-wrap">
             <div className="lp-section-head">
-              <span className="lp-eyebrow">Beyond the estimate</span>
-              <h2 id="lp-workflow-title">One deal. A connected story.</h2>
-              <p>Carry the evidence from your first pricing conversation to your next offer or deadline.</p>
+              <span className="lp-eyebrow">Optional workspace tools</span>
+              <h2 id="lp-workflow-title">Keep the reasoning as your plans change.</h2>
+              <p>
+                Public pricing works without an account. Configured private workspaces can connect saved analyses,
+                contacts, offers and deadlines. Some market features require authorized provider data.
+              </p>
             </div>
             <Journey />
           </div>
@@ -885,12 +962,12 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAv
           <div className="lp-wrap">
             <div className="lp-final-inner">
               <div>
-                <h2 id="lp-final-title">Make your next “why this price?” an easy conversation.</h2>
-                <p>Start with the evidence. Leave with a report you can explain.</p>
+                <h2 id="lp-final-title">Never accept a number you cannot understand.</h2>
+                <p>Start with comparable evidence. Keep a report you can question, share and explain.</p>
               </div>
               <div className="lp-cta-row">
                 <Link className="lp-btn lp-btn-primary lp-btn-lg" href="/dc">
-                  Analyze a DC home <ArrowRight size={17} aria-hidden="true" />
+                  Explore a DC home <ArrowRight size={17} aria-hidden="true" />
                 </Link>
                 <Link className="lp-btn lp-btn-outline lp-btn-lg" href="/demo">
                   Try the sample
@@ -905,7 +982,7 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAv
           <Link className="brand lp-brand" href="/" aria-label="Ascent home">
             <span className="brand-mark">A</span>ascent<span className="brand-dot">.</span>
           </Link>
-          <p>Real estate, reasoned.</p>
+          <p>Free, open-source real estate intelligence for homeowners.</p>
           <p>Decision aid, not an appraisal. Sample data is fictional.</p>
         </div>
       </footer>
