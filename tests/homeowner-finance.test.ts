@@ -86,6 +86,26 @@ test('renovation break-even matches sell after fees, carry, amortization and tim
     close(atBreak.netPosition!, result('sell', patch).netPosition!, 0.02);
   }
 });
+test('renovation trajectory waits for completion before applying the hypothetical improved value', () => {
+  const renovation = result('renovate', { renovationMonths: 3, sellingMonths: 2 });
+  const loan = amortize(300000, 4, 240, 5);
+  close(renovation.trajectory[0].equity, 300000);
+  close(renovation.trajectory[2].equity, 600000 - loan.rows[1].balance);
+  close(renovation.trajectory[3].equity, 650000 - loan.rows[2].balance);
+  assert.equal(renovation.trajectory[5].equity, 0, 'sale converts the property to cash');
+  const noValue = result('renovate', { propertyValue: null, salePrice: 590000, renovationMonths: 3, sellingMonths: 2 });
+  close(noValue.trajectory[0].equity, 290000);
+});
+test('rental ownership costs include management on collected rent without double charging cash flow', () => {
+  const fee = 3500 * 0.95 * 0.08;
+  close(result('rent').ownershipCosts! - result('hold').ownershipCosts!, fee * 60);
+  close(result('rent').monthlyCashFlow!, 3500 * 0.95 - fee - 1000 - mortgagePayment(300000, 4, 240));
+  close(
+    result('buy-retain').ownershipCosts! - result('buy-retain', { managementPercent: 0 }).ownershipCosts!,
+    fee * 60,
+  );
+  close(result('rent', { vacancyPercent: 100 }).ownershipCosts!, result('hold').ownershipCosts!);
+});
 test('refinance accounts for fees, cash out and changed debt without inventing savings', () => {
   const a = result('refinance', { refinanceRate: 4, refinanceMonths: 240, refinanceCosts: 0 });
   assert.equal(a.netPosition, result('hold').netPosition);

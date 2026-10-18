@@ -45,6 +45,8 @@ for (const width of [1440, 390]) {
     await expect(home.getByRole('region', { name: 'Exact decision history changes' })).toContainText(
       'assumptions.monthlyRent',
     );
+    await home.getByText('Compare saved financial results', { exact: true }).click();
+    await expect(home.getByRole('region', { name: 'Saved financial result differences' })).toContainText('$5,244');
     const sharing = page.waitForEvent('download');
     await home.getByRole('button', { name: 'Export sharing passport (JSON)' }).click();
     const shareDownload = await sharing;
@@ -67,11 +69,20 @@ for (const width of [1440, 390]) {
     await home.getByRole('button', { name: 'Export private passport (JSON)' }).click();
     const privateData = JSON.parse(await readFile((await (await privateDownload).path())!, 'utf8'));
     expect(privateData.finance.inputs.mortgageBalance).toBe(313337);
+    expect(privateData.finance.version).toBe('ascent-homeowner-finance-2');
+    const financialRows = privateData.finance.results;
+    expect(financialRows.find((r: { kind: string }) => r.kind === 'renovate').trajectory[0].equity).toBe(286663);
+    expect(
+      financialRows.find((r: { kind: string }) => r.kind === 'rent').ownershipCosts -
+        financialRows.find((r: { kind: string }) => r.kind === 'hold').ownershipCosts,
+    ).toBeCloseTo(17328, 2);
     expect(privateData.financeReplayMatches).toBe(true);
     expect(privateData.valuation.replay.reproduced).toBe(true);
     await home.getByLabel('Show evidence changes when I return to this home').check();
     await expect(home).toContainText('No recorded evidence changes');
     await home.getByRole('button', { name: 'Ask Ascent', exact: true }).click();
+    await home.getByRole('button', { name: 'What changed since my saved decision?', exact: true }).click();
+    await expect(home).toContainText('Against the selected saved decision');
     await home.getByRole('button', { name: 'What if I sell for $25,000 less?', exact: true }).click();
     await expect(home).toContainText('changes the sell scenario');
     await home.getByLabel('Editable explanation for your report').fill('My reviewed decision explanation.');

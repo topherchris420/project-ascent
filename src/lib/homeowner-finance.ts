@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { calculationChecksum } from './analytics';
 import { saleNetBeforePayoff } from './selling-costs';
 
-export const FINANCE_VERSION = 'ascent-homeowner-finance-1';
+export const FINANCE_VERSION = 'ascent-homeowner-finance-2';
 const dollars = z.number().min(0).max(100_000_000).nullable();
 const percent = (max = 50, min = 0) => z.number().min(min).max(max).nullable();
 const months = (max = 600) => z.number().int().min(1).max(max).nullable();
@@ -277,7 +277,9 @@ function decision(a: FinanceInputs, kind: DecisionKind): DecisionResult {
   const activeLoan = refi ? amortize(balance + a.cashOut!, a.refinanceRate!, a.refinanceMonths!, H) : loan;
   const operating = operatingKeys.reduce((sum, key) => sum + (a[key] ?? 0), 0);
   const rental = kind === 'rent' || kind === 'buy-retain';
-  const rent = rental ? a.monthlyRent! * (1 - a.vacancyPercent! / 100) * (1 - a.managementPercent! / 100) : 0;
+  const collectedRent = rental ? a.monthlyRent! * (1 - a.vacancyPercent! / 100) : 0;
+  const managementCost = (collectedRent * (a.managementPercent ?? 0)) / 100;
+  const rent = collectedRent * (1 - (a.managementPercent ?? 0) / 100);
   const buying = kind === 'buy-retain';
   const down = buying ? (a.purchasePrice! * a.downPercent!) / 100 : 0;
   const newPrincipal = buying ? a.purchasePrice! - down : 0;
@@ -307,9 +309,16 @@ function decision(a: FinanceInputs, kind: DecisionKind): DecisionResult {
     const value = a.propertyValue! * growth ** month;
     const nextValue = buying ? a.purchasePrice! * growth ** month : 0;
     const held = !sells || month < delay;
-    const equity = held ? (sells ? salePrice : value) - currentBalance + nextValue - nextBalance : 0;
+    // A hypothetical completed renovation cannot increase the asset's value before the entered completion month.
+    const heldValue =
+      kind === 'renovate' && month < a.renovationMonths!
+        ? (a.propertyValue ?? a.salePrice!)
+        : sells
+          ? salePrice
+          : value;
+    const equity = held ? heldValue - currentBalance + nextValue - nextBalance : 0;
     const exit = held
-      ? saleNetBeforePayoff(sells ? salePrice : value, fees) -
+      ? saleNetBeforePayoff(heldValue, fees) -
         currentBalance +
         (buying ? saleNetBeforePayoff(nextValue, { ...fees, concessions: 0 }) - nextBalance : 0)
       : 0;
@@ -324,6 +333,7 @@ function decision(a: FinanceInputs, kind: DecisionKind): DecisionResult {
       : 0;
     costs += owns
       ? operating +
+        managementCost +
         activeLoan.rows[month - 1].interest +
         (buying ? nextLoan.rows[month - 1].interest + a.purchaseMonthlyCosts! : 0)
       : 0;

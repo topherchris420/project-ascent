@@ -9,7 +9,7 @@ import {
   type StudioEvidence,
   type StudioState,
 } from './demo-studio';
-import { compareDecisions, decisionKinds, financeSchema, type FinanceInputs } from './homeowner-finance';
+import { cents, compareDecisions, decisionKinds, financeSchema, type FinanceInputs } from './homeowner-finance';
 import type { Source, ValuationProperty } from './types';
 import { accuracyReferenceSchema, homeownerAccuracyReference } from './homeowner-validation';
 
@@ -317,11 +317,36 @@ export function compareHomeSnapshots(previous: HomeSnapshot, current: HomeSnapsh
   return {
     changes,
     valuation,
+    financial: compareFinancialSummaries(previous.calculation.scenarios, current.calculation.scenarios),
+    sameFinancialHorizon: previous.finance.horizonMonths === current.finance.horizonMonths,
+    sameFinancialVersion: previous.calculation.financeVersion === current.calculation.financeVersion,
     savedEstimateChange:
       previous.calculation.valuationEstimate !== null && current.calculation.valuationEstimate !== null
         ? current.calculation.valuationEstimate - previous.calculation.valuationEstimate
         : null,
   };
+}
+/** Compare frozen outputs without rerunning old decisions on a new engine. Null remains unknown. */
+export function compareFinancialSummaries(
+  previous: HomeSnapshot['calculation']['scenarios'],
+  current: HomeSnapshot['calculation']['scenarios'],
+) {
+  return decisionKinds.map(kind => {
+    const before = previous.find(s => s.kind === kind),
+      after = current.find(s => s.kind === kind);
+    const change = (key: 'netPosition' | 'monthlyCashFlow' | 'terminalEquity') =>
+      before?.available && after?.available && before[key] !== null && after[key] !== null
+        ? cents(after[key] - before[key])
+        : null;
+    return {
+      kind,
+      before: before ?? null,
+      after: after ?? null,
+      netPositionChange: change('netPosition'),
+      monthlyCashFlowChange: change('monthlyCashFlow'),
+      terminalEquityChange: change('terminalEquity'),
+    };
+  });
 }
 /** A new collection timestamp alone is not a changed property or a market alert. */
 export function propertyMonitorChanges(previous: HomeSnapshot, current: HomeSnapshot) {
@@ -331,6 +356,7 @@ export function propertyMonitorChanges(previous: HomeSnapshot, current: HomeSnap
 }
 export function evidencePassport(snapshot: HomeSnapshot, includePrivate = false) {
   assertPortableEvidence(snapshot.evidence);
+  const financial = includePrivate ? compareDecisions(snapshot.finance) : null;
   let valuation = null;
   try {
     if (includePrivate || (!snapshot.state.addedSales?.length && snapshot.state.subjectCondition === undefined)) {
@@ -420,9 +446,11 @@ export function evidencePassport(snapshot: HomeSnapshot, includePrivate = false)
     ],
     ...(includePrivate
       ? {
-          finance: compareDecisions(snapshot.finance),
+          finance: financial!,
           savedCalculation: snapshot.calculation,
-          financeReplayMatches: compareDecisions(snapshot.finance).calculationHash === snapshot.calculation.financeHash,
+          financeReplayMatches:
+            financial!.version === snapshot.calculation.financeVersion &&
+            financial!.calculationHash === snapshot.calculation.financeHash,
           homeowner: snapshot.notes,
           studioChoices: snapshot.state,
         }

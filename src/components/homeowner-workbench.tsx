@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { Download, Home, LockKeyhole, Save, Trash2 } from 'lucide-react';
 import {
   compareDecisions,
+  decisionLabels,
   emptyFinance,
   exampleFinance,
   financeLabels,
@@ -14,6 +15,7 @@ import {
 } from '@/lib/homeowner-finance';
 import {
   compareHomeSnapshots,
+  compareFinancialSummaries,
   createHomeSnapshot,
   emptyOwnerNotes,
   evidencePassport,
@@ -279,6 +281,16 @@ export function HomeownerWorkbench({
     }
   };
   const questionAnswers = {
+    saved: (() => {
+      if (!selected || !comparison)
+        return 'Save a decision snapshot and complete its financial inputs before comparing saved outcomes.';
+      const deltas = compareFinancialSummaries(selected.calculation.scenarios, comparison.results).filter(
+        r => r.netPositionChange !== null,
+      );
+      return deltas.length
+        ? `Against the selected saved decision: ${deltas.map(r => `${decisionLabels[r.kind]} changes from ${money(r.before!.netPosition!)} to ${money(r.after!.netPosition!)} (${money(r.netPositionChange!)} difference)`).join('; ')}. These amounts use each decision’s chosen horizon and calculation version. Inspect changed assumptions in Reports & History; this is not proof of a market move.`
+        : 'The saved and current decisions do not yet have a complete financial choice in common. Missing inputs remain unknown.';
+    })(),
     less: sensitivity
       ? `Selling for $25,000 less changes the sell scenario’s horizon net position by ${money(sensitivity.netDifference)} under the current fees, payoff, timeline and hypothetical cash return. This is arithmetic, not a sale-price forecast.`
       : 'Enter a sale price of at least $25,000, mortgage payoff, fees and hypothetical cash return to calculate this comparison.',
@@ -595,6 +607,7 @@ export function HomeownerWorkbench({
               ['rent', 'How does renting compare with selling?'],
               ['renovate', 'What is the renovation break-even?'],
               ['missing', 'Which missing information matters?'],
+              ['saved', 'What changed since my saved decision?'],
             ].map(([id, label]) => (
               <button
                 key={id}
@@ -700,6 +713,57 @@ export function HomeownerWorkbench({
                               <th scope="row">{c.path}</th>
                               <td>{valueText(c.before)}</td>
                               <td>{valueText(c.after)}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </details>
+                  <details>
+                    <summary>Compare saved financial results</summary>
+                    <p className="fine">
+                      Frozen saved outputs compared with the chosen target.{' '}
+                      {changes.sameFinancialHorizon
+                        ? 'The horizons match.'
+                        : 'The horizons differ; amounts refer to each decision’s own horizon.'}{' '}
+                      {changes.sameFinancialVersion
+                        ? 'Calculation versions match.'
+                        : 'Calculation versions differ; these differences do not isolate an assumption’s effect.'}
+                    </p>
+                    <div
+                      className="home-table-wrap"
+                      tabIndex={0}
+                      role="region"
+                      aria-label="Saved financial result differences"
+                    >
+                      <table className="home-table">
+                        <thead>
+                          <tr>
+                            <th>Choice</th>
+                            <th>Earlier net position</th>
+                            <th>Target net position</th>
+                            <th>Difference</th>
+                            <th>Monthly cash flow change</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {changes.financial.map(r => (
+                            <tr key={r.kind}>
+                              <th scope="row">{decisionLabels[r.kind]}</th>
+                              <td>
+                                {r.before?.available && r.before.netPosition !== null
+                                  ? money(r.before.netPosition)
+                                  : 'Unavailable'}
+                              </td>
+                              <td>
+                                {r.after?.available && r.after.netPosition !== null
+                                  ? money(r.after.netPosition)
+                                  : 'Unavailable'}
+                              </td>
+                              <td>{r.netPositionChange === null ? 'Unavailable' : money(r.netPositionChange)}</td>
+                              <td>
+                                {r.monthlyCashFlowChange === null ? 'Unavailable' : money(r.monthlyCashFlowChange)}
+                              </td>
                             </tr>
                           ))}
                         </tbody>

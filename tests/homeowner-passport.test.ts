@@ -113,6 +113,13 @@ test('a changed calculation version cannot claim exact historical reproduction',
   assert.equal(exported.valuation?.replay.reproduced, false);
   assert.equal(exported.financeReplayMatches, false);
   assert.equal(compareHomeSnapshots(snapshot(), snap).valuation, null);
+  const older = snapshot();
+  older.calculation.financeVersion = 'ascent-homeowner-finance-1';
+  assert.equal(
+    evidencePassport(older, true).financeReplayMatches,
+    false,
+    'a different version cannot borrow a matching hash',
+  );
 });
 test('bounded profiles never silently discard old history or accept foreign links', () => {
   let profiles = saveHomeSnapshot([], snapshot());
@@ -147,6 +154,32 @@ test('source refresh alone does not manufacture a property alert', () => {
   assert.equal(propertyMonitorChanges(before, after).length, 0);
   after.evidence.candidates[0].soldPrice! += 1;
   assert.equal(propertyMonitorChanges(before, after).length, 1);
+});
+test('saved financial outputs show exact dollar changes and distinguish missing outcomes and horizons', () => {
+  const before = snapshot();
+  const after = createHomeSnapshot(
+    sampleEvidence,
+    defaultDemoState,
+    { ...exampleFinance(), monthlyRent: 3600 },
+    emptyOwnerNotes(),
+    at,
+  );
+  const comparison = compareHomeSnapshots(before, after),
+    rent = comparison.financial.find(r => r.kind === 'rent')!;
+  assert.equal(rent.netPositionChange, 5244);
+  assert.equal(rent.monthlyCashFlowChange, 87.4);
+  assert.equal(comparison.sameFinancialVersion, true);
+  assert.equal(comparison.sameFinancialHorizon, true);
+  const unknown = createHomeSnapshot(
+    sampleEvidence,
+    defaultDemoState,
+    { ...exampleFinance(), mortgageBalance: null, horizonMonths: 12 },
+    emptyOwnerNotes(),
+    at,
+  );
+  const unavailable = compareHomeSnapshots(before, unknown);
+  assert.equal(unavailable.financial.find(r => r.kind === 'rent')?.netPositionChange, null);
+  assert.equal(unavailable.sameFinancialHorizon, false);
 });
 test('qualified transfer history rejects future and duplicate records without changing the source', () => {
   const sales = [
