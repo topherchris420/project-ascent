@@ -34,7 +34,12 @@ export const practiceSaleSchema = practiceSaleSchemaFor(5);
 export type PracticeSale = z.infer<typeof practiceSaleSchema>;
 
 /** Bounded scenario state. Exclusions may only name a sale in this evidence set or a practice entry. */
-export function studioStateSchema(baseIds: readonly string[], conditionMax = 5) {
+export function studioStateSchema(
+  baseIds: readonly string[],
+  conditionMax = 5,
+  roomCountsUnavailable = false,
+  conditionAvailable = true,
+) {
   const ids = new Set(baseIds);
   return z
     .object({
@@ -43,7 +48,10 @@ export function studioStateSchema(baseIds: readonly string[], conditionMax = 5) 
           sqftRate: z.number().min(0).max(1000),
           bedroomValue: z.number().min(0).max(100000),
           bathroomValue: z.number().min(0).max(100000),
-          conditionValue: z.number().min(0).max(100000),
+          conditionValue: z
+            .number()
+            .min(0)
+            .max(conditionMax > 6 ? 1000000 : 100000),
           monthlyTrend: z.number().min(-0.1).max(0.1),
           maxDistanceMiles: z.number().min(0.05).max(25),
           maxAgeDays: z.number().int().min(1).max(1825),
@@ -68,6 +76,17 @@ export function studioStateSchema(baseIds: readonly string[], conditionMax = 5) 
         .optional(),
     })
     .strict()
+    .refine(state => conditionAvailable || state.assumptions.conditionValue === 0, {
+      message: 'Condition is unavailable; its adjustment must remain disabled.',
+    })
+    .refine(
+      state =>
+        !roomCountsUnavailable ||
+        (state.assumptions.bedroomValue === 0 &&
+          state.assumptions.bathroomValue === 0 &&
+          (state.addedSales ?? []).every(sale => sale.beds === 0 && sale.baths === 0)),
+      { message: 'Room counts are unavailable in this model; room adjustments must remain disabled.' },
+    )
     .refine(state => state.exclusions.every(e => ids.has(e.id) || (state.addedSales ?? []).some(s => s.id === e.id)), {
       message: 'Exclusions may only name a sale in this decision.',
       path: ['exclusions'],
@@ -124,12 +143,29 @@ export const practiceEntrySource = (observedAt: string): Source => ({
 });
 
 export function studioCandidates(evidence: StudioEvidence, state: StudioState): ValuationProperty[] {
-  return [...evidence.candidates, ...(state.addedSales ?? []).map(sale => practiceSaleRecord(sale, evidence.subject))];
+  return [
+    ...evidence.candidates,
+    ...(state.addedSales ?? []).map(sale => ({
+      ...practiceSaleRecord(sale, evidence.subject),
+      ...(evidence.subject.condition === undefined ? { condition: undefined } : {}),
+      ...(evidence.subject.propertyType ? { propertyType: evidence.subject.propertyType } : {}),
+      ...(evidence.subject.roomCountsUnavailable
+        ? { roomCountsUnavailable: true, ratingKind: evidence.subject.ratingKind }
+        : {}),
+    })),
+  ];
 }
 export function studioSources(evidence: StudioEvidence, state: StudioState): Source[] {
   return state.addedSales?.length ? [...evidence.sources, practiceEntrySource(evidence.asOf)] : evidence.sources;
 }
 export function calculateStudio(evidence: StudioEvidence, state: StudioState) {
+  if (
+    evidence.subject.roomCountsUnavailable &&
+    (state.assumptions.bedroomValue !== 0 ||
+      state.assumptions.bathroomValue !== 0 ||
+      (state.addedSales ?? []).some(sale => sale.beds !== 0 || sale.baths !== 0))
+  )
+    throw new Error('Room counts are unavailable; bedroom and bathroom adjustments must remain zero.');
   return calculateCma(
     studioSubject(evidence, state),
     studioCandidates(evidence, state).filter(p => !state.exclusions.some(e => e.id === p.id)),

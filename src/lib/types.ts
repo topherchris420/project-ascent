@@ -47,7 +47,13 @@ export type ValuationProperty = Pick<
 > &
   Partial<
     Omit<Property, 'id' | 'address' | 'city' | 'state' | 'zip' | 'lat' | 'lng' | 'beds' | 'baths' | 'sqft' | 'sourceId'>
-  >;
+  > & {
+    /** Public snapshots with no room counts use neutral internal arithmetic sentinels, never observed zero rooms. */
+    roomCountsUnavailable?: boolean;
+    ratingKind?: 'quality-grade';
+    county?: string;
+    propertyType?: 'condominium';
+  };
 export type ClientFollowUp = {
   id: string;
   title: string;

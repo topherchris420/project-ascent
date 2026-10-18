@@ -6,7 +6,7 @@
  *   npm run validate:valuation -- --verify --market dc re-run from the dataset and require byte-identical results
  *   npm run validate:valuation -- --attest --market dc --key reviewer-ed25519.pem --reviewer "Name, Org"
  *
- * Markets: dc (District of Columbia), king-county (King County, WA). Without --market, every market is used.
+ * Markets: dc, king-county, maryland (Montgomery and Prince George's only). Without --market, every market is used.
  * --attest lets an outside reviewer sign the exact report digest they reproduced with their own Ed25519 key.
  */
 import { createPrivateKey, createPublicKey, sign } from 'node:crypto';
@@ -17,6 +17,7 @@ import {
   dcProtocol,
   digestOf,
   kingCountyProtocol,
+  marylandProtocol,
   runValuationValidation,
   verifyAttestation,
   verifyValidationReport,
@@ -28,6 +29,13 @@ import { benchmarkFromReport } from '../src/lib/valuation-safeguards';
 
 type Market = { protocol: ValidationProtocol; dataset: string; report: string; samples: string; benchmark: string };
 const markets: Record<string, Market> = {
+  maryland: {
+    protocol: marylandProtocol,
+    dataset: 'evidence/datasets/maryland-sales.csv.gz',
+    report: 'evidence/valuation-validation-maryland.json',
+    samples: 'evidence/valuation-validation-maryland-samples.csv.gz',
+    benchmark: 'src/lib/valuation-benchmark-maryland.json',
+  },
   dc: {
     protocol: dcProtocol,
     dataset: 'evidence/datasets/dc-residential-sales.csv.gz',

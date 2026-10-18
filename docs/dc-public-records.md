@@ -25,7 +25,7 @@ In a spread sample of 231 parcels, 222 could be priced with the validated settin
 - Not MLS data: no listing history, active competition, days on market, concessions or photos.
 - The assessor's condition grade is not an inspection, and the validated settings weigh it heavily (about $88,000 per grade point); the input-sensitivity chart shows this for every home.
 - Assessor characteristics are current, not as of each sale. Recent sales take weeks to be recorded.
-- Condominiums, multi-unit buildings and multi-building lots are not covered. Maryland and Virginia are not covered.
+- This validated house model excludes condominiums, multi-unit buildings and multi-building lots. [DC condos](dc-condominiums.md) now have a separate unvalidated studio at `/dc/condos`; no house calibration is reused. [Maryland](maryland-public-records.md) has a separate reduced model for Montgomery and Prince George’s. Virginia awaits permission.
 - The snapshot is static. Refresh it deliberately (below); a refreshed sales file changes the validated fingerprint and requires re-running the validation before the calibrated range can be shown.
 
 ## Refresh

@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { ArrowLeft, ArrowRight, LoaderCircle, MapPin, Search, ShieldCheck } from 'lucide-react';
 import { DC_CONDITION_LABELS, DC_CONDITION_MAX, dcDefaultState, dcReportHref } from '@/lib/dc-studio';
 import { dcBenchmark } from '@/lib/valuation-safeguards';
+import { condoDefaultState, condoReportHref, CONDO_ACCURACY_NOTICE } from '@/lib/dc-condo-studio';
 import type { CmaAssumptions, Source, ValuationProperty } from '@/lib/types';
 import { PricingStudio } from './pricing-studio';
 import { date, number } from './format';
@@ -21,7 +22,16 @@ type PropertyPayload = {
   attribution: string;
 };
 
-function AddressSearch({ onPick, compact }: { onPick: (parcelId: string) => void; compact?: boolean }) {
+function AddressSearch({
+  onPick,
+  compact,
+  condos = false,
+}: {
+  onPick: (parcelId: string) => void;
+  compact?: boolean;
+  condos?: boolean;
+}) {
+  const api = condos ? 'dc-condos' : 'dc';
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<SearchResult[]>([]);
   const [status, setStatus] = useState('Type at least 3 characters to find a home.');
@@ -55,7 +65,7 @@ function AddressSearch({ onPick, compact }: { onPick: (parcelId: string) => void
     setStatus('Searching DC public records…');
     const timer = setTimeout(async () => {
       try {
-        const response = await fetch(`/api/dc/search?q=${encodeURIComponent(term)}`, { signal: controller.signal });
+        const response = await fetch(`/api/${api}/search?q=${encodeURIComponent(term)}`, { signal: controller.signal });
         if (!response.ok) throw new Error('Search request failed.');
         const body = await response.json();
         if (!Array.isArray(body.results)) throw new Error('Search returned an unexpected response.');
@@ -65,7 +75,9 @@ function AddressSearch({ onPick, compact }: { onPick: (parcelId: string) => void
         setStatus(
           found.length
             ? `${found.length} matching DC home${found.length === 1 ? '' : 's'}. Choose an address to see its analysis.`
-            : 'No matching home in these records. Try the house number and street without the ZIP code. Condominiums and multi-unit buildings are not covered.',
+            : condos
+              ? 'No matching condo in these records. Try the building address and unit number. Only units with an unambiguous public-record address are covered.'
+              : 'No matching home in these records. Try the house number and street without the ZIP code. Condominiums and multi-unit buildings are not covered.',
         );
       } catch {
         if (!active || id !== request.current) return;
@@ -81,7 +93,7 @@ function AddressSearch({ onPick, compact }: { onPick: (parcelId: string) => void
       clearTimeout(timer);
       controller.abort();
     };
-  }, [query, retry]);
+  }, [query, retry, api]);
   return (
     <section className={`dc-search ${compact ? 'compact' : ''}`} aria-label="Find a DC home">
       <label htmlFor="dc-address">Street address in Washington, DC</label>
@@ -92,7 +104,11 @@ function AddressSearch({ onPick, compact }: { onPick: (parcelId: string) => void
           id="dc-address"
           type="search"
           autoComplete="off"
-          placeholder="House number and street, e.g. 313 Shepherd St NW"
+          placeholder={
+            condos
+              ? 'Building address and unit, e.g. 2123 California NW Unit D1'
+              : 'House number and street, e.g. 313 Shepherd St NW'
+          }
           value={query}
           onChange={e => changeQuery(e.target.value)}
           onKeyDown={e => {
@@ -125,7 +141,7 @@ function AddressSearch({ onPick, compact }: { onPick: (parcelId: string) => void
             type="button"
             className="button small"
             onClick={() => {
-              changeQuery('313 Shepherd');
+              changeQuery(condos ? '2123 California' : '313 Shepherd');
               field.current?.focus();
             }}
           >
@@ -162,7 +178,8 @@ function AddressSearch({ onPick, compact }: { onPick: (parcelId: string) => void
 }
 
 /** Price a real District home from bundled public records with the DC-validated settings. */
-export function DcPricingStudio() {
+export function DcPricingStudio({ condos = false }: { condos?: boolean }) {
+  const api = condos ? 'dc-condos' : 'dc';
   const [parcel, setParcel] = useState(''),
     [data, setData] = useState<PropertyPayload | null>(null),
     [error, setError] = useState(''),
@@ -194,7 +211,7 @@ export function DcPricingStudio() {
     setData(null);
     setLoading(true);
     setError('');
-    fetch(`/api/dc/property?parcel=${encodeURIComponent(parcel)}`, { signal: controller.signal })
+    fetch(`/api/${api}/property?parcel=${encodeURIComponent(parcel)}`, { signal: controller.signal })
       .then(async response => {
         const body = await response.json();
         if (!response.ok) throw new Error(body.error || 'That home could not be loaded.');
@@ -206,7 +223,7 @@ export function DcPricingStudio() {
       live = false;
       controller.abort();
     };
-  }, [parcel, retry]);
+  }, [parcel, retry, api]);
   const evidence = useMemo(
     () =>
       data
@@ -219,24 +236,37 @@ export function DcPricingStudio() {
         : null,
     [data],
   );
-  const defaultState = useMemo(dcDefaultState, []);
+  const defaultState = useMemo(() => (condos ? condoDefaultState() : dcDefaultState()), [condos]);
   if (data && evidence && !loading)
     return (
       <PricingStudio
         key={data.parcelId}
         evidence={evidence}
         defaultState={defaultState}
-        storageKey={`ascent.dc-studio.v1.${data.parcelId}`}
-        reportHref={(state, format) => dcReportHref(data.parcelId, state, format)}
+        storageKey={`ascent.${api}-studio.v1.${data.parcelId}`}
+        reportHref={(state, format) =>
+          condos ? condoReportHref(data.parcelId, state, format) : dcReportHref(data.parcelId, state, format)
+        }
         conditionMax={DC_CONDITION_MAX}
         conditionLabels={DC_CONDITION_LABELS}
-        calibrated
-        before={<AddressSearch compact onPick={pick} />}
+        calibrated={!condos}
+        before={
+          <>
+            <AddressSearch compact onPick={pick} condos={condos} />
+            {condos && (
+              <p className="error-box" data-testid="condo-unvalidated">
+                {CONDO_ACCURACY_NOTICE}
+              </p>
+            )}
+          </>
+        }
         intro={{
           eyebrow: 'DISTRICT OF COLUMBIA PUBLIC RECORDS',
-          titleTop: 'Price a real DC home.',
+          titleTop: condos ? 'Price a DC condo.' : 'Price a real DC home.',
           titleBottom: 'See the sales behind the price.',
-          lede: 'Review the recorded sales, test your assumptions, and build a report. Based on District public records; not an appraisal.',
+          lede: condos
+            ? 'Search a unit, inspect recorded condo sales, and build a draft. Condo accuracy is unmeasured; no calibrated range is shown.'
+            : 'Review the recorded sales, test your assumptions, and build a report. Based on District public records; not an appraisal.',
           badgeTitle: 'Real public records',
           badgeLines: [
             'District of Columbia data, CC BY 4.0',
@@ -244,14 +274,17 @@ export function DcPricingStudio() {
           ],
         }}
         subjectEyebrow={`SUBJECT · WASHINGTON, DC ${data.subject.zip}`}
-        evidenceNote={`Recorded sales as of ${date(data.asOf)} · the newest weeks may not be recorded yet · ${data.candidates.length} recorded sales within 2 miles in the past year`}
+        evidenceNote={`Recorded sales as of ${date(data.asOf)} · the newest weeks may not be recorded yet · ${data.candidates.length} recorded sales within ${condos ? 3 : 2} miles in the past year`}
         passport={{
-          facts:
-            "Address, coordinates, living area, bedrooms, baths and the assessor's condition grade come from District records. Comparable prices and dates are recorded deed transfers the District marks as arm's-length.",
-          assumptions:
-            "Adjustment rates, the trend and the search filters start at the DC-validated settings fitted on earlier recorded sales. The assessor's condition grade is not an inspection.",
-          missing:
-            'No MLS listing history, active competition, concessions, interior condition, permits or owner information. Condominiums and multi-unit buildings are not covered, and recent sales can take weeks to be recorded.',
+          facts: condos
+            ? 'Unit address, recorded bedrooms, baths and living area come from Condominium CAMA and Condo Relate, joined to building address points. Prices are District-qualified recorded transfers. No condition field is provided.'
+            : "Address, coordinates, living area, bedrooms, baths and the assessor's condition grade come from District records. Comparable prices and dates are recorded deed transfers the District marks as arm's-length.",
+          assumptions: condos
+            ? 'General, untuned adjustment rates and search filters. Condition adjustment is fixed to zero. DC single-family fitted settings and accuracy do not apply to condos.'
+            : "Adjustment rates, the trend and the search filters start at the DC-validated settings fitted on earlier recorded sales. The assessor's condition grade is not an inspection.",
+          missing: condos
+            ? CONDO_ACCURACY_NOTICE
+            : 'No MLS listing history, active competition, concessions, interior condition, permits or owner information. Condominiums and multi-unit buildings are not covered, and recent sales can take weeks to be recorded.',
           footnote: `${data.attribution} Ascent joined and filtered these records; see the provenance files in the repository.`,
         }}
         reportNote="Draft · District public records · not reviewed by a licensed professional"
@@ -277,13 +310,14 @@ export function DcPricingStudio() {
           <div>
             <span className="eyebrow">DISTRICT OF COLUMBIA PUBLIC RECORDS</span>
             <h1>
-              Price a real DC home.
+              {condos ? 'Price a DC condo.' : 'Price a real DC home.'}
               <br />
               <span>See the sales behind the price.</span>
             </h1>
             <p>
-              Find a single-family home in District records. Review comparable sales, test a price, and open your
-              report.
+              {condos
+                ? 'Find a residential condo by building address and unit number. Review recorded condo sales with untuned settings. Condo accuracy has not been measured.'
+                : 'Find a single-family home in District records. Review comparable sales, test a price, and open your report.'}
             </p>
           </div>
           <div className="studio-sample-label">
@@ -296,7 +330,7 @@ export function DcPricingStudio() {
             </span>
           </div>
         </div>
-        <AddressSearch onPick={pick} />
+        <AddressSearch onPick={pick} condos={condos} />
         {loading && (
           <p className="dc-loading" role="status">
             <LoaderCircle size={16} className="spin" aria-hidden="true" /> Loading recorded sales…
@@ -317,21 +351,44 @@ export function DcPricingStudio() {
           <h2>Know what you’re working with.</h2>
           <ul className="studio-findings">
             <li>
-              <strong>Covered:</strong> single-family homes in Washington, DC with an active street address, priced from
-              recorded sales the District marks as arm&apos;s-length.
+              <strong>Covered:</strong>{' '}
+              {condos ? (
+                'residential condos in Washington, DC with one unambiguous unit address, priced only from recorded condo sales.'
+              ) : (
+                <>
+                  single-family homes in Washington, DC with an active street address, priced from recorded sales the
+                  District marks as arm&apos;s-length.
+                </>
+              )}
             </li>
             <li>
-              <strong>Measured:</strong> with the DC-validated settings, the median error was{' '}
-              {(dcBenchmark.primary.mdape * 100).toFixed(1)}% on {dcBenchmark.holdout.sales.toLocaleString('en-US')}{' '}
-              held-out sales. Editing a setting leaves that measured configuration.
+              {condos ? (
+                <>
+                  <strong>Unmeasured:</strong> {CONDO_ACCURACY_NOTICE}
+                </>
+              ) : (
+                <>
+                  <strong>Measured:</strong> with the DC-validated settings, the median error was{' '}
+                  {(dcBenchmark.primary.mdape * 100).toFixed(1)}% on {dcBenchmark.holdout.sales.toLocaleString('en-US')}{' '}
+                  held-out sales. Editing a setting leaves that measured configuration.
+                </>
+              )}
             </li>
             <li>
-              <strong>Not covered:</strong> condominiums, multi-unit buildings, Maryland and Virginia, MLS listing
-              history, concessions and interior condition.
+              <strong>Not covered:</strong>{' '}
+              {condos
+                ? 'co-ops, commercial or combined units, ambiguous unit addresses, condition, HOA information and a validated condo range.'
+                : 'multi-unit buildings, other jurisdictions, MLS listing history, concessions and interior condition.'}
             </li>
           </ul>
           <p className="fine">
-            Want to practise first? <Link href="/demo">Open the fictional sample</Link> instead.
+            {condos ? (
+              <Link href="/dc">Single-family DC homes</Link>
+            ) : (
+              <Link href="/dc/condos">Search DC condos (unvalidated)</Link>
+            )}
+            . In Maryland? <Link href="/maryland">Search Montgomery and Prince George’s homes</Link>. Want to practise
+            first? <Link href="/demo">Open the fictional sample</Link> instead.
           </p>
         </section>
       </main>

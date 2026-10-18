@@ -76,8 +76,10 @@ export function PricingStudio(config: StudioConfig) {
       studioStateSchema(
         evidence.candidates.map(p => p.id),
         conditionMax,
+        !!evidence.subject.roomCountsUnavailable,
+        evidence.subject.condition !== undefined,
       ),
-    [evidence.candidates, conditionMax],
+    [evidence.candidates, conditionMax, evidence.subject.roomCountsUnavailable, evidence.subject.condition],
   );
   const blankSale = {
     address: '',
@@ -154,7 +156,7 @@ export function PricingStudio(config: StudioConfig) {
   const conditionText = (value?: number) =>
     value === undefined
       ? 'condition unknown'
-      : `condition ${value}/${conditionMax}${config.conditionLabels?.[value] ? ` (${config.conditionLabels[value]})` : ''}`;
+      : `${evidence.subject.ratingKind === 'quality-grade' ? 'quality grade' : 'condition'} ${value}/${conditionMax}${config.conditionLabels?.[value] ? ` (${config.conditionLabels[value]})` : ''}`;
   const patch = (next: Partial<StudioState>) => {
     setBeforeReset(null);
     setStorageStatus('');
@@ -207,9 +209,13 @@ export function PricingStudio(config: StudioConfig) {
   const manualOrEntered = soldCandidates.filter(
     p => state.exclusions.some(e => e.id === p.id) || state.addedSales?.some(s => s.id === p.id),
   );
+  const engineExclusions = new Map(result?.excluded.map(entry => [entry.propertyId, entry.reason]));
   const ruledOut = soldCandidates
     .filter(p => !manualOrEntered.includes(p))
-    .map(p => ({ p, reason: comparableExclusion(subject, p, state.assumptions, evidence.asOf) }))
+    .map(p => ({
+      p,
+      reason: engineExclusions.get(p.id) ?? comparableExclusion(subject, p, state.assumptions, evidence.asOf),
+    }))
     .filter(item => item.reason)
     .sort((a, b) => distanceMiles(subject, a.p) - distanceMiles(subject, b.p));
   const exclusionRow = (p: (typeof soldCandidates)[number], automatic?: string) => {
@@ -296,8 +302,10 @@ export function PricingStudio(config: StudioConfig) {
             <span className="eyebrow">{config.subjectEyebrow}</span>
             <h2>{evidence.subject.address}</h2>
             <p>
-              {evidence.subject.beds} beds · {evidence.subject.baths} baths · {number(evidence.subject.sqft)} sq ft ·{' '}
-              {conditionText(subject.condition)}
+              {evidence.subject.roomCountsUnavailable
+                ? 'Bedrooms and bathrooms unavailable'
+                : `${evidence.subject.beds} beds · ${evidence.subject.baths} baths`}{' '}
+              · {number(evidence.subject.sqft)} sq ft · {conditionText(subject.condition)}
               {state.subjectCondition !== undefined && state.subjectCondition !== evidence.subject.condition
                 ? ' (your rating)'
                 : ''}
@@ -471,38 +479,61 @@ export function PricingStudio(config: StudioConfig) {
           {result && <DecisionDrivers result={result} conditionMax={conditionMax} />}
           <h3 className="studio-subhead">Your assumptions</h3>
           <div className="studio-assumption-fields">
-            <label>
-              Subject condition (1–{conditionMax})
-              <select
-                aria-label="Subject condition rating"
-                value={subject.condition}
-                onChange={e => {
-                  patch({ subjectCondition: Number(e.target.value) });
-                  setStep(3);
-                }}
-              >
-                {Array.from({ length: conditionMax }, (_, i) => i + 1).map(n => (
-                  <option key={n} value={n}>
-                    {n}
-                    {config.conditionLabels?.[n] ? ` · ${config.conditionLabels[n]}` : ''}
-                    {n === evidence.subject.condition ? ' · recorded rating' : ''}
-                  </option>
-                ))}
-              </select>
-            </label>
-            {rateFields.map(f => (
-              <label key={f.key}>
-                {f.label}
-                <input
-                  type="number"
-                  min={f.min}
-                  max={f.max}
-                  step={f.step}
-                  value={state.assumptions[f.key]}
-                  onChange={e => changeRate(f.key, Number(e.target.value), f.min, f.max)}
-                />
+            {evidence.subject.condition !== undefined && (
+              <label>
+                Subject {evidence.subject.ratingKind === 'quality-grade' ? 'quality grade' : 'condition'} (1–
+                {conditionMax})
+                <select
+                  aria-label={
+                    evidence.subject.ratingKind === 'quality-grade'
+                      ? 'Subject quality grade'
+                      : 'Subject condition rating'
+                  }
+                  value={subject.condition}
+                  onChange={e => {
+                    patch({ subjectCondition: Number(e.target.value) });
+                    setStep(3);
+                  }}
+                >
+                  {Array.from({ length: conditionMax }, (_, i) => i + 1).map(n => (
+                    <option key={n} value={n}>
+                      {n}
+                      {config.conditionLabels?.[n] ? ` · ${config.conditionLabels[n]}` : ''}
+                      {n === evidence.subject.condition ? ' · recorded rating' : ''}
+                    </option>
+                  ))}
+                </select>
               </label>
-            ))}
+            )}
+            {rateFields
+              .filter(f => evidence.subject.condition !== undefined || f.key !== 'conditionValue')
+              .filter(
+                f => !evidence.subject.roomCountsUnavailable || (f.key !== 'bedroomValue' && f.key !== 'bathroomValue'),
+              )
+              .map(f => (
+                <label key={f.key}>
+                  {f.key === 'conditionValue' && evidence.subject.ratingKind === 'quality-grade'
+                    ? 'Quality grade point ($)'
+                    : f.label}
+                  <input
+                    type="number"
+                    min={f.min}
+                    max={
+                      f.key === 'conditionValue' && evidence.subject.ratingKind === 'quality-grade' ? 1000000 : f.max
+                    }
+                    step={f.step}
+                    value={state.assumptions[f.key]}
+                    onChange={e =>
+                      changeRate(
+                        f.key,
+                        Number(e.target.value),
+                        f.min,
+                        f.key === 'conditionValue' && evidence.subject.ratingKind === 'quality-grade' ? 1000000 : f.max,
+                      )
+                    }
+                  />
+                </label>
+              ))}
             <label>
               Monthly market trend (% per month)
               <input
@@ -589,20 +620,25 @@ export function PricingStudio(config: StudioConfig) {
                   ['sqft', 'Living area (sq ft)', 'number'],
                   ['condition', `Condition (1–${conditionMax})`, 'number'],
                 ] as const
-              ).map(([key, label, type]) => (
-                <label key={key}>
-                  {label}
-                  <input
-                    type={type}
-                    value={sale[key]}
-                    step={key === 'baths' ? 0.5 : key === 'distanceMiles' ? 0.05 : undefined}
-                    min={type === 'number' ? 0 : undefined}
-                    max={type === 'date' ? evidence.asOf.slice(0, 10) : undefined}
-                    maxLength={key === 'address' ? 80 : undefined}
-                    onChange={e => setSale(s => ({ ...s, [key]: e.target.value }))}
-                  />
-                </label>
-              ))}
+              )
+                .filter(([key]) => evidence.subject.condition !== undefined || key !== 'condition')
+                .filter(([key]) => !evidence.subject.roomCountsUnavailable || (key !== 'beds' && key !== 'baths'))
+                .map(([key, label, type]) => (
+                  <label key={key}>
+                    {key === 'condition' && evidence.subject.ratingKind === 'quality-grade'
+                      ? `Quality grade (1–${conditionMax})`
+                      : label}
+                    <input
+                      type={type}
+                      value={sale[key]}
+                      step={key === 'baths' ? 0.5 : key === 'distanceMiles' ? 0.05 : undefined}
+                      min={type === 'number' ? 0 : undefined}
+                      max={type === 'date' ? evidence.asOf.slice(0, 10) : undefined}
+                      maxLength={key === 'address' ? 80 : undefined}
+                      onChange={e => setSale(s => ({ ...s, [key]: e.target.value }))}
+                    />
+                  </label>
+                ))}
             </div>
             {saleError && (
               <p role="alert" className="studio-warning">

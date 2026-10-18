@@ -267,7 +267,17 @@ export function parseValidationCsv(text: string): ValidationSale[] {
 }
 
 const inWindow = (sale: ValidationSale, window: Window) => sale.soldOn >= window.from && sale.soldOn <= window.to;
-const saleTime = (sale: ValidationSale) => Date.parse(`${sale.soldOn}T00:00:00.000Z`);
+// Large government snapshots repeat a few thousand dates across millions of candidate checks.
+// Cache only this pure string→timestamp conversion; eligibility, ordering and arithmetic stay identical.
+const saleDates = new Map<string, number>();
+const saleTime = (sale: ValidationSale) => {
+  let time = saleDates.get(sale.soldOn);
+  if (time === undefined) {
+    time = Date.parse(`${sale.soldOn}T00:00:00.000Z`);
+    saleDates.set(sale.soldOn, time);
+  }
+  return time;
+};
 const asOfFor = (sale: ValidationSale, protocol: ValidationProtocol) =>
   new Date(saleTime(sale) + protocol.asOfOffsetMs).toISOString();
 
@@ -529,7 +539,18 @@ export function valueSale(
       estimates[variant.id] = null;
       continue;
     }
-    const result = calculateCma(subject, eligible, variant.assumptions, asOf);
+    let result;
+    try {
+      result = calculateCma(subject, eligible, variant.assumptions, asOf);
+    } catch (error) {
+      // The production engine may reject every adjusted comp even when raw records pass the filters.
+      // Preserve this subject in the denominator as an abstention; never discard it or abort the cohort.
+      if (error instanceof Error && error.message.startsWith('No eligible closed comparables.')) {
+        estimates[variant.id] = null;
+        continue;
+      }
+      throw error;
+    }
     estimates[variant.id] = result.estimate;
     if (variant.id === primaryId) {
       comps = result.comps.length;
@@ -821,7 +842,7 @@ export type ValidationOptions = {
 };
 
 export function runValuationValidation(csvText: string, options: ValidationOptions = {}): ValidationRun {
-  const protocol = options.protocol ?? kingCountyProtocol;
+  const protocol: ValidationProtocol = options.protocol ?? kingCountyProtocol;
   const csvSha256 = sha256(csvText);
   if (csvSha256 !== protocol.dataset.csvSha256)
     throw new Error(`Dataset fingerprint ${csvSha256} does not match the protocol's ${protocol.dataset.csvSha256}.`);

@@ -1,0 +1,49 @@
+{
+  "datasetId": "dc-condominiums",
+  "fetchedAt": "2026-10-18T08:21:21Z",
+  "license": "CC-BY-4.0",
+  "attribution": "Contains District of Columbia open data licensed under CC BY 4.0: Condominium CAMA, Condo Relate Table, Address Points and Tax System Property Sales. Joined and filtered by Ascent.",
+  "sources": {
+    "characteristics": "https://maps2.dcgis.dc.gov/dcgis/rest/services/DCGIS_DATA/Property_and_Land_WebMercator/FeatureServer/24",
+    "unitAddresses": "https://maps2.dcgis.dc.gov/dcgis/rest/services/DCGIS_DATA/Property_and_Land_WebMercator/FeatureServer/52",
+    "locations": "https://maps2.dcgis.dc.gov/dcgis/rest/services/DCGIS_DATA/Location_WebMercator/FeatureServer/0",
+    "sales": "https://maps2.dcgis.dc.gov/dcgis/rest/services/DCGIS_DATA/Property_and_Land_WebMercator/FeatureServer/57"
+  },
+  "licenseEvidence": {
+    "cama": "https://maps2.dcgis.dc.gov/dcgis/rest/services/DCGIS_DATA/Property_and_Land_WebMercator/FeatureServer/24/iteminfo?f=json",
+    "relate": "https://maps2.dcgis.dc.gov/dcgis/rest/services/DCGIS_DATA/Property_and_Land_WebMercator/FeatureServer/52/iteminfo?f=json",
+    "points": "https://maps2.dcgis.dc.gov/dcgis/rest/services/DCGIS_DATA/Location_WebMercator/FeatureServer/0/iteminfo?f=json",
+    "sales": "https://maps2.dcgis.dc.gov/dcgis/rest/services/DCGIS_DATA/Property_and_Land_WebMercator/FeatureServer/57/iteminfo?f=json"
+  },
+  "properties": 51340,
+  "rows": 8470,
+  "sourceRows": {
+    "cama": 61288,
+    "relate": 73545,
+    "points": 5858,
+    "qualifiedSales": 28576
+  },
+  "propertyCsvSha256": "cc21edf4d434de8355068a9891ad1bf4ce4f428be1f4c6a78a1a6e2e712c65c6",
+  "csvSha256": "394bbe83d64df42f2cfa75e541722778b5fef3767fbcd421719c3780c1b923a0",
+  "firstSale": "2022-01-03",
+  "lastSale": "2026-10-07",
+  "fingerprintBasis": "SHA-256 of decompressed CSV bytes",
+  "removedProperties": {
+    "missingOrAmbiguousUnitAddress": 9939,
+    "missingOrInvalidCharacteristics": 9
+  },
+  "removedSales": {
+    "noCoveredCondo": 19582,
+    "ambiguousSharedDayAndPrice": 498,
+    "characteristicsMayPostdateSale": 26
+  },
+  "limitations": [
+    "No condo-specific accuracy validation. Do not inherit DC single-family calibration.",
+    "Condominium CAMA has no condition field; condition adjustment must stay disabled.",
+    "Floor, view, parking rights, HOA dues, reserves, assessments, amenities and interior condition are unmodeled.",
+    "Current characteristics, not historical; sale year at or before build/remodel year excluded.",
+    "Same-day equal-price qualified transfers are conservatively excluded as potentially shared prices; unrelated same-price closings can also be removed.",
+    "Coordinates are the building street address point, not the unit location or floor. Studios with zero recorded bedrooms are supported.",
+    "Only residential condo use codes 16 and 17 with one unambiguous unit address; co-ops, commercial, combined units and missing addresses excluded."
+  ]
+}

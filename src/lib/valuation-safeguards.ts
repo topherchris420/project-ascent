@@ -68,6 +68,10 @@ const markets: Record<string, { market: ValuationBenchmark['market']; dataset: s
     market: { id: 'dc', label: 'Washington, DC', state: 'DC' },
     dataset: 'District of Columbia recorded sales',
   },
+  'ascent-valuation-validation-maryland-1': {
+    market: { id: 'maryland', label: 'Montgomery & Prince George’s, MD', state: 'MD' },
+    dataset: 'Maryland SDAT/MDP recorded sales in Montgomery and Prince George’s',
+  },
 };
 
 export function benchmarkFromReport(report: ValidationReport): ValuationBenchmark {
@@ -158,7 +162,7 @@ export function benchmarkFromReport(report: ValidationReport): ValuationBenchmar
 
 export const dcBenchmark = dcJson as unknown as ValuationBenchmark;
 export const kingCountyBenchmark = kingCountyJson as unknown as ValuationBenchmark;
-/** Every market with a published holdout, home market first. */
+/** Legacy state-based references. The pooled Maryland result stays in its scoped studio and cannot validate a whole state. */
 export const valuationBenchmarks: readonly ValuationBenchmark[] = [dcBenchmark, kingCountyBenchmark];
 /** Ascent's home market (DC), the default reference for drift and public figures. */
 export const valuationBenchmark = dcBenchmark;
@@ -335,9 +339,12 @@ export function assessValuationRelease(
     benchmark?: ValuationBenchmark;
   } = {},
 ): ReleaseAssessment {
-  const located = benchmarkForState(result.inputSnapshot?.subject.state);
+  const located =
+    result.inputSnapshot?.subject.propertyType === 'condominium'
+      ? null
+      : benchmarkForState(result.inputSnapshot?.subject.state);
   const benchmark = context.benchmark ?? located ?? valuationBenchmark;
-  const inMarket = !!context.benchmark || !!located;
+  const inMarket = result.inputSnapshot?.subject.propertyType !== 'condominium' && (!!context.benchmark || !!located);
   const release = context.release ?? valuationReleaseSwitch();
   const integrity = context.integrity ?? engineIntegrity();
   const t = SAFEGUARD_THRESHOLDS;

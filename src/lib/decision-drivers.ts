@@ -72,18 +72,24 @@ export function decisionDrivers(result: CmaResult, options: { conditionMax?: num
     });
   };
   rate('sqftRate', 'Living-area rate', 'usd-per-sqft');
-  rate('bedroomValue', 'Bedroom adjustment', 'usd');
-  rate('bathroomValue', 'Bathroom adjustment', 'usd');
+  if (!subject.roomCountsUnavailable) {
+    rate('bedroomValue', 'Bedroom adjustment', 'usd');
+    rate('bathroomValue', 'Bathroom adjustment', 'usd');
+  }
   // A disabled condition adjustment stays disabled: unknown condition is never re-imagined as a score.
   if (base.conditionValue > 0) {
-    rate('conditionValue', 'Condition-point value', 'usd');
+    rate(
+      'conditionValue',
+      subject.ratingKind === 'quality-grade' ? 'Quality-grade value' : 'Condition-point value',
+      'usd',
+    );
     const condition = subject.condition;
     if (condition !== undefined && Number.isFinite(condition)) {
       const lower = Math.max(1, condition - DRIVER_STEPS.conditionPoints),
         higher = Math.min(conditionMax, condition + DRIVER_STEPS.conditionPoints);
       rows.push({
         key: 'subjectCondition',
-        label: 'Subject condition rating',
+        label: subject.ratingKind === 'quality-grade' ? 'Subject quality grade' : 'Subject condition rating',
         kind: 'subject',
         unit: 'points',
         current: condition,

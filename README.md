@@ -6,9 +6,9 @@
 
 A real estate workspace that keeps the evidence behind the decision.
 
-**[Analyze a DC home](https://project-ascent-theta.vercel.app/dc) · [Try the sample](https://project-ascent-theta.vercel.app/demo) · [Open Ascent](https://project-ascent-theta.vercel.app/)**
+**[DC homes](https://project-ascent-theta.vercel.app/dc) · [Maryland homes](https://project-ascent-theta.vercel.app/maryland) · [DC condos](https://project-ascent-theta.vercel.app/dc/condos) · [Try the sample](https://project-ascent-theta.vercel.app/demo)**
 
-No account needed for either pricing studio.
+No account needed for the public pricing studios.
 
 </div>
 
@@ -21,11 +21,13 @@ A seller asks, **“Why this price?”** Ascent gives you the working: comparabl
 | You want to… | Start here |
 | --- | --- |
 | Analyze a real home | **[DC Pricing Studio](https://project-ascent-theta.vercel.app/dc)** — search covered single-family homes in District public records. No address in mind? Try the example address. |
+| Analyze a Maryland home | **[Maryland studio](https://project-ascent-theta.vercel.app/maryland)** — Montgomery and Prince George’s only. Size, quality grade, location and sale timing; no bedroom/bathroom data. The full accuracy result, including every missed criterion, is published. |
+| Analyze a DC condo | **[Condo studio](https://project-ascent-theta.vercel.app/dc/condos)** — a separate unit-level snapshot and condo-only comparables. Condo accuracy is unmeasured; no calibrated interval. |
 | Learn by doing | **[Fictional sample](https://project-ascent-theta.vercel.app/demo)** — explore an Arlington example using the actual pricing engine. |
 | Work through a deal | **[Workspace demo](https://project-ascent-theta.vercel.app/)** — choose **Explore the working demo** for fictional clients, offers and deadlines. |
 | Bring your own evidence | Choose **Create an account** on the homepage. Your workspace starts empty. |
 
-Hosted workspaces require configured account services. Both public studios work independently.
+Hosted workspaces require configured account services. The public studios work independently.
 
 ## See it. Challenge it. Keep it.
 
@@ -49,11 +51,11 @@ Saved pricing analyses freeze their inputs. Replay them later, or use the **Deci
 The published DC evaluation reports **10.0% median error across 2,254 held-out sales**, with **50.2% within ±10%** of the recorded price. These results apply to the DC-validated settings and evaluation period; some acceptance thresholds were met narrowly. They do not guarantee an individual property's price.
 
 - The DC studio uses **District public records, CC BY 4.0**. Recent sales may lag; interior condition, concessions and MLS listing history are missing.
-- Public analysis covers eligible **DC single-family homes**. Condos, multi-unit buildings, Maryland and Virginia are outside its measured scope.
+- **DC houses, Maryland homes and DC condos have different evidence.** DC’s house validation applies only to its tested configuration. Maryland’s pooled Montgomery/Prince George’s test is published separately; displayed ranges remain uncalibrated pending county-specific validation. DC condos are available with unmeasured accuracy and uncalibrated ranges. Virginia awaits written permission; [four unsent requests](docs/data-permissions/virginia-requests.md) are ready for the maintainer.
 - The sample and workspace demo are fictional. Optional licensed providers require their own configuration and permissions; no MLS access is bundled.
 - Reports are decision aids requiring review, **not appraisals**. Ascent does not send client messages, accept offers or sign contracts.
 
-[DC data and coverage](docs/dc-public-records.md) · [Full validation and misses](docs/valuation-validation.md) · [Production readiness](docs/remaining-work.md)
+[DC houses](docs/dc-public-records.md) · [Maryland](docs/maryland-public-records.md) · [DC condos](docs/dc-condominiums.md) · [Validation and misses](docs/valuation-validation.md) · [Production readiness](docs/remaining-work.md)
 
 ## Run locally
 

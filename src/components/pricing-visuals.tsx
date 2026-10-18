@@ -207,9 +207,10 @@ export function DecisionDrivers({ result, conditionMax = 5 }: { result: CmaResul
       </ol>
       <p className="fine">
         Each row recalculates the same frozen sales with one input changed: adjustment rates ±{DRIVER_STEPS.ratePercent}
-        %, trend ±{DRIVER_STEPS.trendPoints * 100} points per month, subject condition ±{DRIVER_STEPS.conditionPoints}{' '}
-        point, eligibility filters halved and doubled. These are review steps, not a statement of how uncertain the
-        market is, and they do not say which setting is right.
+        %, trend ±{DRIVER_STEPS.trendPoints * 100} points per month, subject{' '}
+        {result.inputSnapshot?.subject.ratingKind === 'quality-grade' ? 'quality grade' : 'condition'} ±
+        {DRIVER_STEPS.conditionPoints} point, eligibility filters halved and doubled. These are review steps, not a
+        statement of how uncertain the market is, and they do not say which setting is right.
       </p>
     </section>
   );

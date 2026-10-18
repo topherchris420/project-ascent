@@ -1,5 +1,6 @@
 import { CheckCircle2, CircleX } from 'lucide-react';
 import { kingCountyBenchmark, valuationBenchmark, type ValuationBenchmark } from '@/lib/valuation-safeguards';
+import marylandCounties from '@/lib/valuation-maryland-counties.json';
 
 type Criterion = ValuationBenchmark['acceptance'][number];
 const pct = (value: number, digits = 1) => `${(value * 100).toFixed(digits)}%`;
@@ -63,13 +64,15 @@ export function AccuracyScorecard({ benchmark = valuationBenchmark }: { benchmar
         </div>
         <div className="lp-accuracy-stat">
           <strong>{pct(benchmark.intervals.calibratedCoverage)}</strong>
-          <span>of sales inside the calibrated {pct(benchmark.intervals.target, 0)} range</span>
+          <span>of test sales inside the calibrated {pct(benchmark.intervals.target, 0)} interval</span>
           <small>the raw comparable envelope held {pct(benchmark.intervals.envelopeCoverage)}</small>
         </div>
         <div className="lp-accuracy-stat">
           <strong>{points(ppsf.mdapeDelta)}</strong>
-          <span>lower median error than median $/sqft of the same sales</span>
-          <small>{points(zip.mdapeDelta)} better than a trailing ZIP median</small>
+          <span>{ppsf.mdapeDelta <= 0 ? 'lower' : 'higher'} median error than median $/sqft of the same sales</span>
+          <small>
+            {points(zip.mdapeDelta)} {zip.mdapeDelta <= 0 ? 'better' : 'worse'} than a trailing ZIP median
+          </small>
         </div>
       </div>
       <div className="lp-accuracy-card">
@@ -100,6 +103,28 @@ export function AccuracyScorecard({ benchmark = valuationBenchmark }: { benchmar
           {pct(primary.valuedShare)} of the holdout sales. With Ascent&apos;s general default settings, the median error
           on the same sales was {pct(benchmark.shipped.mdape)}.
         </p>
+        {benchmark.market.id === 'maryland' && (
+          <p className="lp-accuracy-caveat">
+            Montgomery and Prince George’s only. Bedrooms and bathrooms are unavailable; this model uses size, assessor
+            construction quality grade, location and sale timing. Quality grade is not interior condition. Current
+            parcel records retain only the latest three transfers, so older history is incomplete. The $/sqft baseline
+            uses the same raw eligible sale pool, including sales the engine may reject after adjustment. These are
+            reproducible internal results, not independent certification. The fitted model was worse than untuned
+            settings on this holdout. Five retained transfers have consideration at or below $1,000, contributing
+            extreme ratios to the dispersion and price-bias failures. No records were removed after scoring.{' '}
+            {benchmark.accepted
+              ? 'All criteria met on this holdout.'
+              : 'The model did not meet the acceptance criteria; every miss is shown above.'}
+          </p>
+        )}
+        {benchmark.market.id === 'maryland' &&
+          marylandCounties.counties.map(county => (
+            <p className="lp-accuracy-caveat" key={county.code}>
+              <strong>{county.label}:</strong> {county.sales.toLocaleString('en-US')} held-out sales;{' '}
+              {pct(county.valuedShare)} valued, {pct(county.metrics.mdape)} median error, {pct(county.metrics.ppe10)}{' '}
+              within ±10%. Descriptive slice of the same pooled model; no separate county acceptance claim.
+            </p>
+          ))}
         {narrow.length > 0 && (
           <p className="lp-accuracy-caveat">
             Met narrowly: the 95% intervals for {narrow.join(' and ')} include values on the wrong side of the bar.
@@ -110,7 +135,7 @@ export function AccuracyScorecard({ benchmark = valuationBenchmark }: { benchmar
           {span(benchmark.windows.fit)}, search filters chosen on {span(benchmark.windows.select)}, the interval
           calibrated on {span(benchmark.windows.calibrate)}, then {span(benchmark.windows.test)} was scored once.
           Thresholds were fixed before scoring and have not moved. Report{' '}
-          <code title={benchmark.reportDigest}>{benchmark.reportDigest.slice(0, 19)}…</code> reproduces with{' '}
+          <code title={benchmark.reportDigest}>{benchmark.reportDigest.slice(0, 19)}…</code> can be re-run with{' '}
           <code>npm run validate:valuation -- --verify</code>.
         </p>
         {other.reportDigest !== benchmark.reportDigest && (

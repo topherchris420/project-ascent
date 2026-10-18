@@ -137,7 +137,10 @@ export function ComparableExplorer({
             <span className="eyebrow">SALE → ADJUSTMENTS → WEIGHT</span>
             <h3>{record.address}</h3>
             <p className="studio-muted">
-              Closed {record.soldAt ? date(record.soldAt) : 'date missing'} · {record.beds} beds · {record.baths} baths
+              Closed {record.soldAt ? date(record.soldAt) : 'date missing'} ·{' '}
+              {record.roomCountsUnavailable
+                ? 'Bedrooms and bathrooms unavailable'
+                : `${record.beds} beds · ${record.baths} baths`}
               · {number(record.sqft)} sq ft
             </p>
             <dl className="comp-waterfall">
@@ -149,8 +152,21 @@ export function ComparableExplorer({
                 <div key={a.factor}>
                   <dt>
                     <details>
-                      <summary>{a.factor}</summary>
-                      <p>{a.explanation}</p>
+                      <summary>
+                        {record.ratingKind === 'quality-grade'
+                          ? a.factor.replace('Condition', 'Quality grade')
+                          : a.factor}
+                      </summary>
+                      <p>
+                        {record.ratingKind === 'quality-grade'
+                          ? a.explanation
+                              .replace('condition points', 'quality grade points')
+                              .replace(
+                                'subjective rubric, verify inspection',
+                                'assessor construction quality, not interior condition',
+                              )
+                          : a.explanation}
+                      </p>
                     </details>
                   </dt>
                   <dd>{signed(a.amount)}</dd>

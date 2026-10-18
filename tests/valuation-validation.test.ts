@@ -16,6 +16,7 @@ import {
   validationProtocols,
   dcProtocol,
   kingCountyProtocol,
+  marylandProtocol,
   valueSale,
   verifyAttestation,
   verifyValidationReport,
@@ -118,7 +119,7 @@ test('DC is scored against the same method and the same bars as King County', ()
   assert.equal(dcProtocol.dataset.license, 'CC-BY-4.0');
   assert.deepEqual(
     validationProtocols.map(protocol => protocol.id),
-    [dcProtocol.id, kingCountyProtocol.id],
+    [dcProtocol.id, kingCountyProtocol.id, marylandProtocol.id],
   );
   // The partial final month of the snapshot is outside the holdout.
   assert.ok(dcProtocol.windows.test.to < '2026-10-01');
@@ -190,6 +191,25 @@ test('paired-sales fitting recovers known adjustment rates from earlier sales', 
   assert.ok(Math.abs(fitted.monthlyTrend) < 0.005, `trend ${fitted.monthlyTrend}`);
   for (const key of ['sqftRate', 'bedroomValue', 'bathroomValue', 'conditionValue'] as const)
     assert.ok(fitted[key] >= 0);
+});
+
+test('all nonpositive adjusted comps count as an abstention, preserving the subject and raw baseline', () => {
+  const subject = sale('target', { soldOn: '2014-06-02', condition: 1 });
+  const previous = sale('previous', { soldOn: '2014-06-01', condition: 5, price: 10000 });
+  const assumptions = { ...defaultAssumptions, conditionValue: 100000 };
+  const row = valueSale(
+    subject,
+    createSaleIndex([subject, previous]),
+    [{ id: 'primary', label: 'test', assumptions }],
+    'primary',
+    new Map(),
+    kingCountyProtocol,
+  );
+  assert.equal(row.saleId, subject.saleId);
+  assert.equal(row.actual, subject.price);
+  assert.equal(row.estimates.primary, null);
+  assert.equal(row.estimates['baseline-median-ppsf'], previous.price);
+  assert.equal(row.comps, 0);
 });
 
 test('ratio study metrics follow IAAO definitions', () => {

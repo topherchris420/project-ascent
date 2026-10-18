@@ -1,0 +1,51 @@
+{
+  "reportDigest": "sha256-483c1495df5e049b49f5a0cb614995ed219b11e4c11452f651d10b5a572f5523",
+  "window": {
+    "from": "2025-07-01",
+    "to": "2026-06-30"
+  },
+  "counties": [
+    {
+      "code": "MONT",
+      "label": "Montgomery",
+      "sales": 7465,
+      "valued": 7062,
+      "valuedShare": 0.9460147354320161,
+      "metrics": {
+        "n": 7062,
+        "mdape": 0.140597,
+        "mape": 156.786749,
+        "ppe5": 0.214104,
+        "ppe10": 0.385726,
+        "ppe20": 0.633815,
+        "medianRatio": 1.01555,
+        "medianSignedError": 0.01555,
+        "cod": 15438.541,
+        "prd": 154.089211
+      },
+      "calibratedCoverage": 0.8061455678278108
+    },
+    {
+      "code": "PRIN",
+      "label": "Prince George’s",
+      "sales": 5366,
+      "valued": 4952,
+      "valuedShare": 0.9228475587029444,
+      "metrics": {
+        "n": 4952,
+        "mdape": 0.134721,
+        "mape": 20.735016,
+        "ppe5": 0.224152,
+        "ppe10": 0.400848,
+        "ppe20": 0.637722,
+        "medianRatio": 1.016345,
+        "medianSignedError": 0.016345,
+        "cod": 2040.1019,
+        "prd": 20.72817
+      },
+      "calibratedCoverage": 0.776453957996769
+    }
+  ],
+  "basis": "Descriptive county slices of the pooled Maryland holdout, using the same frozen model. No county-specific fitting, selection or acceptance claim.",
+  "digest": "sha256-d12c40f158843c472c0ccaac7804789e664af1b3ded543fc75e6ae4149a58e7f"
+}

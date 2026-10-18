@@ -2,6 +2,40 @@
 
 Most residential pricing tools publish no error rate. Ascent publishes one for its home market, Washington, DC, measured out of sample on the District's own recorded sales against thresholds set before scoring. A second market, King County, WA, is published alongside it, including the criteria it missed. Anyone can reproduce either result byte for byte.
 
+## Maryland: Montgomery and Prince George’s (protocol `ascent-valuation-validation-maryland-1`)
+
+**Did not meet the acceptance criteria: 4 of 9 criteria met.** Holdout: **12,831 sales**, July 2025–June 2026. Primary median absolute percentage error **13.85%**, with **39.20%** within ±10%.
+
+| Configuration | Valued | Median error (95% CI) | Within ±10% | COD | PRD |
+| --- | --- | --- | --- | --- | --- |
+| Maryland-fitted (primary) | 93.63% | 13.85% (13.47%–14.16%) | 39.20% | 9913.84 | 98.7943 |
+| Untuned, room adjustments disabled | 99.84% | 10.15% (9.92%–10.37%) | 49.36% | 9047.82 | 92.3296 |
+| Median $/sqft, raw eligible pool | 93.73% | 10.74% (10.48%–10.95%) | 47.19% | 9710.65 | 97.5863 |
+| Trailing ZIP median | 99.94% | 18.18% (17.78%–18.52%) | 30.42% | 6466.24 | 70.3293 |
+
+| Criterion | Threshold | Measured | Verdict |
+| --- | --- | --- | --- |
+| A1 · Holdout sales valued | ≥ 90.00% | 93.63% | Met |
+| A2 · Median absolute percentage error | ≤ 10.00% | 13.85% | **Missed** |
+| A3 · Share within ±10% of sale price | ≥ 50.00% | 39.20% | **Missed** |
+| A4 · Coefficient of dispersion (COD) | ≤ 15.0000 | 9913.8413 | **Missed** |
+| A5 · Price-related differential (PRD) | 0.9800–1.0300 | 98.7943 | **Missed** |
+| A6 · Absolute median signed error | ≤ 3.00% | 1.58% | Met |
+| A7 · Beats median $/sqft of the same comparables | Paired 95% upper bound below 0 | 3.49 percentage points | **Missed** |
+| A8 · Beats trailing ZIP median price | Paired 95% upper bound below 0 | -3.20 percentage points | Met |
+| A9 · Calibrated 80% interval coverage | 75.00%–85.00% | 79.39% | Met |
+
+The calibrated 80% **test** interval contained 79.39% of valued sales. The observed comp envelope contained 67.01%. Neither is displayed as a calibrated current-home interval in Maryland.
+
+| County | Holdout sales | Valued | Median error | Within ±10% |
+| --- | --- | --- | --- | --- |
+| Montgomery | 7,465 | 94.60% | 14.06% | 38.57% |
+| Prince George’s | 5,366 | 92.28% | 13.47% | 40.08% |
+
+These county slices use the same pooled model, without separate county fitting or acceptance claims. The protocol and all thresholds remain unchanged. Report digest: `sha256-483c1495df5e049b49f5a0cb614995ed219b11e4c11452f651d10b5a572f5523`. The complete report, per-sale samples and source fingerprints are committed under `evidence/`; independent metric re-derivation is available through `--check`.
+
+[Source rules, missing features, registration and reproduction](maryland-public-records.md). Virginia awaits written permission; DC condos are available with unmeasured accuracy and uncalibrated ranges.
+
 ## Washington, DC (protocol `ascent-valuation-validation-dc-1`)
 
 Holdout: **2,254 assessor-qualified single-family and rowhouse sales recorded in the District of Columbia, 1 Oct 2025 – 30 Sep 2026.** None of these prices was available to the engine when it valued them. Source: the District's Tax System Property Sales, CAMA Residential and Address Points layers (CC BY 4.0), snapshotted 17 Oct 2026. Provenance and every record-removal count are in [`evidence/datasets/dc-residential-sales.provenance.json`](../evidence/datasets/dc-residential-sales.provenance.json).
@@ -107,11 +141,11 @@ python3 -I scripts/datasets/fetch-dc-sales.py out.csv.gz out.json   # fresh DC s
 
 To attest as a reviewer: `openssl genpkey -algorithm ed25519 -out reviewer.pem`, then `npm run validate:valuation -- --attest --market dc --key reviewer.pem --reviewer "Name, Organization"`. Publish your public key somewhere you control so others can tie it to you.
 
-To validate another market (Maryland or Virginia next), add a recorded-sales CSV in the same columns, then declare a new protocol (new id, dataset fingerprint and windows) *before* running it. Never edit an existing protocol after its holdout has been scored.
+To validate another market, add a recorded-sales CSV, then declare a new protocol (new id, dataset fingerprint, missing features and windows) *before* running it. Never edit an existing protocol after its holdout has been scored. [Maryland’s pooled Montgomery/Prince George’s test](maryland-public-records.md) follows the same nine bars with absent room adjustments disabled. Virginia awaits permission. DC condos are available with unmeasured accuracy and no calibrated range.
 
 ## Limitations
 
-- **Markets and periods.** DC (Oct 2025 – Sep 2026, single-unit residential lots) and King County (Jan – May 2015). Maryland, Virginia, condominiums and every other market are unmeasured. In the app, a calibrated interval appears only for a subject in a validated market analysed with that market's exact validated configuration. Everywhere else the range remains an uncalibrated envelope, and the release gate says so.
+- **Markets and periods.** DC houses (Oct 2025 – Sep 2026), King County (Jan – May 2015), and the separately published pooled Montgomery/Prince George’s model (Jul 2025 – Jun 2026). Maryland displays an uncalibrated envelope pending separate county validation; its pooled result does not validate all Maryland. Virginia and DC condos have no accuracy validation. Condo markers prevent inheritance of the DC house interval. Elsewhere a calibrated interval requires the subject’s actual tested market, property cohort and exact configuration.
 - **DC characteristics are current, not as of each sale.** Sales up to a recorded build or remodel year are removed, but unrecorded renovations remain and add error.
 - **Narrow DC passes.** Three DC criteria pass by margins smaller than their sampling uncertainty (see above). A future DC holdout could miss them.
 - **Calibration drift.** Coverage ran slightly under target in both markets (DC 76.7%, King County 77.5%), most for dense evidence in DC (71.2%). Exchangeability is an assumption, not a guarantee.

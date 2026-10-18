@@ -25,6 +25,7 @@ import { assessCmaEvidence, compareCmaDecisions } from '@/lib/decision-review';
 import type { ValuationProperty } from '@/lib/types';
 import { valuationBenchmark } from '@/lib/valuation-safeguards';
 import { AccuracyScorecard } from './accuracy-scorecard';
+import { marylandBenchmark, marylandVerdict } from '@/lib/maryland-studio';
 
 export type LandingProps = {
   onDemo: () => void;
@@ -619,7 +620,7 @@ function Journey() {
 const faqs = [
   {
     q: 'Can I use my own address?',
-    a: 'Yes, for covered single-family homes in Washington, DC. Search District public records without an account. Condos, multi-unit buildings, Maryland and Virginia are not covered by the public studio. The fictional sample works for anyone.',
+    a: 'Yes, for covered single-family homes in DC and in Montgomery and Prince George’s counties, Maryland. Maryland uses size, quality grade, location and sale timing only; bedroom and bathroom data are unavailable. Both markets publish their accuracy results. DC condos have a separate unvalidated studio; their ranges are uncalibrated. Virginia awaits written permission. Multi-unit buildings are excluded.',
   },
   {
     q: 'Where does the price come from?',
@@ -840,6 +841,19 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAv
               Results apply to this market, period and configuration. They do not guarantee the price of your home. Some
               acceptance thresholds were met narrowly.
             </p>
+            <p className="lp-fine">
+              <Link href="/maryland">Maryland is available: Montgomery and Prince George’s counties</Link>.{' '}
+              {marylandVerdict()} Size, quality grade, location and sale timing only; bedrooms and bathrooms are
+              unavailable. Virginia awaits permission.
+            </p>
+            <p className="lp-fine">
+              <Link href="/dc/condos">DC condo pricing is available</Link> with a separate unit-level snapshot. Condo
+              accuracy remains unmeasured; no single-family calibration is reused.
+            </p>
+            <details className="lp-methodology">
+              <summary>Maryland accuracy: results and missed criteria</summary>
+              <AccuracyScorecard benchmark={marylandBenchmark} />
+            </details>
             <details className="lp-methodology">
               <summary>Read the full accuracy report and limitations</summary>
               <AccuracyScorecard />

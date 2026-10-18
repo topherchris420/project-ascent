@@ -1,0 +1,57 @@
+{
+  "verifiedAt": "2026-10-18T13:43:08.130Z",
+  "build": "next build --webpack, then next start",
+  "unitTests": {
+    "passed": 330,
+    "failed": 0
+  },
+  "browserCases": {
+    "distinctPassed": 16,
+    "note": "14 legacy/condo/recovery cases passed in the combined run; both Maryland cases passed after fixing the report input bound."
+  },
+  "accessibility": "No Axe WCAG2A/AA/2.1AA violations in the selected desktop/mobile pricing flows; no horizontal overflow.",
+  "validation": "All three reports pass independent digest, metric and benchmark checks. DC full re-run matches report and every sample exactly. Maryland report was scored once; full repeat is available with --verify but was not run again.",
+  "datasetPackaging": "All six new API route traces contain their three required snapshot/provenance files.",
+  "checks": [
+    {
+      "market": "maryland",
+      "searchStatus": 200,
+      "propertyStatus": 200,
+      "reportStatus": 200,
+      "candidateSales": 630,
+      "noCookies": true,
+      "calibratedInterval": null,
+      "validation": {
+        "reportDigest": "sha256-483c1495df5e049b49f5a0cb614995ed219b11e4c11452f651d10b5a572f5523",
+        "accepted": false,
+        "criteriaMet": 4
+      }
+    },
+    {
+      "market": "dc-condos",
+      "searchStatus": 200,
+      "propertyStatus": 200,
+      "reportStatus": 200,
+      "candidateSales": 1141,
+      "noCookies": true,
+      "calibratedInterval": null,
+      "validation": {
+        "accepted": false,
+        "measured": false,
+        "calibratedInterval": null
+      }
+    },
+    {
+      "route": "/",
+      "status": 200
+    },
+    {
+      "route": "/maryland",
+      "status": 200
+    },
+    {
+      "route": "/dc/condos",
+      "status": 200
+    }
+  ]
+}

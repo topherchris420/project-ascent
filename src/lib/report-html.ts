@@ -1,6 +1,6 @@
 import { simulatePricing } from './analytics';
 import { explainPricing, positionLabel, type PricingPosition } from './pricing-narrative';
-import type { CmaRecord, Property, Scenario, Source, ValuationProperty } from './types';
+import type { CmaRecord, Scenario, Source, ValuationProperty } from './types';
 
 export const escapeHtml = (value: unknown) =>
   String(value ?? '').replace(
@@ -42,16 +42,19 @@ export type ReportInput = {
   selectedListPrice?: number;
   /** Condition scale shown beside the subject; DC assessor grades run 1–6. */
   conditionScale?: { max: number; note: string };
+  /** Public-record model omissions and published validation verdict, carried into print/export. */
+  evidenceNotice?: string;
 };
 
 /** Self-contained, script-free client report. Every figure comes from the frozen calculation. */
 export function renderCmaReport(input: ReportInput): string {
   const { record, property, candidates } = input;
+  const qualityGrade = property.ratingKind === 'quality-grade';
   const cma = record.result;
   const calibrated = record.release?.calibratedInterval ?? null;
-  const lookup = (id: string) => candidates.find(item => item.id === id) as Property | undefined;
+  const lookup = (id: string) => candidates.find(item => item.id === id);
   const selectedPrice = input.selectedListPrice ?? cma.strategies.moderate;
-  const narrative = explainPricing(cma, selectedPrice, candidates as Property[], lookup);
+  const narrative = explainPricing(cma, selectedPrice, candidates, lookup);
   // Omitted costs fall back to the scenario defaults; an explicit undefined would override them.
   const costs = Object.fromEntries(Object.entries(input.costs).filter(([, value]) => value !== undefined));
   const net = simulatePricing(cma, selectedPrice, costs);
@@ -75,12 +78,12 @@ export function renderCmaReport(input: ReportInput): string {
         .filter(adjustment => adjustment.amount !== 0)
         .map(
           adjustment =>
-            `<tr><td>${e(adjustment.factor)}</td><td class="num ${adjustment.amount < 0 ? 'neg' : 'pos'}">${adjustment.amount < 0 ? '−' : '+'}${usd(Math.abs(adjustment.amount))}</td><td class="why">${e(adjustment.explanation)}</td></tr>`,
+            `<tr><td>${e(qualityGrade ? adjustment.factor.replace('Condition', 'Quality grade') : adjustment.factor)}</td><td class="num ${adjustment.amount < 0 ? 'neg' : 'pos'}">${adjustment.amount < 0 ? '−' : '+'}${usd(Math.abs(adjustment.amount))}</td><td class="why">${e(qualityGrade ? adjustment.explanation.replace('condition points', 'quality grade points').replace('subjective rubric, verify inspection', 'assessor construction quality, not interior condition') : adjustment.explanation)}</td></tr>`,
         )
         .join('');
       const source = input.sources.find(item => item.id === sale?.sourceId);
       return `<article class="comp">
-  <header><div><h3>${e(sale?.address ?? comp.propertyId)}</h3><p>Sold ${sale?.soldAt ? e(longDate(sale.soldAt)) : 'date missing'} · ${comp.distanceMiles.toFixed(2)} mi · ${sale ? `${sale.beds} bd · ${sale.baths} ba · ${sale.sqft.toLocaleString('en-US')} sq ft` : ''}</p><p class="source-line">Source: ${source ? `${e(source.label)} (${e(source.kind)})` : 'not identified in this export'}</p></div><div class="weight">${(comp.weight * 100).toFixed(1)}%<small>weight</small></div></header>
+  <header><div><h3>${e(sale?.address ?? comp.propertyId)}</h3><p>Sold ${sale?.soldAt ? e(longDate(sale.soldAt)) : 'date missing'} · ${comp.distanceMiles.toFixed(2)} mi · ${sale ? `${sale.roomCountsUnavailable ? 'Bedrooms and bathrooms unavailable' : `${sale.beds} bd · ${sale.baths} ba`} · ${sale.sqft.toLocaleString('en-US')} sq ft` : ''}</p><p class="source-line">Source: ${source ? `${e(source.label)} (${e(source.kind)})` : 'not identified in this export'}</p></div><div class="weight">${(comp.weight * 100).toFixed(1)}%<small>weight</small></div></header>
   <table class="waterfall"><tbody>
     <tr class="base"><td>Sale price</td><td class="num">${sale?.soldPrice !== undefined ? usd(sale.soldPrice) : 'Closing price missing'}</td><td></td></tr>
     ${waterfall || '<tr><td colspan="3" class="why">No adjustments: matches the subject on every modeled feature.</td></tr>'}
@@ -101,6 +104,10 @@ export function renderCmaReport(input: ReportInput): string {
   const assumptions = Object.entries(cma.assumptions)
     .map(([key, value]) => {
       const [label, format] = assumptionLabels[key] ?? [key, (v: number) => String(v)];
+      if (property.roomCountsUnavailable && (key === 'bedroomValue' || key === 'bathroomValue'))
+        return `<div><dt>${e(label)}</dt><dd>Unavailable; adjustment disabled</dd></div>`;
+      if (qualityGrade && key === 'conditionValue')
+        return `<div><dt>Quality grade</dt><dd>${value ? `${usd(Number(value))} per grade point` : 'Grade adjustment disabled'}</dd></div>`;
       return `<div><dt>${e(label)}</dt><dd>${e(format(Number(value)))}</dd></div>`;
     })
     .join('');
@@ -158,9 +165,10 @@ body.presentation .estimate strong{font-size:64px}body.presentation .read .headl
 <p class="print-hint">Use your browser’s Print → Save as PDF for a client copy.${input.presentation ? '' : ' Add <code>&amp;view=presentation</code> to the address for a full-screen listing presentation.'}</p>
 <section class="slide"><div class="top"><div class="brand">ASCENT <span>/ ${e(input.organization)}</span></div>${status}</div>
 <h1>${e(property.address)}</h1>
-<p class="facts">${e(property.city)}, ${e(property.state)} ${e(property.zip)} · ${property.beds} beds · ${property.baths} baths · ${property.sqft.toLocaleString('en-US')} sq ft${property.condition !== undefined && cma.assumptions.conditionValue > 0 ? ` · condition ${e(property.condition)}/${input.conditionScale?.max ?? 5} (${e(input.conditionScale?.note ?? 'analyst rating')})` : ''}${property.yearBuilt ? ` · built ${e(property.yearBuilt)}` : ''}</p>
+<p class="facts">${e(property.city)}, ${e(property.state)} ${e(property.zip)} · ${property.roomCountsUnavailable ? 'Bedrooms and bathrooms unavailable' : `${property.beds} beds · ${property.baths} baths`} · ${property.sqft.toLocaleString('en-US')} sq ft${property.condition !== undefined && cma.assumptions.conditionValue > 0 ? ` · ${property.ratingKind === 'quality-grade' ? 'quality grade' : 'condition'} ${e(property.condition)}/${input.conditionScale?.max ?? 5} (${e(input.conditionScale?.note ?? 'analyst rating')})` : ''}${property.yearBuilt ? ` · built ${e(property.yearBuilt)}` : ''}</p>
 <p class="meta">${e(record.name)} · Evidence as of ${e(longDate(cma.asOf))} · Prepared by ${e(input.preparedBy)} · Generated ${e(longDate(input.generatedAt))}</p>
 ${watermark}
+${input.evidenceNotice ? `<p class="notice">${e(input.evidenceNotice)}</p>` : ''}
 <div class="block hero"><div class="estimate"><small>Comparable-supported estimate</small><strong>${usd(cma.estimate)}</strong><p class="fine">Adjusted range ${usd(cma.low)} – ${usd(cma.high)} from ${cma.comps.length} closed sale${cma.comps.length === 1 ? '' : 's'}.</p>${calibrated ? `<p class="calibrated"><strong>Calibrated ${Math.round(calibrated.target * 100)}% range ${usd(calibrated.low)} – ${usd(calibrated.high)}</strong> · ${e(calibrated.market)}-validated settings; in the published holdout this range held ${(calibrated.holdoutCoverage * 100).toFixed(1)}% of sales with ${e(calibrated.tier)} evidence like this. Not a guarantee for this home.</p>` : ''}
 <div class="range" aria-hidden="true"><span class="track"></span><span class="band" style="left:${at(cma.low)};width:${(((cma.high - cma.low) / axisSpan) * 100).toFixed(2)}%"></span>${dots}<span class="est" style="left:${at(cma.estimate)}"><i>Estimate</i></span></div>
 <div class="range-labels"><span>${usd(cma.low)}</span><span>${usd(cma.high)}</span></div></div>

@@ -1,5 +1,7 @@
 # Capability and evidence matrix
 
+October 18 coverage update: [Maryland](maryland-public-records.md) now covers Montgomery and Prince George’s with absent rooms omitted and a published pooled accuracy test, misses included. [DC condos](dc-condominiums.md) have a separate unit-level studio with unknown condition, unmeasured accuracy and no calibrated range. Virginia awaits written permission; [request drafts](data-permissions/virginia-requests.md) are unsent. The preference study still has zero participants and requires an outside facilitator, professional access and public pre-registration before recruitment.
+
 ## October 17 Pricing Studio slice
 
 | Capability | Implementation | Boundary |

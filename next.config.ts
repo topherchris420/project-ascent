@@ -4,6 +4,8 @@ const config: NextConfig = {
   // The DC public-record routes read bundled CC BY snapshots at runtime.
   outputFileTracingIncludes: {
     '/api/dc/*': ['./src/datasets/dc/**/*'],
+    '/api/dc-condos/*': ['./src/datasets/dc-condos/**/*'],
+    '/api/maryland/*': ['./src/datasets/maryland/**/*'],
   },
   outputFileTracingExcludes: {
     '/*': ['./.data/**/*', './evidence/**/*', './tests/**/*', './test-results/**/*', './playwright-report/**/*'],

@@ -1,5 +1,24 @@
 # Verification results
 
+## October 18, 2026 — Maryland and DC condo coverage
+
+| Check | Result |
+| --- | --- |
+| Maryland frozen holdout | 12,831 sales, Jul 2025–Jun 2026; **13.85% median error**, 39.20% within ±10%; **4 of 9 criteria met**. Failed criteria and worse performance than untuned settings are published. Protocol was committed before scoring. |
+| Independent validation checks | All three reports pass digest, protocol, engine, sample-metric, acceptance-verdict and in-app benchmark verification. County slices are independently recomputed in tests. |
+| DC full re-run | Exact published report `sha256-d4acbe70…` and every per-sale estimate reproduced. Pure date caching and abstention handling do not change the house result. |
+| Maryland reproduction scope | One completed scoring run plus separate metric/digest re-derivation; a second full `--verify --market maryland` run was **not** performed. The command is available for independent reproduction. |
+| Tests and types | **330/330 tests pass**, typecheck passes. |
+| Browser flows | **16 distinct selected cases pass after the report-bound fix**: Maryland and condos at desktop/mobile, existing DC houses, sample studio and recovery. The combined run initially passed 15/16; both Maryland cases passed on the subsequent run. |
+| Accessibility and visual inspection | Zero Axe WCAG2A/AA/2.1AA violations and no horizontal overflow in selected desktop/mobile pricing flows; desktop Maryland, its public accuracy card and mobile condo screens visually inspected. |
+| Production build and packaging | `next build --webpack` passes. All six new API route traces contain their required bundled property, sale and provenance files. |
+| Built-app HTTP checks | Homepage, `/maryland`, `/dc/condos`, both search/property/report flows return 200. Maryland exports its failed 4/9 verdict; condo exports `measured=false`; neither exports a calibrated interval. No cookies set by those public APIs. |
+| Formatting | Changed TypeScript/TSX files pass. A whole-repository formatting check reports pre-existing issues in unrelated files; those were left unchanged. |
+
+Evidence: [production checks](../evidence/public-coverage-verification.json), [Maryland test and limitations](maryland-public-records.md), [condo source and limits](dc-condominiums.md), [unsent Virginia requests](data-permissions/virginia-requests.md). Virginia remains permission-gated. The preference study has not run and no participants have been recruited.
+
+## Earlier checks
+
 Executed on this Windows ARM64 development machine with Node 24.19.0, October 15–16, 2026. These results describe this implementation and its fixtures, not a claim of production reliability or licensed market accuracy.
 
 | Check | Actual result | Scope |

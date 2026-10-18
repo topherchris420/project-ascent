@@ -97,6 +97,16 @@ export function assessCmaEvidence(result: CmaResult, sources: Source[]): Evidenc
       'Unverified condition',
       'Condition is missing or its adjustment has been deliberately disabled. Physical differences remain unmodeled.',
     );
+  if (snapshot?.subject.roomCountsUnavailable)
+    review(
+      'Room counts unavailable',
+      'This source has no bedroom or bathroom counts, so the model cannot adjust for room-count differences.',
+    );
+  if (snapshot?.subject.ratingKind === 'quality-grade')
+    review(
+      'Interior condition unmeasured',
+      'The modeled rating is assessor construction quality grade. It does not measure interior condition or renovations.',
+    );
   if (result.assumptions.monthlyTrend !== 0)
     context('Assumed price trend', 'The monthly trend is analyst-entered, not fitted to these sales.');
   context(

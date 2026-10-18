@@ -1,9 +1,16 @@
 # Remaining work and production gates
 
+## October 18: Maryland, Virginia permission drafts and DC condos
+
+- `/maryland` adds 462,347 searchable Montgomery and Prince George’s homes from public-domain state data, with unavailable rooms omitted and a published pooled accuracy result, including every miss. [Details](maryland-public-records.md). Separate county validation is still required before calibrated county ranges.
+- `/dc/condos` adds 51,340 unit addresses and 8,470 qualified transfers. Condition is missing and its adjustment disabled. Condo accuracy is unmeasured; house calibration is not reused. [Details](dc-condominiums.md).
+- Virginia remains unavailable. [Four written requests](data-permissions/virginia-requests.md) are drafted for Fairfax GIS, Fairfax Tax Administration, Arlington and Loudoun. They are unsent; the maintainer sends them and records the precise permission before import or publication.
+- The preference study is **not run; participants remain 0**. An outside facilitator, blinded reviewers, professional comparison-platform access, fixed compensation and public pre-registration remain prerequisites before recruitment. The kit in `docs/study/` is unchanged.
+
 ## October 17 continuation II: real DC homes, validated accuracy and a study kit
 
 - **Validated accuracy merged** after review (PR #6): DC and King County backtests reproduce byte for byte; the scorecard now discloses that DC's 10.0% median error is the DC-calibrated settings (defaults: 16.3%).
-- **Real DC homes**: `/dc` prices any of 92,142 single-family District parcels from CC BY 4.0 public records with the validated settings and the calibrated range when unmodified ([details](dc-public-records.md)). Remaining: Maryland and Virginia sources, condominiums, MLS listing history, a scheduled snapshot refresh paired with re-validation.
+- **Real DC homes**: `/dc` prices any of 92,142 single-family District parcels from CC BY 4.0 public records with the validated settings and the calibrated range when unmodified ([details](dc-public-records.md)). Maryland and the unvalidated condo studio were added October 18; remaining work is Virginia permission, county/condo validation, MLS history and deliberate snapshot refresh with re-validation.
 - **Preference study kit** ([docs/study](study/README.md)): ready to pre-register. Remaining, owner-side: an independent facilitator and reviewers, working comparison-platform access, participant compensation and the public pre-registration. Participants to date: 0.
 
 ## October 17 continuation: decision drivers, seller plan and labeled answers
@@ -58,7 +65,7 @@ The bounded Enterprise API slice is implemented and locally tested: two read sco
 
 12. **Licensed property intelligence:** verified parcel history, jurisdiction-specific assessor/permit/transfers, source-date fields, listing-chain true DOM, concessions, off-market transfer interpretation, conflicts and incomplete records. Add authenticated real-source research flows and complete geospatial/map integration; the current map is an intentionally labeled coordinate schematic.
 
-13. **Validate each market before claiming accuracy there.** [Valuation validation](valuation-validation.md) covers DC (2,254-sale holdout, Oct 2025 – Sep 2026; 9 of 9 pre-registered criteria met, three narrowly) and King County, WA (2015; 5 of 9). Next: Maryland and Virginia recorded sales; condominiums; at least one external Ed25519 attestation; and a fresh DC holdout once the next year of sales is recorded, because three DC passes sit inside their sampling error. Address the regressivity both markets show (DC homes over $1.5M under-valued by 5.8%) with model features or price-band calibration, then score that change on a holdout that has never been used.
+13. **Validate each market before claiming accuracy there.** [Valuation validation](valuation-validation.md) covers DC (2,254-sale holdout, Oct 2025 – Sep 2026; 9 of 9 pre-registered criteria met, three narrowly) and King County, WA (2015; 5 of 9). The pooled Maryland result is now published. Next: separate county and condo validation; authorized Virginia recorded sales; at least one external Ed25519 attestation; and a fresh DC holdout once the next year of sales is recorded, because three DC passes sit inside their sampling error. Address the regressivity both markets show (DC homes over $1.5M under-valued by 5.8%) with model features or price-band calibration, then score that change on a holdout that has never been used.
 
 14. **Advanced CMA evidence:** professionally justified local adjustment models, richer property types/amenities/condition rubrics, manual-comp workflows, previous-sale treatment, rental/cost cross-checks, comp search expansion rationale and missingness. Preserve the distinction between valuation, asking strategy and professional premium. Avoid double counting correlated features. Current range is an observed adjusted-comp envelope, not a calibrated confidence interval.
 
