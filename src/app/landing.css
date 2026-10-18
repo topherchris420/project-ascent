@@ -1982,3 +1982,67 @@
     padding: 14px;
   }
 }
+
+/* Homeowner-first routes: responsive, account-free choices with clear focus states. */
+.landing .lp-homeowners { background: #fffdf8; }
+.landing .lp-homeowner-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+.landing .lp-homeowner-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+  padding: clamp(20px, 2.5vw, 30px);
+  border: 1px solid var(--lp-line);
+  border-radius: 18px;
+  color: var(--lp-ink);
+  background: var(--lp-card);
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+.landing .lp-homeowner-card:hover {
+  border-color: #91aa99;
+  box-shadow: 0 12px 30px -22px #213f3350;
+}
+.landing .lp-homeowner-card:focus-visible {
+  outline: 3px solid var(--lp-green);
+  outline-offset: 4px;
+}
+.landing .lp-homeowner-scope {
+  color: var(--lp-soft);
+  font-size: 12px;
+  font-weight: 650;
+}
+.landing .lp-homeowner-card h3 {
+  font-size: clamp(21px, 2.3vw, 27px);
+  line-height: 1.2;
+  margin: 12px 0 8px;
+}
+.landing .lp-homeowner-card p {
+  margin: 0 0 18px;
+  max-width: 54ch;
+}
+.landing .lp-homeowner-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: auto;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--lp-green);
+}
+.landing .lp-homeowner-note {
+  max-width: 86ch;
+  margin-top: 20px;
+  font-size: 14px;
+}
+.landing .lp-homeowner-note a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  font-weight: 600;
+}
+@media (max-width: 700px) {
+  .landing .lp-homeowner-grid { grid-template-columns: minmax(0, 1fr); }
+}
