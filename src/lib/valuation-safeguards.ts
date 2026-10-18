@@ -60,6 +60,14 @@ type BenchmarkVariant = {
 };
 
 const markets: Record<string, { market: ValuationBenchmark['market']; dataset: string }> = {
+  'ascent-valuation-validation-maryland-2': {
+    market: { id: 'maryland-v2', label: 'Montgomery & Prince George’s, MD (revised)', state: 'MD' },
+    dataset: 'Maryland SDAT/MDP recorded sales of at least $50,000',
+  },
+  'ascent-valuation-validation-dc-condos-1': {
+    market: { id: 'dc-condos', label: 'Washington, DC condominiums', state: 'DC' },
+    dataset: 'District of Columbia qualified condominium sales',
+  },
   'ascent-valuation-validation-1': {
     market: { id: 'king-county', label: 'King County, WA', state: 'WA' },
     dataset: 'King County, WA recorded sales',

@@ -51,17 +51,23 @@ export type ValidationProtocol = {
   id: string;
   dataset: { id: string; csvSha256: string; license: string; sourceId: string };
   windows: { fit: Window; select: Window; calibrate: Window; test: Window };
-  screening: { minBeds: number; maxBeds: number; minBaths: number; minSqft: number };
+  screening: { minBeds: number; maxBeds: number; minBaths: number; minSqft: number; minPrice?: number };
   excludeSameParcel: boolean;
   asOfOffsetMs: number;
-  fit: { neighbours: number; search: SearchConfig; huberIterations: number; huberK: number };
+  fit: {
+    neighbours: number;
+    search: SearchConfig;
+    huberIterations: number;
+    huberK: number;
+    maxQualityAdjustment?: number;
+  };
   selectionGrid: readonly SearchConfig[];
   selectionMinValuedShare: number;
   interval: { target: number; minTierSize: number; tiers: readonly { id: string; maxComps: number | null }[] };
   bootstrap: { resamples: number; seed: number };
   primaryVariant: string;
   /** Unavailable inputs are neutral internal sentinels; these coefficients are never fitted or enabled. */
-  omittedFeatures?: readonly ('bedroomValue' | 'bathroomValue')[];
+  omittedFeatures?: readonly ('bedroomValue' | 'bathroomValue' | 'conditionValue')[];
   acceptance: readonly AcceptanceCriterion[];
 };
 
@@ -224,7 +230,41 @@ export const marylandProtocol = {
   omittedFeatures: ['bedroomValue', 'bathroomValue'],
 } as const satisfies ValidationProtocol;
 
-export const validationProtocols: readonly ValidationProtocol[] = [dcProtocol, kingCountyProtocol, marylandProtocol];
+/** A new, separately registered experiment. The original Maryland result is never overwritten. */
+export const marylandV2Protocol = {
+  ...marylandProtocol,
+  id: 'ascent-valuation-validation-maryland-2',
+  windows: {
+    fit: { from: '2022-01-01', to: '2024-12-31' },
+    select: { from: '2025-01-01', to: '2025-09-30' },
+    calibrate: { from: '2025-10-01', to: '2026-06-30' },
+    test: { from: '2026-07-01', to: '2026-09-30' },
+  },
+  screening: { ...marylandProtocol.screening, minPrice: 50000 },
+  fit: { ...marylandProtocol.fit, maxQualityAdjustment: 75000 },
+} as const satisfies ValidationProtocol;
+
+/** Condos are a separate population. Zero-bedroom studios stay; unavailable condition is never fitted. */
+export const dcCondoProtocol = {
+  ...dcProtocol,
+  id: 'ascent-valuation-validation-dc-condos-1',
+  dataset: {
+    id: 'dc-condominiums',
+    csvSha256: '394bbe83d64df42f2cfa75e541722778b5fef3767fbcd421719c3780c1b923a0',
+    license: 'CC-BY-4.0',
+    sourceId: 'source-dc-condo-public-records',
+  },
+  screening: { minBeds: 0, maxBeds: 12, minBaths: 0.5, minSqft: 200 },
+  omittedFeatures: ['conditionValue'],
+} as const satisfies ValidationProtocol;
+
+export const validationProtocols: readonly ValidationProtocol[] = [
+  dcProtocol,
+  kingCountyProtocol,
+  marylandProtocol,
+  marylandV2Protocol,
+  dcCondoProtocol,
+];
 
 const DAY = 86_400_000;
 const round = (value: number, digits: number) => Number(value.toFixed(digits));
@@ -246,8 +286,17 @@ export const digestOf = (value: unknown) => `sha256-${sha256(canonicalJson(value
 export const protocolDigest = (protocol: ValidationProtocol = kingCountyProtocol) => digestOf(protocol);
 
 const CSV_HEADER = 'sale_id,parcel_id,sold_on,price,beds,baths,sqft,condition,lat,lng,zip';
-export function parseValidationCsv(text: string): ValidationSale[] {
+export function parseValidationCsv(text: string, conditionUnavailable = false): ValidationSale[] {
   const lines = text.split('\n').filter(line => line.length);
+  if (conditionUnavailable && lines[0] === CSV_HEADER.replace(',condition', '')) {
+    lines[0] = CSV_HEADER;
+    for (let i = 1; i < lines.length; i++) {
+      const cells = lines[i].split(',');
+      if (cells.length !== 10) throw new Error(`Validation CSV row ${i + 1} has ${cells.length} columns.`);
+      cells.splice(7, 0, '0');
+      lines[i] = cells.join(',');
+    }
+  }
   if (lines[0] !== CSV_HEADER) throw new Error('Validation CSV header does not match the expected columns.');
   return lines.slice(1).map((line, index) => {
     const cells = line.split(',');
@@ -350,12 +399,14 @@ export function screenSales(sales: ValidationSale[], protocol: ValidationProtoco
   const { minBeds, maxBeds, minBaths, minSqft } = protocol.screening;
   const kept: ValidationSale[] = [];
   const removed: Record<string, number> = { bedrooms: 0, bathrooms: 0, livingArea: 0, duplicateSale: 0 };
+  if (protocol.screening.minPrice !== undefined) removed.recordedConsideration = 0;
   const seen = new Set<string>();
   for (const sale of sales) {
     if (seen.has(sale.saleId)) removed.duplicateSale++;
     else if (sale.beds < minBeds || sale.beds > maxBeds) removed.bedrooms++;
     else if (sale.baths < minBaths) removed.bathrooms++;
     else if (sale.sqft < minSqft) removed.livingArea++;
+    else if (sale.price < (protocol.screening.minPrice ?? 0)) removed.recordedConsideration++;
     else kept.push(sale);
     seen.add(sale.saleId);
   }
@@ -433,6 +484,7 @@ export function fitAdjustmentRates(
   const names = ['sqftRate', 'bedroomValue', 'bathroomValue', 'conditionValue', 'monthlyTrend'] as const;
   let active = [0, 1, 2, 3, 4].filter(i => !protocol.omittedFeatures?.some(name => name === names[i]));
   let coefficients = [0, 0, 0, 0, 0];
+  const fixed = [0, 0, 0, 0, 0];
   const clamped: string[] = [];
   const fit = (weights: number[]) => {
     const k = active.length;
@@ -441,13 +493,14 @@ export function fitAdjustmentRates(
     rows.forEach((row, r) => {
       const w = weights[r] / row.scale ** 2;
       for (let i = 0; i < k; i++) {
-        xty[i] += w * row.x[active[i]] * row.y;
+        const response = row.y - row.x.reduce((sum, value, feature) => sum + value * fixed[feature], 0);
+        xty[i] += w * row.x[active[i]] * response;
         for (let j = 0; j < k; j++) xtx[i][j] += w * row.x[active[i]] * row.x[active[j]];
       }
     });
     const solution = solve(xtx, xty);
     if (!solution) throw new Error('Paired-sales design is singular; the fit window lacks feature variation.');
-    const next = [0, 0, 0, 0, 0];
+    const next = [...fixed];
     active.forEach((feature, i) => (next[feature] = solution[i]));
     return next;
   };
@@ -456,6 +509,15 @@ export function fitAdjustmentRates(
     // Active-set non-negativity: drop the most negative feature rate and refit until all are admissible.
     for (;;) {
       coefficients = fit(weights);
+      if (
+        protocol.fit.maxQualityAdjustment !== undefined &&
+        active.includes(3) &&
+        coefficients[3] > protocol.fit.maxQualityAdjustment
+      ) {
+        fixed[3] = protocol.fit.maxQualityAdjustment;
+        active = active.filter(feature => feature !== 3);
+        continue;
+      }
       const negative = active.filter(feature => feature < 4 && coefficients[feature] < 0);
       if (!negative.length) break;
       const worst = negative.reduce((a, b) => (coefficients[a] < coefficients[b] ? a : b));
@@ -805,6 +867,21 @@ export function samplesCsv(rows: ValuationRow[], variantIds: string[]): string {
 
 /** Report text per protocol; kept outside the protocol objects so the published King County digest is unchanged. */
 const protocolLimitations: Record<string, string[]> = {
+  'ascent-valuation-validation-maryland-2': [
+    'Revised model after the failed v1 experiment; v1 remains published unchanged. This test uses previously unscored July–September 2026 sales from the already public snapshot, not prospectively collected outcomes.',
+    'Only three months, with incomplete recording and seasonal coverage. Monthly counts were inspected before registration. No professional certification or long-term accuracy claim.',
+    'Primary population requires recorded consideration of at least $50,000 in every window and comparable pool. All-positive-consideration sensitivity is separately published without refitting or replacing the primary verdict.',
+    'Quality is construction grade, not interior condition. Bedrooms and bathrooms are unavailable. Grade coefficient constrained to $75,000 with other rates refitted at that boundary.',
+    'Current parcel characteristics, last three recorded transfers and surviving residential parcels; no historical feature snapshots, concessions, full title history or recording-time availability.',
+    'Montgomery and Prince George’s single-unit R/TH parcels only. County slices are descriptive and do not establish independent county calibration.',
+  ],
+  'ascent-valuation-validation-dc-condos-1': [
+    'Independent condo population and holdout, internally executed; no independent reviewer has certified it. DC house validation never applies to condos.',
+    'Current characteristics, unambiguous unit address, residential use codes 16/17 and assessor-qualified sales only. Same-day equal-price possible bundles excluded in the frozen snapshot.',
+    'Missing interior condition, floor, view, parking rights, HOA dues, reserves, amenities and special assessments. Condition coefficient fixed at zero; zero-bedroom studios included.',
+    'Only strictly earlier condo sales; own unit excluded. Same-building units may be comparable and outcomes within buildings are correlated. Bootstrap confidence intervals resample sales and may be too narrow under building dependence.',
+    'Recording lag, unrecorded concessions and renovations remain. Calibrated intervals apply only to this exact condo configuration if every criterion passes.',
+  ],
   'ascent-valuation-validation-maryland-1': [
     'Montgomery and Prince George’s counties only; pooled county model, July 2025 – June 2026 holdout. Not statewide Maryland validation.',
     'Bedrooms and bathrooms are unavailable. Neutral zero sentinels are internal encoding, not observed counts; both adjustment rates are fixed to zero.',
@@ -846,7 +923,7 @@ export function runValuationValidation(csvText: string, options: ValidationOptio
   const csvSha256 = sha256(csvText);
   if (csvSha256 !== protocol.dataset.csvSha256)
     throw new Error(`Dataset fingerprint ${csvSha256} does not match the protocol's ${protocol.dataset.csvSha256}.`);
-  const all = parseValidationCsv(csvText);
+  const all = parseValidationCsv(csvText, protocol.omittedFeatures?.includes('conditionValue'));
   const { kept, removed } = screenSales(all, protocol);
   const index = new SaleIndex(kept);
   const progress = options.onProgress ?? (() => undefined);

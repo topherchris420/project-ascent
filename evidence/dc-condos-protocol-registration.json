@@ -1,0 +1,186 @@
+{
+  "protocol": {
+    "id": "ascent-valuation-validation-dc-condos-1",
+    "dataset": {
+      "id": "dc-condominiums",
+      "csvSha256": "394bbe83d64df42f2cfa75e541722778b5fef3767fbcd421719c3780c1b923a0",
+      "license": "CC-BY-4.0",
+      "sourceId": "source-dc-condo-public-records"
+    },
+    "windows": {
+      "fit": {
+        "from": "2022-07-01",
+        "to": "2024-06-30"
+      },
+      "select": {
+        "from": "2024-07-01",
+        "to": "2024-12-31"
+      },
+      "calibrate": {
+        "from": "2025-01-01",
+        "to": "2025-09-30"
+      },
+      "test": {
+        "from": "2025-10-01",
+        "to": "2026-09-30"
+      }
+    },
+    "screening": {
+      "minBeds": 0,
+      "maxBeds": 12,
+      "minBaths": 0.5,
+      "minSqft": 200
+    },
+    "excludeSameParcel": true,
+    "asOfOffsetMs": -1,
+    "fit": {
+      "neighbours": 5,
+      "search": {
+        "maxDistanceMiles": 1,
+        "maxAgeDays": 180,
+        "maxSizeRatio": 1.35
+      },
+      "huberIterations": 3,
+      "huberK": 1.345
+    },
+    "selectionGrid": [
+      {
+        "maxDistanceMiles": 0.5,
+        "maxAgeDays": 90,
+        "maxSizeRatio": 1.35
+      },
+      {
+        "maxDistanceMiles": 0.5,
+        "maxAgeDays": 180,
+        "maxSizeRatio": 1.35
+      },
+      {
+        "maxDistanceMiles": 1,
+        "maxAgeDays": 90,
+        "maxSizeRatio": 1.35
+      },
+      {
+        "maxDistanceMiles": 1,
+        "maxAgeDays": 180,
+        "maxSizeRatio": 1.35
+      },
+      {
+        "maxDistanceMiles": 2,
+        "maxAgeDays": 90,
+        "maxSizeRatio": 1.35
+      },
+      {
+        "maxDistanceMiles": 2,
+        "maxAgeDays": 180,
+        "maxSizeRatio": 1.35
+      },
+      {
+        "maxDistanceMiles": 3,
+        "maxAgeDays": 90,
+        "maxSizeRatio": 1.35
+      },
+      {
+        "maxDistanceMiles": 3,
+        "maxAgeDays": 180,
+        "maxSizeRatio": 1.35
+      }
+    ],
+    "selectionMinValuedShare": 0.9,
+    "interval": {
+      "target": 0.8,
+      "minTierSize": 50,
+      "tiers": [
+        {
+          "id": "sparse",
+          "maxComps": 2
+        },
+        {
+          "id": "moderate",
+          "maxComps": 9
+        },
+        {
+          "id": "dense",
+          "maxComps": null
+        }
+      ]
+    },
+    "bootstrap": {
+      "resamples": 1000,
+      "seed": 20261017
+    },
+    "primaryVariant": "locally-calibrated",
+    "acceptance": [
+      {
+        "id": "A1",
+        "label": "Holdout sales valued",
+        "metric": "valuedShare",
+        "min": 0.9,
+        "basis": "Abstention is reported, not hidden; at least 90% of screened holdout sales must receive a valuation."
+      },
+      {
+        "id": "A2",
+        "label": "Median absolute percentage error",
+        "metric": "mdape",
+        "max": 0.1,
+        "basis": "Typical published off-market AVM accuracy is in the single digits to low teens; 10% is the pre-registered bar."
+      },
+      {
+        "id": "A3",
+        "label": "Share within ±10% of sale price",
+        "metric": "ppe10",
+        "min": 0.5,
+        "basis": "Industry PPE10 convention: at least half of sales within ten percent."
+      },
+      {
+        "id": "A4",
+        "label": "Coefficient of dispersion (COD)",
+        "metric": "cod",
+        "max": 15,
+        "basis": "IAAO Standard on Ratio Studies (2013), residential upper bound of 15."
+      },
+      {
+        "id": "A5",
+        "label": "Price-related differential (PRD)",
+        "metric": "prd",
+        "min": 0.98,
+        "max": 1.03,
+        "basis": "IAAO Standard on Ratio Studies (2013) vertical-equity range 0.98–1.03."
+      },
+      {
+        "id": "A6",
+        "label": "Absolute median signed error",
+        "metric": "absMedianSignedError",
+        "max": 0.03,
+        "basis": "Systematic over- or under-valuation must stay within ±3%."
+      },
+      {
+        "id": "A7",
+        "label": "Beats median $/sqft of the same comparables",
+        "metric": "pairedMdapeDeltaUpper:baseline-median-ppsf",
+        "max": 0,
+        "basis": "Paired bootstrap 95% upper bound of the MdAPE difference must be below zero: adjustments must add value."
+      },
+      {
+        "id": "A8",
+        "label": "Beats trailing ZIP median price",
+        "metric": "pairedMdapeDeltaUpper:baseline-zip-median",
+        "max": 0,
+        "basis": "Paired bootstrap 95% upper bound of the MdAPE difference must be below zero."
+      },
+      {
+        "id": "A9",
+        "label": "Calibrated 80% interval coverage",
+        "metric": "calibratedCoverage",
+        "min": 0.75,
+        "max": 0.85,
+        "basis": "Out-of-sample coverage of the calibrated interval must land within five points of its 80% target."
+      }
+    ],
+    "omittedFeatures": [
+      "conditionValue"
+    ]
+  },
+  "protocolDigest": "sha256-2cbd80ed44c28651df07cfc21993a421639c6a67e914e5672cfa4a4546655248",
+  "registeredAt": "2026-10-18T14:43:32.879Z",
+  "statement": "First condo-specific accuracy experiment. No condo accuracy scoring or rate selection has occurred. Existing interface examples were calculated; there was no statistical holdout review. DC house fit/select/calibration/test dates and all nine criteria retained. Studios stay. Missing condition is a neutral sentinel with coefficient fixed at zero. Only condo sales enter fitting or comparables; own parcel and future/same-day sales are withheld. Current characteristics and missing floor, view, HOA, parking and assessments limit inference. This is an internal reproducible study, not third-party certification."
+}

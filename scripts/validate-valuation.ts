@@ -18,6 +18,8 @@ import {
   digestOf,
   kingCountyProtocol,
   marylandProtocol,
+  marylandV2Protocol,
+  dcCondoProtocol,
   runValuationValidation,
   verifyAttestation,
   verifyValidationReport,
@@ -29,6 +31,20 @@ import { benchmarkFromReport } from '../src/lib/valuation-safeguards';
 
 type Market = { protocol: ValidationProtocol; dataset: string; report: string; samples: string; benchmark: string };
 const markets: Record<string, Market> = {
+  'maryland-v2': {
+    protocol: marylandV2Protocol,
+    dataset: 'evidence/datasets/maryland-sales.csv.gz',
+    report: 'evidence/valuation-validation-maryland-v2.json',
+    samples: 'evidence/valuation-validation-maryland-v2-samples.csv.gz',
+    benchmark: 'src/lib/valuation-benchmark-maryland-v2.json',
+  },
+  'dc-condos': {
+    protocol: dcCondoProtocol,
+    dataset: 'src/datasets/dc-condos/dc-condo-sales.csv.gz',
+    report: 'evidence/valuation-validation-dc-condos.json',
+    samples: 'evidence/valuation-validation-dc-condos-samples.csv.gz',
+    benchmark: 'src/lib/valuation-benchmark-dc-condos.json',
+  },
   maryland: {
     protocol: marylandProtocol,
     dataset: 'evidence/datasets/maryland-sales.csv.gz',
