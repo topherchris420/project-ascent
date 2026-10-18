@@ -16,7 +16,7 @@ test('professional workflow: sign in, research, price, client, offers, transacti
   const errors: string[] = [];
   page.on('pageerror', e => errors.push(e.message));
   await page.goto('/');
-  await expect(page.getByRole('heading', { level: 1, name: /Know the price/ })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: /Real estate intelligence belongs to homeowners/i })).toBeVisible();
   await page.getByRole('button', { name: 'Explore the working demo' }).click();
   await expect(page.getByRole('heading', { name: /Good (morning|afternoon|evening), Alex/ })).toBeVisible();
   await expect(page.getByText('SYNTHETIC DEMO', { exact: true })).toBeVisible();

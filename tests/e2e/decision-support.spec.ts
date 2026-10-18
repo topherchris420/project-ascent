@@ -17,7 +17,7 @@ async function axe(page: Page) {
 
 test('landing page runs the real engine before sign-up', async ({ page }) => {
   await page.goto('/');
-  await expect(page.getByRole('heading', { level: 1, name: /Know the price/ })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: /Real estate intelligence belongs to homeowners/i })).toBeVisible();
   const slider = page.getByRole('slider', { name: 'Sample asking price' });
   const before = await slider.inputValue();
   await slider.focus();
