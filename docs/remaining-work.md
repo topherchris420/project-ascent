@@ -8,7 +8,7 @@
 
 ## October 17 continuation: decision drivers, seller plan and labeled answers
 
-Added on top of the Pricing Studio slice: the one-axis range chart linked to the comparable inspector, ranked input sensitivity, the seller plan with reduction-versus-credit arithmetic and search-threshold notes, subject-condition and user-entered practice sales, four task sections in the workspace Pricing Studio, labeled Ask Ascent answers, the landing page's own decision-loop framing, and a fix for an unread sign-in response that held a browser request open. See [implementation and limits](pricing-studio.md) and the [second-pass scorecard](competitive-scorecard.md#second-pass--october-17-2026-afternoon).
+Added on top of the Pricing Studio slice: the one-axis range chart linked to the comparable inspector, ranked input sensitivity, the seller plan with reduction-versus-credit arithmetic and search-threshold notes, subject-condition and user-entered practice sales, four task sections in the workspace Pricing Studio, labeled Ask Ascent answers, the landing page's own decision-loop framing, and a fix for an unread sign-in response that held a browser request open. See [implementation and limits](pricing-studio.md) and the [product experience audit](competitive-scorecard.md).
 
 External dependencies that remain with the owner:
 
@@ -18,7 +18,7 @@ External dependencies that remain with the owner:
 
 ## October 17 delivery checkpoint
 
-The complete account-free Pricing Studio, comparable inspector, sensitivity analysis, arithmetic decision comparison, selected-price report and task-preserving navigation are implemented; see [the delivered slice](pricing-studio.md). The [public competitor audit](competitive-scorecard.md) covers all fourteen requested dimensions. Existing client, offer, transaction, provider and inference workflows are preserved.
+The complete account-free Pricing Studio, comparable inspector, sensitivity analysis, arithmetic decision comparison, selected-price report and task-preserving navigation are implemented; see [the delivered slice](pricing-studio.md). The [product experience audit](competitive-scorecard.md) summarizes Ascent's capabilities and remaining validation work. Existing client, offer, transaction, provider and inference workflows are preserved.
 
 The Vercel UI inspection found **no project environment variables** and a **Hobby** team. The connected environment API returned a scope-level 403; the official CLI had no credentials. No secrets were transferred and no subscription, source rights or spending caps were changed. Commercial release needs an appropriately authorized commercial hosting plan, deployment secret configuration, redeployment and actual hosted authentication/tenant/report acceptance. The local optimized sample is testable without those prerequisites. This does not turn previously completed local PostgreSQL acceptance into deployed acceptance.
 
