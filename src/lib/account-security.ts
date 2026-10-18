@@ -147,8 +147,6 @@ export async function enableMfa(actor: Actor, code: string) {
 export const RESET_NOTICE =
   'If that account exists, a password-reset email will arrive. The link expires in 30 minutes.';
 export async function requestPasswordReset(email: string) {
-  if (!(await consumeRateLimit(`reset-account:${digest(email.toLowerCase().trim())}`, 3, 3600000)))
-    return { message: RESET_NOTICE };
   const origin = process.env.APP_ORIGIN || '';
   if (
     !/^https:\/\//.test(origin) &&
@@ -158,16 +156,26 @@ export async function requestPasswordReset(email: string) {
   if (new URL(origin).origin !== origin || !process.env.RESEND_API_KEY || !process.env.AUTH_MAIL_FROM)
     throw new HttpError(503, 'Password recovery email delivery is not configured. Contact the operator.');
   encryptionKey();
+  if (!(await consumeRateLimit(`reset-account:${digest(email.toLowerCase().trim())}`, 3, 3600000)))
+    return { message: RESET_NOTICE };
   const token = randomBytes(32).toString('base64url');
   await transaction(null, async tx => {
     const now = iso();
     await tx.query('DELETE FROM password_resets WHERE expires_at<$1', [now]);
     await tx.query('DELETE FROM auth_mail_outbox WHERE expires_at<$1', [now]);
-    // Identical foreground work for existing and absent accounts. Account lookup happens after response.
+    // Identical database operations for existing and absent accounts; mail work stays after the response.
+    const users = await tx.query<{ password_hash: string | null }>('SELECT password_hash FROM users WHERE email=$1', [
+      email.toLowerCase().trim(),
+    ]);
+    const credentialVersion = digest(users[0]?.password_hash || randomBytes(32).toString('hex'));
     await tx.query('INSERT INTO auth_mail_outbox(id,payload,created_at,expires_at) VALUES($1,$2,$3,$4)', [
       randomUUID(),
       sealSecurity(
-        JSON.stringify({ to: email.toLowerCase().trim(), url: `${origin}/account/recovery#token=${token}` }),
+        JSON.stringify({
+          to: email.toLowerCase().trim(),
+          url: `${origin}/account/recovery#token=${token}`,
+          credentialVersion,
+        }),
       ),
       now,
       new Date(Date.now() + 30 * 60000).toISOString(),
@@ -215,11 +223,19 @@ export async function deliverAuthMail(fetcher: typeof fetch = fetch) {
     });
     if (!item) break;
     try {
-      const { to, url } = JSON.parse(openSecurity(item.payload));
+      const { to, url, credentialVersion } = JSON.parse(openSecurity(item.payload));
       const token = new URLSearchParams(new URL(url).hash.slice(1)).get('token')!;
       const recipient = await transaction(null, async tx => {
-        const users = await tx.query<{ id: string }>('SELECT id FROM users WHERE email=$1', [to]);
-        if (!users[0] || to.endsWith('@demo.invalid')) return false;
+        const users = await tx.query<{ id: string; password_hash: string | null }>(
+          'SELECT id,password_hash FROM users WHERE email=$1 FOR UPDATE',
+          [to],
+        );
+        if (
+          !users[0]?.password_hash ||
+          to.endsWith('@demo.invalid') ||
+          digest(users[0].password_hash) !== credentialVersion
+        )
+          return false;
         await tx.query('INSERT INTO password_resets(hash,user_id,expires_at) VALUES($1,$2,$3)', [
           digest(token),
           users[0].id,

@@ -122,3 +122,24 @@ test('missing email configuration fails closed without minting a reset; cipherte
   assert.throws(() => openSecurity(randomBytes(50).toString('base64')));
   process.env.RESEND_API_KEY = 'test-transport-never-real';
 });
+
+test('changing a password also invalidates older requests that are still queued for delivery', async () => {
+  const user = await account();
+  await requestPasswordReset(user.user.email);
+  await requestPasswordReset(user.user.email);
+  let deliveries = 0;
+  const result = await deliverAuthMail(async (_url, options) => {
+    deliveries++;
+    const token = /#token=([A-Za-z0-9_-]{43})/.exec(JSON.parse(String(options?.body)).text)![1];
+    await resetPassword(token, 'new password invalidates pending requests');
+    return Response.json({ id: 'mock-only' });
+  });
+  assert.equal(deliveries, 1);
+  assert.equal(result.sent, 1);
+  assert.equal(
+    (await transaction(null, tx => tx.query('SELECT hash FROM password_resets WHERE user_id=$1', [user.user.id])))
+      .length,
+    0,
+  );
+  await login(user.user.email, 'new password invalidates pending requests');
+});
