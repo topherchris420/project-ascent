@@ -1,106 +1,144 @@
 <div align="center">
 
+# ascent.
+
+### Your home is more than a number. Understand the evidence behind it.
+
+**A home estimate should begin a conversation, not end one.**
+
+Ascent is a **free, open-source real estate intelligence tool built for homeowners**. Explore recorded sales, understand how a price was calculated, test the financial consequences of a decision, and take the reasoning with you.
+
+No professional license. No subscription. No account required for the public pricing studios.
+
+**[Explore DC homes](https://project-ascent-theta.vercel.app/dc)** · **[Explore Maryland homes](https://project-ascent-theta.vercel.app/maryland)** · **[Explore DC condos](https://project-ascent-theta.vercel.app/dc/condos)** · **[Try a fictional example](https://project-ascent-theta.vercel.app/demo)**
+
+[My Home](https://project-ascent-theta.vercel.app/home) · [Published accuracy](https://project-ascent-theta.vercel.app/accuracy) · [Free-service promise](https://project-ascent-theta.vercel.app/free) · [Live application](https://project-ascent-theta.vercel.app/)
+
 [![CI](https://github.com/topherchris420/project-ascent/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/topherchris420/project-ascent/actions/workflows/ci.yml)
-
-# Ascent
-
-### Real estate intelligence belongs to homeowners.
-
-**You should never have to accept a number you cannot understand.**
-
-Ascent is free, open-source real estate intelligence for homeowners and anyone who wants to see the evidence behind a price. Explore comparable sales, challenge assumptions, test a scenario, and keep a report you can explain. Public pricing requires no account or professional license.
-
-**[DC homes](https://project-ascent-theta.vercel.app/dc) · [Maryland homes](https://project-ascent-theta.vercel.app/maryland) · [DC condos](https://project-ascent-theta.vercel.app/dc/condos) · [Try the sample](https://project-ascent-theta.vercel.app/demo)**
-
-[Published accuracy](https://project-ascent-theta.vercel.app/accuracy) · [Our free-service promise](https://project-ascent-theta.vercel.app/free)
-
-No account needed for the public pricing studios.
-
-**[My Home](https://project-ascent-theta.vercel.app/home)** keeps browser-local property profiles and decision history. Open any supported studio to compare selling, continuing ownership, renting, renovating before sale, refinancing, or buying while retaining the current home. Entered debt, costs and rent remain assumptions; missing inputs stay unknown. [Calculation and privacy boundaries](docs/homeowner-workbench.md).
 
 </div>
 
 ---
 
-A homeowner asks, **“Why this price?”** Ascent gives them the working: comparable sales, adjustments, assumptions and a report they can challenge. It complements professional advice; it is not an appraisal or a live MLS feed.
+## The question isn't just "What is my home worth?"
 
-## Made for the people who own the homes
+It's **why**, **compared with what**, and **what happens if I choose differently?**
 
-- **Find the evidence.** Search eligible DC houses, Montgomery and Prince George’s County homes, or DC condos, each with explicit limits.
-- **Understand the number.** Inspect recorded comparable sales, adjustments, weights and assumptions.
-- **Explore a choice.** Change an asking price or cost assumption and compare illustrative outcomes, not predicted sale prices.
-- **Compare ownership decisions.** Model fixed-rate debt, monthly cash flow, equity, cash reserves, break-even thresholds and hypothetical property changes across six choices. Financial calculations run locally and never call an external model.
-- **Keep a Property Evidence Passport.** Explicitly save private ownership profiles and versioned decisions on this device, compare exact evidence/assumption changes, and export privacy-filtered JSON or a standalone printable report. Use browser Print to save a PDF. On-demand monitoring reports actual snapshot differences; an unchanged dataset creates no market alert.
-- **Keep the reasoning.** Print a report or export source-aware analysis to discuss with someone you trust.
-- **Know what is missing.** Public records are snapshots. Live listings, concessions, building attributes and interior condition may be absent.
+Imagine you are considering selling. Someone gives you a number. Usually, that's where the explanation stops.
 
-Homeowners can use the public studios without an account. Existing client, offer and transaction tools remain in configured private workspaces for people who need them.
+Ascent lets you investigate the number instead:
 
-Homeowner profiles are browser-local, with up to ten homes and ten versions per home subject to storage limits. They do not synchronize with an account. Pricing drafts already autosave selected price, selling fees and payoff; additional ownership fields require an explicit save. Shared devices can expose stored information. Financial comparisons exclude replacement housing, tax effects and loan qualification, and do not rank which choice is best for a household. Sharing exports omit private finances and notes by default; downloaded copies cannot be revoked.
+1. **See the sales.** Inspect the recorded comparable properties, their differences, their adjustments, and how much each one influences the estimate.
+2. **Challenge the assumptions.** Test a different condition rating, exclude a questionable comparable with a reason, or explore another asking price.
+3. **Explore the decision.** Examine illustrative selling proceeds and, with your own financial inputs, compare selling, holding, renting, renovating before sale, refinancing, or buying while keeping your current home.
+4. **Keep the evidence.** Save a versioned Property Evidence Passport on your device, revisit changed assumptions, and export a report you can examine, print, or share.
 
-**Product principle: The homeowner should never have to accept a number they cannot understand.**
+You see **recorded facts, calculated estimates, your assumptions, and unknowns as different things**. Ascent does not present an adjusted-sale range as a statistical confidence interval or a scenario as a forecast.
 
-[Homeowner-first product direction](docs/homeowner-first.md) · [Published accuracy](https://project-ascent-theta.vercel.app/accuracy) · [Free-service promise](https://project-ascent-theta.vercel.app/free)
+## Find your starting point
 
-## Start with one decision
+| Your question | Where to go | Coverage and caution |
+| --- | --- | --- |
+| What supports the price of a DC house? | **[DC Pricing Studio](https://project-ascent-theta.vercel.app/dc)** | Eligible District single-family and rowhouse sales in a bounded public-record snapshot |
+| What about my Maryland home? | **[Maryland Pricing Studio](https://project-ascent-theta.vercel.app/maryland)** | Montgomery and Prince George's counties; bedroom/bathroom details are not available in this source |
+| How do DC condo prices compare? | **[DC Condo Studio](https://project-ascent-theta.vercel.app/dc/condos)** | Unit-level condo sales; the published condo accuracy study did **not** meet overall acceptance |
+| Can I try this without a real address? | **[Interactive sample](https://project-ascent-theta.vercel.app/demo)** | Clearly fictional Arlington property; real pricing engine, illustrative evidence and assumptions |
+| Where are my saved decisions? | **[My Home](https://project-ascent-theta.vercel.app/home)** | Saved in this browser on this device; no account synchronization |
+| What if I manage clients or offers? | **[Workspace entry](https://project-ascent-theta.vercel.app/)** | Fictional workspace demo or an empty private workspace when account services are configured |
 
-| You want to… | Start here |
-| --- | --- |
-| Analyze a real home | **[DC Pricing Studio](https://project-ascent-theta.vercel.app/dc)** — search covered single-family homes in District public records. No address in mind? Try the example address. |
-| Analyze a Maryland home | **[Maryland studio](https://project-ascent-theta.vercel.app/maryland)** — Montgomery and Prince George’s homes. Uses area, construction-quality grade, location, and sale timing; bedroom/bathroom data is unavailable. Revised accuracy: 9.52% median error, with one of nine criteria unmet. |
-| Analyze a DC condo | **[Condo studio](https://project-ascent-theta.vercel.app/dc/condos)** — unit-level DC records and condo-only comparables. A separate test reports 12.95% median error and four of nine criteria met; no calibrated interval is offered. |
-| Learn by doing | **[Fictional sample](https://project-ascent-theta.vercel.app/demo)** — explore an Arlington example using the actual pricing engine. |
-| Work through a deal | **[Workspace demo](https://project-ascent-theta.vercel.app/)** — choose **Explore the working demo** for fictional clients, offers and deadlines. |
-| Bring your own evidence | Choose **Create an account** on the homepage. Your workspace starts empty. |
+**Start with the public studios.** They work without a provider key, paid plan, or sign-in.
 
-Hosted workspaces require configured account services. The public studios work independently.
+## Built for decisions, not just estimates
 
-## See it. Challenge it. Keep it.
+### 01 · Make the price explain itself
 
-1. **See the evidence.** Inspect each closed sale, its adjustments, and its contribution to the estimate.
-2. **Test a price.** Compare pricing positions and seller proceeds under your chosen cost assumptions.
-3. **Challenge the reasoning.** Change a condition rating, adjust a rate, or exclude a sale with a reason. Added sales are marked unverified. Reset to the original analysis; undo the reset if you change your mind.
-4. **Keep the decision.** Open a printable report or export JSON with the calculation, sources, and assumptions. Drafts save in this browser on this device.
+Inspect closed sales, distance, size, age, weighting, adjustments, exclusions, and source provenance. Explore sensitivity to individual inputs and compare asking-price scenarios. A changed assumption produces a changed calculation, not a hidden AI opinion.
 
-The calculation is deterministic. AI does not set the price. An adjusted-sale range describes the comparable evidence; it is not automatically a confidence interval.
+### 02 · Follow the money
 
-## Carry the reasoning through the deal
+The homeowner workbench connects property evidence to **six deterministic ownership choices**:
 
-The private workspace connects pricing snapshots, client notes, saved searches, offer comparisons, and transaction milestones. **Ask Ascent** explains the record on screen, separating facts, calculations, assumptions, and unknowns. Drafts and approvals stay with the user.
+- Sell now
+- Continue owning
+- Rent the property
+- Renovate before selling
+- Refinance
+- Buy another home while retaining this one
 
-Saved pricing analyses freeze their inputs. Replay them later, or use the **Decision Time Machine** to see which evidence and assumptions changed. Supported CSV/JSON exports keep your work portable.
+Enter your own debt, rates, expenses, rents, and other assumptions. The workbench calculates applicable payment schedules, monthly cash flow, equity, cash requirements, and break-even comparisons. Missing inputs stay **unknown**; Ascent does not quietly manufacture your mortgage, tax bill, rent, or renovation costs.
 
-[Explore the workflows](docs/capability-matrix.md) · [How decision replay works](docs/evidence-and-decision-time-machine.md)
+These are **illustrative, pre-tax comparisons**, not financial advice or predictions. They exclude important household considerations including replacement housing, tax effects, loan qualification, and financing availability. The choices do not represent equivalent housing outcomes and are not ranked as the best option for you.
 
-## Free, by design
+[How the homeowner workbench calculates and abstains](docs/homeowner-workbench.md)
 
-**Ascent's core workflows stay free.** Public-record research, basic comparable analysis, reports, clients, offers, and deadline workflows require no subscription or payment card. The public pricing studios do not require an account.
+### 03 · Remember what changed
 
-[Read the free-service promise](https://project-ascent-theta.vercel.app/free). External AI and property providers have costs, quotas, and sometimes separate permission requirements. Reaching a limit stops those calls; it does not trigger a charge. Deterministic analysis remains available. Ascent does not currently offer paid plans or new subscription checkout.
+A **Property Evidence Passport** brings the property's public evidence, your saved decisions, assumptions, and calculation versions into one reproducible history. Compare saved versions, see whether records or assumptions actually changed, and export a privacy-filtered JSON or standalone printable HTML report. Use your browser's Print command to save a PDF.
 
-## Published accuracy: results and limitations
+The **Decision Time Machine** distinguishes changed comparable evidence from changed homeowner assumptions. Its on-demand checks do **not** mean Ascent monitors the live market, fetches listings in the background, or sends price alerts.
 
-These are **internal, reproducible retrospective evaluations**, not independent certification, appraisals, or guarantees for an individual property. Median error is the median absolute percentage difference between an estimate and the recorded sale price, calculated on the valued holdout sales.
+### 04 · Ask for the explanation
 
-| Pricing population | Held-out sales | Median error | Within ±10% | Acceptance criteria |
-| --- | ---: | ---: | ---: | --- |
-| **DC single-family homes** | 2,254 | **9.98%** | 50.2% | **9/9 met**, several narrowly |
-| **Maryland, revised model** (Montgomery + Prince George’s) | 2,812 | **9.52%** | 52.0% | **8/9 met**, price-related bias failed |
-| **DC condominiums** | 1,434 | **12.95%** | 41.16% | **4/9 met**, overall acceptance failed |
+**Ask Ascent** can explain the calculations and evidence in context. Core pricing and homeowner financial computations are deterministic; **AI does not set the home's price**. Optional Groq/OpenAI integrations are separately configured, and production external-model synthesis remains blocked pending independent review.
 
-**Important distinctions:**
+## Our accuracy is public. So are the misses.
 
-- **DC houses:** Only the unmodified DC-validated settings can display a calibrated range. Adjustments or missing evidence remove that claim. District recorded sales may lag; public records omit MLS listing history and concessions.
-- **Maryland:** The revised study uses a different July–September 2026 holdout from the **original failed study** (13.85% median error on 12,831 sales, 4/9 criteria). These figures are **not a like-for-like before/after accuracy comparison**. Construction-quality grade is not inspected condition; bedroom and bathroom fields are absent. No current-home calibrated range is released.
-- **DC condos:** A condo-specific model was tested, but five criteria failed. Building-level effects and HOA fees, floor, views, parking, amenities, and interior condition remain unmodeled. No current-home calibrated range is released.
-- **Coverage and rights:** Public studios use bounded DC and two-county Maryland snapshots, not live MLS inventory. Virginia remains unavailable pending written source-use permission; [permission requests are drafted but unsent](docs/data-permissions/virginia-requests.md).
-- **Scope:** Fictional sample/workspace data is labeled as such. Reports support human decisions, **not appraisals**. Ascent does not send messages, accept offers, or sign contracts on behalf of users.
+An impressive-looking price is not proof of accuracy. Ascent publishes reproducible retrospective tests, including criteria the models failed.
 
-**[Explore every published experiment](https://project-ascent-theta.vercel.app/accuracy)** · [Detailed valuation methodology and original results](docs/valuation-validation.md) · [Latest experimental and release gates](docs/production-readiness.md) · [Data coverage](docs/dc-public-records.md)
+| Market and model | Held-out sales | Median absolute percentage error | Estimates within ±10% of recorded sale price | Criteria met |
+| --- | ---: | ---: | ---: | ---: |
+| **DC single-family / rowhouses** | 2,254 | **9.98%** | 50.2% | **9/9**, several narrowly |
+| **Maryland, revised model** | 2,812 | **9.52%** | 52.0% | **8/9**; price-related bias criterion failed |
+| **DC condominiums** | 1,434 | **12.95%** | 41.16% | **4/9**; overall acceptance failed |
 
-## Run locally
+*Published internal holdout studies as of October 18, 2026. Median error describes a tested group, **not** the expected error of your individual home. These are not independently certified results, appraisals, or guarantees.*
 
-Requires **Node.js 24.x** and npm.
+A few distinctions matter:
+
+- **DC houses:** Results depend on the exact validated configuration. Only that unmodified eligible configuration may display a calibrated interval; custom changes or insufficient evidence remove that claim. Several acceptance bars were met narrowly.
+- **Maryland:** The revised study used a different holdout from an earlier failed model. Its improved headline number is **not** a like-for-like before/after comparison. One of nine criteria still fails; no current-home calibrated interval is released.
+- **DC condos:** Five of nine acceptance criteria failed. Important building attributes such as HOA fees, floor, view, parking, and amenities are unmodeled. No calibrated interval is released.
+- **All markets:** Public records may be delayed or incomplete. An adjusted comparable-price envelope is not automatically a calibrated probability interval.
+
+**[Read the full results](https://project-ascent-theta.vercel.app/accuracy)** · [Methodology, protocols and historical findings](docs/valuation-validation.md) · [Latest release and validation gates](docs/production-readiness.md)
+
+## What Ascent does not pretend to know
+
+Ascent is **not a live MLS feed, licensed appraisal, brokerage, or automatic transaction agent**.
+
+- Public address research currently covers qualifying **Washington, DC houses and condos** and **Montgomery / Prince George's County, Maryland** homes. It does not provide nationwide coverage.
+- **Virginia public-record pricing is not available**. Written source-use permission remains unresolved. Neither an open-source license nor public website access creates MLS or provider redistribution rights.
+- Listing status, concessions, property condition, renovations, title details, building characteristics, and other decisive facts can be missing.
+- Seller scenarios do not predict buyer response, time on market, future prices, or renovation return on investment.
+- Ascent does not autonomously message clients, make offers, sign contracts, or decide what someone should do.
+
+Ascent is designed to make the **limits visible alongside the evidence**, not hide them in small print.
+
+[DC source scope](docs/dc-public-records.md) · [Maryland source scope](docs/maryland-public-records.md) · [Condo model and limitations](docs/dc-condominiums.md) · [Homeowner-first roadmap](docs/homeowner-first.md)
+
+## Your decisions stay yours
+
+**My Home** stores private ownership inputs and Property Evidence Passports locally in your browser, not in an Ascent account. You explicitly save the additional financial inputs and history you want to keep. The storage supports up to **10 homes and 10 versions per home**, subject to browser limits.
+
+- No account synchronization or encryption of browser storage is provided. Shared devices and cleared browser data matter.
+- Privacy-filtered exports **exclude private finances and notes by default**; sharing them intentionally requires an explicit private export.
+- Downloaded reports or JSON copies cannot be recalled once shared.
+- Public pricing drafts separately autosave selected asking price, selling fees, and payoff in the browser. Additional ownership inputs are explicitly saved.
+- Optional account-based workspaces have a separate data, authentication, and deployment model.
+
+[Read the calculation and privacy boundaries](docs/homeowner-workbench.md) · [Account security and deployment requirements](docs/account-security.md)
+
+## Free is a product decision
+
+Ascent's public research, basic comparable analysis, reports, and core client, offer, and deadline workflows are committed to remaining **free**, with no subscription or payment card. There are no current paid plans or new subscription checkout.
+
+Outside data services and hosted AI have their own costs, quotas, and permission requirements. If a configured limit is reached, the corresponding external request stops; Ascent does not charge you automatically. Free software does not guarantee unrestricted third-party data or perpetual hosted availability.
+
+[Read the free-service promise](https://project-ascent-theta.vercel.app/free)
+
+## Run Ascent locally
+
+**Requirements:** Node.js **24.x** and npm.
 
 ```bash
 git clone https://github.com/topherchris420/project-ascent.git
@@ -110,17 +148,17 @@ cp .env.example .env.local
 npm run dev
 ```
 
-Open **http://localhost:3040**. On PowerShell, use `Copy-Item .env.example .env.local` if needed.
+Open **http://localhost:3040**. In Windows PowerShell, replace the copy step with `Copy-Item .env.example .env.local`.
 
-No provider or model key is required for the bundled public records, fictional sample or deterministic workflows. Local workspaces use SQLite in `.data/`; production requires PostgreSQL and deployment configuration. Keep `.env.local` and `.data/` private.
+Bundled public-record studios, the fictional sample, and deterministic calculations do **not** require a RentCast, Groq, or OpenAI key. Local workspaces use SQLite under the ignored `.data/` directory. A production workspace needs properly configured PostgreSQL, migrations, account services, and security controls.
 
-Optional integrations: **RentCast** for authorized property research, and **Groq/OpenAI** for model-assisted explanations. Credentials stay on the server.
+Keep `.env.local`, `.data/`, and provider credentials private. Optional integrations include authorized **RentCast** property research and separately gated **Groq/OpenAI** model-assisted workflows; keys must remain server-side.
 
-[Engineering](docs/engineering.md) · [PostgreSQL](docs/postgres-connection.md) · [Vercel](docs/vercel-hobby.md) · [Provider setup](docs/rentcast-integration.md)
+[Engineering guide](docs/engineering.md) · [Provider configuration](docs/rentcast-integration.md) · [PostgreSQL setup](docs/postgres-connection.md) · [Vercel deployment](docs/vercel-hobby.md)
 
-## Verify and contribute
+## Verify it. Improve it.
 
-Next.js 16 · React 19 · TypeScript · Node.js 24
+Ascent uses **Next.js 16, React 19, TypeScript, and Node.js 24**. Core code lives in `src/`, tests in `tests/`, database migrations in `migrations/`, and research/provenance documentation in `docs/` and `evidence/`.
 
 ```bash
 npm run typecheck
@@ -130,23 +168,22 @@ npm run build
 npm run test:e2e
 ```
 
-GitHub Actions runs these checks, offline domain/AI checks, Chromium browser workflows, and a disposable PostgreSQL backup/restore drill on pull requests and pushes to master. **[Check the current CI results](https://github.com/topherchris420/project-ascent/actions/workflows/ci.yml)**. A passing synthetic test suite is not a production security or accuracy certification.
+Browser tests need Chromium installed and configured. CI additionally includes offline domain/AI checks and a disposable PostgreSQL restore drill; **check the actual run status** rather than treating the presence of tests as a certificate of production readiness.
 
-### Accounts, AI, and production setup
+**Contributions are welcome**, especially ones that improve homeowner comprehension, mobile accessibility, reproducible valuation, provenance, privacy, and authorized data coverage. Preserve the frozen evaluation history, source permissions, workspace isolation, and explicit unknowns. Do not improve a headline metric by concealing a failed test.
 
-- Public pricing studios run from bundled records without a provider/model key. Local workspaces use SQLite in the ignored data directory. Production requires PostgreSQL, reviewed migrations, and restricted runtime permissions.
-- Account recovery and authenticator MFA are implemented; hosted rollout still requires migration 004, appropriate database grants, configured recovery email, and end-to-end acceptance on the deployed origin.
-- **Ask Ascent** has deterministic evidence explanations. Production external-model synthesis is currently held behind a pending independent AI review; supplying a Groq or OpenAI key alone does not enable approved production model responses.
-- Provider access, MLS agreements, data retention, privacy operations, and deployment-specific safeguards remain separate release requirements. Actual customer adoption and outcomes have not been established.
-
-[Production readiness](docs/production-readiness.md) · [Account-security deployment](docs/account-security.md) · [AI review status](docs/ai-independent-review.md) · [Complete verification history](docs/verification-results.md) · [Engineering](docs/engineering.md)
-
-Application code is in `src/`, migrations in `migrations/`, tests in `tests/`, and methodology in `docs/`. Contributions should preserve reproducibility, accessible interactions, source-use permissions, and workspace isolation. Browser tests require a configured Chromium installation; see the verification guide for local setup.
+[Current CI](https://github.com/topherchris420/project-ascent/actions/workflows/ci.yml) · [Verification history](docs/verification-results.md) · [Capability matrix](docs/capability-matrix.md) · [Production readiness](docs/production-readiness.md)
 
 ## License
 
-Project Ascent is open source under the [MIT License](LICENSE). You may use, modify, distribute and commercially use the software subject to the license's notice requirements. Third-party data, content, and services retain their own licenses and terms; the MIT License does not grant MLS access or external data rights.
+Ascent is released under the **[MIT License](LICENSE)**. You may use, study, modify, and distribute the software under its terms. **Third-party datasets, MLS content, APIs, and provider services retain their own rights and agreements**; MIT does not grant access to or redistribution rights for them.
 
 ---
 
-**Ascent · Real estate intelligence for the people who own the homes.**
+<div align="center">
+
+**The best real estate decision is one you can explain.**
+
+[Open Ascent](https://project-ascent-theta.vercel.app/) · [Explore the evidence](https://project-ascent-theta.vercel.app/dc) · [Study the code](https://github.com/topherchris420/project-ascent)
+
+</div>
