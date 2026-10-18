@@ -1,43 +1,23 @@
-# Public product audit · October 17, 2026
+# Ascent product experience audit · October 17, 2026
 
-Baseline: Ascent `4c66ee6`, source inspection, existing 267 passing unit/integration tests, and the public Vercel site. Comparator: [HomeSolo homepage](https://homesolo.ai/) and [public demonstration](https://homesolo.ai/demo), inspected in a browser and as accessible page text. HomeSolo explicitly identifies its demo as fictional. Its public preview includes CMA, report, client document, CRM, offers, listing review, alerts and deadlines. Private account functionality, source contracts, implementation, real-world accuracy and relative speed are **unverified**. These are observed capability judgments, not a measured preference or numerical quality ranking.
+This is an Ascent-focused usability and capability audit, not an assessment of any named competitor. Third-party comparisons require equal professional access, legally permitted comparable evidence and independent testing.
 
-| Dimension | Ascent strength at baseline | Observed gap | HomeSolo public evidence | Material improvement |
-| --- | --- | --- | --- | --- |
-| First impression / visual quality | Cohesive green/cream identity, legible pricing card | Setup notice dominates first use; public card ends before a report | Polished preview with several task samples | Direct, coherent analyze → inspect → report experience |
-| Onboarding | Labeled isolated practice workspace; real accounts start empty | Public hosted accounts unavailable; demo needs database for full workflow | Account-free fictional preview; professional beta application | Full useful account-free pricing slice independent of hosted identity |
-| Property discovery / research | Authorized RentCast boundary, records, source rights and fixture flow | No proven live complete DMV inventory; coordinate schematic | Advertises Bright MLS, DC public records; demo has sample sales | Evidence passport and explicit unknowns, never imply acquired rights |
-| CMA / price explanation | Deterministic signed adjustments, assumptions, weights, frozen replay | Long panels; raw IDs in decision changes; hard to inspect influence | Sold/adjusted sale table, condition edits, calculation working | Visual comp inspector plus one-sale-at-a-time sensitivity |
-| Local market intelligence | Snapshot/flow separation, ZIP provider context, listing check-ins | Incomplete inventory, no verified closed-sale absorption or live rates | Sample supply, prior competition, mortgage context | Show coverage boundaries beside every market interpretation |
-| Seller presentations | Script-free report, net sheet, presentation, current-rights export | Public card has no report; saved report defaults to balanced costs/price | Saved report and printable client document samples | Report must preserve selected strategy and explicit net assumptions |
-| Client management | Structured searches, objective matches, notes, follow-ups and alerts | Live refresh and delivery unconfigured | Pipeline/role CRM and explainable alerts sample | Preserve context; do not add notification claims |
-| Offers / negotiation | Net arithmetic, term weights, reviewable counter drafts | Contract verification and lender evidence missing | Structured offer sample and strength explanation | Keep money, uncertainty and recorded terms distinct |
-| Transactions / deadlines | Human-reviewed text/PDF proposals, exact source page, corrections | OCR/holiday calendars/delivery absent | Sample deadlines and listing timeline | Preserve reviewed provenance and contextual next tasks |
-| Contextual assistance | Read-only tools, cited retrieval, Groq budgets, licensed-source hold | Current draft can differ from assistant's saved context; semantic quality unproven | Joy described as contextual, cited and redacted; private behavior unverified | Direct deterministic explanations of the calculation being edited |
-| Mobile | Responsive workspace and existing targeted axe tests | Pricing evidence relies on wide tables and long scrolling | Public preview accessible; private mobile workflow unverified | 390px inspection, strategy selection and report acceptance |
-| Trust / evidence quality | Source rights, tenant scoping, explicit fictional/live distinction, replay | Marketing makes unsupported generic competitor claims; freshness absent from fitness | Sample cites sources and uncertainty; private enforcement unverified | Remove unsupported comparisons; check source observation dates |
-| Performance / reliability | Local pure calculations, retained snapshots, server-only secrets | Large workspace client import at front door; production DB not configured | Public preview available; equivalent workload latency unverified | Dedicated public route with no account or provider round trips |
-| Overall professional usefulness | Connected decisions that can be challenged and reproduced | Strong implementation difficult to discover from public deployment | Clear path through professional examples | Ship a complete, inspectable pricing decision before more breadth |
+| Dimension | Ascent today | Next validation or improvement |
+| --- | --- | --- |
+| First impression | Task-first landing page and public pricing studios | Observe uncoached first use |
+| Onboarding | Account-free DC and fictional pricing, plus private workspaces | Record first completed analysis and report time |
+| Property research | DC public records and licensed-data adapters | Extend authorized coverage and freshness checks |
+| Comparable analysis | Per-sale weights, adjustments, exclusions, sensitivity | Independent accuracy and comprehension review |
+| Seller planning | Price scenarios, cost assumptions and reports | Professional usability and interpretation tests |
+| Market intelligence | Source timestamps and explicit unknowns | Add permitted active/pending/listing-history sources |
+| Clients and offers | Structured notes, saved searches and offer comparisons | Longitudinal professional workflow testing |
+| Transactions | Evidence-linked contract-date proposals and approvals | OCR, jurisdiction-specific holidays and legal review |
+| AI explanations | Groq integration and deterministic evidence fallback | Independent factual-grounding evaluation |
+| Security and privacy | Tenant isolation and source-rights safeguards | Complete deployed security and privacy acceptance |
+| Reproducibility | Frozen decisions, replay and source-aware exports | Validate on real permitted professional workflows |
+| Mobile | Responsive public studio and reported automated tests | Human mobile usability sessions |
+| Reliability | Automated local tests and build checks | Sustained monitoring, backups and incident procedures |
 
-## Priority and boundaries
+**Boundary:** Implemented capabilities and authored tests are not evidence of professional preference, market completeness, or externally verified service reliability. The publicly validated pricing workflow covers eligible DC single-family properties only.
 
-P0: investigate hosted environment access; keep missing infrastructure explicit. Never weaken tenant/source controls or substitute synthetic data for failed live queries. P1: account-free Pricing Studio, comparable inspection, sensitivity and faithful report. P2/P3: connect those components to authorized saved decisions and explain their arithmetic difference. Retain working client, offer, contract, AI and provider systems rather than create disconnected substitutes.
-
-The future independent preference target is at least 7/10 professionals. No participant has been recruited, timed or counted by this audit. See the task-based protocol in `competitive-advantage-validation.md`; engineering fixtures do not establish user preference.
-
-## Second pass · October 17, 2026 (afternoon)
-
-Re-inspected [homesolo.ai](https://homesolo.ai/) and [its public preview](https://homesolo.ai/demo) in Chrome. The preview is labeled sample data. Observed directly: a five-part CMA workbench; comparables grouped by similarity with plain-language reasons for half-weighting larger and smaller homes; an asking-price slider with historical asking-position statistics (median days on market, share sold within 30 days, share cutting price, sale-to-ask ratio, under-contract rates) attributed to DC listing history; a seller net table that includes a later price reduction and a closing-cost credit with day windows; a condition prompt with renovation level; a percentage confidence with stated reasons; supply at the price point; a saved report with written analysis and a client document; and CRM, offer, listing-timeline, alert and deadline samples. The accuracy of its confidence and coverage figures, its data rights and its private behavior are **unverified** by this audit.
-
-| Dimension | Observed in HomeSolo's public preview | Ascent after this pass | Remaining Ascent gap |
-| --- | --- | --- | --- |
-| Price explanation | Grouped comparables with plain reasons for weighting | One-axis range chart linked to a per-sale inspector with formulas, weight math and source | No similarity groups; weights explained per sale rather than by group |
-| What moves the decision | Condition prompt, noting that condition moves the price most | Ranked input sensitivity computed from the engine (condition, rates, trend, filters), plus editable condition, rates, filters, exclusions with reasons and user-entered sales | No renovation-level field |
-| Seller conversation | Net table with reduction and credit rows tied to day windows | Net table with anchors, selected price, reduction to the next search threshold and the equal credit, with the exact credit penalty stated; no timing windows by design | No listing-review timeline in the public sample (exists in the workspace as check-ins) |
-| Asking-position history | Historical days-on-market and under-contract statistics by asking position | Explicitly not shown; requires licensed listing-chain data | Needs a licensed source and a disclosed cohort method before any such figure is shown |
-| Confidence | Percentage confidence with reasons | Evidence fitness heuristics with no uncalibrated percentage | A calibrated, backtested interval would need validated data (see the unmerged valuation-validation branch) |
-| Assistant | Described as contextual, separating computed figures from suggestions | Every answer is labeled as recorded facts, calculations, assumptions, model interpretation, drafts, limits and unknowns; labels never reach the model provider | Semantic quality of model interpretation remains unmeasured |
-| Reproducibility | Saved report described | Frozen inputs, replay to checksum, JSON decision export, arithmetic bridge between decisions | Hosted accounts unconfigured in production |
-| Mobile | Not assessed for private screens | Studio and landing pass automated 390px overflow and axe checks; seller plan becomes labeled cards on phones | No human mobile usability study |
-
-No user preference has been measured. The 7-of-10 target remains a future, independently run study (see [validation protocol](competitive-advantage-validation.md)).
+See [the capability matrix](capability-matrix.md), [independent validation plan](competitive-advantage-validation.md) and [remaining production work](remaining-work.md).

@@ -22,7 +22,7 @@ if (!folder) throw new Error('Pass the folder that holds participants.csv, task-
 const read = (file: string) => parseStudyCsv(readFileSync(join(folder, file), 'utf8'));
 const yes = (value: string) => /^(1|true|yes|y)$/i.test(value);
 const product = (value: string): Product => {
-  if (!PRODUCTS.includes(value as Product)) throw new Error(`Unknown product "${value}". Use ascent or homesolo.`);
+  if (!PRODUCTS.includes(value as Product)) throw new Error(`Unknown product "${value}". Use ascent or comparison.`);
   return value as Product;
 };
 const participants: Participant[] = read('participants.csv').map(row => ({
@@ -48,7 +48,7 @@ const results: TaskResult[] = read('task-results.csv').map(row => {
 });
 const preferences: Preference[] = read('preferences.csv').map(row => ({
   participantId: row.participant_id,
-  choice: row.choice === 'ascent' || row.choice === 'homesolo' ? row.choice : 'none',
+  choice: row.choice === 'ascent' || row.choice === 'comparison' ? row.choice : 'none',
   reasons: row.reasons,
 }));
 const report = analyzeStudy(participants, results, preferences);
@@ -61,7 +61,7 @@ const lines = [
   `Enrolled ${report.enrolled}; completed ${report.completers}; withdrawn ${report.withdrawals.length}.`,
   '',
   '## Primary outcome',
-  `Preferred Ascent: **${report.preference.ascent} of ${report.enrolled}** (${pct(report.preference.share)}; exact 95% CI ${pct(report.preference.ci95[0])}–${pct(report.preference.ci95[1])}). Preferred HomeSolo: ${report.preference.homesolo}. No preference: ${report.preference.none}. One-sided exact p versus an even split: ${report.preference.pVersusEvenSplit?.toFixed(3) ?? 'n/a'}.`,
+  `Preferred Ascent: **${report.preference.ascent} of ${report.enrolled}** (${pct(report.preference.share)}; exact 95% CI ${pct(report.preference.ci95[0])}–${pct(report.preference.ci95[1])}). Preferred comparison platform: ${report.preference.comparison}. No preference: ${report.preference.none}. One-sided exact p versus an even split: ${report.preference.pVersusEvenSplit?.toFixed(3) ?? 'n/a'}.`,
   `Target ${report.targets.preference.target}: **${report.targets.preference.met ? 'met' : 'not met'}**.`,
   '',
   '## Task outcomes',
@@ -72,7 +72,7 @@ const lines = [
       `| ${t.product} | ${t.supported} | ${t.successes} | ${pct(t.successRate)} | ${t.unsupported} | ${t.assisted} | ${t.criticalArithmeticErrors} | ${t.unauthorizedDisclosures} |`,
   ),
   '',
-  '| Task | Pairs | Median Ascent − HomeSolo (s) | Ascent faster | Sign test p |',
+  '| Task | Pairs | Median Ascent − comparison platform (s) | Ascent faster | Sign test p |',
   '| --- | --- | --- | --- | --- |',
   ...report.paired.map(
     p =>

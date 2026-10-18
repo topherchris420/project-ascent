@@ -5,7 +5,7 @@
 - Active real estate license in DC, Maryland or Virginia.
 - At least two years of practice, with a listing or buyer transaction in the District in the past 24 months.
 - Uses a desktop or laptop browser at work.
-- Not employed by, contracted to, or a close relative or friend of anyone on the Ascent or HomeSolo teams.
+- Not employed by, contracted to, or a close relative or friend of anyone on the Ascent or the comparison platform teams.
 
 Aim for at least four primarily-listing and four primarily-buyer agents among the ten. Record prior use of either product; do not exclude for it.
 
@@ -14,7 +14,7 @@ Aim for at least four primarily-listing and four primarily-buyer agents among th
 1. Which states are you licensed in, and since when?
 2. In the past 24 months, roughly how many listings and buyer transactions did you handle in Washington, DC?
 3. Is your work mostly listings, mostly buyers, or about even?
-4. Have you used Ascent or HomeSolo before? If so, how much?
+4. Have you used Ascent or the selected comparison platform before? If so, how much?
 5. Do you have any personal or business relationship with people at either company?
 
 ## Outreach (neutral wording)

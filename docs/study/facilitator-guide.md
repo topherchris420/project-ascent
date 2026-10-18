@@ -5,7 +5,7 @@ Each session takes about 2 hours: 10 minutes intro, 10 minutes familiarization p
 ## Before the study
 
 1. Pre-register the [protocol](protocol.md) with its seeds, subject draw and sealed answer key.
-2. Obtain working access to **both** products at the level a paying professional would have. For Ascent, each participant registers their own account on the hosted site during setup. For HomeSolo, arrange access through its normal sign-up or beta process. If either product cannot be accessed as a professional would use it, stop: the comparison would not be fair.
+2. Obtain working access to **both** products at the level a paying professional would have. For Ascent, each participant registers their own account on the hosted site during setup. For the comparison platform, arrange the access a normal professional user would receive. If either product cannot be accessed as a professional would use it, stop: the comparison would not be fair.
 3. Prepare a clean browser profile per session, the printed task cards with the drawn subjects filled in, the three materials files and the CSV templates.
 4. Run one pilot session with someone who is not a participant. Fix logistics only; do not change tasks or wording without a dated deviation.
 

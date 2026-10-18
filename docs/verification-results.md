@@ -116,7 +116,7 @@ Scripted timings, sample size one per viewport, local development server with un
 | Landing → first studio result | 30 s | 1.73 s | 1.78 s | 1.73 s |
 | Landing → full scripted decision (inspect, strategy, challenge, exclusion, added sale, costs, question) → report open | 120 s | 5.56 s | 4.85 s | 5.67 s |
 
-The separate workspace onboarding acceptance (registration → pending verification → saved fictional CMA and report) recorded **6,265 ms**. Golden arithmetic tests found no critical arithmetic errors; tested tenant paths found no cross-tenant access. User preference against HomeSolo remains **unmeasured** (0 participants).
+The separate workspace onboarding acceptance (registration → pending verification → saved fictional CMA and report) recorded **6,265 ms**. Golden arithmetic tests found no critical arithmetic errors; tested tenant paths found no cross-tenant access. User preference against another platform remains **unmeasured** (0 participants).
 
 Corrections found during this cycle: the account-free entry did not read the demo sign-in response body on success, so Chromium held the request open and "network idle" never arrived; the page-by-page accessibility script timed out on it. The body is now always read and the scan completes. A development-server hot reload once dropped the dynamically loaded workspace stylesheet; a restart restored it and the production build bundles it. Playwright captures taller than the viewport showed the off-screen skip link mid-page; its real position was verified at −60 px. No failing test was removed or weakened.
 

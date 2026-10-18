@@ -36,7 +36,7 @@ test('randomization balances product order and subject pairing, with a fixed tas
   assert.deepEqual(new Set(a.map(row => row.id)), new Set(ids));
   for (const row of a) {
     assert.deepEqual(row.taskOrder, [...TASK_IDS]);
-    assert.notEqual(row.subjects.ascent, row.subjects.homesolo);
+    assert.notEqual(row.subjects.ascent, row.subjects.comparison);
   }
   // Every combination of product order and subject pairing is used; none dominates.
   const cells = new Map<string, number>();
@@ -51,12 +51,12 @@ test('randomization balances product order and subject pairing, with a fixed tas
 const people = (n: number): Participant[] =>
   Array.from({ length: n }, (_, i) => ({
     id: `P${i + 1}`,
-    firstProduct: i % 2 ? 'homesolo' : 'ascent',
+    firstProduct: i % 2 ? 'comparison' : 'ascent',
     status: 'completed',
   }));
 const allTasks = (participants: Participant[], overrides: Partial<TaskResult> = {}): TaskResult[] =>
   participants.flatMap(p =>
-    (['ascent', 'homesolo'] as const).flatMap(product =>
+    (['ascent', 'comparison'] as const).flatMap(product =>
       TASK_IDS.map(task => ({
         participantId: p.id,
         product,
@@ -78,11 +78,11 @@ test('withdrawals and ties count against the preference target; unsupported task
   participants[9] = { ...participants[9], status: 'withdrawn', withdrawalReason: 'Scheduling' };
   const preferences: Preference[] = participants.slice(0, 9).map((p, i) => ({
     participantId: p.id,
-    choice: i < 7 ? 'ascent' : i === 7 ? 'homesolo' : 'none',
+    choice: i < 7 ? 'ascent' : i === 7 ? 'comparison' : 'none',
     reasons: '',
   }));
   const results = allTasks(participants.slice(0, 9)).map(row =>
-    row.product === 'homesolo' && row.task === 'T5'
+    row.product === 'comparison' && row.task === 'T5'
       ? { ...row, supported: false, completed: false, correct: false }
       : row,
   );
@@ -93,9 +93,9 @@ test('withdrawals and ties count against the preference target; unsupported task
   assert.equal(report.enrolled, 10);
   assert.equal(report.targets.preference.met, true);
   assert.equal(report.withdrawals[0].reason, 'Scheduling');
-  const homesolo = report.tasks.find(t => t.product === 'homesolo')!;
-  assert.equal(homesolo.unsupported, 9);
-  assert.equal(homesolo.successRate, 1);
+  const comparison = report.tasks.find(t => t.product === 'comparison')!;
+  assert.equal(comparison.unsupported, 9);
+  assert.equal(comparison.successRate, 1);
   const t1 = report.paired.find(p => p.task === 'T1')!;
   assert.equal(t1.pairs, 9);
   assert.equal(t1.medianDifferenceSeconds, -30);
@@ -106,7 +106,7 @@ test('withdrawals and ties count against the preference target; unsupported task
   const fewer = analyzeStudy(
     people(10),
     allTasks(people(10)),
-    people(10).map((p, i) => ({ participantId: p.id, choice: i < 6 ? 'ascent' : 'homesolo', reasons: '' })),
+    people(10).map((p, i) => ({ participantId: p.id, choice: i < 6 ? 'ascent' : 'comparison', reasons: '' })),
   );
   assert.equal(fewer.targets.preference.met, false);
 });

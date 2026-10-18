@@ -4,7 +4,7 @@
 
 - **Validated accuracy merged** after review (PR #6): DC and King County backtests reproduce byte for byte; the scorecard now discloses that DC's 10.0% median error is the DC-calibrated settings (defaults: 16.3%).
 - **Real DC homes**: `/dc` prices any of 92,142 single-family District parcels from CC BY 4.0 public records with the validated settings and the calibrated range when unmodified ([details](dc-public-records.md)). Remaining: Maryland and Virginia sources, condominiums, MLS listing history, a scheduled snapshot refresh paired with re-validation.
-- **Preference study kit** ([docs/study](study/README.md)): ready to pre-register. Remaining, owner-side: an independent facilitator and reviewers, working HomeSolo access, participant compensation and the public pre-registration. Participants to date: 0.
+- **Preference study kit** ([docs/study](study/README.md)): ready to pre-register. Remaining, owner-side: an independent facilitator and reviewers, working comparison-platform access, participant compensation and the public pre-registration. Participants to date: 0.
 
 ## October 17 continuation: decision drivers, seller plan and labeled answers
 

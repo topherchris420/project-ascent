@@ -35,7 +35,7 @@ Intervals: the observed adjusted-comp envelope contained 64.1% of sales. The **c
 
 **Read the passes honestly.** The 95% intervals for median error (9.4–10.6%) and for the share within ±10% (48.1–52.2%) both include values on the wrong side of the bar. PRD sits 0.0005 under its limit. These are passes on this holdout, not passes with statistical margin. The pattern behind PRD is the same as in King County: homes above $1.5M were under-valued by a median 5.8% (MdAPE 13.6%), and the lowest-price quartile (under $682k) was over-valued by 3.8% (MdAPE 11.2%). Mid-market homes ($682k–$1.5M) were tightest, at 7.5–8.9% median error.
 
-**Why DC is a fair test against a DC-focused competitor.** Homesolo markets itself on DC public records. This holdout uses the District's own deed records and assessor characteristics, and scores every qualified sale in the period. No sale was dropped for its price or for how well it was valued.
+**Why DC is a meaningful local test.** This holdout uses the District's own deed records and assessor characteristics, and scores every qualified sale in the period. No sale was dropped for its price or for how well it was valued.
 
 ### DC record rules, decided before any valuation ran
 

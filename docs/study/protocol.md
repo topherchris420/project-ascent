@@ -1,4 +1,4 @@
-# Protocol ascent-preference-1: Ascent and HomeSolo, task-based preference study
+# Protocol ascent-preference-1: Ascent and a comparison platform, task-based preference study
 
 **Status: not yet run. Participants to date: 0.** This protocol is ready to pre-register. Nothing in it is a result.
 
@@ -30,18 +30,20 @@ Ten completers. Eligibility and screening are in [recruitment.md](recruitment.md
 
 ## Design
 
+The independent facilitator must name and freeze one comparison platform before pre-registration. Changing platforms later requires a dated protocol amendment.
+
 Within-subjects, two products, six fixed tasks.
 
-- **Order:** half the participants start with Ascent, half with HomeSolo (from the randomization output).
+- **Order:** half the participants start with Ascent, half with the comparison platform (from the randomization output).
 - **Subject homes:** three homes are drawn at random from all District single-family parcels. Each participant prices a different home in each product, and the pairing alternates, so knowledge of one home cannot carry over.
 - **Familiarization:** ten minutes per product with the same neutral checklist in the [facilitator guide](facilitator-guide.md). No feature tour beyond it.
 - **Tasks:** T1–T6 in [tasks.md](tasks.md), in order, with the same wording for both products.
 - **Equivalent evidence:** both products receive the same addresses, offers, contract excerpt and new-sale values. Each product uses its own data for comparable sales; record what data each product drew on. If a product cannot accept the shared evidence for a task, the facilitator records the task as **unsupported** for that product. Unsupported tasks stay in every report.
-- **Access:** each product must be used with the access a working professional would have. If full HomeSolo access cannot be obtained, the study cannot run as designed; do not substitute its marketing pages or public preview.
+- **Access:** each product must be used with the access a working professional would have. If full comparison-platform access cannot be obtained, the study cannot run as designed; do not substitute its marketing pages or public preview.
 
 ## Outcomes
 
-**Primary.** The answer to the neutral preference question in the facilitator guide, asked once after both products: Ascent, HomeSolo or no preference. Ties and withdrawals count as not preferring Ascent. Target: at least 7 of 10 enrolled.
+**Primary.** The answer to the neutral preference question in the facilitator guide, asked once after both products: Ascent, the comparison platform or no preference. Ties and withdrawals count as not preferring Ascent. Target: at least 7 of 10 enrolled.
 
 **Secondary, pre-specified.**
 

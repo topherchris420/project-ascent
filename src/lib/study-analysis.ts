@@ -1,9 +1,9 @@
 /**
- * Pre-registered analysis for the Ascent / HomeSolo task-based preference study (protocol ascent-preference-1).
+ * Pre-registered analysis for an Ascent / comparison-platform task-based preference study (protocol ascent-preference-1).
  * Pure functions only: the facilitator's CSVs go in, a report comes out, and every number is reproducible.
  */
 export const STUDY_PROTOCOL_ID = 'ascent-preference-1';
-export const PRODUCTS = ['ascent', 'homesolo'] as const;
+export const PRODUCTS = ['ascent', 'comparison'] as const;
 export type Product = (typeof PRODUCTS)[number];
 export const TASK_IDS = ['T1', 'T2', 'T3', 'T4', 'T5', 'T6'] as const;
 export type TaskId = (typeof TASK_IDS)[number];
@@ -103,14 +103,14 @@ export function analyzeStudy(participants: Participant[], results: TaskResult[],
     if (!ids.has(row.participantId)) issues.push(`Row references unknown participant ${row.participantId}.`);
   const firsts = PRODUCTS.map(product => participants.filter(p => p.firstProduct === product).length);
   if (firsts[0] !== firsts[1])
-    issues.push(`Order is not counterbalanced: ${firsts[0]} Ascent-first, ${firsts[1]} HomeSolo-first.`);
+    issues.push(`Order is not counterbalanced: ${firsts[0]} Ascent-first, ${firsts[1]} comparison-first.`);
   const enrolled = participants.length;
   const completers = participants.filter(p => p.status === 'completed');
   const preferAscent = completers.filter(
     p => preferences.find(pref => pref.participantId === p.id)?.choice === 'ascent',
   ).length;
-  const preferHomesolo = completers.filter(
-    p => preferences.find(pref => pref.participantId === p.id)?.choice === 'homesolo',
+  const preferComparison = completers.filter(
+    p => preferences.find(pref => pref.participantId === p.id)?.choice === 'comparison',
   ).length;
   const denominator = enrolled; // withdrawals count against the target
   const [low, high] = clopperPearson(preferAscent, denominator);
@@ -145,7 +145,7 @@ export function analyzeStudy(participants: Participant[], results: TaskResult[],
     const differences = completers
       .map(p => {
         const a = results.find(r => r.participantId === p.id && r.task === task && r.product === 'ascent');
-        const h = results.find(r => r.participantId === p.id && r.task === task && r.product === 'homesolo');
+        const h = results.find(r => r.participantId === p.id && r.task === task && r.product === 'comparison');
         return a?.correct && h?.correct && a.seconds !== null && h.seconds !== null ? a.seconds - h.seconds : null;
       })
       .filter((d): d is number => d !== null);
@@ -196,8 +196,8 @@ export function analyzeStudy(participants: Participant[], results: TaskResult[],
       .map(p => ({ id: p.id, reason: p.withdrawalReason ?? '' })),
     preference: {
       ascent: preferAscent,
-      homesolo: preferHomesolo,
-      none: completers.length - preferAscent - preferHomesolo,
+      comparison: preferComparison,
+      none: completers.length - preferAscent - preferComparison,
       share: denominator ? preferAscent / denominator : null,
       ci95: [low, high] as [number, number],
       // One-sided exact test against an even split; reported, but the study is not powered to establish superiority.
@@ -233,8 +233,8 @@ export function randomizeStudy(participantIds: string[], seed: number) {
     const swap = Math.floor(index / 2) % 2 === 1;
     return {
       id,
-      firstProduct: (index % 2 === 0 ? 'ascent' : 'homesolo') as Product,
-      subjects: { ascent: swap ? 'Subject B' : 'Subject A', homesolo: swap ? 'Subject A' : 'Subject B' },
+      firstProduct: (index % 2 === 0 ? 'ascent' : 'comparison') as Product,
+      subjects: { ascent: swap ? 'Subject B' : 'Subject A', comparison: swap ? 'Subject A' : 'Subject B' },
       taskOrder: [...TASK_IDS],
     };
   });

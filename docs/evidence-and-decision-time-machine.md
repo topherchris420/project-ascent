@@ -28,6 +28,6 @@ Source-use permissions apply before any comparison or report. A revoked or disal
 
 ## Competitive evaluation gates
 
-Before advertising accuracy superiority over HomeSolo or any other software, independently recruit qualified agents, obtain lawful comparable datasets and freeze a paired time-split protocol. Compare valuation baseline accuracy (MAE/median absolute error), evidence comprehension, task completion, correction effort, fairness review, 95th-percentile latency, source freshness and provider total cost. Keep withheld and unsold cases in the denominator. Test across multiple jurisdictions and price bands. Declare all thresholds *before* observing holdout outcomes.
+Before advertising accuracy superiority over other software, independently recruit qualified agents, obtain lawful comparable datasets and freeze a paired time-split protocol. Compare valuation baseline accuracy (MAE/median absolute error), evidence comprehension, task completion, correction effort, fairness review, 95th-percentile latency, source freshness and provider total cost. Keep withheld and unsold cases in the denominator. Test across multiple jurisdictions and price bands. Declare all thresholds *before* observing holdout outcomes.
 
 This release does **not** include county/MLS credentials, national listing coverage, predictive sale probabilities, third-party CRM synchronization, hosted operational acceptance or independent appraisal-grade validation. Such claims would require rights, prospective measurement, deployment operations and professional governance.
