@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { gunzipSync } from 'node:zlib';
 import { distanceMiles } from '../analytics';
+import { recordedHistory } from './recorded-history';
 import { marylandBenchmark, marylandDefaultState } from '../maryland-studio';
 import type { Source, ValuationProperty } from '../types';
 import { parseCsv, displayDcAddress, normalizeDcAddress } from './dc-public-records';
@@ -149,6 +150,7 @@ export function marylandValuationInputs(parcelId: string) {
     sourceId: MD_SOURCE_ID,
   });
   const subject = makeProperty(parcel);
+  subject.history = recordedHistory(parcelId, sales, asOf);
   const candidates: ValuationProperty[] = sales
     .filter(sale => {
       const age = (Date.parse(asOf) - Date.parse(`${sale.soldOn}T00:00:00Z`)) / 86400000;
@@ -187,6 +189,7 @@ export function marylandValuationInputs(parcelId: string) {
       parcelsFetchedAt: asOf,
       lastRecordedSale: provenance.lastSale,
       salesSha256: provenance.csvSha256,
+      parcelsSha256: provenance.propertyCsvSha256,
     },
     attribution: provenance.attribution,
   };

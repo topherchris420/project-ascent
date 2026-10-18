@@ -1,0 +1,280 @@
+.homeowner-workbench {
+  border-top: 4px solid #2b6656;
+  scroll-margin-top: 24px;
+}
+.homeowner-workbench h2 {
+  font-size: clamp(23px, 3vw, 31px);
+  letter-spacing: -0.6px;
+}
+.homeowner-workbench h3 {
+  margin: 20px 0 8px;
+}
+.home-privacy {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 7px;
+  font-size: 13px;
+  color: #496257;
+}
+.home-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin: 20px 0;
+}
+.home-nav .button[aria-pressed='true'] {
+  background: #2b5543;
+  color: #fff;
+  border-color: #2b5543;
+}
+.home-nav a:not(.button) {
+  font-size: 13px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.home-metrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin: 20px 0;
+}
+.home-metrics > div {
+  background: #f2f6f1;
+  border: 1px solid #d9e4d7;
+  border-radius: 12px;
+  padding: 18px;
+  display: grid;
+  gap: 8px;
+  align-content: start;
+}
+.home-metrics span {
+  font-size: 13px;
+  color: #4e6156;
+}
+.home-metrics strong {
+  font-size: clamp(20px, 2.3vw, 28px);
+  letter-spacing: -0.6px;
+  overflow-wrap: anywhere;
+}
+.home-metrics small {
+  font-size: 12px;
+  line-height: 1.6;
+  color: #526357;
+}
+.home-evidence-summary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+}
+.homeowner-workbench details {
+  border-top: 1px solid #dbe4d9;
+  padding-top: 14px;
+  margin: 18px 0;
+}
+.homeowner-workbench summary {
+  cursor: pointer;
+  font-weight: 600;
+  padding: 7px 0;
+}
+.homeowner-workbench fieldset {
+  border: 1px solid #d8e1d6;
+  padding: 18px;
+  margin: 20px 0;
+  border-radius: 12px;
+  min-width: 0;
+}
+.homeowner-workbench legend {
+  font-weight: 600;
+  padding: 0 6px;
+}
+.home-input-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.home-input-grid label,
+.home-wide-label,
+.home-history > label {
+  display: grid;
+  gap: 7px;
+  font-size: 13px;
+  font-weight: 500;
+}
+.home-input-grid input,
+.homeowner-workbench select,
+.home-wide-label textarea {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid #b8c8b7;
+  background: white;
+  padding: 10px;
+  border-radius: 7px;
+  font-size: 15px;
+}
+.home-wide-label textarea {
+  min-height: 130px;
+  line-height: 1.7;
+}
+.home-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-weight: 500;
+  font-size: 14px;
+}
+.home-check input {
+  margin-top: 5px;
+  width: 17px;
+  height: 17px;
+  flex-shrink: 0;
+  accent-color: #2b5543;
+}
+.home-table-wrap {
+  width: 100%;
+  overflow: auto;
+  border: 1px solid #dae2d6;
+  border-radius: 9px;
+  margin: 15px 0;
+  max-height: 480px;
+}
+.home-table {
+  width: 100%;
+  min-width: 620px;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 13px;
+}
+.home-table caption {
+  text-align: left;
+  padding: 14px;
+  color: #4d6356;
+  font-size: 12px;
+}
+.home-table th,
+.home-table td {
+  padding: 13px 14px;
+  border-bottom: 1px solid #e1e8dd;
+  vertical-align: top;
+  max-width: 340px;
+  overflow-wrap: anywhere;
+}
+.home-table thead {
+  background: #eff3eb;
+}
+.home-table tr[aria-selected='true'] {
+  background: #f0f7f2;
+}
+.home-table .text-button {
+  text-align: left;
+  min-height: 36px;
+}
+.home-chart {
+  margin: 26px 0;
+  padding: 16px;
+  border-radius: 12px;
+  background: #f2f6f1;
+}
+.home-chart figcaption {
+  font-size: 14px;
+  font-weight: 600;
+}
+.home-chart-values {
+  font-size: 13px;
+  line-height: 1.7;
+}
+.home-mobile-hint {
+  display: none;
+}
+.home-chart svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.home-chart text {
+  font: 12px sans-serif;
+  fill: #496052;
+}
+.home-save {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  flex-wrap: wrap;
+  border-top: 1px solid #dbe4d9;
+  padding-top: 20px;
+  margin-top: 26px;
+}
+.home-storage-status {
+  font-size: 13px;
+  min-height: 20px;
+}
+.home-monitor {
+  border-left: 3px solid #7b9177;
+  padding-left: 18px;
+  margin: 28px 0;
+}
+.saved-homes {
+  display: grid;
+  gap: 20px;
+}
+@media (max-width: 700px) {
+  .home-chart svg text {
+    display: none;
+  }
+  .home-mobile-hint {
+    display: block;
+    font-size: 12px;
+  }
+  .home-input-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .home-evidence-summary {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+}
+@media (max-width: 460px) {
+  .home-metrics {
+    grid-template-columns: 1fr;
+  }
+  .home-input-grid {
+    grid-template-columns: 1fr;
+  }
+  .homeowner-workbench fieldset {
+    padding: 12px;
+  }
+  .home-nav {
+    gap: 8px;
+  }
+  .home-nav .button {
+    padding: 9px 11px;
+  }
+}
+@media print {
+  .home-nav,
+  .home-save,
+  .home-storage-status,
+  .homeowner-workbench button,
+  .home-assumptions,
+  .home-check {
+    display: none !important;
+  }
+  .home-table-wrap {
+    max-height: none;
+    overflow: visible;
+    border: 0;
+  }
+  .home-table {
+    min-width: 0;
+    font-size: 9pt;
+  }
+  .homeowner-workbench {
+    break-inside: auto;
+    box-shadow: none;
+  }
+  .home-metrics > div {
+    break-inside: avoid;
+  }
+}

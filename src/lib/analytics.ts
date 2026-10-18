@@ -14,6 +14,7 @@ import type {
   ValuationProperty,
   Workspace,
 } from './types';
+import { saleNetBeforePayoff } from './selling-costs';
 
 /** A frozen clock for the isolated demonstration, never a claim of live data. */
 export const DEMO_AS_OF = '2026-10-15T12:00:00.000Z';
@@ -431,10 +432,7 @@ export function simulatePricing(
   if (costAssumptions.commissionPercent + costAssumptions.closingPercent > 100)
     throw new Error('Combined percentage costs cannot exceed 100%.');
   const difference = round(listPrice - cma.estimate);
-  const estimatedNet = round(
-    listPrice * (1 - (costAssumptions.commissionPercent + costAssumptions.closingPercent) / 100) -
-      costAssumptions.concessions,
-  );
+  const estimatedNet = round(saleNetBeforePayoff(listPrice, costAssumptions));
   return {
     listPrice,
     difference,

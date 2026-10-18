@@ -1,7 +1,9 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { gunzipSync } from 'node:zlib';
+import { createHash } from 'node:crypto';
 import { distanceMiles } from '../analytics';
+import { recordedHistory } from './recorded-history';
 import { dcBenchmark, validatedAssumptions } from '../valuation-safeguards';
 import type { CmaAssumptions, Source, ValuationProperty } from '../types';
 
@@ -87,8 +89,11 @@ export function parseCsv(text: string): string[][] {
   return rows.filter(cells => cells.length > 1 || cells[0]);
 }
 
-const records = (file: string) => {
-  const [header, ...rows] = parseCsv(gunzipSync(readFileSync(join(DATA_DIR, file))).toString('utf8'));
+const records = (file: string, expected: string) => {
+  const bytes = gunzipSync(readFileSync(join(DATA_DIR, file)));
+  if (createHash('sha256').update(bytes).digest('hex') !== expected)
+    throw new Error('DC snapshot fingerprint mismatch.');
+  const [header, ...rows] = parseCsv(bytes.toString('utf8'));
   return rows.map(cells => Object.fromEntries(header.map((key, index) => [key, cells[index] ?? ''])));
 };
 
@@ -144,9 +149,14 @@ let cache:
 /** Loads and indexes both snapshots once per server process. */
 export function dcData() {
   if (cache) return cache;
+  const provenance = (file: string) => JSON.parse(readFileSync(join(DATA_DIR, file), 'utf8')) as Provenance;
+  const salesProvenance = provenance('dc-residential-sales.provenance.json'),
+    parcelsProvenance = provenance('dc-residential-properties.provenance.json');
+  if (salesProvenance.csvSha256 !== dcBenchmark.dataset.csvSha256)
+    throw new Error('DC sales have changed; revalidation is required.');
   const parcels = new Map<string, DcParcel>();
   const index: { key: string; parcelId: string }[] = [];
-  for (const row of records('dc-residential-properties.csv.gz')) {
+  for (const row of records('dc-residential-properties.csv.gz', parcelsProvenance.csvSha256)) {
     const parcel: DcParcel = {
       parcelId: row.parcel_id,
       address: row.address,
@@ -161,11 +171,12 @@ export function dcData() {
       yearBuilt: Number(row.year_built),
       yearRemodeled: Number(row.year_remodeled),
     };
+    if (parcels.has(parcel.parcelId)) throw new Error('Duplicate DC parcel identifier.');
     parcels.set(parcel.parcelId, parcel);
     for (const address of [parcel.address, ...parcel.aliases])
       index.push({ key: normalizeDcAddress(address), parcelId: parcel.parcelId });
   }
-  const sales = records('dc-residential-sales.csv.gz').map(row => ({
+  const sales = records('dc-residential-sales.csv.gz', salesProvenance.csvSha256).map(row => ({
     saleId: row.sale_id,
     parcelId: row.parcel_id,
     soldOn: row.sold_on,
@@ -178,13 +189,18 @@ export function dcData() {
     lng: Number(row.lng),
     zip: row.zip,
   }));
-  const provenance = (file: string) => JSON.parse(readFileSync(join(DATA_DIR, file), 'utf8')) as Provenance;
+  if (
+    parcels.size !== parcelsProvenance.rows ||
+    sales.length !== salesProvenance.rows ||
+    new Set(sales.map(s => s.saleId)).size !== sales.length
+  )
+    throw new Error('Incomplete or duplicate DC snapshot records.');
   cache = {
     parcels,
     index,
     sales,
-    salesProvenance: provenance('dc-residential-sales.provenance.json'),
-    parcelsProvenance: provenance('dc-residential-properties.provenance.json'),
+    salesProvenance,
+    parcelsProvenance,
   };
   return cache;
 }
@@ -257,6 +273,7 @@ export function dcValuationInputs(parcelId: string) {
     sqft: parcel.sqft,
     condition: parcel.condition,
     yearBuilt: parcel.yearBuilt || undefined,
+    history: recordedHistory(parcelId, sales, asOf),
   };
   const candidates: ValuationProperty[] = sales
     .filter(sale => {
@@ -292,6 +309,7 @@ export function dcValuationInputs(parcelId: string) {
       lastRecordedSale: salesProvenance.lastSale ?? null,
       parcelsFetchedAt: parcelsProvenance.fetchedAt,
       salesSha256: salesProvenance.csvSha256,
+      parcelsSha256: parcelsProvenance.csvSha256,
     },
     attribution: salesProvenance.attribution,
   };

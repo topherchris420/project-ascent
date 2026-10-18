@@ -16,6 +16,8 @@ Ascent is free, open-source real estate intelligence for homeowners and anyone w
 
 No account needed for the public pricing studios.
 
+**[My Home](https://project-ascent-theta.vercel.app/home)** keeps browser-local property profiles and decision history. Open any supported studio to compare selling, continuing ownership, renting, renovating before sale, refinancing, or buying while retaining the current home. Entered debt, costs and rent remain assumptions; missing inputs stay unknown. [Calculation and privacy boundaries](docs/homeowner-workbench.md).
+
 </div>
 
 ---
@@ -27,10 +29,14 @@ A homeowner asks, **“Why this price?”** Ascent gives them the working: compa
 - **Find the evidence.** Search eligible DC houses, Montgomery and Prince George’s County homes, or DC condos, each with explicit limits.
 - **Understand the number.** Inspect recorded comparable sales, adjustments, weights and assumptions.
 - **Explore a choice.** Change an asking price or cost assumption and compare illustrative outcomes, not predicted sale prices.
+- **Compare ownership decisions.** Model fixed-rate debt, monthly cash flow, equity, cash reserves, break-even thresholds and hypothetical property changes across six choices. Financial calculations run locally and never call an external model.
+- **Keep a Property Evidence Passport.** Explicitly save private ownership profiles and versioned decisions on this device, compare exact evidence/assumption changes, and export privacy-filtered JSON or a standalone printable report. Use browser Print to save a PDF. On-demand monitoring reports actual snapshot differences; an unchanged dataset creates no market alert.
 - **Keep the reasoning.** Print a report or export source-aware analysis to discuss with someone you trust.
 - **Know what is missing.** Public records are snapshots. Live listings, concessions, building attributes and interior condition may be absent.
 
 Homeowners can use the public studios without an account. Existing client, offer and transaction tools remain in configured private workspaces for people who need them.
+
+Homeowner profiles are browser-local, with up to ten homes and ten versions per home subject to storage limits. They do not synchronize with an account. Pricing drafts already autosave selected price, selling fees and payoff; additional ownership fields require an explicit save. Shared devices can expose stored information. Financial comparisons exclude replacement housing, tax effects and loan qualification, and do not rank which choice is best for a household. Sharing exports omit private finances and notes by default; downloaded copies cannot be revoked.
 
 **Product principle: The homeowner should never have to accept a number they cannot understand.**
 

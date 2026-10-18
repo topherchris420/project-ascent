@@ -14,6 +14,7 @@ export type StudioEvidence = {
   candidates: ValuationProperty[];
   sources: Source[];
   asOf: string;
+  snapshot?: { salesFetchedAt: string; parcelsFetchedAt: string; salesSha256?: string; parcelsSha256?: string };
 };
 
 export const practiceSaleSchemaFor = (conditionMax: number) =>

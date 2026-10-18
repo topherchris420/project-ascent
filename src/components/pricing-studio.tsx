@@ -22,6 +22,7 @@ import { assessValuationRelease, benchmarkForState, usesValidatedConfiguration }
 import { ComparableExplorer, DecisionArithmetic } from './comparable-explorer';
 import { DecisionDrivers, PriceEvidenceStrip, SellerPlanTable } from './pricing-visuals';
 import { PricingQuestions } from './pricing-questions';
+import { HomeownerWorkbench } from './homeowner-workbench';
 import { money, number } from './format';
 import '@/app/pricing-studio.css';
 
@@ -346,6 +347,13 @@ export function PricingStudio(config: StudioConfig) {
             </button>
           </div>
         )}
+        <HomeownerWorkbench
+          evidence={evidence}
+          state={state}
+          result={result}
+          onStudioChange={patch}
+          missingEvidence={config.passport.missing}
+        />
         <div id="studio-evidence" className="studio-section-anchor">
           {result && (
             <>

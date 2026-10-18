@@ -24,7 +24,13 @@ type PropertyPayload = {
   sources: Source[];
   asOf: string;
   assumptions: CmaAssumptions;
-  snapshot: { salesFetchedAt: string; lastRecordedSale: string | null; parcelsFetchedAt: string };
+  snapshot: {
+    salesFetchedAt: string;
+    lastRecordedSale: string | null;
+    parcelsFetchedAt: string;
+    salesSha256?: string;
+    parcelsSha256?: string;
+  };
   attribution: string;
 };
 
@@ -226,6 +232,7 @@ export function MarylandPricingStudio() {
             candidates: data.candidates,
             sources: data.sources,
             asOf: data.asOf,
+            snapshot: data.snapshot,
           }
         : null,
     [data],
