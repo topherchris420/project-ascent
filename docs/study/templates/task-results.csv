@@ -1,3 +1,0 @@
-# One row per participant × product × task. supported=no only when the product cannot accept the shared evidence.
-# seconds = start of task to a deliverable the blinded reviewer scores correct; leave empty if not completed.
-participant_id,product,task,supported,completed,correct,seconds,critical_arithmetic_error,unauthorized_disclosure,assisted,reviewer_id,notes

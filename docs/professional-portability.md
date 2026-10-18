@@ -59,7 +59,7 @@ Current source revocation is enforced in all dedicated responses and the central
 
 `POST /api/product` accepts structured opens, bounded timings, bounded error codes and evidence-backed task completion. Raw names, addresses, messages and document text are not valid event fields. Completion requires a real audited workflow; repeated event/audit identifiers are hashed and deduplicated. Existing core actions record actual server-side elapsed time only after consent. Report, Academy evidence and import completions are recorded after successful work. No external analytics provider receives events.
 
-Assignments use a stable hash of tenant and flag identifier. Configuration and descriptive aggregate outcomes do not establish a winning variant, randomization quality or causal improvement. Open/error events and client-supplied timing values are reported telemetry, not independently verified observations. A formal experiment protocol, representative participant enrollment and causal analysis remain future work.
+Assignments use a stable hash of tenant and flag identifier. Configuration and descriptive aggregate outcomes do not establish a winning variant, randomization quality or causal improvement. Open/error events and client-supplied timing values are reported telemetry, not independently verified observations. Such aggregate activity data must not be presented as causal evidence of benefit.
 
 ## Verification and limits
 

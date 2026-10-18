@@ -1,19 +1,5 @@
 # Domain intelligence: validation and limits
 
-## Independent professional preference study (not yet conducted)
-
-The primary target is **at least 7 of 10 experienced real estate professionals choosing Ascent after testing it against a preselected comparison platform**. Participants to date: **0**. This is a future validation target, not a result. The [study kit](study/README.md) needs an independent facilitator, comparable professional access and public pre-registration. The [product experience audit](competitive-scorecard.md) summarizes Ascent's capabilities and remaining validation needs.
-
-Before recruitment, an independent facilitator must identify and freeze the comparison platform, protocol, datasets, permission boundaries and task scoring. Obtain working access to both products at equivalent levels. Use the **same legally permitted frozen evidence** wherever the interfaces allow it. If equivalent evidence or access is unavailable, mark the task unverified instead of substituting a marketing demo or mismatched data.
-
-Recruit ten licensed, experienced professionals independent of the development team, with buyer/listing roles and DMV experience represented. Randomize product order (five start with each), provide equal familiarization, prohibit developer coaching, and disclose sponsorship. Record devices, input versions, source rights, training time, task order and outages. Do not introduce protected-trait targeting.
-
-Use six paired tasks: (1) price a property and explain the influential sale; (2) exclude a comparable and explain the arithmetic; (3) create a report with seller costs; (4) compare offers and unknown terms; (5) review and correct an evidence-linked deadline; (6) explain a changed decision from frozen versus current evidence. Independent qualified reviewers score correctness, evidence and usable deliverables. Record corrections, abandoned/unsupported tasks, assistance and uncertainty. Time ends when a deliverable is correct.
-
-Prespecified Ascent engineering goals: at least 57/60 successful tasks, zero critical arithmetic errors or unauthorized disclosures in tested paths, and no major accessibility regression. Collect real first-result and report times against the 30-second and 120-second targets. Failed and unsupported tasks must not silently disappear from reports.
-
-Ask the neutral preference question with **Ascent / comparison platform / no preference** and collect reasons. The denominator is ten enrolled participants; ties and withdrawals do not count as preferring Ascent. Preregister withdrawals and publish the full counts, task results and statistical uncertainty. A 7/10 result would not establish population-wide superiority or valuation accuracy.
-
 The implementation adds a deterministic professional-practice layer, rather than claiming that a language model has acquired expert judgment. Real customer outcomes and independent expert agreement remain unmeasured.
 
 ## Working foundation
@@ -52,7 +38,7 @@ Provider-record CMA inputs retain missing listing dates, asking prices, conditio
 
 ## Next validation priorities
 
-The following gates are the evaluation protocol for future professional/production studies. They are engineering targets, not achieved results; they were not pre-registered for the internally authored fixture runs above. Ratify study design and thresholds with qualified reviewers before collecting independent evaluation data.
+The following are technical verification priorities and proposed acceptance criteria, not completed outcomes or retroactive claims about the authored fixtures. Declare thresholds before each new valuation or rule-validation run, preserve failures, and obtain appropriate professional review for domain-specific claims.
 
 | Capability | Transparent baseline | Acceptance target and evidence required | Present boundary |
 | --- | --- | --- | --- |
@@ -60,21 +46,18 @@ The following gates are the evaluation protocol for future professional/producti
 | CMA | Same licensed, time-separated dataset with unadjusted median-price baseline | Pre-register one forecast per property and paired error/calibration tests across at least 200 properties and three markets; require a confidence interval supporting improvement before superiority claims | Arithmetic/reproducibility tested; empirical envelope is not calibrated confidence |
 | Fair Housing | Published simple keyword baseline on identical labeled cases | At least 95% severe-harm recall and 90% legitimate-request allow rate on a separate independently reviewed holdout; all known critical regression cases pass; human escalation for ambiguity | Internal English cases only; no compliance certification |
 | Offer analysis | Price-minus-credit arithmetic plus manual review checklist | 100% money/date fixture arithmetic, all known interacting terms/unknowns explained; future contract extraction requires at least 99% exact critical-field agreement on an independent annotated set | Structured/manual terms; no general contract extraction accuracy established |
-| Onboarding | New isolated Explorer account | Register and save a useful labeled CMA/report within 120 seconds without professional approval; report distribution, not only fastest run | Automated local browser acceptance; no human usability study |
-| Training | Unguided first use on the same tasks | At least 80% independent completion in a pre-registered professional study; assess corrections and understanding as well as clicks | Academy progress follows audited work; human learning unmeasured |
+| Onboarding | New isolated Explorer account | Verify registration, authorization, saved CMA and report under bounded automated browser cases | Local synthetic browser tests; deployed service reliability remains unverified |
 | Migration | Source CSV and exact preview | 100% expected supported-field mapping and idempotency; no unauthorized writes; rollback preserves all subsequent edits in the golden cases | Synthetic formats tested; vendor-specific CRM exports unverified |
-| Efficiency | Same-data task using prior UI and fixed provider/model configuration | Pre-register paired task time/cost/reliability guardrails and analysis; retain a variation only with measured benefit and no critical error regression | Local computation timings/aggregate instrumentation; no causal time-saved claim |
-| Trust | Blinded review of explanation with hidden calculation details | At least 90% correct identification of facts, computations, assumptions, unknowns and required decisions in an independent professional task study | Five-part explanations implemented; user comprehension unmeasured |
-| Retention | Consenting professional cohort with declared eligible work | Pre-register voluntary cohort usage, successful-task and usefulness targets before an eight-week study; report churn, missing observations and support burden | No customers, retention outcomes or switching success invented |
+| Efficiency | Fixed versioned scenario with a stable provider/model configuration | Track repeatable compute latency, error counts and cost budgets; retain changes only when verification passes | Local timing metrics are engineering measurements, not customer time savings |
 
-Product improvements require reliable equivalent datasets, workflows and timing conditions. Use the transparent internal baselines above until independent professional studies are available.
+Compare changes on versioned, legally usable datasets and fixed workflows; publish the measurable engineering limits. No customer preference, retention or production reliability is inferred from these checks.
 
 1. Obtain independent qualified reviewer participation, documented jurisdiction scope and blinded case adjudication.
 2. Build a separated, multilingual adversarial holdout and measure false positives/negatives by intent and surface.
 3. Validate contract-specific offer interpretations and analyst thresholds prospectively against a frozen comparison cohort.
 4. Run licensed-source revocation, export and retention checks in production PostgreSQL and actual provider contracts.
-5. Measure professional task completion, correction burden and outcome calibration before claiming a competitive advantage.
+5. Verify source freshness and outcome calibration on newly frozen data before making data-quality or valuation-accuracy claims.
 
 ## October 16 engineering acceptance checkpoint
 
-The final local checks passed 210 unit/integration tests and 15 browser workflows. A separate live RentCast acceptance consumed seven actual requests under the configured ten-request cap across DMV and San Antonio; its saved valuation was reproducible, but required an explicit 365-day sale-age window and had wide dispersion. Real cached browser verification required no additional requests. Client matching/follow-up continuity and bounded known AI grounding regressions are covered in authored tests. These receipts narrow implementation uncertainty; they do not meet the independent professional study, outcome calibration, trust or retention thresholds above. See [verification results](verification-results.md) and [live provider evidence](../evidence/rentcast-live-acceptance.json).
+The final local checks passed 210 unit/integration tests and 15 browser workflows. A separate live RentCast acceptance consumed seven actual requests under the configured ten-request cap across DMV and San Antonio; its saved valuation was reproducible, but required an explicit 365-day sale-age window and had wide dispersion. Real cached browser verification required no additional requests. Client matching/follow-up continuity and bounded known AI grounding regressions are covered in authored tests. These receipts narrow implementation uncertainty; they do not establish professional adoption, customer outcomes or production reliability. See [verification results](verification-results.md) and [live provider evidence](../evidence/rentcast-live-acceptance.json).

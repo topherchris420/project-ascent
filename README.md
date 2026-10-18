@@ -115,7 +115,7 @@ GitHub Actions runs these checks, offline domain/AI checks, Chromium browser wor
 - Public pricing studios run from bundled records without a provider/model key. Local workspaces use SQLite in the ignored data directory. Production requires PostgreSQL, reviewed migrations, and restricted runtime permissions.
 - Account recovery and authenticator MFA are implemented; hosted rollout still requires migration 004, appropriate database grants, configured recovery email, and end-to-end acceptance on the deployed origin.
 - **Ask Ascent** has deterministic evidence explanations. Production external-model synthesis is currently held behind a pending independent AI review; supplying a Groq or OpenAI key alone does not enable approved production model responses.
-- Provider access, MLS agreements, data retention, privacy operations, and independent professional validation are separate release requirements.
+- Provider access, MLS agreements, data retention, privacy operations, and deployment-specific safeguards remain separate release requirements. Actual customer adoption and outcomes have not been established.
 
 [Production readiness](docs/production-readiness.md) · [Account-security deployment](docs/account-security.md) · [AI review status](docs/ai-independent-review.md) · [Complete verification history](docs/verification-results.md) · [Engineering](docs/engineering.md)
 

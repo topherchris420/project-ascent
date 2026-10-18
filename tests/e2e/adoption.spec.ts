@@ -73,7 +73,7 @@ test('onboarding acceptance: useful CMA in under two minutes with pending profes
     JSON.stringify(
       {
         at: new Date().toISOString(),
-        environment: 'Local development browser; fictional records; not a human usability study',
+        environment: 'Local development browser using fictional records',
         elapsedMs,
         registered: true,
         verification: 'pending',

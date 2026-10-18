@@ -1,2 +1,0 @@
-# One row per enrolled participant. Pseudonymous IDs only; keep names and contact details in a separate, access-controlled file.
-participant_id,first_product,status,withdrawal_reason,license_state,years_licensed,primary_role,device,browser

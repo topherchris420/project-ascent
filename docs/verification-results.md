@@ -13,7 +13,7 @@
 | PostgreSQL restoration | All migrations, restricted runtime role, forced RLS, encrypted document decryption, tenant isolation, restored sessions, MFA/recovery replay, encrypted reset-mail outbox with mocked delivery, one-use password reset/session revocation/MFA preservation, and production AI review gate pass. Synthetic local data only; no production backup or recovery email. |
 | Affected local browser flows | 6/6 pass: MFA setup and recovery, reset fragment clearing, Maryland and condos at 1440/390 px; Axe checks pass. New public accuracy/free pages both render at 390 px without overflow, console exceptions or Axe violations; screenshots inspected. |
 | Live public endpoints | Deployed Maryland and condo reports return 200 and match their new report digests; `accepted:false`, no calibrated interval. Condo `measured:true`. `/accuracy` and `/free` return 200. No private account/database flow was exercised on production. |
-| Operator handoff | Owner will configure migration 004/runtime grants and verified sender separately. Production email delivery and real production restore remain unverified. External licensing permissions, independent AI/professional reviews and the preference study are not supplied by CI. |
+| Operator handoff | Owner will configure migration 004/runtime grants and verified sender separately. Production email delivery and real production restore remain unverified. External licensing permissions and independently reviewed model accuracy are not supplied by CI. |
 
 See [production-readiness checkpoint](production-readiness.md), [account setup](account-security.md), [operations and compliance](operations-and-compliance.md) and [independent AI review](ai-independent-review.md). Ordinary tests made zero paid inference/property requests. Offline AI passed 9/9 mocked cases; this is not independent semantic accuracy evidence.
 
@@ -33,7 +33,7 @@ See [production-readiness checkpoint](production-readiness.md), [account setup](
 | Built-app HTTP checks | Homepage, `/maryland`, `/dc/condos`, both search/property/report flows return 200. Maryland exports its failed 4/9 verdict; condo exports `measured=false`; neither exports a calibrated interval. No cookies set by those public APIs. |
 | Formatting | Changed TypeScript/TSX files pass. A whole-repository formatting check reports pre-existing issues in unrelated files; those were left unchanged. |
 
-Evidence: [production checks](../evidence/public-coverage-verification.json), [Maryland test and limitations](maryland-public-records.md), [condo source and limits](dc-condominiums.md), [unsent Virginia requests](data-permissions/virginia-requests.md). Virginia remains permission-gated. The preference study has not run and no participants have been recruited.
+Evidence: [production checks](../evidence/public-coverage-verification.json), [Maryland test and limitations](maryland-public-records.md), [condo source and limits](dc-condominiums.md), [unsent Virginia requests](data-permissions/virginia-requests.md). Virginia remains permission-gated.
 
 ## Earlier checks
 
@@ -153,7 +153,7 @@ Scripted timings, sample size one per viewport, local development server with un
 | Landing → first studio result | 30 s | 1.73 s | 1.78 s | 1.73 s |
 | Landing → full scripted decision (inspect, strategy, challenge, exclusion, added sale, costs, question) → report open | 120 s | 5.56 s | 4.85 s | 5.67 s |
 
-The separate workspace onboarding acceptance (registration → pending verification → saved fictional CMA and report) recorded **6,265 ms**. Golden arithmetic tests found no critical arithmetic errors; tested tenant paths found no cross-tenant access. User preference against another platform remains **unmeasured** (0 participants).
+The separate workspace onboarding acceptance (registration → pending verification → saved fictional CMA and report) recorded **6,265 ms**. Golden arithmetic tests found no critical arithmetic errors; tested tenant paths found no cross-tenant access. These automated checks do not establish customer satisfaction or adoption.
 
 Corrections found during this cycle: the account-free entry did not read the demo sign-in response body on success, so Chromium held the request open and "network idle" never arrived; the page-by-page accessibility script timed out on it. The body is now always read and the scan completes. A development-server hot reload once dropped the dynamically loaded workspace stylesheet; a restart restored it and the production build bundles it. Playwright captures taller than the viewport showed the off-screen skip link mid-page; its real position was verified at −60 px. No failing test was removed or weakened.
 
@@ -203,7 +203,7 @@ Executed in a Linux cloud container with Node 22.22.0. Details are in [valuation
 | Accessibility | **22/22 configurations**, zero Axe violations, no horizontal overflow |
 | Production build and typecheck | Pass |
 
-## October 17, 2026 DC public records, validation review and study kit
+## October 17, 2026 DC public records and validation review
 
 Run in a separate worktree on local SQLite (no production database writes), Windows ARM64, Node 24.19.0, installed Chrome.
 
@@ -212,7 +212,7 @@ Run in a separate worktree on local SQLite (no production database writes), Wind
 | Validation review before merge (PR #6) | `--check` passes both markets; `--verify --market dc` reproduced the DC report and every per-sale estimate byte for byte in 76 s; engine fingerprint `fnv1a32-49f0c98b` unchanged on master |
 | DC data integrity | Runtime sales file SHA-256 equals the evidence copy and the published benchmark (`eebe4719…`); parcels file matches its provenance (92,142 rows) |
 | DC coverage sample | 222 of 231 evenly spaced parcels priced with the validated settings; 9 had no qualifying sale within 0.5 mi and 90 days |
-| Unit/integration suite | **321/321 passed**, including `dc-public-records.test.ts` (search, own-sale exclusion, radius/age/as-of bounds, calibrated range only when unmodified, server-rebuilt reports, replay) and `study-analysis.test.ts` (exact Clopper-Pearson and binomial values, counterbalancing, withdrawals and unsupported tasks kept) |
+| Unit/integration suite | **321/321 passed**, including `dc-public-records.test.ts` (search, own-sale exclusion, radius/age/as-of bounds, calibrated range only when unmodified, server-rebuilt reports, replay) |
 | Browser suite | **29 passed, 1 opt-in skipped**, 2.6 min, including the DC flow at 1440 and 390 px (search, calibrated range, edit removes it, report attribution, reload, reset, back button, axe, overflow) |
 | Production build | Pass; DC routes' server traces include all four dataset and provenance files |
 | Optimized smoke | `/dc` 200; DC search 200 (699 ms including the one-time data load); property 200 (14 ms); unknown parcel 404; report 200 (58 ms); existing routes unchanged; 0 credential matches in 69 compiled artifacts |

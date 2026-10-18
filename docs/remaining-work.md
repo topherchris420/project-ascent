@@ -7,13 +7,11 @@
 - `/maryland` adds 462,347 searchable Montgomery and Prince George’s homes from public-domain state data, with unavailable rooms omitted and a published pooled accuracy result, including every miss. [Details](maryland-public-records.md). Separate county validation is still required before calibrated county ranges.
 - `/dc/condos` adds 51,340 unit addresses and 8,470 qualified transfers. Condition is missing and its adjustment disabled. Condo accuracy is unmeasured; house calibration is not reused. [Details](dc-condominiums.md).
 - Virginia remains unavailable. [Four written requests](data-permissions/virginia-requests.md) are drafted for Fairfax GIS, Fairfax Tax Administration, Arlington and Loudoun. They are unsent; the maintainer sends them and records the precise permission before import or publication.
-- The preference study is **not run; participants remain 0**. An outside facilitator, blinded reviewers, professional comparison-platform access, fixed compensation and public pre-registration remain prerequisites before recruitment. The kit in `docs/study/` is unchanged.
 
-## October 17 continuation II: real DC homes, validated accuracy and a study kit
+## October 17 continuation II: real DC homes and validated accuracy
 
 - **Validated accuracy merged** after review (PR #6): DC and King County backtests reproduce byte for byte; the scorecard now discloses that DC's 10.0% median error is the DC-calibrated settings (defaults: 16.3%).
 - **Real DC homes**: `/dc` prices any of 92,142 single-family District parcels from CC BY 4.0 public records with the validated settings and the calibrated range when unmodified ([details](dc-public-records.md)). Maryland and the unvalidated condo studio were added October 18; remaining work is Virginia permission, county/condo validation, MLS history and deliberate snapshot refresh with re-validation.
-- **Preference study kit** ([docs/study](study/README.md)): ready to pre-register. Remaining, owner-side: an independent facilitator and reviewers, working comparison-platform access, participant compensation and the public pre-registration. Participants to date: 0.
 
 ## October 17 continuation: decision drivers, seller plan and labeled answers
 
@@ -31,7 +29,7 @@ The complete account-free Pricing Studio, comparable inspector, sensitivity anal
 
 The Vercel UI inspection found **no project environment variables** and a **Hobby** team. The connected environment API returned a scope-level 403; the official CLI had no credentials. No secrets were transferred and no subscription, source rights or spending caps were changed. Commercial release needs an appropriately authorized commercial hosting plan, deployment secret configuration, redeployment and actual hosted authentication/tenant/report acceptance. The local optimized sample is testable without those prerequisites. This does not turn previously completed local PostgreSQL acceptance into deployed acceptance.
 
-New data adapters, complete DMV inventory, verified title/permit/tax coverage, email recovery/MFA, production jobs, independent professional study and the existing legal/provider/privacy operational gates below remain open. This release does not claim all requested phases are complete. The new exclusion-rationale editor is a practice feature; broader licensed-note permissions need a deliberate server-side model before extending it.
+New data adapters, complete DMV inventory, verified title/permit/tax coverage, email recovery/MFA, production jobs and the existing legal/provider/privacy operational gates below remain open. This release does not claim all requested phases are complete. The new exclusion-rationale editor is a practice feature; broader licensed-note permissions need a deliberate server-side model before extending it.
 
 This is a prioritization of actual gaps in the delivered local application, not a claim that every requested production system is finished. The complete synthetic professional workflow is usable locally; live-data deployment and commercial operation require the work below. See [capability-matrix.md](capability-matrix.md) for the code/test basis and [verification results](verification-results.md) for the final executed checks.
 
@@ -83,13 +81,11 @@ The bounded Enterprise API slice is implemented and locally tested: two read sco
 
 20. **Mobile and accessibility:** keep responsive browser workflows and keyboard navigation; add full screen-reader/focus/zoom/reflow tests across forms, error states, dialogs, assistant, graph and maps. Automated axe tests cover specific states and cannot certify full WCAG conformance. Resolve/retest any page-by-page scan findings and preserve current screenshots as dated artifacts. There is no native iOS/Android app or offline synchronization.
 
-## Demonstrate advantage rather than assume it
+## Preserve verifiable claims
 
-21. **Run independent professional acceptance.** Recruit authorized professional participants and evaluate research, CMA/report, client, offer, contract/deadline and assistant tasks on identical permitted datasets. Pre-register completion, correction burden, reliability and comprehension thresholds before evaluation.
 
-22. **Evaluate with lawful, frozen cohorts.** Gather licensed outcomes only after recommendations are frozen; predefine time-based holdouts, geography/price/property strata, missing and unsold cases, selected forecast per property or clustered analysis, paired baseline and uncertainty. Current MAE/MAPE/RMSE/coverage outputs are evaluation infrastructure, not learning or accuracy improvement. Add model fitting/adaptation only after the evaluation design can distinguish improvement from selection bias and market shifts.
+21. **Evaluate with lawful, frozen cohorts.** Gather licensed outcomes only after recommendations are frozen; predefine time-based holdouts, geography/price/property strata, missing and unsold cases, selected forecast per property or clustered analysis, paired baseline and uncertainty. Current MAE/MAPE/RMSE/coverage outputs are evaluation infrastructure, not learning or accuracy improvement. Add model fitting/adaptation only after the evaluation design can distinguish improvement from selection bias and market shifts.
 
-23. **Run comparable task/performance/adoption studies.** Compare equivalent professional tasks and datasets against declared internal baselines; measure source freshness, report/response time, semantic factual grounding, failed/retried operations, interactions and task completion. Local in-process synthetic timings and a scripted onboarding-under-two-minutes test are useful implementation checks, not human retention, conversion or competitive-performance evidence. Final prices and acquisition strategy should follow actual costs and cohorts.
 
 ## Delivery boundary
 

@@ -20,7 +20,7 @@ V2 imposes a $50,000 minimum consideration in all primary windows and comparable
 
 Descriptive primary county slices: Montgomery 1,733 subjects / 1,634 valued / 9.56% median error; Prince George’s 1,079 / 1,013 / 9.46%. These are not separately selected, calibrated or accepted county models.
 
-The user preference study still has zero participants. An outside facilitator, blinded professional reviewers, authorized comparison-platform access, fixed compensation and public registration before recruitment remain required. See [study kit](study/README.md). No recruitment, permission request or client communication was sent.
+Actual customer adoption, sustained use and professional outcomes are not demonstrated by the published software checks. No external permission request or client communication was sent.
 
 ## Reproduce
 

@@ -12,7 +12,7 @@ Charging less than an existing tool is insufficient differentiation. RPR's prope
 
 For a different category reference, Follow Up Boss lists Grow at $69 per user/month on monthly billing or $58 per user/month on annual billing, plus applicable tax; calling is a separate add-on on that tier. Its monthly Pro package is $499 for ten users. This demonstrates established pricing for workflow and team utility, not that Ascent matches its service or should use those prices. [Follow Up Boss official pricing](https://www.followupboss.com/pricing).
 
-The testable adoption hypothesis is that a professional will retain a tool that makes the next decision easier: inspect why a comp matters, change assumptions without losing evidence, compare two offer structures, and carry the accepted terms into reviewed deadlines. The first session should demonstrate one complete, understandable decision before asking for payment, MLS credentials or a long organization profile. Actual superiority still requires task studies and retained-use evidence.
+The testable adoption hypothesis is that a professional will retain a tool that makes the next decision easier: inspect why a comp matters, change assumptions without losing evidence, compare two offer structures, and carry the accepted terms into reviewed deadlines. The first session should demonstrate one complete, understandable decision before asking for payment, MLS credentials or a long organization profile. Actual product superiority is not established; code tests and synthetic demos cannot show retained use or improved customer outcomes.
 
 ## Progressive onboarding and independent access decisions
 
