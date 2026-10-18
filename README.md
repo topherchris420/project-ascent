@@ -4,9 +4,11 @@
 
 # Ascent
 
-### Know the price. Show the why.
+### Real estate intelligence belongs to homeowners.
 
-A real estate workspace that keeps the evidence behind the decision.
+**You should never have to accept a number you cannot understand.**
+
+Ascent is free, open-source real estate intelligence for homeowners and anyone who wants to see the evidence behind a price. Explore comparable sales, challenge assumptions, test a scenario, and keep a report you can explain. Public pricing requires no account or professional license.
 
 **[DC homes](https://project-ascent-theta.vercel.app/dc) · [Maryland homes](https://project-ascent-theta.vercel.app/maryland) · [DC condos](https://project-ascent-theta.vercel.app/dc/condos) · [Try the sample](https://project-ascent-theta.vercel.app/demo)**
 
@@ -18,7 +20,21 @@ No account needed for the public pricing studios.
 
 ---
 
-A seller asks, **“Why this price?”** Ascent gives you the working: comparable sales, adjustments, assumptions, and a report you can explain.
+A homeowner asks, **“Why this price?”** Ascent gives them the working: comparable sales, adjustments, assumptions and a report they can challenge. It complements professional advice; it is not an appraisal or a live MLS feed.
+
+## Made for the people who own the homes
+
+- **Find the evidence.** Search eligible DC houses, Montgomery and Prince George’s County homes, or DC condos, each with explicit limits.
+- **Understand the number.** Inspect recorded comparable sales, adjustments, weights and assumptions.
+- **Explore a choice.** Change an asking price or cost assumption and compare illustrative outcomes, not predicted sale prices.
+- **Keep the reasoning.** Print a report or export source-aware analysis to discuss with someone you trust.
+- **Know what is missing.** Public records are snapshots. Live listings, concessions, building attributes and interior condition may be absent.
+
+Homeowners can use the public studios without an account. Existing client, offer and transaction tools remain in configured private workspaces for people who need them.
+
+**Product principle: The homeowner should never have to accept a number they cannot understand.**
+
+[Homeowner-first product direction](docs/homeowner-first.md) · [Published accuracy](https://project-ascent-theta.vercel.app/accuracy) · [Free-service promise](https://project-ascent-theta.vercel.app/free)
 
 ## Start with one decision
 
@@ -127,4 +143,4 @@ Project Ascent is open source under the [MIT License](LICENSE). You may use, mod
 
 ---
 
-**Ascent · Real estate, reasoned.**
+**Ascent · Real estate intelligence for the people who own the homes.**
