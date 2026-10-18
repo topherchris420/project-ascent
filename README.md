@@ -2,8 +2,6 @@
 
 [![CI](https://github.com/topherchris420/project-ascent/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/topherchris420/project-ascent/actions/workflows/ci.yml)
 
-Current status: [production-readiness checkpoint](docs/production-readiness.md). Maryland v2 and DC condos have separately published accuracy tests; both failed acceptance. Core service stays free and new paid checkout is disabled.
-
 # Ascent
 
 ### Know the price. Show the why.
