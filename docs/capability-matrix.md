@@ -19,7 +19,7 @@
 | Preference study kit | `docs/study`, `scripts/study/*`, `study-analysis.ts`: protocol, script, tasks, answer key, consent, counterbalanced schedule, random subject draw, exact-statistics analysis; `study-analysis.test.ts` | Not run; needs an independent facilitator, comparison-platform access and pre-registration |
 | Workspace pricing layout | Decide / Evidence / Challenge / History sections with sticky navigation; real valuation counts replace a decorative range bar; trend entered as % per month | Same calculation and saved-snapshot format |
 
-See [implementation and limits](pricing-studio.md), [public competitor scorecard](competitive-scorecard.md) and the dated [verification results](verification-results.md). These additions do not imply complete live property intelligence, new provider rights, professional adoption or achieved competitive preference.
+See [implementation and limits](pricing-studio.md), [product experience audit](competitive-scorecard.md) and the dated [verification results](verification-results.md). These additions do not imply complete live property intelligence, new provider rights, professional adoption or achieved competitive preference.
 
 Ascent is an independent product. The matrix records implemented behavior, supporting tests and remaining limits. See [verification results](verification-results.md) for executed checks. Fixtures and local timings do not establish production reliability or market accuracy.
 
