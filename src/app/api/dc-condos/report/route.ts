@@ -42,7 +42,7 @@ export async function GET(request: Request) {
     const result = calculateStudio(evidence, state);
     const sources = studioSources(evidence, state);
     const gate = assessValuationRelease(result, { sources, release: valuationReleaseSwitch() });
-    // No condo holdout exists. A DC address must not borrow the single-family validation.
+    // The condo holdout failed acceptance. A DC address must not borrow single-family calibration.
     const release = {
       ...gate,
       calibratedInterval: null,

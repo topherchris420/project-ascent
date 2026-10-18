@@ -1,5 +1,23 @@
 # Verification results
 
+## October 18, 2026 — revised studies and readiness safeguards
+
+| Check | Actual result |
+| --- | --- |
+| Pre-scoring registration | Commit `81b7090` pushed before either new holdout was scored. Original Maryland report, samples and benchmark unchanged. |
+| Maryland v2 | 2,812 previously unscored Jul–Sep 2026 sales, 94.13% valued; **9.52% MdAPE**, 52.0% PPE10, COD 14.8234, PRD 1.04218; **8/9 criteria**. PRD fails; no calibrated range released. Quality coefficient $63,889. |
+| Maryland sensitivity | Frozen fit/search/calibration; all positive consideration in subjects/history, no refitting. Same 2,812 subjects, 9.52% median error, PRD 1.04204; still fails. County slices descriptive only. |
+| DC condos | Separate condo-only protocol: 1,434 subjects, 96.23% valued, **12.95% MdAPE**, 41.16% PPE10, COD 17.751, PRD 1.05513; **4/9 criteria**. No house calibration reused or calibrated condo range released. |
+| Report verification | All five experiments pass independent metric/digest/benchmark checks. Separate full Maryland v2 and condo reruns reproduce both report digests and every per-sale estimate exactly. No parameters were changed after scoring. |
+| GitHub CI | [Extended-safeguard run](https://github.com/topherchris420/project-ascent/actions/runs/39139015461) passed all three jobs on `a8cfb3d`: **337 tests**, typecheck, five evidence checks, offline domain/AI checks, build, **39 browser cases passed / 1 explicit cached-live case skipped**, real disposable PostgreSQL dump/restore. Actions run on every PR/master push. |
+| PostgreSQL restoration | All migrations, restricted runtime role, forced RLS, encrypted document decryption, tenant isolation, restored sessions, MFA/recovery replay, encrypted reset-mail outbox with mocked delivery, one-use password reset/session revocation/MFA preservation, and production AI review gate pass. Synthetic local data only; no production backup or recovery email. |
+| Affected local browser flows | 6/6 pass: MFA setup and recovery, reset fragment clearing, Maryland and condos at 1440/390 px; Axe checks pass. New public accuracy/free pages both render at 390 px without overflow, console exceptions or Axe violations; screenshots inspected. |
+| Live public endpoints | Deployed Maryland and condo reports return 200 and match their new report digests; `accepted:false`, no calibrated interval. Condo `measured:true`. `/accuracy` and `/free` return 200. No private account/database flow was exercised on production. |
+| Operator handoff | Owner will configure migration 004/runtime grants and verified sender separately. Production email delivery and real production restore remain unverified. External licensing permissions, independent AI/professional reviews and the preference study are not supplied by CI. |
+
+See [production-readiness checkpoint](production-readiness.md), [account setup](account-security.md), [operations and compliance](operations-and-compliance.md) and [independent AI review](ai-independent-review.md). Ordinary tests made zero paid inference/property requests. Offline AI passed 9/9 mocked cases; this is not independent semantic accuracy evidence.
+
+
 ## October 18, 2026 — Maryland and DC condo coverage
 
 | Check | Result |

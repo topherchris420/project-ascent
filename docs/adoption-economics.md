@@ -1,3 +1,5 @@
+> Historical planning document. Current policy: core Ascent features remain free permanently, new checkout is disabled, and paid definitions are retained only for historical compatibility. See [current readiness and free-service scope](production-readiness.md).
+
 # Adoption, professional access and sustainable economics
 
 Research checked October 15, 2026. Dollar amounts below are USD. Vendor references are published prices, not account-specific quotes or observed bills. Commercial scenarios are explicitly hypothetical; no successor launch price has been selected or hard-coded into the product.
