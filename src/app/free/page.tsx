@@ -7,9 +7,11 @@ export default function Page() {
         <Link href="/" className="brand">
           ascent.
         </Link>
-        <h1>Ascent stays free.</h1>
+        <h1>Homeowners deserve the evidence. Ascent stays free.</h1>
         <p>
-          Public-record research, basic comparable-sale analysis, reports, clients, offers and deadline workflows will
+          Ascent is for homeowners and anyone who wants to understand a property decision, not just licensed agents.
+          Public pricing studios do not require an account. Public-record research, basic comparable-sale analysis,
+          reports, clients, offers and deadline workflows will
           remain free permanently. You do not need a subscription or payment card to use them. Creating a workspace is
           free.
         </p>
