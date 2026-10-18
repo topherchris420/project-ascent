@@ -23,7 +23,7 @@ A seller asks, **“Why this price?”** Ascent gives you the working: comparabl
 | You want to… | Start here |
 | --- | --- |
 | Analyze a real home | **[DC Pricing Studio](https://project-ascent-theta.vercel.app/dc)** — search covered single-family homes in District public records. No address in mind? Try the example address. |
-| Analyze a Maryland home | **[Maryland studio](https://project-ascent-theta.vercel.app/maryland)** — Montgomery and Prince George’s only. Size, quality grade, location and sale timing; no bedroom/bathroom data. The full accuracy result, including every missed criterion, is published. |
+| Analyze a Maryland home | **[Maryland studio](https://project-ascent-theta.vercel.app/maryland)** — Montgomery and Prince George’s only. Size, quality grade, location, and sale timing; no bedroom/bathroom data. The full accuracy result, including every missed criterion, is published. |
 | Analyze a DC condo | **[Condo studio](https://project-ascent-theta.vercel.app/dc/condos)** — a separate unit-level snapshot and condo-only comparables. Condo accuracy is unmeasured; no calibrated interval. |
 | Learn by doing | **[Fictional sample](https://project-ascent-theta.vercel.app/demo)** — explore an Arlington example using the actual pricing engine. |
 | Work through a deal | **[Workspace demo](https://project-ascent-theta.vercel.app/)** — choose **Explore the working demo** for fictional clients, offers and deadlines. |
@@ -33,16 +33,16 @@ Hosted workspaces require configured account services. The public studios work i
 
 ## See it. Challenge it. Keep it.
 
-1. **See the evidence.** Inspect each closed sale, its adjustments and its contribution to the estimate.
+1. **See the evidence.** Inspect each closed sale, its adjustments, and its contribution to the estimate.
 2. **Test a price.** Compare pricing positions and seller proceeds under your chosen cost assumptions.
 3. **Challenge the reasoning.** Change a condition rating, adjust a rate, or exclude a sale with a reason. Added sales are marked unverified. Reset to the original analysis; undo the reset if you change your mind.
-4. **Keep the decision.** Open a printable report or export JSON with the calculation, sources and assumptions. Drafts save in this browser on this device.
+4. **Keep the decision.** Open a printable report or export JSON with the calculation, sources, and assumptions. Drafts save in this browser on this device.
 
 The calculation is deterministic. AI does not set the price. An adjusted-sale range describes the comparable evidence; it is not automatically a confidence interval.
 
 ## Carry the reasoning through the deal
 
-The private workspace connects pricing snapshots, client notes, saved searches, offer comparisons and transaction milestones. **Ask Ascent** explains the record on screen, separating facts, calculations, assumptions and unknowns. Drafts and approvals stay with the user.
+The private workspace connects pricing snapshots, client notes, saved searches, offer comparisons, and transaction milestones. **Ask Ascent** explains the record on screen, separating facts, calculations, assumptions, and unknowns. Drafts and approvals stay with the user.
 
 Saved pricing analyses freeze their inputs. Replay them later, or use the **Decision Time Machine** to see which evidence and assumptions changed. Supported CSV/JSON exports keep your work portable.
 
@@ -53,9 +53,9 @@ Saved pricing analyses freeze their inputs. Replay them later, or use the **Deci
 The published DC evaluation reports **10.0% median error across 2,254 held-out sales**, with **50.2% within ±10%** of the recorded price. These results apply to the DC-validated settings and evaluation period; some acceptance thresholds were met narrowly. They do not guarantee an individual property's price.
 
 - The DC studio uses **District public records, CC BY 4.0**. Recent sales may lag; interior condition, concessions and MLS listing history are missing.
-- **DC houses, Maryland homes and DC condos have different evidence.** DC’s house validation applies only to its tested configuration. Maryland’s pooled Montgomery/Prince George’s test is published separately; displayed ranges remain uncalibrated pending county-specific validation. DC condos are available with unmeasured accuracy and uncalibrated ranges. Virginia awaits written permission; [four unsent requests](docs/data-permissions/virginia-requests.md) are ready for the maintainer.
-- The sample and workspace demo are fictional. Optional licensed providers require their own configuration and permissions; no MLS access is bundled.
-- Reports are decision aids requiring review, **not appraisals**. Ascent does not send client messages, accept offers or sign contracts.
+- **DC houses, Maryland homes, and DC condos have different evidence.** DC’s house validation applies only to its tested configuration. Maryland’s pooled Montgomery/Prince George’s test is published separately; displayed ranges remain uncalibrated pending county-specific validation. DC condos are available with unmeasured accuracy and uncalibrated ranges. Virginia awaits written permission; [four unsent requests](docs/data-permissions/virginia-requests.md) are ready for the maintainer.
+- The sample and workspace demo are fictional. Optional licensed providers require their own configuration and permissions; MLS access is not included.
+- Reports are decision aids requiring review, **not appraisals**. Ascent does not send client messages, accept offers, or sign contracts.
 
 [DC houses](docs/dc-public-records.md) · [Maryland](docs/maryland-public-records.md) · [DC condos](docs/dc-condominiums.md) · [Validation and misses](docs/valuation-validation.md) · [Production readiness](docs/remaining-work.md)
 
@@ -75,7 +75,7 @@ Open **http://localhost:3040**. On PowerShell, use `Copy-Item .env.example .env.
 
 No provider or model key is required for the bundled public records, fictional sample or deterministic workflows. Local workspaces use SQLite in `.data/`; production requires PostgreSQL and deployment configuration. Keep `.env.local` and `.data/` private.
 
-Optional integrations: **RentCast** for authorized property research, **Groq/OpenAI** for model-assisted explanations, and **Stripe** for configured subscriptions. Credentials stay on the server.
+Optional integrations: **RentCast** for authorized property research, and **Groq/OpenAI** for model-assisted explanations. Credentials stay on the server.
 
 [Engineering](docs/engineering.md) · [PostgreSQL](docs/postgres-connection.md) · [Vercel](docs/vercel-hobby.md) · [Provider setup](docs/rentcast-integration.md)
 
