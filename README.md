@@ -10,6 +10,8 @@ A real estate workspace that keeps the evidence behind the decision.
 
 **[DC homes](https://project-ascent-theta.vercel.app/dc) · [Maryland homes](https://project-ascent-theta.vercel.app/maryland) · [DC condos](https://project-ascent-theta.vercel.app/dc/condos) · [Try the sample](https://project-ascent-theta.vercel.app/demo)**
 
+[Published accuracy](https://project-ascent-theta.vercel.app/accuracy) · [Our free-service promise](https://project-ascent-theta.vercel.app/free)
+
 No account needed for the public pricing studios.
 
 </div>
@@ -23,8 +25,8 @@ A seller asks, **“Why this price?”** Ascent gives you the working: comparabl
 | You want to… | Start here |
 | --- | --- |
 | Analyze a real home | **[DC Pricing Studio](https://project-ascent-theta.vercel.app/dc)** — search covered single-family homes in District public records. No address in mind? Try the example address. |
-| Analyze a Maryland home | **[Maryland studio](https://project-ascent-theta.vercel.app/maryland)** — Montgomery and Prince George’s only. Size, quality grade, location, and sale timing; no bedroom/bathroom data. The full accuracy result, including every missed criterion, is published. |
-| Analyze a DC condo | **[Condo studio](https://project-ascent-theta.vercel.app/dc/condos)** — a separate unit-level snapshot and condo-only comparables. Condo accuracy is unmeasured; no calibrated interval. |
+| Analyze a Maryland home | **[Maryland studio](https://project-ascent-theta.vercel.app/maryland)** — Montgomery and Prince George’s homes. Uses area, construction-quality grade, location, and sale timing; bedroom/bathroom data is unavailable. Revised accuracy: 9.52% median error, with one of nine criteria unmet. |
+| Analyze a DC condo | **[Condo studio](https://project-ascent-theta.vercel.app/dc/condos)** — unit-level DC records and condo-only comparables. A separate test reports 12.95% median error and four of nine criteria met; no calibrated interval is offered. |
 | Learn by doing | **[Fictional sample](https://project-ascent-theta.vercel.app/demo)** — explore an Arlington example using the actual pricing engine. |
 | Work through a deal | **[Workspace demo](https://project-ascent-theta.vercel.app/)** — choose **Explore the working demo** for fictional clients, offers and deadlines. |
 | Bring your own evidence | Choose **Create an account** on the homepage. Your workspace starts empty. |
@@ -48,16 +50,31 @@ Saved pricing analyses freeze their inputs. Replay them later, or use the **Deci
 
 [Explore the workflows](docs/capability-matrix.md) · [How decision replay works](docs/evidence-and-decision-time-machine.md)
 
-## Useful evidence. Visible limits.
+## Free, by design
 
-The published DC evaluation reports **10.0% median error across 2,254 held-out sales**, with **50.2% within ±10%** of the recorded price. These results apply to the DC-validated settings and evaluation period; some acceptance thresholds were met narrowly. They do not guarantee an individual property's price.
+**Ascent's core workflows stay free.** Public-record research, basic comparable analysis, reports, clients, offers, and deadline workflows require no subscription or payment card. The public pricing studios do not require an account.
 
-- The DC studio uses **District public records, CC BY 4.0**. Recent sales may lag; interior condition, concessions and MLS listing history are missing.
-- **DC houses, Maryland homes, and DC condos have different evidence.** DC’s house validation applies only to its tested configuration. Maryland’s pooled Montgomery/Prince George’s test is published separately; displayed ranges remain uncalibrated pending county-specific validation. DC condos are available with unmeasured accuracy and uncalibrated ranges. Virginia awaits written permission; [four unsent requests](docs/data-permissions/virginia-requests.md) are ready for the maintainer.
-- The sample and workspace demo are fictional. Optional licensed providers require their own configuration and permissions; MLS access is not included.
-- Reports are decision aids requiring review, **not appraisals**. Ascent does not send client messages, accept offers, or sign contracts.
+[Read the free-service promise](https://project-ascent-theta.vercel.app/free). External AI and property providers have costs, quotas, and sometimes separate permission requirements. Reaching a limit stops those calls; it does not trigger a charge. Deterministic analysis remains available. Ascent does not currently offer paid plans or new subscription checkout.
 
-[DC houses](docs/dc-public-records.md) · [Maryland](docs/maryland-public-records.md) · [DC condos](docs/dc-condominiums.md) · [Validation and misses](docs/valuation-validation.md) · [Production readiness](docs/remaining-work.md)
+## Published accuracy: results and limitations
+
+These are **internal, reproducible retrospective evaluations**, not independent certification, appraisals, or guarantees for an individual property. Median error is the median absolute percentage difference between an estimate and the recorded sale price, calculated on the valued holdout sales.
+
+| Pricing population | Held-out sales | Median error | Within ±10% | Acceptance criteria |
+| --- | ---: | ---: | ---: | --- |
+| **DC single-family homes** | 2,254 | **9.98%** | 50.2% | **9/9 met**, several narrowly |
+| **Maryland, revised model** (Montgomery + Prince George’s) | 2,812 | **9.52%** | 52.0% | **8/9 met**, price-related bias failed |
+| **DC condominiums** | 1,434 | **12.95%** | 41.16% | **4/9 met**, overall acceptance failed |
+
+**Important distinctions:**
+
+- **DC houses:** Only the unmodified DC-validated settings can display a calibrated range. Adjustments or missing evidence remove that claim. District recorded sales may lag; public records omit MLS listing history and concessions.
+- **Maryland:** The revised study uses a different July–September 2026 holdout from the **original failed study** (13.85% median error on 12,831 sales, 4/9 criteria). These figures are **not a like-for-like before/after accuracy comparison**. Construction-quality grade is not inspected condition; bedroom and bathroom fields are absent. No current-home calibrated range is released.
+- **DC condos:** A condo-specific model was tested, but five criteria failed. Building-level effects and HOA fees, floor, views, parking, amenities, and interior condition remain unmodeled. No current-home calibrated range is released.
+- **Coverage and rights:** Public studios use bounded DC and two-county Maryland snapshots, not live MLS inventory. Virginia remains unavailable pending written source-use permission; [permission requests are drafted but unsent](docs/data-permissions/virginia-requests.md).
+- **Scope:** Fictional sample/workspace data is labeled as such. Reports support human decisions, **not appraisals**. Ascent does not send messages, accept offers, or sign contracts on behalf of users.
+
+**[Explore every published experiment](https://project-ascent-theta.vercel.app/accuracy)** · [Detailed valuation methodology and original results](docs/valuation-validation.md) · [Latest experimental and release gates](docs/production-readiness.md) · [Data coverage](docs/dc-public-records.md)
 
 ## Run locally
 
@@ -79,20 +96,30 @@ Optional integrations: **RentCast** for authorized property research, and **Groq
 
 [Engineering](docs/engineering.md) · [PostgreSQL](docs/postgres-connection.md) · [Vercel](docs/vercel-hobby.md) · [Provider setup](docs/rentcast-integration.md)
 
-## Develop and verify
+## Verify and contribute
 
 Next.js 16 · React 19 · TypeScript · Node.js 24
 
 ```bash
 npm run typecheck
 npm test
+npm run validate:valuation -- --check
 npm run build
 npm run test:e2e
 ```
 
-Browser tests need Chrome configured with `CHROME_PATH`. See [verification results](docs/verification-results.md) for evaluation commands and the distinction between fixture tests and production acceptance.
+GitHub Actions runs these checks, offline domain/AI checks, Chromium browser workflows, and a disposable PostgreSQL backup/restore drill on pull requests and pushes to master. **[Check the current CI results](https://github.com/topherchris420/project-ascent/actions/workflows/ci.yml)**. A passing synthetic test suite is not a production security or accuracy certification.
 
-Application code lives in `src/`, migrations in `migrations/`, tests in `tests/`, and research and operational notes in `docs/`. Contributions should preserve reproducibility, accessible interactions, source rights and workspace isolation.
+### Accounts, AI, and production setup
+
+- Public pricing studios run from bundled records without a provider/model key. Local workspaces use SQLite in the ignored data directory. Production requires PostgreSQL, reviewed migrations, and restricted runtime permissions.
+- Account recovery and authenticator MFA are implemented; hosted rollout still requires migration 004, appropriate database grants, configured recovery email, and end-to-end acceptance on the deployed origin.
+- **Ask Ascent** has deterministic evidence explanations. Production external-model synthesis is currently held behind a pending independent AI review; supplying a Groq or OpenAI key alone does not enable approved production model responses.
+- Provider access, MLS agreements, data retention, privacy operations, and independent professional validation are separate release requirements.
+
+[Production readiness](docs/production-readiness.md) · [Account-security deployment](docs/account-security.md) · [AI review status](docs/ai-independent-review.md) · [Complete verification history](docs/verification-results.md) · [Engineering](docs/engineering.md)
+
+Application code is in `src/`, migrations in `migrations/`, tests in `tests/`, and methodology in `docs/`. Contributions should preserve reproducibility, accessible interactions, source-use permissions, and workspace isolation. Browser tests require a configured Chromium installation; see the verification guide for local setup.
 
 ## License
 
