@@ -664,6 +664,7 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAv
             <span className="brand-mark">A</span>ascent<span className="brand-dot">.</span>
           </Link>
           <nav className="lp-links" aria-label="Sections">
+            <Link href="/home">My Home</Link>
             <a href="#homeowners">Start here</a>
             <a href="#workflow">More tools</a>
             <a href="#accuracy">Accuracy</a>

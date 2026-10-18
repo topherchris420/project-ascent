@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { gunzipSync } from 'node:zlib';
 import { distanceMiles } from '../analytics';
+import { recordedHistory } from './recorded-history';
 import { condoDefaultState, CONDO_ACCURACY_NOTICE } from '../dc-condo-studio';
 import type { Source, ValuationProperty } from '../types';
 import { parseCsv, displayDcAddress, normalizeDcAddress } from './dc-public-records';
@@ -154,6 +155,7 @@ export function condoValuationInputs(parcelId: string) {
       soldAt: `${sale.soldOn}T00:00:00.000Z`,
       soldPrice: sale.price,
     }));
+  subject.history = recordedHistory(parcelId, sales, asOf);
   const source: Source = {
     id: CONDO_SOURCE_ID,
     kind: 'public',
@@ -174,6 +176,7 @@ export function condoValuationInputs(parcelId: string) {
       parcelsFetchedAt: asOf,
       lastRecordedSale: salesProvenance.lastSale,
       salesSha256: salesProvenance.csvSha256,
+      parcelsSha256: salesProvenance.propertyCsvSha256,
     },
     attribution: salesProvenance.attribution,
   };

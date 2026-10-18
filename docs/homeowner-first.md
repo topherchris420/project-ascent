@@ -27,10 +27,14 @@ The homeowner should never have to accept a number they cannot understand. Prici
 ## Next, not yet shipped
 
 - Observe homeowners completing real analyses on desktop and mobile. Measure report completion and comprehension.
-- Explain fees, commissions, mortgage payoff and net proceeds with editable assumptions and jurisdictional caveats.
+- Evaluate homeowner comprehension of the delivered financial workbench, including debt, sale fees, cash requirements and the exclusions from scenario comparisons. [Implementation and limits](homeowner-workbench.md).
 - Investigate authorized live listing sources and expose freshness indicators before making live-market claims.
 - Seek independent valuation and usability evaluation that includes homeowner interpretation of estimates.
 
 **Not supported yet:** nationwide address search, live MLS parity, renovation ROI forecasts, six-month home-price forecasts, professional endorsement or independently verified customer adoption.
+
+## Homeowner workbench
+
+All public studios now connect their current evidence to ownership inputs, six deterministic financial scenarios, contextual decision explanations and local Property Evidence Passports. `/home` lists saved device profiles. Version comparison extends the existing Decision Time Machine; on-demand monitoring distinguishes record changes from hypothetical financial edits. Source collection timestamps alone do not produce a property alert. The fictional sample offers explicit illustrative financial inputs; supported real properties never silently receive example mortgage, insurance, rent or tax values.
 
 See [production readiness](production-readiness.md) and [valuation methodology](valuation-validation.md) for current release and accuracy gates.

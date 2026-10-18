@@ -1,0 +1,45 @@
+# Homeowner decision workbench
+
+## Repository audit and implementation map · October 18, 2026
+
+The starting revision is `a574e4c` on master. The audit inventoried all tracked application, test, documentation, migration, dataset and historical evidence files; inspected the public routes, authenticated API boundaries, calculation modules and provider contracts; and read the README, AGENTS, engineering, product, valuation, evidence-history and production-readiness material. Historical reports and datasets remain immutable inputs to this work.
+
+| Need | Existing implementation | Extension |
+| --- | --- | --- |
+| Property research | `PricingStudio`, DC/condo/Maryland adapters and account-free APIs | Embed a homeowner workbench in the same studio, with the current authorized evidence |
+| Financial choices | `simulatePricing`, seller plan, studio cost assumptions | Shared selling arithmetic plus a versioned, pure six-choice financial engine; missing inputs abstain |
+| Private ownership inputs | Studio device drafts; authenticated workspace aggregates | Explicit browser-only homeowner profiles; additional ownership fields stay on the device. Existing pricing drafts autosave selected price, fees and payoff; an explicitly opened pricing report submits those bounded choices to its stateless route |
+| Evidence/history | `CmaResult.inputSnapshot`, checksums, replay, `compareCmaDecisions`, arithmetic attribution | Versioned public-evidence passports, scenario snapshots and exact field changes |
+| Ask Ascent | Deterministic pricing questions; gated Groq/OpenAI orchestration | Deterministic scenario explanations in the current studio; independent AI gate unchanged |
+| Monitoring | Authorized fabric freshness/ingestion and workspace monitor | On-demand differences against a saved public-evidence snapshot, including corrections; no fabricated periodic alerts |
+| Valuation research | Frozen chronological protocols, Huber robust paired fits, selection/calibration windows and five published studies | Preserve algorithms, fingerprints, failed results and interval safeguards; verify existing results |
+| Security/rights | Tenant RLS, MFA/recovery, scoped export, independently reviewed provider grants | Keep the new local passport limited to bundled public sources and the labeled fictional sample; reject licensed records |
+
+The largest useful gap was ownership arithmetic connected to the property currently on screen. Rebuilding ingestion, valuation or professional workspace interfaces would duplicate working infrastructure. No new Virginia, permit, hazard, rental or tax feeds are authorized/configured here. Tax amounts, insurance, rent, debt and renovation assumptions must come from the homeowner. No independent AI approval exists. Maryland v2 fails PRD; DC condos fail five criteria. Those are release constraints, not missing UI features.
+
+MIT remains the software license; source licenses remain separate.
+
+## Delivered behavior
+
+The public DC, Maryland, condo and fictional studios share `HomeownerWorkbench`. It reuses the active property and valuation and links existing selling choices rather than starting another valuation engine. `/home` lists saved profiles. Property history uses only qualified transfers already present in the authorized snapshots; an absent transfer is unknown, not proof that a property never sold. DC loading now verifies both CSV fingerprints, the validated sales fingerprint, row counts and unique identifiers before serving records. The frozen datasets and historical research files are unchanged.
+
+`homeowner-finance.ts` validates nullable inputs with Zod and computes fixed-rate monthly amortization, six choices, cash flow, equity, ownership costs, sale proceeds, rental/renovation/payment break-even and a cash reserve requirement across the horizon. `selling-costs.ts` is shared with existing `simulatePricing`; the original seller rounding is preserved. Every comparison carries its engine version, complete inputs, monthly rows, limits and reproducibility checksum. Unknown inputs abstain from the affected comparison. Immediate sale proceeds can still be available when a hypothetical cash return is missing.
+
+Net position compounds signed cash flows at the explicitly assumed cash return, then adds end equity after modeled exit costs. It represents incremental resources, excluding starting cash. Negative flows represent required contributions and their opportunity cost; this does not authorize or model an unspecified borrowing facility. Cash required separately measures the largest cumulative deficit using month-end flows, without crediting investment earnings. Renovation break-even matches the sell scenario after entered delays, fees, carrying costs, debt and time value. Refinance payment break-even is labeled as a payment-only check; term and equity changes remain visible in the full comparison.
+
+The deterministic decision questions explain the current calculations, compare rent/sell, quantify a $25,000 price reduction, identify missing inputs and expose renovation break-even. Editable explanations can be exported. They make no external inference call and do not change the existing Groq configuration, source-use policy, independent review manifest or private workspace assistant.
+
+`homeowner-passport.ts` preserves public inputs, studio choices, private financial assumptions, homeowner improvements/disputes, expected calculation versions/hashes and frozen scenario summaries. Reload validates bounded storage, property identity and snapshot checksums. History compares two saved versions or a saved version with the current draft, using `compareCmaDecisions` only when the saved valuation hashes still reproduce. A new code version cannot silently claim historical reproduction. A checksum detects accidental alteration; it is not a signature or authentication mechanism.
+
+Sharing is explicit. Default exports contain public evidence and its valuation, excluding private debt, costs, scenario results, improvements, disputes and private calculation fingerprints. A user-entered comparable or condition rating withholds the default valuation output; an explicit private export can include it. Only the bundled public sources and authored fictional sample can enter this local path; licensed providers retain their existing authenticated and permission-scoped export routes. No public share link, uploaded document or notification service is introduced. Downloaded copies cannot be revoked.
+
+Monitoring is an on-demand comparison when a saved home is opened. Actual property/sale corrections and source-permission metadata changes are reviewable. Collection timestamps, saving time and unchanged data do not create property alerts. Financial-assumption changes appear in history separately. Preferences are saved explicitly. This does not refresh a source, promise periodic delivery or create live listing inventory.
+
+## Limits and release dependencies
+
+- No cloud synchronization or encryption of browser storage. Shared browser access and clearing site data matter. Ten homes/ten versions and a four-million-character bound keep storage finite; quota errors preserve the draft and never report a false save.
+- Existing pricing drafts autosave selected price, fees and payoff. Existing public pricing reports submit these explicitly selected choices in their bounded stateless request. Additional ownership inputs and notes are neither put into URLs nor sent to a server by the workbench. Filtered passport exports are generated locally.
+- Financial figures are assumptions and pre-tax arithmetic. Replacement housing, housing utility, capital-gains/income tax, deductions, liens, payoff fees, cost/rent inflation, qualification and bridge/construction financing are excluded. The choices do not provide equivalent housing. Rates and renovation prices are not fetched or forecast.
+- Tax, insurance, rental, permit, hazard and title completeness are unavailable without authorized new evidence. Existing public refresh scripts and provider/fabric permission controls remain the ingestion boundary. Virginia permission requests remain unsent; no Virginia data is ingested.
+- Published valuation performance is unchanged. The current implementation already uses robust Huber-reweighted fitting, ordered selection/calibration and deterministic baselines. No new candidate was promoted or accuracy improvement claimed from already-inspected holdouts. DC houses retain their existing exact-configuration safeguards; Maryland PRD and condo acceptance failures remain. Further model selection needs a newly registered untouched/prospective cohort and independent replication.
+- Production account migrations, recovery email acceptance, backup operations, source grants and independent AI reviewers remain the separate gates documented in production readiness. This local homeowner slice does not certify those systems.
