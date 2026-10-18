@@ -47,31 +47,10 @@ async function stripeRequest(path: string, body: URLSearchParams, fetcher: typeo
 }
 export async function openCheckout(actor: Actor, planId: string, fetcher: typeof fetch = fetch) {
   requireOwner(actor);
-  const plan = z.enum(paidPlans).parse(planId);
-  const price = configuredPrice(plan);
-  if (!price)
-    throw new HttpError(
-      503,
-      'This plan has no configured Stripe price. Contact the operator; no price or charge is implied.',
-    );
-  const workspace = await getWorkspace(actor.tenantId);
-  const billing = ensurePlatform(workspace).billing;
-  if (billing.subscriptionId && ['active', 'trialing'].includes(billing.status))
-    throw new HttpError(409, 'An active subscription already exists. Use the customer portal to manage its plan.');
-  const origin = applicationOrigin();
-  const body = new URLSearchParams({
-    mode: 'subscription',
-    'line_items[0][price]': price,
-    'line_items[0][quantity]': '1',
-    success_url: `${origin}/?billing=success`,
-    cancel_url: `${origin}/?billing=canceled`,
-    client_reference_id: actor.tenantId,
-    'metadata[tenantId]': actor.tenantId,
-    'subscription_data[metadata][tenantId]': actor.tenantId,
-  });
-  if (billing.customerId) body.set('customer', billing.customerId);
-  else body.set('customer_email', actor.email);
-  return stripeRequest('checkout/sessions', body, fetcher);
+  throw new HttpError(
+    410,
+    'Ascent is free. New subscriptions and checkout are disabled. Capacity limits do not create charges.',
+  );
 }
 export async function openPortal(actor: Actor, fetcher: typeof fetch = fetch) {
   requireOwner(actor);
@@ -88,18 +67,20 @@ export async function billingSnapshot(actor: Actor) {
   const snapshot = await platformSnapshot(actor);
   return {
     ...snapshot,
-    plans: snapshot.plans.map(plan => ({
-      ...plan,
-      checkoutConfigured: plan.configured && plan.id !== 'free',
-      modelCallsPerMonth: plan.aiRequestsPerMonth,
-      modelUsageUnit: 'AI-assisted questions (up to three provider rounds; tokens metered separately)',
-      features: [
-        'Unlimited basic CMA and fictional demonstration workflows',
-        `${plan.aiRequestsPerMonth} AI-assisted questions per month (up to three provider rounds; tokens metered separately)`,
-        `${plan.seats} organization seats`,
-        'Data-provider licensing and professional verification are independent',
-      ],
-    })),
+    plans: snapshot.plans
+      .filter(plan => plan.id === 'free')
+      .map(plan => ({
+        ...plan,
+        checkoutConfigured: plan.configured && plan.id !== 'free',
+        modelCallsPerMonth: plan.aiRequestsPerMonth,
+        modelUsageUnit: 'AI-assisted questions (up to three provider rounds; tokens metered separately)',
+        features: [
+          'Permanently free public-record research, basic CMA, reports, clients, offers and deadline workflows',
+          `${plan.aiRequestsPerMonth} AI-assisted questions per month (up to three provider rounds; tokens metered separately)`,
+          `${plan.seats} organization seats`,
+          'Data-provider licensing and professional verification are independent',
+        ],
+      })),
     subscription: snapshot.platform.billing,
     usage: snapshot.platform.usage,
     costs: {

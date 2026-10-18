@@ -1,4 +1,23 @@
 import type { AiProvider, AiRoute } from '../ai-types';
+import independentReview from '../ai-independent-review.json';
+type IndependentReview = {
+  status: string;
+  approvedModels: string[];
+  reviewers: { name: string; independent: boolean }[];
+  reportDigest: string | null;
+  expiresAt: string | null;
+};
+export function hasIndependentAiReview(model: string, at = Date.now()) {
+  const review = independentReview as IndependentReview;
+  return (
+    review.status === 'approved' &&
+    review.approvedModels.includes(model) &&
+    review.reviewers.filter(r => r.independent && r.name.trim()).length >= 2 &&
+    /^sha256-[0-9a-f]{64}$/.test(review.reportDigest || '') &&
+    !!review.expiresAt &&
+    Date.parse(review.expiresAt) > at
+  );
+}
 export const modelRegistry = {
   'openai/gpt-oss-20b': {
     production: true,
@@ -131,6 +150,12 @@ export function providerReady(route: AiRoute): { ready: boolean; reason: string 
         reason: 'Required optional-provider privacy review is unavailable; no implicit privacy fallback is allowed.',
       };
   }
+  if (process.env.NODE_ENV === 'production' && !hasIndependentAiReview(`${route.provider}:${route.model}`))
+    return {
+      ready: false,
+      reason:
+        'Independent AI accuracy review is pending for this model. Deterministic evidence assistance remains available.',
+    };
   return {
     ready: true,
     reason: 'Explicitly configured provider; account access and privacy settings are not independently verified.',

@@ -4,7 +4,8 @@ import Link from 'next/link';
 import { ArrowLeft, ArrowRight, LoaderCircle, MapPin, Search, ShieldCheck } from 'lucide-react';
 import { DC_CONDITION_LABELS, DC_CONDITION_MAX, dcDefaultState, dcReportHref } from '@/lib/dc-studio';
 import { dcBenchmark } from '@/lib/valuation-safeguards';
-import { condoDefaultState, condoReportHref, CONDO_ACCURACY_NOTICE } from '@/lib/dc-condo-studio';
+import { condoBenchmark, condoDefaultState, condoReportHref, CONDO_ACCURACY_NOTICE } from '@/lib/dc-condo-studio';
+import { AccuracyScorecard } from './accuracy-scorecard';
 import type { CmaAssumptions, Source, ValuationProperty } from '@/lib/types';
 import { PricingStudio } from './pricing-studio';
 import { date, number } from './format';
@@ -243,7 +244,7 @@ export function DcPricingStudio({ condos = false }: { condos?: boolean }) {
         key={data.parcelId}
         evidence={evidence}
         defaultState={defaultState}
-        storageKey={`ascent.${api}-studio.v1.${data.parcelId}`}
+        storageKey={`ascent.${api}-studio.${condos ? 'v2' : 'v1'}.${data.parcelId}`}
         reportHref={(state, format) =>
           condos ? condoReportHref(data.parcelId, state, format) : dcReportHref(data.parcelId, state, format)
         }
@@ -254,9 +255,15 @@ export function DcPricingStudio({ condos = false }: { condos?: boolean }) {
           <>
             <AddressSearch compact onPick={pick} condos={condos} />
             {condos && (
-              <p className="error-box" data-testid="condo-unvalidated">
-                {CONDO_ACCURACY_NOTICE}
-              </p>
+              <div>
+                <p className="error-box" data-testid="condo-unvalidated">
+                  {CONDO_ACCURACY_NOTICE}
+                </p>
+                <details>
+                  <summary>See the condo accuracy results</summary>
+                  <AccuracyScorecard benchmark={condoBenchmark} />
+                </details>
+              </div>
             )}
           </>
         }
@@ -265,7 +272,7 @@ export function DcPricingStudio({ condos = false }: { condos?: boolean }) {
           titleTop: condos ? 'Price a DC condo.' : 'Price a real DC home.',
           titleBottom: 'See the sales behind the price.',
           lede: condos
-            ? 'Search a unit, inspect recorded condo sales, and build a draft. Condo accuracy is unmeasured; no calibrated range is shown.'
+            ? 'Search a unit, inspect recorded condo sales, and build a draft. Condo accuracy failed its separate test; no calibrated range is shown.'
             : 'Review the recorded sales, test your assumptions, and build a report. Based on District public records; not an appraisal.',
           badgeTitle: 'Real public records',
           badgeLines: [
@@ -280,7 +287,7 @@ export function DcPricingStudio({ condos = false }: { condos?: boolean }) {
             ? 'Unit address, recorded bedrooms, baths and living area come from Condominium CAMA and Condo Relate, joined to building address points. Prices are District-qualified recorded transfers. No condition field is provided.'
             : "Address, coordinates, living area, bedrooms, baths and the assessor's condition grade come from District records. Comparable prices and dates are recorded deed transfers the District marks as arm's-length.",
           assumptions: condos
-            ? 'General, untuned adjustment rates and search filters. Condition adjustment is fixed to zero. DC single-family fitted settings and accuracy do not apply to condos.'
+            ? 'Condo-specific fitted rates and search filters. Condition adjustment is fixed to zero. The condo holdout failed acceptance; DC single-family accuracy does not apply.'
             : "Adjustment rates, the trend and the search filters start at the DC-validated settings fitted on earlier recorded sales. The assessor's condition grade is not an inspection.",
           missing: condos
             ? CONDO_ACCURACY_NOTICE
@@ -316,7 +323,7 @@ export function DcPricingStudio({ condos = false }: { condos?: boolean }) {
             </h1>
             <p>
               {condos
-                ? 'Find a residential condo by building address and unit number. Review recorded condo sales with untuned settings. Condo accuracy has not been measured.'
+                ? CONDO_ACCURACY_NOTICE
                 : 'Find a single-family home in District records. Review comparable sales, test a price, and open your report.'}
             </p>
           </div>

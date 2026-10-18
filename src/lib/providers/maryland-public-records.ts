@@ -152,7 +152,9 @@ export function marylandValuationInputs(parcelId: string) {
   const candidates: ValuationProperty[] = sales
     .filter(sale => {
       const age = (Date.parse(asOf) - Date.parse(`${sale.soldOn}T00:00:00Z`)) / 86400000;
-      return sale.parcelId !== parcelId && age >= 0 && age <= 365 && distanceMiles(parcel, sale) <= 3;
+      return (
+        sale.price >= 50000 && sale.parcelId !== parcelId && age >= 0 && age <= 365 && distanceMiles(parcel, sale) <= 3
+      );
     })
     .map(sale => ({
       ...makeProperty(parcels.get(sale.parcelId)!),
@@ -171,7 +173,7 @@ export function marylandValuationInputs(parcelId: string) {
     label: 'Maryland SDAT/MDP public-domain records',
     observedAt: asOf,
     confidence: 0,
-    license: `${provenance.attribution} Montgomery and Prince George’s only. Bedrooms and bathrooms unavailable; both adjustments disabled. Quality grade is not interior condition. Current assessor characteristics; latest three transfers per parcel, incomplete older history. Not MLS data or an appraisal.`,
+    license: `${provenance.attribution} Montgomery and Prince George’s only. Revised model: comparable consideration must be at least $50,000. Bedrooms and bathrooms unavailable; both adjustments disabled. Quality grade is not interior condition. Current assessor characteristics; latest three transfers per parcel, incomplete older history. Not MLS data or an appraisal.`,
   };
   return {
     parcel,

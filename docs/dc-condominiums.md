@@ -1,3 +1,5 @@
+> October 18 follow-up: [current production-readiness checkpoint](production-readiness.md). Maryland v2 and DC condo results are now published separately; both fail acceptance and keep calibrated ranges disabled. The original Maryland failure below is preserved.
+
 # DC condominium pricing
 
 `/dc/condos` is a separate account-free studio for residential condo units. It searches by building address and unit number, uses **condo sales only**, and preserves the unit's parcel identity through the report and JSON export. `/dc` continues to use the unchanged single-family snapshots and published house validation.

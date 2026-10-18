@@ -1,3 +1,5 @@
+> October 18 follow-up: [current production-readiness checkpoint](production-readiness.md). Maryland v2 and DC condo results are now published separately; both fail acceptance and keep calibrated ranges disabled. The original Maryland failure below is preserved.
+
 # Maryland public-record pricing: Montgomery and Prince George’s
 
 `/maryland` searches covered single-unit homes and townhouses in these two counties and prices them with the existing deterministic engine. No account, property-provider key, MLS feed, model request or live county lookup is involved. Virginia remains unavailable pending written permission; [four unsent requests](data-permissions/virginia-requests.md) are ready for the maintainer to send.

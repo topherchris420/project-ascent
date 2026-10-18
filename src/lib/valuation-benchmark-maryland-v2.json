@@ -1,0 +1,237 @@
+{
+  "reportDigest": "sha256-1c420bbcfa8218b63bca9d49fad4d892955e224f74c37c346a80780036a721a3",
+  "protocolDigest": "sha256-95171e6aee2a30edffef5d85e7c8a1931c08a568c12a21763050ff7675611f81",
+  "protocolId": "ascent-valuation-validation-maryland-2",
+  "market": {
+    "id": "maryland-v2",
+    "label": "Montgomery & Prince George’s, MD (revised)",
+    "state": "MD"
+  },
+  "accepted": false,
+  "dataset": {
+    "id": "maryland-montgomery-prince-georges",
+    "label": "Maryland SDAT/MDP recorded sales of at least $50,000",
+    "license": "Public Domain",
+    "csvSha256": "53b08d04f7444618d640cce1848aac7cf87276e1092f80e65377be013aa6850b",
+    "screened": 100224
+  },
+  "holdout": {
+    "from": "2026-07-01",
+    "to": "2026-09-30",
+    "sales": 2812
+  },
+  "windows": {
+    "fit": {
+      "from": "2022-01-01",
+      "to": "2024-12-31"
+    },
+    "select": {
+      "from": "2025-01-01",
+      "to": "2025-09-30"
+    },
+    "calibrate": {
+      "from": "2025-10-01",
+      "to": "2026-06-30"
+    },
+    "test": {
+      "from": "2026-07-01",
+      "to": "2026-09-30"
+    }
+  },
+  "engine": {
+    "version": "ascent-cma-1.0",
+    "fingerprint": "fnv1a32-49f0c98b"
+  },
+  "primary": {
+    "id": "locally-calibrated",
+    "label": "Engine with locally fitted rates and selected search filters",
+    "valuedShare": 0.941323,
+    "mdape": 0.095233,
+    "mdapeCi95": [
+      0.09039,
+      0.099904
+    ],
+    "ppe10Ci95": [
+      0.501313,
+      0.537996
+    ],
+    "ppe5": 0.287873,
+    "ppe10": 0.519834,
+    "ppe20": 0.793351,
+    "medianSignedError": 0.013011,
+    "cod": 14.8234,
+    "prd": 1.042179
+  },
+  "shipped": {
+    "id": "shipped-defaults",
+    "label": "Engine with shipped default assumptions (untuned)",
+    "valuedShare": 0.998578,
+    "mdape": 0.101972,
+    "mdapeCi95": [
+      0.097652,
+      0.105914
+    ],
+    "ppe10Ci95": [
+      0.474003,
+      0.508903
+    ],
+    "ppe5": 0.255698,
+    "ppe10": 0.490385,
+    "ppe20": 0.762821,
+    "medianSignedError": 0.011251,
+    "cod": 16.0883,
+    "prd": 1.054129
+  },
+  "baselines": [
+    {
+      "id": "baseline-median-ppsf",
+      "label": "Median $/sqft of the primary configuration’s comparables × subject sqft",
+      "mdape": 0.103612,
+      "ppe10": 0.486966
+    },
+    {
+      "id": "baseline-zip-median",
+      "label": "Median recorded price in the same ZIP over the prior 180 days",
+      "mdape": 0.180181,
+      "ppe10": 0.300961
+    }
+  ],
+  "paired": [
+    {
+      "baseline": "baseline-median-ppsf",
+      "mdapeDelta": -0.008378,
+      "ci95": [
+        -0.01332,
+        -0.003111
+      ],
+      "winRate": 0.555723
+    },
+    {
+      "baseline": "baseline-zip-median",
+      "mdapeDelta": -0.078138,
+      "ci95": [
+        -0.087829,
+        -0.069711
+      ],
+      "winRate": 0.682282
+    }
+  ],
+  "intervals": {
+    "target": 0.8,
+    "calibratedCoverage": 0.801662,
+    "calibratedMedianWidth": 0.403776,
+    "envelopeCoverage": 0.707216
+  },
+  "tiers": [
+    {
+      "id": "sparse",
+      "maxComps": 2,
+      "holdoutSales": 341,
+      "mdape": 0.118168,
+      "coverage": 0.800587,
+      "lowerPercent": -22.82,
+      "upperPercent": 25.75,
+      "lowerLogRatio": -0.258997,
+      "upperLogRatio": 0.229155
+    },
+    {
+      "id": "moderate",
+      "maxComps": 9,
+      "holdoutSales": 1278,
+      "mdape": 0.091078,
+      "coverage": 0.804382,
+      "lowerPercent": -20.88,
+      "upperPercent": 19.49,
+      "lowerLogRatio": -0.234257,
+      "upperLogRatio": 0.178092
+    },
+    {
+      "id": "dense",
+      "maxComps": null,
+      "holdoutSales": 1028,
+      "mdape": 0.096343,
+      "coverage": 0.798638,
+      "lowerPercent": -20.02,
+      "upperPercent": 18.44,
+      "lowerLogRatio": -0.223415,
+      "upperLogRatio": 0.169198
+    }
+  ],
+  "fittedAssumptions": {
+    "sqftRate": 130.6,
+    "bedroomValue": 0,
+    "bathroomValue": 0,
+    "conditionValue": 63889,
+    "monthlyTrend": 0.00523,
+    "maxDistanceMiles": 0.5,
+    "maxAgeDays": 180,
+    "maxSizeRatio": 1.35
+  },
+  "acceptance": [
+    {
+      "id": "A1",
+      "label": "Holdout sales valued",
+      "value": 0.941323,
+      "min": 0.9,
+      "passed": true
+    },
+    {
+      "id": "A2",
+      "label": "Median absolute percentage error",
+      "value": 0.095233,
+      "max": 0.1,
+      "passed": true
+    },
+    {
+      "id": "A3",
+      "label": "Share within ±10% of sale price",
+      "value": 0.519834,
+      "min": 0.5,
+      "passed": true
+    },
+    {
+      "id": "A4",
+      "label": "Coefficient of dispersion (COD)",
+      "value": 14.8234,
+      "max": 15,
+      "passed": true
+    },
+    {
+      "id": "A5",
+      "label": "Price-related differential (PRD)",
+      "value": 1.042179,
+      "min": 0.98,
+      "max": 1.03,
+      "passed": false
+    },
+    {
+      "id": "A6",
+      "label": "Absolute median signed error",
+      "value": 0.013011,
+      "max": 0.03,
+      "passed": true
+    },
+    {
+      "id": "A7",
+      "label": "Beats median $/sqft of the same comparables",
+      "value": -0.003111,
+      "max": 0,
+      "passed": true
+    },
+    {
+      "id": "A8",
+      "label": "Beats trailing ZIP median price",
+      "value": -0.069711,
+      "max": 0,
+      "passed": true
+    },
+    {
+      "id": "A9",
+      "label": "Calibrated 80% interval coverage",
+      "value": 0.801662,
+      "min": 0.75,
+      "max": 0.85,
+      "passed": true
+    }
+  ]
+}

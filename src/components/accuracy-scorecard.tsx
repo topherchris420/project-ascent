@@ -117,6 +117,23 @@ export function AccuracyScorecard({ benchmark = valuationBenchmark }: { benchmar
               : 'The model did not meet the acceptance criteria; every miss is shown above.'}
           </p>
         )}
+        {benchmark.market.id === 'maryland-v2' && (
+          <p className="lp-accuracy-caveat">
+            Revised experiment: consideration at least $50,000, no bedroom or bathroom inputs, construction quality
+            adjustment capped at $75,000. Three previously unscored months, July–September 2026, with recording lag.
+            Price-related bias still failed. This is a different cohort from the original 13.85% result; it is not a
+            paired improvement estimate. The original failure remains published.{' '}
+            <a href="/accuracy">Read both experiments</a>. No calibrated range is released.
+          </p>
+        )}
+        {benchmark.market.id === 'dc-condos' && (
+          <p className="lp-accuracy-caveat">
+            Condo-specific study; studios included, condition adjustment disabled. Missing floor, view, parking, HOA
+            finances and assessments. Outcomes in the same building can be correlated; sale-level confidence intervals
+            may be too narrow. Internally reproduced, awaiting independent professional review. No calibrated range is
+            released.
+          </p>
+        )}
         {benchmark.market.id === 'maryland' &&
           marylandCounties.counties.map(county => (
             <p className="lp-accuracy-caveat" key={county.code}>

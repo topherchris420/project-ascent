@@ -11,7 +11,13 @@ import {
   marylandValuationInputs,
   searchMarylandAddresses,
 } from '../src/lib/providers/maryland-public-records';
-import { MD_GRADE_MAX, marylandBenchmark, marylandDefaultState, marylandReportHref } from '../src/lib/maryland-studio';
+import {
+  MD_GRADE_MAX,
+  marylandRevisedBenchmark,
+  marylandBenchmark,
+  marylandDefaultState,
+  marylandReportHref,
+} from '../src/lib/maryland-studio';
 import { benchmarkFromReport, benchmarkForState } from '../src/lib/valuation-safeguards';
 import {
   dcProtocol,
@@ -144,8 +150,8 @@ test('Maryland public routes bound input and exports preserve missing fields, qu
   assert.equal(response.status, 200);
   const json = await response.json();
   assert.deepEqual(json.missingFeatures, ['bedrooms', 'bathrooms']);
-  assert.equal(json.validation.accepted, marylandBenchmark.accepted);
-  assert.equal(json.validation.reportDigest, marylandBenchmark.reportDigest);
+  assert.equal(json.validation.accepted, marylandRevisedBenchmark.accepted);
+  assert.equal(json.validation.reportDigest, marylandRevisedBenchmark.reportDigest);
   assert.equal(replayCma(json.record).reproduced, true);
   assert.equal(json.record.release.calibratedInterval, null);
   const html = await (

@@ -1,3 +1,5 @@
+> October 18 follow-up: [current production-readiness checkpoint](production-readiness.md). Maryland v2 and DC condo results are now published separately; both fail acceptance and keep calibrated ranges disabled. The original Maryland failure below is preserved.
+
 # Valuation accuracy validation and production safeguards
 
 Most residential pricing tools publish no error rate. Ascent publishes one for its home market, Washington, DC, measured out of sample on the District's own recorded sales against thresholds set before scoring. A second market, King County, WA, is published alongside it, including the criteria it missed. Anyone can reproduce either result byte for byte.

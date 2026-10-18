@@ -111,24 +111,19 @@ test('monthly quotas are atomic, token cost estimates idempotent, and rollover r
   delete process.env.PLAN_FREE_AI_REQUESTS;
 });
 
-test('Stripe transport uses configured prices and server tenant metadata; no local paid grant on checkout', async () => {
+test('checkout stays disabled even with configured prices; no HTTP request or entitlement change', async () => {
   const account = await owner();
-  let captured: URLSearchParams | null = null;
-  const mock: typeof fetch = async (url, init) => {
-    assert.equal(String(url), 'https://api.stripe.com/v1/checkout/sessions');
-    captured = new URLSearchParams(String(init?.body));
-    return Response.json({ url: 'https://checkout.stripe.com/c/pay/test_mock' });
+  const mock: typeof fetch = async () => {
+    throw new Error('Must not contact Stripe');
   };
-  const session = await openCheckout(account.user, 'team', mock);
-  assert.match(session.url, /checkout.stripe.com/);
-  assert.equal((captured as URLSearchParams | null)?.get('line_items[0][price]'), 'price_team_test');
-  assert.equal(
-    (captured as URLSearchParams | null)?.get('subscription_data[metadata][tenantId]'),
-    account.user.tenantId,
-  );
-  assert.equal(effectivePlan(await getWorkspace(account.user.tenantId)), 'free');
+  await assert.rejects(openCheckout(account.user, 'team', mock), /Ascent is free/);
+  await assert.rejects(openCheckout(account.user, 'enterprise', mock), /disabled/);
   await assert.rejects(openCheckout({ ...account.user, role: 'agent' }, 'team', mock), /owner/);
-  await assert.rejects(openCheckout(account.user, 'enterprise', mock), /no configured/);
+  assert.equal(effectivePlan(await getWorkspace(account.user.tenantId)), 'free');
+  assert.deepEqual(
+    (await billingSnapshot(account.user)).plans.map(plan => plan.id),
+    ['free'],
+  );
   await assert.rejects(openPortal(account.user, mock), /no Stripe customer/);
 });
 

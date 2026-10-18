@@ -1,0 +1,11 @@
+# Independent AI accuracy release
+
+Status: **pending; no reviewers or findings recorded**. Ordinary CI runs deterministic fixtures and mocked provider responses. Prior live smoke exposed semantic mistakes and is not an independent professional accuracy test.
+
+Production model synthesis now checks `src/lib/ai-independent-review.json`. Until an approved, unexpired record names the exact provider:model, at least two independent reviewers and a report digest, the provider is not ready and the app uses deterministic evidence assistance. No environment switch can override this pending record. Changing it is a reviewed source change. The record is an operational gate, not proof that a named person is independent; the review evidence must support that claim.
+
+Before obtaining any new review outcomes, an outside facilitator should publicly register a frozen case set, permitted data, prompts/tool contexts, provider/model versions, inference settings, failure rules, thresholds and analysis. Use two blinded professional reviewers who did not implement the system. Include ordinary property/comparable questions, conflicting/stale/missing facts, offers, contract dates, unsupported claims, source restrictions, privacy and prompt injection. Select lawful data and obtain source-specific external-inference permission first.
+
+Score individual factual claims against frozen source evidence, exact field/value agreement, unsupported claims, critical financial/legal mistakes, correct abstention and professional acceptance. Report disagreement, adjudication, withdrawals, model failures and every tested configuration; do not report citation membership as entailment. Fixing on a failed holdout requires a new untouched set. Set acceptable performance publicly before recruiting/reviewing; no success threshold has been retrospectively fitted here.
+
+After the study, commit a sanitized report and per-case decisions with a reproducible digest, reviewer identities/independence declarations and dated approval/expiry. Verify the actual records before updating the release manifest. Re-review after material model, prompt, tool or data-policy changes and monitor failures. The broader [preference study](study/README.md) answers product preference; it does not substitute for AI factual accuracy or valuation calibration.

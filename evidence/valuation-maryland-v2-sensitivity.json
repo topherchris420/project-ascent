@@ -1,0 +1,58 @@
+{
+  "primaryReportDigest": "sha256-1c420bbcfa8218b63bca9d49fad4d892955e224f74c37c346a80780036a721a3",
+  "basis": "Predeclared all-positive-consideration sensitivity. Reuse the primary fit, search and calibration unchanged; admit nominal consideration in both subjects and comparable history. No new acceptance claim or tuning. County metrics are descriptive slices of the primary, screened cohort.",
+  "sales": 2812,
+  "valued": 2647,
+  "nominalConsiderationBelow50000": 0,
+  "metrics": {
+    "n": 2647,
+    "mdape": 0.095181,
+    "mape": 0.150305,
+    "ppe5": 0.287495,
+    "ppe10": 0.519834,
+    "ppe20": 0.79524,
+    "medianRatio": 1.012058,
+    "medianSignedError": 0.012058,
+    "cod": 14.7993,
+    "prd": 1.042042
+  },
+  "coverage": 0.8027956176803929,
+  "counties": [
+    {
+      "code": "MONT",
+      "sales": 1733,
+      "valued": 1634,
+      "metrics": {
+        "n": 1634,
+        "mdape": 0.095639,
+        "mape": 0.14363,
+        "ppe5": 0.29437,
+        "ppe10": 0.520196,
+        "ppe20": 0.79743,
+        "medianRatio": 1.015724,
+        "medianSignedError": 0.015724,
+        "cod": 14.066,
+        "prd": 1.04004
+      }
+    },
+    {
+      "code": "PRIN",
+      "sales": 1079,
+      "valued": 1013,
+      "metrics": {
+        "n": 1013,
+        "mdape": 0.094614,
+        "mape": 0.162225,
+        "ppe5": 0.277394,
+        "ppe10": 0.51925,
+        "ppe20": 0.786772,
+        "medianRatio": 1.010204,
+        "medianSignedError": 0.010204,
+        "cod": 16.0211,
+        "prd": 1.042569
+      }
+    }
+  ],
+  "samplesDigest": "sha256-0feb2f6c2ef26cf1a1983b9557a96a87023f9c73e7b3d9bf9008cee43aa244bb",
+  "digest": "sha256-d389e332a5234f66cefbbef468a50d1c0d63e7366e0ffc0c5e72f8ff2f2e6c93"
+}

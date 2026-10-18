@@ -1,0 +1,8 @@
+{
+  "status": "pending",
+  "approvedModels": [],
+  "reviewers": [],
+  "reportDigest": null,
+  "expiresAt": null,
+  "note": "No independent human-adjudicated accuracy report has been supplied. Production model synthesis remains disabled; deterministic evidence assistance remains available."
+}

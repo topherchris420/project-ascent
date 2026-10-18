@@ -1,6 +1,7 @@
 import { timingSafeEqual } from 'node:crypto';
 import { endpoint, json } from '@/lib/api';
 import { HttpError } from '@/lib/auth';
+import { purgeExpiredAccountSecurity } from '@/lib/account-security';
 import { mutateWorkspace, transaction } from '@/lib/db';
 import { appendAudit, refreshGraph, runMonitor } from '@/lib/service';
 import { runScheduledFabricSync } from '@/lib/fabric-service';
@@ -15,6 +16,7 @@ export async function GET(request: Request) {
     const expected = Buffer.from(`Bearer ${secret || ''}`);
     if (!secret || actual.length !== expected.length || !timingSafeEqual(actual, expected))
       throw new HttpError(401, 'Scheduled job authentication required.');
+    await purgeExpiredAccountSecurity();
     const tenants = await transaction(null, tx => tx.query<{ id: string }>('SELECT id FROM tenants'));
     const results = [];
     for (const tenant of tenants) {

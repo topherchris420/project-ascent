@@ -47,7 +47,7 @@ test('condos use only other-unit condo sales and never invent condition or inher
   );
   assert.equal(assessValuationRelease(rerated).calibratedInterval, null);
 });
-test('condo report and API preserve unit identity, unknown condition and unmeasured accuracy', async () => {
+test('condo report and API preserve unit identity, unknown condition and measured failed accuracy', async () => {
   const inputs = example(),
     state = condoDefaultState();
   const schema = studioStateSchema(
@@ -64,7 +64,7 @@ test('condo report and API preserve unit identity, unknown condition and unmeasu
   );
   assert.equal(response.status, 200);
   const json = await response.json();
-  assert.equal(json.validation.measured, false);
+  assert.equal(json.validation.measured, true);
   assert.equal(json.record.release.calibratedInterval, null);
   assert.equal(json.record.release.reference, null);
   assert.equal(json.record.result.inputSnapshot.subject.condition, undefined);
@@ -72,7 +72,7 @@ test('condo report and API preserve unit identity, unknown condition and unmeasu
   const html = await (
     await reportGet(new Request(`http://local${condoReportHref(inputs.parcel.parcelId, state)}`))
   ).text();
-  assert.match(html, /Condo accuracy has not been validated/);
+  assert.match(html, /Condo accuracy was tested separately and failed/);
   assert.match(html, /CC BY 4.0/);
   assert.doesNotMatch(html, /Calibrated 80% range|condition 3\/|District assessor grade/);
 });

@@ -17,6 +17,8 @@ import {
   dcProtocol,
   kingCountyProtocol,
   marylandProtocol,
+  marylandV2Protocol,
+  dcCondoProtocol,
   valueSale,
   verifyAttestation,
   verifyValidationReport,
@@ -119,7 +121,7 @@ test('DC is scored against the same method and the same bars as King County', ()
   assert.equal(dcProtocol.dataset.license, 'CC-BY-4.0');
   assert.deepEqual(
     validationProtocols.map(protocol => protocol.id),
-    [dcProtocol.id, kingCountyProtocol.id, marylandProtocol.id],
+    [dcProtocol.id, kingCountyProtocol.id, marylandProtocol.id, marylandV2Protocol.id, dcCondoProtocol.id],
   );
   // The partial final month of the snapshot is outside the holdout.
   assert.ok(dcProtocol.windows.test.to < '2026-10-01');

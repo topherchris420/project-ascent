@@ -1,5 +1,5 @@
 import { DC_CONDITION_MAX, DC_PARCEL_PATTERN } from '@/lib/dc-studio';
-import { condoDefaultState, CONDO_ACCURACY_NOTICE } from '@/lib/dc-condo-studio';
+import { condoBenchmark, condoDefaultState, CONDO_ACCURACY_NOTICE } from '@/lib/dc-condo-studio';
 import {
   calculateStudio,
   studioCandidates,
@@ -70,7 +70,13 @@ export async function GET(request: Request) {
           reproduction:
             'Recalculate record.result.inputSnapshot with the archived assumptions and asOf using the stated Ascent engine version. Check calculationHash.',
           propertyType: 'condominium',
-          validation: { accepted: false, measured: false, calibratedInterval: null },
+          validation: {
+            accepted: condoBenchmark.accepted,
+            measured: true,
+            reportDigest: condoBenchmark.reportDigest,
+            benchmark: condoBenchmark,
+            calibratedInterval: null,
+          },
           condoLimits: CONDO_ACCURACY_NOTICE,
           limits:
             'District public records (CC BY 4.0) joined and filtered by Ascent; not MLS data, not an appraisal and not a forecast. Concessions are not recorded and recent sales may not be recorded yet. The checksum is not cryptographic proof.',

@@ -25,7 +25,7 @@ import { assessCmaEvidence, compareCmaDecisions } from '@/lib/decision-review';
 import type { ValuationProperty } from '@/lib/types';
 import { valuationBenchmark } from '@/lib/valuation-safeguards';
 import { AccuracyScorecard } from './accuracy-scorecard';
-import { marylandBenchmark, marylandVerdict } from '@/lib/maryland-studio';
+import { marylandRevisedBenchmark as marylandBenchmark, marylandVerdict } from '@/lib/maryland-studio';
 
 export type LandingProps = {
   onDemo: () => void;
@@ -848,7 +848,7 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAv
             </p>
             <p className="lp-fine">
               <Link href="/dc/condos">DC condo pricing is available</Link> with a separate unit-level snapshot. Condo
-              accuracy remains unmeasured; no single-family calibration is reused.
+              accuracy was tested separately and failed. <Link href="/accuracy">See all published experiments</Link>.
             </p>
             <details className="lp-methodology">
               <summary>Maryland accuracy: results and missed criteria</summary>

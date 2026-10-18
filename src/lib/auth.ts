@@ -3,6 +3,7 @@ import { promisify } from 'node:util';
 import { syncPropertyLocations, transaction } from './db';
 import { createDemoWorkspace, createEmptyWorkspace } from './seed';
 import type { Actor } from './types';
+import { assertSessionAssurance, verifyLoginFactor } from './account-security';
 
 const scrypt = promisify(scryptCallback);
 export const SESSION_COOKIE = 'ascent_session';
@@ -48,7 +49,7 @@ const actorFrom = (row: UserRow): Actor => ({
   email: row.email,
   role: row.role,
 });
-export async function createSession(user: Actor) {
+export async function createSession(user: Actor, mfaVerified = false) {
   const token = randomBytes(32).toString('base64url');
   await transaction(null, async tx => {
     await tx.query('DELETE FROM sessions WHERE expires_at<$1', [new Date().toISOString()]);
@@ -57,6 +58,11 @@ export async function createSession(user: Actor) {
       user.id,
       new Date(Date.now() + SESSION_MS).toISOString(),
     ]);
+    if (mfaVerified)
+      await tx.query('INSERT INTO session_assurance(hash,mfa_at) VALUES($1,$2)', [
+        digest(token),
+        new Date().toISOString(),
+      ]);
   });
   return { user, token };
 }
@@ -88,6 +94,7 @@ export async function register(input: {
       'INSERT INTO users(id,tenant_id,name,email,role,password_hash,created_at) VALUES($1,$2,$3,$4,$5,$6,$7)',
       [id, tenantId, input.name, email, 'owner', passwordHash, new Date().toISOString()],
     );
+    await tx.query('INSERT INTO account_security(user_id,is_demo) VALUES($1,$2)', [id, seed === 'demo' ? 1 : 0]);
     const workspace = seed === 'demo' ? createDemoWorkspace() : createEmptyWorkspace();
     if (input.organization) workspace.settings.organization = input.organization;
     const audit = {
@@ -112,7 +119,7 @@ export async function register(input: {
   return createSession({ id, tenantId, name: input.name, email, role: 'owner' });
 }
 
-export async function login(email: string, password: string) {
+export async function login(email: string, password: string, code?: string) {
   const rows = await transaction(null, tx =>
     tx.query<UserRow>('SELECT * FROM users WHERE email=$1', [email.toLowerCase().trim()]),
   );
@@ -122,7 +129,7 @@ export async function login(email: string, password: string) {
     row?.password_hash || 'scrypt:00000000000000000000000000000000:' + '00'.repeat(64),
   );
   if (!row || !row.password_hash || !valid) throw new HttpError(401, 'Email or password is incorrect.');
-  return createSession(actorFrom(row));
+  return createSession(actorFrom(row), await verifyLoginFactor(row.id, code));
 }
 
 export async function demoSession(name = 'Alex Morgan') {
@@ -147,7 +154,7 @@ export function sessionToken(request: Request): string | null {
   return /^[A-Za-z0-9_-]{43}$/.test(token) ? token : null;
 }
 
-export async function authenticate(request: Request): Promise<Actor> {
+export async function authenticate(request: Request, allowMfaSetup = false): Promise<Actor> {
   const token = sessionToken(request);
   if (!token) throw new HttpError(401, 'Sign in to continue.');
   const rows = await transaction(null, tx =>
@@ -157,7 +164,9 @@ export async function authenticate(request: Request): Promise<Actor> {
     ),
   );
   if (!rows[0]) throw new HttpError(401, 'Session expired. Sign in again.');
-  return actorFrom(rows[0]);
+  const actor = actorFrom(rows[0]);
+  if (!allowMfaSetup) await assertSessionAssurance(actor, digest(token));
+  return actor;
 }
 
 export async function logout(request: Request) {

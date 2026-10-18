@@ -14,7 +14,9 @@ for (const width of [1440, 390]) {
     await result.click();
     await expect(page.getByRole('heading', { name: label, exact: true })).toBeVisible();
     await expect(page.getByTestId('studio-estimate')).toHaveText(/^\$[\d,]+$/);
-    await expect(page.getByTestId('condo-unvalidated')).toContainText('Condo accuracy has not been validated');
+    await expect(page.getByTestId('condo-unvalidated')).toContainText(
+      'Condo accuracy was tested separately and failed',
+    );
     await expect(page.getByTestId('calibrated-interval')).toHaveCount(0);
     await expect(page.getByLabel('Subject condition rating', { exact: true })).toHaveCount(0);
     await expect(page.getByLabel('Condition point ($)', { exact: true })).toHaveCount(0);
@@ -22,7 +24,7 @@ for (const width of [1440, 390]) {
     await page.getByRole('link', { name: 'Open professional report', exact: true }).click();
     const report = await popup;
     await expect(report.getByRole('heading', { name: label, exact: true })).toBeVisible();
-    await expect(report.getByText(/Condo accuracy has not been validated/).first()).toBeVisible();
+    await expect(report.getByText(/Condo accuracy was tested separately and failed/).first()).toBeVisible();
     await expect(report.locator('.facts')).not.toContainText('condition 3');
     await expect(report.getByText(/Calibrated 80% range/)).toHaveCount(0);
     await report.close();

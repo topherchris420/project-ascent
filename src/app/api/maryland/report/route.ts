@@ -2,7 +2,7 @@ import {
   MD_GRADE_MAX,
   MD_PARCEL_PATTERN,
   marylandDefaultState,
-  marylandBenchmark,
+  marylandRevisedBenchmark as marylandBenchmark,
   marylandVerdict,
 } from '@/lib/maryland-studio';
 import {

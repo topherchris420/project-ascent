@@ -308,8 +308,9 @@ export function BillingView({ workspace, user, onWorkspace }: Props) {
   }
   return (
     <>
-      <PageHead eyebrow="ADOPTION-FIRST PRICING" title="Value first. A plan when you need it.">
-        Core exploration stays useful and free. Paid capacity and collaboration grow with your work.
+      <PageHead eyebrow="FREE SERVICE" title="Ascent stays free.">
+        Public-record research, basic CMA, reports, clients, offers and deadline workflows remain free permanently.
+        Optional AI and licensed providers have capacity and permission limits; reaching a limit never creates a charge.
       </PageHead>
       <Note error={error} />
       <div className="billing-status">
@@ -328,7 +329,10 @@ export function BillingView({ workspace, user, onWorkspace }: Props) {
             Manage subscription
           </button>
         )}
-        <p>Final paid prices are not set. Checkout activates only when approved Stripe Price IDs are configured.</p>
+        <p>
+          New subscriptions are disabled. <a href="/free">Read the free-service promise</a>. Existing billing records
+          are retained only for account cleanup.
+        </p>
       </div>
       <div className="plan-grid">
         {info?.plans.map(p => (

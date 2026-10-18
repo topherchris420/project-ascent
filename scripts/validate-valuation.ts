@@ -190,6 +190,15 @@ if (flag('--attest')) {
           },
         ]) && ok;
     } else {
+      if (existsSync(market.report))
+        throw new Error(
+          `Refusing to overwrite ${market.report}. Use --verify to reproduce a published experiment; declare a new protocol and holdout for revisions.`,
+        );
+      if (['maryland-v2', 'dc-condos'].includes(id)) {
+        const registration = JSON.parse(readFileSync(`evidence/${id}-protocol-registration.json`, 'utf8'));
+        if (registration.protocolDigest !== digestOf(market.protocol))
+          throw new Error('Protocol does not match its pre-scoring registration.');
+      }
       const { report, samples, seconds } = run(market);
       writeFileSync(market.report, `${JSON.stringify(report, null, 2)}\n`);
       writeFileSync(market.samples, gzipSync(samples, { level: 9 }));

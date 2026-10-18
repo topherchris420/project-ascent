@@ -155,7 +155,7 @@ const nav = [
   { page: 'academy', label: 'Professional academy', icon: BookOpen },
   { page: 'fabric', label: 'National data fabric', icon: MapPin },
   { page: 'access', label: 'Access & verification', icon: ShieldCheck },
-  { page: 'billing', label: 'Plans & usage', icon: Wallet },
+  { page: 'billing', label: 'Free service & usage', icon: Wallet },
   { page: 'team', label: 'Brokerage team', icon: Users },
   { page: 'portability', label: 'Import & portability', icon: Download },
   { page: 'improvement', label: 'Improvement lab', icon: Lightbulb },
@@ -668,7 +668,11 @@ export default function WorkspaceApp({
     setBusy(true);
     setError('');
     try {
-      await request(`/api/auth/${action}`, body);
+      const auth = await request<{ requiresMfaEnrollment?: boolean }>(`/api/auth/${action}`, body);
+      if (auth.requiresMfaEnrollment) {
+        window.location.assign('/account/security');
+        return;
+      }
       const d = await request<{ user: Actor; workspace: Workspace }>('/api/workspace?initialize=1');
       setUser(d.user);
       setWs(d.workspace);
@@ -906,6 +910,12 @@ export default function WorkspaceApp({
                   placeholder={authMode === 'register' ? 'At least 12 characters' : 'Your password'}
                 />
               </label>
+              {authMode === 'login' && (
+                <label>
+                  Authenticator or recovery code (if enabled)
+                  <input name="code" autoComplete="one-time-code" maxLength={50} />
+                </label>
+              )}
               <button className="button primary full" disabled={busy || !workspaceAvailable}>
                 {busy ? (
                   <LoaderCircle className="spin" size={18} />
@@ -917,6 +927,9 @@ export default function WorkspaceApp({
                 <ArrowRight size={16} />
               </button>
             </form>
+            <p>
+              <a href="/account/recovery">Forgot your password?</a> · <a href="/account/security">Account security</a>
+            </p>
             <button
               className="text-button auth-switch"
               onClick={() => {

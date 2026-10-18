@@ -16,7 +16,7 @@ The application includes a Hobby-compatible deployment profile for personal, non
 ## Connect the backend
 
 1. Import the private GitHub repository into Vercel. Choose the existing root, Next.js and Node 24. Use `master` as the production branch. Do not deploy a local SQLite database.
-2. Provision a hosted PostgreSQL database with PostGIS. Apply the three numbered migrations with a separate migration identity. Follow [database role/grant instructions](../migrations/README.md): the application role must not own/disable tenant protections or have superuser/BYPASSRLS. Prefer the provider's transaction pool endpoint for `DATABASE_URL`.
+2. Provision a hosted PostgreSQL database with PostGIS. Apply all four numbered migrations with a separate migration identity. Follow [database role/grant instructions](../migrations/README.md): the application role must not own/disable tenant protections or have superuser/BYPASSRLS. Prefer the provider's transaction pool endpoint for `DATABASE_URL`.
 3. Add these server-side environment variables in Vercel, using the correct Production/Preview environment. [Environment settings](https://vercel.com/docs/environment-variables).
 
 | Variable | Value |
@@ -64,3 +64,5 @@ Stripe is unnecessary for personal exploration. Enabling paid plans requires a h
 ## Validation boundary
 
 The local suite exercises upload byte/body boundaries, tenant privacy, legacy download handling, production configuration checks and pool settings. Browser coverage verifies that oversize selection makes no upload request and that a smaller retry succeeds. A separate local optimized-server smoke verifies the unconfigured public pricing example and disabled account controls. Hosted Neon PostgreSQL acceptance now passes with a restricted role, forced tenant policies, verified TLS and PostGIS; [connection scope](postgres-connection.md) and [actual verification results](verification-results.md) distinguish this from public deployment. Vercel environment configuration and actual deployed acceptance remain pending.
+
+October 18 account-security update: apply migration 004 and its explicit runtime grants before releasing private account routes. Production owners/agents require authenticator MFA; password recovery additionally needs a verified sender, `RESEND_API_KEY` and `AUTH_MAIL_FROM`. Recovery sends after the request through Next.js `after`; no minute-level Hobby cron was added. Production AI synthesis is gated pending independent accuracy review. See [production-readiness checkpoint](production-readiness.md).

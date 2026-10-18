@@ -28,6 +28,10 @@ CREATE TABLE IF NOT EXISTS property_locations(tenant_id TEXT NOT NULL REFERENCES
 CREATE TABLE IF NOT EXISTS billing_events(id TEXT PRIMARY KEY,tenant_id TEXT NOT NULL REFERENCES tenants(id),created_at TEXT NOT NULL);
 CREATE TABLE IF NOT EXISTS team_invitations(id TEXT PRIMARY KEY,tenant_id TEXT NOT NULL REFERENCES tenants(id),token_hash TEXT NOT NULL UNIQUE,email TEXT NOT NULL,role TEXT NOT NULL CHECK(role IN ('agent','viewer')),expires_at TEXT NOT NULL,created_by TEXT NOT NULL,used_at TEXT);
 CREATE TABLE IF NOT EXISTS api_keys(id TEXT PRIMARY KEY,tenant_id TEXT NOT NULL REFERENCES tenants(id),user_id TEXT NOT NULL REFERENCES users(id),name TEXT NOT NULL,token_hash TEXT NOT NULL UNIQUE,scopes TEXT NOT NULL,created_at TEXT NOT NULL,expires_at TEXT NOT NULL,revoked_at TEXT);
+CREATE TABLE IF NOT EXISTS account_security(user_id TEXT PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,is_demo INTEGER NOT NULL DEFAULT 0,secret TEXT,pending_secret TEXT,pending_until TEXT,enabled_at TEXT,last_counter BIGINT NOT NULL DEFAULT -1,recovery_hashes TEXT NOT NULL DEFAULT '[]');
+CREATE TABLE IF NOT EXISTS session_assurance(hash TEXT PRIMARY KEY REFERENCES sessions(hash) ON DELETE CASCADE,mfa_at TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS password_resets(hash TEXT PRIMARY KEY,user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,expires_at TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS auth_mail_outbox(id TEXT PRIMARY KEY,payload TEXT NOT NULL,created_at TEXT NOT NULL,expires_at TEXT NOT NULL);
 `;
 
 function localDb() {

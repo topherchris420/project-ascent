@@ -2,7 +2,7 @@
 
 Prepared October 18, 2026. **Drafts only — not sent. No permission received. Virginia ingestion and public pricing remain unavailable.** Send these yourself after adding your full name and contact details. Save any reply with its date, sender's authority, approved datasets, uses, conditions and expiry; a reply must cover the actual use before that source is enabled. GIS approval alone should not be treated as approval for another department's data.
 
-Ascent uses deterministic comparable-sale calculations and fits numeric adjustment rates on earlier sales. These requests cover that statistical work, public display and reproducibility, including possible commercial use. They do not ask to use confidential records, owner contact information or county branding.
+Ascent uses deterministic comparable-sale calculations and fits numeric adjustment rates on earlier sales. These requests cover that statistical work, public display and reproducibility, including redistribution rights that also cover downstream commercial reuse. They do not ask to use confidential records, owner contact information or county branding.
 
 ## Fairfax GIS and Mapping Services
 
@@ -12,7 +12,7 @@ Send through the [official GIS contact form](https://www.fairfaxcounty.gov/conta
 
 Hello GIS and Mapping Services,
 
-I maintain Project Ascent, a real-estate pricing tool. May we download and periodically refresh Fairfax parcel and address/location data, join it to authorized assessment and recorded-sale records, and use it in a public website that may offer paid services?
+I maintain Project Ascent, a real-estate pricing tool. May we download and periodically refresh Fairfax parcel and address/location data, join it to authorized assessment and recorded-sale records, and use it in a public website that will remain free?
 
 We would display property facts and comparable sales, calculate and publish price estimates and accuracy results, fit numeric adjustment rates, and redistribute a minimized, owner-free data snapshot and per-sale evaluation results in our GitHub repository so others can reproduce the test. We would omit owner names and mailing addresses, credit the County, and state that the tool is neither a County product nor an appraisal.
 
@@ -30,7 +30,7 @@ Send to **DTARED@fairfaxcounty.gov**, verified on the [official Real Estate Asse
 
 Hello Real Estate Division,
 
-I maintain Project Ascent, a public real-estate pricing tool that may offer paid services. Could you authorize a machine-readable extract of residential property characteristics and recorded sales: parcel identifier, property address, location, floor area, bedrooms/bathrooms, year built, quality/condition and sale date, price and qualification code, where available? We do not need owner names or mailing addresses.
+I maintain Project Ascent, a free public real-estate pricing tool. Could you authorize a machine-readable extract of residential property characteristics and recorded sales: parcel identifier, property address, location, floor area, bedrooms/bathrooms, year built, quality/condition and sale date, price and qualification code, where available? We do not need owner names or mailing addresses.
 
 We seek permission to refresh and join these records to authorized County GIS data, display comparable sales and derived estimates, fit numeric adjustment rates, and publish accuracy results, per-sale evaluation records and a minimized source snapshot on GitHub for reproducibility. We will credit the County and disclose limitations and that our work is neither a County product nor an appraisal.
 
@@ -48,7 +48,7 @@ Send to **opendata@arlingtonva.us**, published in the [official open-data direct
 
 Hello Arlington Open Data team,
 
-I maintain Project Ascent, a real-estate pricing tool. Please confirm whether we may use your residential property, address/location, characteristics and recorded-sale datasets in a public website that may offer paid services.
+I maintain Project Ascent, a real-estate pricing tool. Please confirm whether we may use your residential property, address/location, characteristics and recorded-sale datasets in a public website that will remain free.
 
 Our intended uses are periodic bulk/API downloads, joining records by property identifier, displaying property facts and comparable sales, calculating price estimates, fitting numeric adjustment rates and publishing accuracy results. For reproducibility, we would also publish a minimized, owner-free source snapshot and per-sale evaluation results in our GitHub repository. We will exclude owner names and mailing addresses, credit the County and explain that the tool is neither a County product nor an appraisal.
 
@@ -66,7 +66,7 @@ Send to **realestate@loudoun.gov**, verified on the [official real-property cont
 
 Hello Commissioner of the Revenue team,
 
-I maintain Project Ascent, a public real-estate pricing tool that may offer paid services. May we obtain a machine-readable extract of residential parcel identifiers, property addresses/locations, floor area, bedrooms/bathrooms, quality/condition, year built, and recorded sale dates, prices and qualification codes, where available? We do not need owner names or mailing addresses.
+I maintain Project Ascent, a free public real-estate pricing tool. May we obtain a machine-readable extract of residential parcel identifiers, property addresses/locations, floor area, bedrooms/bathrooms, quality/condition, year built, and recorded sale dates, prices and qualification codes, where available? We do not need owner names or mailing addresses.
 
 We seek written permission to refresh and join these records to authorized location data, display property facts and comparable sales, calculate estimates, fit numeric adjustment rates and publish accuracy results. To make the test reproducible, we would publish a minimized source snapshot and per-sale evaluation results in our GitHub repository. We will credit the County and state that the tool is neither a County product nor an appraisal.
 

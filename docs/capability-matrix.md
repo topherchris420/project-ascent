@@ -1,3 +1,5 @@
+> October 18 follow-up: [current production-readiness checkpoint](production-readiness.md). Maryland v2 and DC condo results are now published separately; both fail acceptance and keep calibrated ranges disabled. The original Maryland failure below is preserved.
+
 # Capability and evidence matrix
 
 October 18 coverage update: [Maryland](maryland-public-records.md) now covers Montgomery and Prince George’s with absent rooms omitted and a published pooled accuracy test, misses included. [DC condos](dc-condominiums.md) have a separate unit-level studio with unknown condition, unmeasured accuracy and no calibrated range. Virginia awaits written permission; [request drafts](data-permissions/virginia-requests.md) are unsent. The preference study still has zero participants and requires an outside facilitator, professional access and public pre-registration before recruitment.

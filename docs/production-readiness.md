@@ -1,0 +1,41 @@
+# Production readiness checkpoint
+
+October 18, 2026. These changes reduce specific gaps. They do **not** establish professional production readiness or independent certification.
+
+| Priority | Implemented and measured | Remaining release dependency |
+| --- | --- | --- |
+| Maryland | Separately registered v2, frozen before scoring; original failed report untouched. July–September 2026: 2,812 sales, 94.13% valued, 9.52% median error versus 10.20% untuned; 8/9 criteria. Quality coefficient $63,889, below the predeclared $75,000 cap. | PRD 1.04218 still fails 0.98–1.03. Three-month window and recording lag. No calibrated ranges. Independent replication and a longer prospective holdout remain. |
+| DC condos | Separate condo-only fit, selection, calibration and holdout. 1,434 sales, 96.23% valued, 12.95% median error; 4/9 criteria. Published failed results; fitted defaults, unknown condition kept disabled. | Fails median error, PPE10, COD, PRD and improvement over median $/sqft. No calibrated ranges. Building-correlated outcomes and unmodeled HOA/floor/view/parking limit the study. |
+| CI | GitHub Actions on every PR and master push: Node 24, typecheck, unit/integration tests, committed valuation evidence checks, offline domain/AI checks, production build, Chromium browser suite and synthetic PostgreSQL dump/restore. Actions pinned to exact reviewed release commits; read-only token, no production secrets. | A workflow file is not proof a run passed. See the actual GitHub Actions run for the pushed commit. Required branch checks need repository policy configuration. |
+| Account security | One-use 30-minute reset tokens stored hashed; encrypted mail outbox; trusted configured origin; generic responses; account/IP throttling; sessions revoked after reset. Authenticator MFA, encrypted secrets, setup expiry, replay prevention, eight one-use hashed recovery codes, all sessions revoked at enrollment. Production owner/agent sessions require completed MFA. | Apply migration 004 with a migration identity and grant its four tables to the restricted runtime role before releasing account routes. Configure verified recovery-email delivery and exercise it on the deployed origin. Email ownership verification, device management and independent security review remain. |
+| Operations and data | Disposable PostgreSQL restore drill covers all migrations, encrypted document recovery, restored sessions/MFA recovery and forced tenant isolation. Existing permission, expiry, export, retention and AI source gates remain tested. [Operating requirements](operations-and-compliance.md). | Configure and verify actual provider backups, retention, keys and restore access. Run an isolated restoration from an authorized production backup and record the measured RPO/RTO. Never infer licensed rights from public visibility. |
+| AI | Production model synthesis fails closed until the versioned independent-review record names approved models, two independent reviewers, a report digest and unexpired approval. Deterministic assistance remains available. | No independent human accuracy review exists. Offline mocked checks and prior live smoke are engineering evidence, not semantic accuracy certification. [Review plan](ai-independent-review.md). |
+| Free service | Public [free-service promise](/free); permanently free public research/basic CMA/reports/client/offer/deadline workflows. No new checkout, even with old Stripe prices configured. Only Free Explorer is offered in billing UI/API. | External providers and hosting have costs and limits. Legacy subscription reconciliation and customer cleanup remain for historical records; those definitions are not current paid offers. |
+
+## Honest evaluation boundaries
+
+The new Maryland holdout is **previously unscored**, not prospectively collected: its records were already in the bundled snapshot, and counts and interface examples had been inspected. The original failed holdout was available during development. Commit `81b7090` registers the new windows, screening, coefficient cap, unchanged acceptance bars and sensitivity before either new study ran.
+
+V2 imposes a $50,000 minimum consideration in all primary windows and comparable pools, without looking at residuals. It separately reruns the frozen fit/search/calibration on all positive consideration. That sensitivity has the same 2,812 test subjects (none below $50,000 in these three months) and a slightly different historical comp pool: 9.52% median error, COD 14.80, PRD 1.04204. It does not rescue the failed PRD bar. The original low-value transfers and extreme dispersion remain in v1, unchanged.
+
+Descriptive primary county slices: Montgomery 1,733 subjects / 1,634 valued / 9.56% median error; Prince George’s 1,079 / 1,013 / 9.46%. These are not separately selected, calibrated or accepted county models.
+
+The user preference study still has zero participants. An outside facilitator, blinded professional reviewers, authorized comparison-platform access, fixed compensation and public registration before recruitment remain required. See [study kit](study/README.md). No recruitment, permission request or client communication was sent.
+
+## Reproduce
+
+```text
+npm ci
+npm run typecheck
+npm test
+npm run validate:valuation -- --check
+npm run validate:valuation -- --verify --market dc-condos
+npm run validate:valuation -- --verify --market maryland-v2
+npx tsx scripts/maryland-v2-sensitivity.ts
+npm run evaluate:domain
+npm run evaluate:ai
+npm run test:e2e
+npm run build
+```
+
+Use Node 24. Ordinary browser tests create a temporary SQLite database and encryption key, clear live provider credentials, and cannot use local production settings. The expressly opt-in cached-live test keeps its separate workflow. PostgreSQL restore acceptance requires a disposable loopback PostGIS server and the guarded command documented below.

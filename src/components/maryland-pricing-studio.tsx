@@ -7,7 +7,7 @@ import {
   MD_GRADE_MAX,
   marylandDefaultState,
   marylandReportHref,
-  marylandBenchmark,
+  marylandRevisedBenchmark as marylandBenchmark,
   marylandVerdict,
 } from '@/lib/maryland-studio';
 import { AccuracyScorecard } from './accuracy-scorecard';
@@ -237,7 +237,7 @@ export function MarylandPricingStudio() {
         key={data.parcelId}
         evidence={evidence}
         defaultState={defaultState}
-        storageKey={`ascent.maryland-studio.v1.${data.parcelId}`}
+        storageKey={`ascent.maryland-studio.v2.${data.parcelId}`}
         reportHref={(state, format) => marylandReportHref(data.parcelId, state, format)}
         conditionMax={MD_GRADE_MAX}
         conditionLabels={MD_GRADE_LABELS}
