@@ -1,5 +1,16 @@
 # Verification results
 
+## October 18, 2026 — homeowner decision workbench
+
+- Installed the locked dependencies with `npm ci`; typecheck and optimized production build pass. **357 unit/integration tests pass**, including mortgage reconciliation, six choices, missing-input abstention, delayed sales, rental/renovation/refinance break-even, reserve deficits, private export filtering, snapshot checksums, source corrections and cohort-specific accuracy references.
+- The complete local browser suite passes **44 cases with one existing opt-in cached-live provider case skipped**. Desktop/mobile homeowner acceptance covers all six calculations, saved versions, two-version comparison, explanations, local deletion, quota failure, filtered JSON and standalone report accessibility. The first full run had two timeouts during concurrent CPU-heavy model reproduction; the subsequent complete run passed the unchanged assertions. No meaningful test was disabled or its timeout extended.
+- The published evidence check passes all five experiments. Full Maryland v2 and condo `--verify` runs reproduce the exact report digests and **every per-sale estimate**. Maryland: `sha256-1c420bbcfa8218b63bca9d49fad4d892955e224f74c37c346a80780036a721a3`; condos: `sha256-06e88b2bfbcf2ae8f999398c36c1f1d5d512364a578c8d92240df5e5489eaeb6`. No model or frozen dataset changed, and no accuracy improvement is claimed.
+- Offline domain checks pass all 32 safety cases and 11 rule cases. Offline AI checks pass 9/9 mocked cases with zero live provider requests. The independent AI production review remains pending.
+- Screenshots at 1440 and 390 pixels were visually inspected. Browser acceptance checks no page overflow, no page exceptions and no Axe WCAG A/AA violations. New private profiles remain device-local; these checks do not establish account synchronization, encryption of browser storage or independent financial/adoption validation.
+- New and substantially edited files pass formatting. Whole-file checks on `landing.tsx` and `analytics.ts` retain pre-existing formatting warnings, confirmed against their untouched master versions; unrelated formatting was preserved. Test-generated rewrites of historical evidence are excluded from this delivery.
+
+See [the audited implementation and its limits](homeowner-workbench.md). CI, the PostgreSQL restore drill and deployment status should be read from the exact pull request/commit checks; local browser results are not production account-security acceptance.
+
 ## October 18, 2026 — revised studies and readiness safeguards
 
 | Check | Actual result |

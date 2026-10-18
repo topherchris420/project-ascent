@@ -181,6 +181,8 @@ test('real public-record home passport keeps record provenance, history and corr
   assert.equal(exported.records[1].collectedAt, input.snapshot.salesFetchedAt);
   assert.equal(exported.records[0].datasetSha256, input.snapshot.parcelsSha256);
   assert.ok(exported.records.every(r => r.license.includes('CC BY 4.0')));
+  assert.equal(exported.accuracyReference?.criteriaMet, 9);
+  assert.match(renderHomeownerReport(snap), /Published accuracy reference/);
 });
 test('readable reports use the same privacy filter, escape notes and remain self-contained for printing', () => {
   const snap = createHomeSnapshot(

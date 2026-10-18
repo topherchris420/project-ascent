@@ -11,6 +11,7 @@ import {
 } from './demo-studio';
 import { compareDecisions, decisionKinds, financeSchema, type FinanceInputs } from './homeowner-finance';
 import type { Source, ValuationProperty } from './types';
+import { accuracyReferenceSchema, homeownerAccuracyReference } from './homeowner-validation';
 
 export const HOME_STORAGE_KEY = 'ascent.homeowner-profiles.v1';
 const text = z.string().max(1000);
@@ -107,6 +108,7 @@ export type HomeSnapshot = {
   calculation: z.infer<typeof calculationSchema>;
 };
 const calculationSchema = z.object({
+  accuracyReference: accuracyReferenceSchema.nullable().optional(),
   valuationVersion: text.nullable(),
   valuationHash: text.nullable(),
   valuationEstimate: z.number().finite().nullable(),
@@ -206,6 +208,7 @@ export function createHomeSnapshot(
   }
   const financial = compareDecisions(input.finance);
   const calculation = {
+    accuracyReference: homeownerAccuracyReference(clean, input.state),
     valuationVersion: valuation?.version ?? null,
     valuationHash: valuation?.calculationHash ?? null,
     valuationEstimate: valuation?.estimate ?? null,
@@ -298,6 +301,7 @@ export function compareHomeSnapshots(previous: HomeSnapshot, current: HomeSnapsh
   walk(previous.state, current.state, 'valuationChoices');
   walk(previous.calculation.valuationVersion, current.calculation.valuationVersion, 'calculation.valuationVersion');
   walk(previous.calculation.financeVersion, current.calculation.financeVersion, 'calculation.financeVersion');
+  walk(previous.calculation.accuracyReference, current.calculation.accuracyReference, 'calculation.accuracyReference');
   let valuation: ReturnType<typeof compareCmaDecisions> | null = null;
   try {
     const a = calculateStudio(previous.evidence, previous.state),
@@ -396,6 +400,7 @@ export function evidencePassport(snapshot: HomeSnapshot, includePrivate = false)
       ? 'Private financial assumptions and homeowner notes included.'
       : 'Public evidence only. No debt, finances, improvements or disputed-evidence notes included.',
     property: snapshot.evidence.subject,
+    accuracyReference: snapshot.calculation.accuracyReference ?? null,
     records,
     sources: exportedSources,
     snapshot: snapshot.evidence.snapshot,

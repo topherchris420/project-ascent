@@ -30,7 +30,7 @@ A homeowner asks, **“Why this price?”** Ascent gives them the working: compa
 - **Understand the number.** Inspect recorded comparable sales, adjustments, weights and assumptions.
 - **Explore a choice.** Change an asking price or cost assumption and compare illustrative outcomes, not predicted sale prices.
 - **Compare ownership decisions.** Model fixed-rate debt, monthly cash flow, equity, cash reserves, break-even thresholds and hypothetical property changes across six choices. Financial calculations run locally and never call an external model.
-- **Keep a Property Evidence Passport.** Explicitly save private ownership profiles and versioned decisions on this device, compare exact evidence/assumption changes, and export privacy-filtered JSON. On-demand monitoring reports actual snapshot differences; an unchanged dataset creates no market alert.
+- **Keep a Property Evidence Passport.** Explicitly save private ownership profiles and versioned decisions on this device, compare exact evidence/assumption changes, and export privacy-filtered JSON or a standalone printable report. Use browser Print to save a PDF. On-demand monitoring reports actual snapshot differences; an unchanged dataset creates no market alert.
 - **Keep the reasoning.** Print a report or export source-aware analysis to discuss with someone you trust.
 - **Know what is missing.** Public records are snapshots. Live listings, concessions, building attributes and interior condition may be absent.
 

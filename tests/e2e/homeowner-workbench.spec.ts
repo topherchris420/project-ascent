@@ -103,6 +103,12 @@ test('real home keeps unprovided financial facts unknown and survives storage fa
   await home.getByRole('button', { name: 'Save home & decision snapshot' }).click();
   await expect(home).toContainText('Home and decision snapshot saved');
   await home.getByRole('button', { name: 'Reports & History', exact: true }).click();
+  const popup = page.waitForEvent('popup');
+  await home.getByRole('button', { name: 'Open readable passport', exact: true }).click();
+  const report = await popup;
+  await expect(report.getByRole('heading', { name: 'Published accuracy reference', exact: true })).toBeVisible();
+  await expect(report.locator('body')).toContainText('9 of 9 met');
+  await report.close();
   await home.getByLabel('Show evidence changes when I return to this home').check();
   await expect(home).toContainText('No recorded evidence changes');
   await page.evaluate(() => {
