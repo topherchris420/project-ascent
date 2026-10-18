@@ -88,7 +88,11 @@ npm run test:e2e
 
 Browser tests need Chrome configured with `CHROME_PATH`. See [verification results](docs/verification-results.md) for evaluation commands and the distinction between fixture tests and production acceptance.
 
-Application code lives in `src/`, migrations in `migrations/`, tests in `tests/`, and research and operational notes in `docs/`. Contributions should preserve reproducibility, accessible interactions, source rights and workspace isolation. Check repository access and licensing before reusing the source; the repository does not currently include an open-source license.
+Application code lives in `src/`, migrations in `migrations/`, tests in `tests/`, and research and operational notes in `docs/`. Contributions should preserve reproducibility, accessible interactions, source rights and workspace isolation.
+
+## License
+
+Project Ascent is open source under the [MIT License](LICENSE). You may use, modify, distribute and commercially use the software subject to the license's notice requirements. Third-party data, content, and services retain their own licenses and terms; the MIT License does not grant MLS access or external data rights.
 
 ---
 
