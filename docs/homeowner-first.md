@@ -15,6 +15,25 @@ The homeowner should never have to accept a number they cannot understand. Prici
 | Review accuracy | [Published studies](https://project-ascent-theta.vercel.app/accuracy) | Internally reproducible retrospective results, not independent certification |
 | Keep an explanation | Printable reports and JSON export | Browser-local draft unless a configured private workspace is used |
 
+## One address box and fast search · October 18, 2026
+
+A homeowner no longer has to choose a market before typing. The homepage and `/home` have one address box. It queries the DC house, DC condo and Maryland searches in parallel, shows matches grouped by market as each answers, and opens the matching studio at `?parcel=`. An address outside coverage gets an explanation of what is covered (with a specific note for Virginia addresses) and a link to the fictional sample. If every search fails, the box offers a retry rather than claiming there is no match.
+
+Search was slow enough to feel broken. Measured on the development laptop (arm64 Node 24), over 2,005 recorded queries:
+
+| Search | Before | After |
+| --- | --- | --- |
+| Maryland, per query | 738 ms | 1.6 ms |
+| DC houses, per query | 150 ms | 0.3 ms |
+| DC condos, per query | 99 ms | 0.4 ms |
+| Maryland records loaded for a linked home | 10.4 s | 2.7–5.3 s (varies run to run) |
+
+Every query returned exactly the same homes in the same order; `tests/address-search.test.ts` keeps the original implementations as references. It compares normalization on every bundled DC, condo and Maryland address plus 5,000 generated edge cases, and compares search results on real queries. What changed: a word index replaces re-splitting every address on every keystroke, a quote-free CSV fast path replaces character-by-character parsing, the trailing city/state pattern is applied to the address tail only, and the index is built on first search rather than when a linked home is priced. Studios and the address box ask their search route to load records as the page opens (`POST /api/{market}/search`, answered immediately, with the work done after the reply), so the index is usually ready by the time an address is typed. These are local measurements, not Vercel cold-start measurements.
+
+Once a real home is chosen, its address is the page heading and the estimate sits beside it; the market introduction follows as a short context line. On a 390-pixel phone the estimate now appears on the first screen instead of about 1,100 pixels down. The fictional sample keeps its full introduction.
+
+The site now serves an icon, a home-screen icon, a web manifest, a link-preview image, `robots.txt` (APIs and account pages excluded) and a sitemap of the public pages. Absolute URLs use `APP_ORIGIN`, then Vercel's production host.
+
 ## Experience principles
 
 1. Use homeowner questions, not professional jargon, as entry points.

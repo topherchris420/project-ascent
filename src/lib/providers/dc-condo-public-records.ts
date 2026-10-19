@@ -6,7 +6,8 @@ import { distanceMiles } from '../analytics';
 import { recordedHistory } from './recorded-history';
 import { condoDefaultState, CONDO_ACCURACY_NOTICE } from '../dc-condo-studio';
 import type { Source, ValuationProperty } from '../types';
-import { parseCsv, displayDcAddress, normalizeDcAddress } from './dc-public-records';
+import { csvRecords, displayDcAddress, normalizeDcAddress } from './dc-public-records';
+import { compareAddressKeys, firstByOrder, lazyAddressIndex } from './address-index';
 
 const directory = join(process.cwd(), 'src/datasets/dc-condos');
 export const CONDO_SOURCE_ID = 'source-dc-condo-public-records';
@@ -35,7 +36,7 @@ type Provenance = {
 let cache:
   | {
       parcels: Map<string, Condo>;
-      index: { key: string; parcelId: string }[];
+      index: ReturnType<typeof lazyAddressIndex>;
       sales: Sale[];
       salesProvenance: Provenance;
     }
@@ -47,11 +48,9 @@ export function condoData() {
     const bytes = gunzipSync(readFileSync(join(directory, file)));
     if (createHash('sha256').update(bytes).digest('hex') !== expected)
       throw new Error('Condo snapshot fingerprint mismatch.');
-    const [header, ...rows] = parseCsv(bytes.toString('utf8'));
-    return rows.map(row => Object.fromEntries(header.map((key, i) => [key, row[i] ?? ''])));
+    return csvRecords(bytes.toString('utf8'));
   };
   const parcels = new Map<string, Condo>();
-  const index: { key: string; parcelId: string }[] = [];
   for (const row of records('dc-condo-properties.csv.gz', provenance.propertyCsvSha256)) {
     const condo = {
       parcelId: row.parcel_id,
@@ -66,7 +65,6 @@ export function condoData() {
       marId: row.mar_id,
     };
     parcels.set(condo.parcelId, condo);
-    index.push({ key: normalizeDcAddress(condo.address), parcelId: condo.parcelId });
   }
   const sales = records('dc-condo-sales.csv.gz', provenance.csvSha256).map(row => ({
     parcelId: row.parcel_id,
@@ -82,6 +80,9 @@ export function condoData() {
   }));
   if (parcels.size !== provenance.properties || sales.length !== provenance.rows)
     throw new Error('Incomplete condo snapshot.');
+  const index = lazyAddressIndex(() =>
+    [...parcels.values()].map(condo => ({ key: normalizeDcAddress(condo.address), parcelId: condo.parcelId })),
+  );
   cache = { parcels, index, sales, salesProvenance: provenance };
   return cache;
 }
@@ -89,31 +90,23 @@ export function searchCondoAddresses(query: string, limit = 8) {
   const wanted = normalizeDcAddress(query);
   if (wanted.length < 3) return [];
   const terms = wanted.split(' ');
-  const { parcels, index } = condoData();
-  return index
-    .filter(entry => {
-      const words = entry.key.split(' ');
-      return terms.every((term, i) =>
-        i === terms.length - 1 ? words.some(w => w.startsWith(term)) : words.includes(term),
-      );
-    })
-    .sort(
-      (a, b) =>
-        Number(!a.key.startsWith(wanted)) - Number(!b.key.startsWith(wanted)) ||
-        a.key.localeCompare(b.key, 'en', { numeric: true }),
-    )
-    .slice(0, limit)
-    .map(({ parcelId }) => {
-      const condo = parcels.get(parcelId)!;
-      return {
-        parcelId,
-        address: displayDcAddress(condo.address),
-        zip: condo.zip,
-        beds: condo.beds,
-        baths: condo.baths,
-        sqft: condo.sqft,
-      };
-    });
+  const { parcels } = condoData();
+  const index = condoData().index();
+  return firstByOrder(
+    index.matches(terms).map(position => index.entries[position]),
+    limit,
+    (a, b) => Number(!a.key.startsWith(wanted)) - Number(!b.key.startsWith(wanted)) || compareAddressKeys(a.key, b.key),
+  ).map(({ parcelId }) => {
+    const condo = parcels.get(parcelId)!;
+    return {
+      parcelId,
+      address: displayDcAddress(condo.address),
+      zip: condo.zip,
+      beds: condo.beds,
+      baths: condo.baths,
+      sqft: condo.sqft,
+    };
+  });
 }
 export function condoValuationInputs(parcelId: string) {
   const { parcels, sales, salesProvenance } = condoData();

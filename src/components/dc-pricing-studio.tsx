@@ -8,6 +8,7 @@ import { condoBenchmark, condoDefaultState, condoReportHref, CONDO_ACCURACY_NOTI
 import { AccuracyScorecard } from './accuracy-scorecard';
 import type { CmaAssumptions, Source, ValuationProperty } from '@/lib/types';
 import { PricingStudio } from './pricing-studio';
+import { warmAddressSearch } from '@/lib/address-search-client';
 import { date, number } from './format';
 import '@/app/pricing-studio.css';
 
@@ -48,6 +49,7 @@ function AddressSearch({
   const request = useRef(0);
   const field = useRef<HTMLInputElement>(null);
   const list = useRef<HTMLUListElement>(null);
+  useEffect(() => warmAddressSearch(api), [api]);
   const changeQuery = (value: string) => {
     // Invalidate immediately, including when a query is cleared before the effect runs.
     request.current += 1;
@@ -249,6 +251,7 @@ export function DcPricingStudio({ condos = false }: { condos?: boolean }) {
     return (
       <PricingStudio
         key={data.parcelId}
+        resultFirst
         evidence={evidence}
         defaultState={defaultState}
         storageKey={`ascent.${api}-studio.${condos ? 'v2' : 'v1'}.${data.parcelId}`}

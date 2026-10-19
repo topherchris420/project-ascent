@@ -25,6 +25,7 @@ import { assessCmaEvidence, compareCmaDecisions } from '@/lib/decision-review';
 import type { ValuationProperty } from '@/lib/types';
 import { valuationBenchmark } from '@/lib/valuation-safeguards';
 import { AccuracyScorecard } from './accuracy-scorecard';
+import { HomeSearch } from './home-search';
 import { marylandRevisedBenchmark as marylandBenchmark, marylandVerdict } from '@/lib/maryland-studio';
 
 export type LandingProps = {
@@ -674,9 +675,9 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAv
             <button type="button" className="lp-btn lp-btn-ghost lp-nav-login" onClick={onSignIn}>
               Log in
             </button>
-            <Link className="lp-btn lp-btn-primary lp-btn-sm" href="/dc">
-              Analyze a DC home
-            </Link>
+            <a className="lp-btn lp-btn-primary lp-btn-sm" href="#find-home">
+              Look up my home
+            </a>
           </div>
         </div>
       </header>
@@ -695,21 +696,22 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAv
                 <span>belongs to homeowners.</span>
               </h1>
               <p className="lp-lede">
-                You should never have to accept a number you cannot understand. Explore comparable sales,
-                inspect the calculations, test your assumptions, and keep the evidence behind your decision.
+                You should never have to accept a number you cannot understand. Explore comparable sales, inspect the
+                calculations, test your assumptions, and keep the evidence behind your decision.
               </p>
-              <div className="lp-cta-row">
-                <Link className="lp-btn lp-btn-primary lp-btn-lg" href="/dc">
-                  Explore a DC home <ArrowRight size={17} aria-hidden="true" />
-                </Link>
-                <Link className="lp-btn lp-btn-outline lp-btn-lg" href="/demo">
-                  Try the sample
-                </Link>
+              <div className="lp-find" id="find-home">
+                <HomeSearch />
+                <p className="lp-find-alt">
+                  No address in mind?{' '}
+                  <Link className="lp-btn lp-btn-outline lp-btn-sm" href="/demo">
+                    Try the sample
+                  </Link>
+                </p>
               </div>
               <p className="lp-fine">
-                  Free, no license or account required for public studios. Public records are not live MLS listings.
-                  Also explore <Link href="/maryland">Maryland</Link> or <Link href="/dc/condos">DC condos</Link>.
-                </p>
+                Free, with no account. Covers houses and condos in Washington, DC, and houses and townhouses in
+                Montgomery and Prince George’s counties, Maryland. Built from public records, not live MLS listings.
+              </p>
               <ul className="lp-hero-points" aria-label="Highlights">
                 <li>
                   <CheckCircle2 size={16} aria-hidden="true" /> Inspect every sale
@@ -723,7 +725,10 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAv
               </ul>
               <div className="lp-workspace-entry">
                 <span className="lp-eyebrow">Need a place to keep the work?</span>
-                <p>Optional private workspaces collect pricing, contacts, offers and deadlines. Public studios need no sign-in.</p>
+                <p>
+                  Optional private workspaces collect pricing, contacts, offers and deadlines. Public studios need no
+                  sign-in.
+                </p>
                 {workspaceAvailable ? (
                   <div className="lp-workspace-links">
                     <button type="button" className="lp-link" onClick={onDemo} disabled={busy}>
@@ -735,7 +740,7 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAv
                     </button>
                   </div>
                 ) : (
-                  <p className="lp-fine">Workspaces are being set up. Both pricing studios are ready to use.</p>
+                  <p className="lp-fine">Workspaces are being set up. Every public pricing studio is ready to use.</p>
                 )}
                 <p className="lp-fine">Demo: fictional records. Your account: your own evidence.</p>
                 {error && (
@@ -763,36 +768,40 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAv
               <span className="lp-eyebrow">Start with your question</span>
               <h2 id="lp-homeowners-title">Your next home decision deserves an explanation.</h2>
               <p>
-                You do not need to be an agent to examine pricing evidence. Choose a covered market, or learn
-                with a fictional example before exploring a real address.
+                You do not need to be an agent to examine pricing evidence. Choose a covered market, or learn with a
+                fictional example before exploring a real address.
               </p>
             </div>
             <div className="lp-homeowner-grid">
               {[
                 {
                   question: 'What is my DC home worth?',
-                  detail: 'Search eligible DC houses and rowhomes. Inspect recorded sales, adjustments and the validated settings behind the estimate.',
+                  detail:
+                    'Search eligible DC houses and rowhomes. Inspect recorded sales, adjustments and the validated settings behind the estimate.',
                   scope: 'DC houses · Public-record snapshot',
                   href: '/dc',
                   action: 'Explore DC homes',
                 },
                 {
                   question: 'What about my Maryland home?',
-                  detail: 'Explore homes in Montgomery or Prince George’s County, with transparent limitations on property fields and accuracy.',
+                  detail:
+                    'Explore homes in Montgomery or Prince George’s County, with transparent limitations on property fields and accuracy.',
                   scope: 'Two MD counties · Limited property fields',
                   href: '/maryland',
                   action: 'Explore Maryland',
                 },
                 {
                   question: 'How does my DC condo compare?',
-                  detail: 'Inspect unit-level recorded sales. Condo testing missed acceptance criteria, so this studio does not offer a calibrated range.',
+                  detail:
+                    'Inspect unit-level recorded sales. Condo testing missed acceptance criteria, so this studio does not offer a calibrated range.',
                   scope: 'DC condos · Experimental estimates',
                   href: '/dc/condos',
                   action: 'Explore DC condos',
                 },
                 {
                   question: 'What if I change the asking price?',
-                  detail: 'Practice with a clearly fictional Arlington home. Compare prices and illustrative proceeds, then inspect the math.',
+                  detail:
+                    'Practice with a clearly fictional Arlington home. Compare prices and illustrative proceeds, then inspect the math.',
                   scope: 'Fictional example · No sign-in',
                   href: '/demo',
                   action: 'Try the interactive sample',
@@ -967,9 +976,9 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAv
                 <p>Start with comparable evidence. Keep a report you can question, share and explain.</p>
               </div>
               <div className="lp-cta-row">
-                <Link className="lp-btn lp-btn-primary lp-btn-lg" href="/dc">
-                  Explore a DC home <ArrowRight size={17} aria-hidden="true" />
-                </Link>
+                <a className="lp-btn lp-btn-primary lp-btn-lg" href="#find-home">
+                  Look up my home <ArrowRight size={17} aria-hidden="true" />
+                </a>
                 <Link className="lp-btn lp-btn-outline lp-btn-lg" href="/demo">
                   Try the sample
                 </Link>
