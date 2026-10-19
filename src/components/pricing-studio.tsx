@@ -68,10 +68,13 @@ export type StudioConfig = {
   footerNote: string;
   /** Rendered above the intro, e.g. an address search. */
   before?: ReactNode;
+  /** A chosen real home: its address and estimate lead the page and the market introduction follows, compact. */
+  resultFirst?: boolean;
 };
 
 export function PricingStudio(config: StudioConfig) {
   const { evidence, conditionMax } = config;
+  const SubjectHeading = config.resultFirst ? 'h1' : 'h2';
   const schema = useMemo(
     () =>
       studioStateSchema(
@@ -253,6 +256,93 @@ export function PricingStudio(config: StudioConfig) {
       </li>
     );
   };
+  const badge = (
+    <div className="studio-sample-label">
+      <ShieldCheck size={20} />
+      <strong>{config.intro.badgeTitle}</strong>
+      <span>
+        {config.intro.badgeLines[0]}
+        <br />
+        {config.intro.badgeLines[1]}
+      </span>
+    </div>
+  );
+  const introBlock = (
+    <div className="studio-intro">
+      <div>
+        <span className="eyebrow">{config.intro.eyebrow}</span>
+        <h1>
+          {config.intro.titleTop}
+          <br />
+          <span>{config.intro.titleBottom}</span>
+        </h1>
+        <p>{config.intro.lede}</p>
+      </div>
+      {badge}
+    </div>
+  );
+  const compactIntroBlock = (
+    <div className="studio-intro compact">
+      <div>
+        <span className="eyebrow">{config.intro.eyebrow}</span>
+        <p>{config.intro.lede}</p>
+      </div>
+      {badge}
+    </div>
+  );
+  const stepNav = (
+    <nav className="studio-steps" aria-label="Pricing decision progress">
+      {steps.map(([n, label, href], i) => (
+        <a key={n} href={href} aria-current={step === i + 1 ? 'step' : undefined} onClick={() => setStep(i + 1)}>
+          <span>{i === 3 && reportOpened ? <Check size={16} /> : n}</span>
+          {label}
+          <ArrowRight size={15} aria-hidden="true" />
+        </a>
+      ))}
+    </nav>
+  );
+  const summaryBlock = (
+    <section className="studio-summary" aria-label="Current pricing decision">
+      <div className="studio-subject">
+        <span className="eyebrow">{config.subjectEyebrow}</span>
+        <SubjectHeading>{evidence.subject.address}</SubjectHeading>
+        <p>
+          {evidence.subject.roomCountsUnavailable
+            ? 'Bedrooms and bathrooms unavailable'
+            : `${evidence.subject.beds} beds · ${evidence.subject.baths} baths`}{' '}
+          · {number(evidence.subject.sqft)} sq ft · {conditionText(subject.condition)}
+          {state.subjectCondition !== undefined && state.subjectCondition !== evidence.subject.condition
+            ? ' (your rating)'
+            : ''}
+        </p>
+        <small>{config.evidenceNote}</small>
+      </div>
+      <div className="studio-estimate" aria-live="polite">
+        <span>Comparable-supported estimate</span>
+        <strong data-testid="studio-estimate">{result ? money(result.estimate) : 'No usable sales'}</strong>
+        <span>
+          {result
+            ? `${money(result.low)}–${money(result.high)} · ${result.comps.length} eligible sale${result.comps.length === 1 ? '' : 's'}`
+            : 'Restore a sale or reset assumptions below.'}
+        </span>
+        {validated && gate?.calibratedInterval ? (
+          <small data-testid="calibrated-interval">
+            Calibrated {Math.round(gate.calibratedInterval.target * 100)}% range {money(gate.calibratedInterval.low)}–
+            {money(gate.calibratedInterval.high)}: in the published {gate.calibratedInterval.market} holdout it held{' '}
+            {(gate.calibratedInterval.holdoutCoverage * 100).toFixed(1)}% of sales with {gate.calibratedInterval.tier}{' '}
+            evidence like this.
+          </small>
+        ) : (
+          <small>
+            Observed adjusted-sale range; not a confidence interval.
+            {market && result
+              ? ` The calibrated ${market.market.label} range applies only to the unmodified validated analysis.`
+              : ''}
+          </small>
+        )}
+      </div>
+    </section>
+  );
   return (
     <div className="studio-page">
       <a className="skip-link" href="#studio-main">
@@ -269,76 +359,19 @@ export function PricingStudio(config: StudioConfig) {
       </header>
       <main id="studio-main" className="studio-main">
         {config.before}
-        <div className="studio-intro">
-          <div>
-            <span className="eyebrow">{config.intro.eyebrow}</span>
-            <h1>
-              {config.intro.titleTop}
-              <br />
-              <span>{config.intro.titleBottom}</span>
-            </h1>
-            <p>{config.intro.lede}</p>
-          </div>
-          <div className="studio-sample-label">
-            <ShieldCheck size={20} />
-            <strong>{config.intro.badgeTitle}</strong>
-            <span>
-              {config.intro.badgeLines[0]}
-              <br />
-              {config.intro.badgeLines[1]}
-            </span>
-          </div>
-        </div>
-        <nav className="studio-steps" aria-label="Pricing decision progress">
-          {steps.map(([n, label, href], i) => (
-            <a key={n} href={href} aria-current={step === i + 1 ? 'step' : undefined} onClick={() => setStep(i + 1)}>
-              <span>{i === 3 && reportOpened ? <Check size={16} /> : n}</span>
-              {label}
-              <ArrowRight size={15} aria-hidden="true" />
-            </a>
-          ))}
-        </nav>
-        <section className="studio-summary" aria-label="Current pricing decision">
-          <div className="studio-subject">
-            <span className="eyebrow">{config.subjectEyebrow}</span>
-            <h2>{evidence.subject.address}</h2>
-            <p>
-              {evidence.subject.roomCountsUnavailable
-                ? 'Bedrooms and bathrooms unavailable'
-                : `${evidence.subject.beds} beds · ${evidence.subject.baths} baths`}{' '}
-              · {number(evidence.subject.sqft)} sq ft · {conditionText(subject.condition)}
-              {state.subjectCondition !== undefined && state.subjectCondition !== evidence.subject.condition
-                ? ' (your rating)'
-                : ''}
-            </p>
-            <small>{config.evidenceNote}</small>
-          </div>
-          <div className="studio-estimate" aria-live="polite">
-            <span>Comparable-supported estimate</span>
-            <strong data-testid="studio-estimate">{result ? money(result.estimate) : 'No usable sales'}</strong>
-            <span>
-              {result
-                ? `${money(result.low)}–${money(result.high)} · ${result.comps.length} eligible sale${result.comps.length === 1 ? '' : 's'}`
-                : 'Restore a sale or reset assumptions below.'}
-            </span>
-            {validated && gate?.calibratedInterval ? (
-              <small data-testid="calibrated-interval">
-                Calibrated {Math.round(gate.calibratedInterval.target * 100)}% range{' '}
-                {money(gate.calibratedInterval.low)}–{money(gate.calibratedInterval.high)}: in the published{' '}
-                {gate.calibratedInterval.market} holdout it held{' '}
-                {(gate.calibratedInterval.holdoutCoverage * 100).toFixed(1)}% of sales with{' '}
-                {gate.calibratedInterval.tier} evidence like this.
-              </small>
-            ) : (
-              <small>
-                Observed adjusted-sale range; not a confidence interval.
-                {market && result
-                  ? ` The calibrated ${market.market.label} range applies only to the unmodified validated analysis.`
-                  : ''}
-              </small>
-            )}
-          </div>
-        </section>
+        {config.resultFirst ? (
+          <>
+            {summaryBlock}
+            {stepNav}
+            {compactIntroBlock}
+          </>
+        ) : (
+          <>
+            {introBlock}
+            {stepNav}
+            {summaryBlock}
+          </>
+        )}
         {calculation.error && (
           <div role="alert" className="error-box">
             {calculation.error}{' '}

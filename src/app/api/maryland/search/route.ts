@@ -1,3 +1,4 @@
+import { after } from 'next/server';
 import { searchMarylandAddresses, marylandData } from '@/lib/providers/maryland-public-records';
 export const runtime = 'nodejs';
 
@@ -14,4 +15,13 @@ export async function GET(request: Request) {
     { results: searchMarylandAddresses(query), attribution: marylandData().provenance.attribution },
     { headers },
   );
+}
+
+/** A page about to search posts here: the records and search index load after this empty reply. */
+export async function POST() {
+  after(() => void marylandData().index());
+  return new Response(null, {
+    status: 204,
+    headers: { 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff' },
+  });
 }

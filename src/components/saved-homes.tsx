@@ -10,6 +10,7 @@ import {
 } from '@/lib/homeowner-passport';
 import { downloadJson } from '@/lib/browser-export';
 import { date } from './format';
+import { HomeSearch } from './home-search';
 import '@/app/pricing-studio.css';
 import '@/app/homeowner.css';
 
@@ -121,11 +122,12 @@ export function SavedHomes() {
           <section className="panel">
             <h2>Start with one home.</h2>
             <p>
-              Explore supported public records, enter only the ownership information you choose, then select “Save home
-              & decision snapshot.”
+              Look up its address, enter only the ownership information you choose, then select “Save home & decision
+              snapshot.”
             </p>
+            <HomeSearch />
             <nav className="home-nav" aria-label="Explore supported properties">
-              <Link className="button primary" href="/dc">
+              <Link className="button" href="/dc">
                 Explore DC homes
               </Link>
               <Link className="button" href="/maryland">

@@ -1,3 +1,4 @@
+import { after } from 'next/server';
 import { searchCondoAddresses, condoData } from '@/lib/providers/dc-condo-public-records';
 export const runtime = 'nodejs';
 
@@ -14,4 +15,13 @@ export async function GET(request: Request) {
     { results: searchCondoAddresses(query), attribution: condoData().salesProvenance.attribution },
     { headers },
   );
+}
+
+/** A page about to search posts here: the records and search index load after this empty reply. */
+export async function POST() {
+  after(() => void condoData().index());
+  return new Response(null, {
+    status: 204,
+    headers: { 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff' },
+  });
 }

@@ -6,7 +6,8 @@ import { distanceMiles } from '../analytics';
 import { recordedHistory } from './recorded-history';
 import { marylandBenchmark, marylandDefaultState } from '../maryland-studio';
 import type { Source, ValuationProperty } from '../types';
-import { parseCsv, displayDcAddress, normalizeDcAddress } from './dc-public-records';
+import { csvRecords, displayDcAddress, normalizeDcAddress } from './dc-public-records';
+import { compareAddressKeys, firstByOrder, lazyAddressIndex } from './address-index';
 
 export const MD_SOURCE_ID = 'source-maryland-public-records';
 const directory = join(process.cwd(), 'src/datasets/maryland');
@@ -43,7 +44,7 @@ type Provenance = {
   lastSale: string;
 };
 let cached:
-  | { parcels: Map<string, Parcel>; index: { key: string; parcelId: string }[]; sales: Sale[]; provenance: Provenance }
+  | { parcels: Map<string, Parcel>; index: ReturnType<typeof lazyAddressIndex>; sales: Sale[]; provenance: Provenance }
   | undefined;
 const normalize = (value: string) => normalizeDcAddress(value.replace(/\bMARYLAND\b|\bMD\b/gi, ''));
 
@@ -54,13 +55,11 @@ export function marylandData() {
     const bytes = gunzipSync(readFileSync(join(directory, file)));
     if (createHash('sha256').update(bytes).digest('hex') !== expected)
       throw new Error('Maryland snapshot fingerprint mismatch.');
-    const [header, ...rows] = parseCsv(bytes.toString('utf8'));
-    return rows.map(cells => Object.fromEntries(header.map((key, i) => [key, cells[i] ?? ''])));
+    return csvRecords(bytes.toString('utf8'));
   };
   if (provenance.csvSha256 !== marylandBenchmark.dataset.csvSha256)
     throw new Error('Maryland sales have changed; revalidation is required.');
   const parcels = new Map<string, Parcel>();
-  const index: { key: string; parcelId: string }[] = [];
   for (const row of records('maryland-properties.csv.gz', provenance.propertyCsvSha256)) {
     const parcel = {
       parcelId: row.parcel_id,
@@ -75,7 +74,6 @@ export function marylandData() {
       yearBuilt: +row.year_built,
     };
     parcels.set(parcel.parcelId, parcel);
-    index.push({ key: normalize(`${parcel.address} ${parcel.city} ${parcel.zip}`), parcelId: parcel.parcelId });
   }
   const sales = records('maryland-sales.csv.gz', provenance.csvSha256).map(row => ({
     saleId: row.sale_id,
@@ -90,6 +88,12 @@ export function marylandData() {
   }));
   if (parcels.size !== provenance.properties || sales.length !== provenance.rows)
     throw new Error('Incomplete Maryland snapshot.');
+  const index = lazyAddressIndex(() =>
+    [...parcels.values()].map(parcel => ({
+      key: normalize(`${parcel.address} ${parcel.city} ${parcel.zip}`),
+      parcelId: parcel.parcelId,
+    })),
+  );
   cached = { parcels, index, sales, provenance };
   return cached;
 }
@@ -98,31 +102,23 @@ export function searchMarylandAddresses(query: string, limit = 8) {
   const wanted = normalize(query);
   if (wanted.length < 3) return [];
   const terms = wanted.split(' ');
-  const { parcels, index } = marylandData();
-  return index
-    .filter(entry => {
-      const words = entry.key.split(' ');
-      return terms.every((term, i) =>
-        i === terms.length - 1 ? words.some(word => word.startsWith(term)) : words.includes(term),
-      );
-    })
-    .sort(
-      (a, b) =>
-        Number(!a.key.startsWith(wanted)) - Number(!b.key.startsWith(wanted)) ||
-        a.key.localeCompare(b.key, 'en', { numeric: true }),
-    )
-    .slice(0, limit)
-    .map(({ parcelId }) => {
-      const parcel = parcels.get(parcelId)!;
-      return {
-        parcelId,
-        address: displayDcAddress(parcel.address),
-        city: displayDcAddress(parcel.city),
-        county: parcel.county === 'MONT' ? 'Montgomery' : 'Prince George’s',
-        zip: parcel.zip,
-        sqft: parcel.sqft,
-      };
-    });
+  const { parcels } = marylandData();
+  const index = marylandData().index();
+  return firstByOrder(
+    index.matches(terms).map(position => index.entries[position]),
+    limit,
+    (a, b) => Number(!a.key.startsWith(wanted)) - Number(!b.key.startsWith(wanted)) || compareAddressKeys(a.key, b.key),
+  ).map(({ parcelId }) => {
+    const parcel = parcels.get(parcelId)!;
+    return {
+      parcelId,
+      address: displayDcAddress(parcel.address),
+      city: displayDcAddress(parcel.city),
+      county: parcel.county === 'MONT' ? 'Montgomery' : 'Prince George’s',
+      zip: parcel.zip,
+      sqft: parcel.sqft,
+    };
+  });
 }
 
 export function marylandValuationInputs(parcelId: string) {
