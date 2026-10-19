@@ -1,5 +1,15 @@
 # Verification results
 
+## October 19, 2026 — homeowner search recovery and safer saved history
+
+Integrated with `3dbeae2` (PR #10), retaining its shared address search, indexed public-record lookup, and property-first studios. This follow-up adds example-address shortcuts, explicit clearing, immediate stale-response invalidation, a 30-second request deadline, partial-failure recovery, mobile navigation, and confirmation before deleting local home history.
+
+- **367/367 logic tests pass**, including the updated address-index and metadata coverage. Type checking, changed-file formatting, and the optimized production build pass.
+- **17/17 selected browser cases pass against the local production build**: shared search and metadata (5), homeowner entry (2), mobile navigation/search recovery (6), and homeowner decisions/history (4). DC, Maryland, and condo routes open real bundled evidence without an account. The browser suite includes malformed responses, delayed replies after clearing, a stalled market, retry, cancellation, and storage-write failure.
+- Axe WCAG A/AA checks pass in the exercised desktop/mobile flows, including the deletion dialog. Navigation is checked at 320 and 390 pixels. The mobile search results and navigation screenshots were visually inspected.
+- `validate:valuation -- --check` reproduces the published evidence checks. No valuation formula, source snapshot, or accuracy claim is changed by this follow-up.
+- Earlier checks against the pre-update development checkout encountered cold-compilation timeouts for Maryland. The integrated production build passes the real Maryland search-to-analysis flow with the existing 15-second result assertions. Production account setup, independent accuracy validation, and remote deployment status are outside these local checks.
+
 ## October 18, 2026 — homeowner decision workbench
 
 - Installed the locked dependencies with `npm ci`; typecheck and optimized production build pass. Unit/integration acceptance covers mortgage reconciliation, six choices, missing-input abstention, delayed sales, rental/renovation/refinance break-even, reserve deficits, private export filtering, snapshot checksums, source corrections and cohort-specific accuracy references. The pre-review suite passed 357 cases; financial version 2 adds regression cases for renovation completion timing and management-fee totals. Read the final commit's CI for its executed count.

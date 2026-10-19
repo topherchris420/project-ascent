@@ -99,6 +99,19 @@ for (const width of [1440, 390]) {
     await page.goto('/home');
     await expect(page.getByRole('heading', { name: '1200 Example Linden Court', exact: true })).toBeVisible();
     await page.getByRole('button', { name: 'Remove saved home', exact: true }).click();
+    const removal = page.getByRole('dialog', { name: 'Remove this saved home?' });
+    await expect(removal).toContainText('2 saved decision versions');
+    await expect(removal.getByRole('button', { name: 'Keep saved home' })).toBeFocused();
+    await page.keyboard.press('Escape');
+    await expect(removal).not.toBeVisible();
+    await expect(page.getByRole('button', { name: 'Remove saved home', exact: true })).toBeFocused();
+    await page.getByRole('button', { name: 'Remove saved home', exact: true }).click();
+    await removal.getByRole('button', { name: 'Keep saved home' }).click();
+    await expect(page.getByRole('heading', { name: '1200 Example Linden Court', exact: true })).toBeVisible();
+    await page.getByRole('button', { name: 'Remove saved home', exact: true }).click();
+    const removalAxe = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze();
+    expect(removalAxe.violations.map(v => v.id)).toEqual([]);
+    await removal.getByRole('button', { name: 'Remove home and history' }).click();
     await expect(page.getByRole('heading', { name: 'Start with one home.' })).toBeVisible();
     expect(await page.evaluate(() => localStorage.getItem('ascent.practice-studio.v1'))).toBeNull();
     expect(errors).toEqual([]);
@@ -130,4 +143,23 @@ test('real home keeps unprovided financial facts unknown and survives storage fa
   await home.getByRole('button', { name: 'Save home & decision snapshot' }).click();
   await expect(home).toContainText('Could not save');
   await expect(page.getByTestId('calibrated-interval')).toBeVisible();
+});
+
+test('failed saved-home removal retains the history and explains how to recover', async ({ page }) => {
+  await page.goto('/demo');
+  await page.getByRole('button', { name: 'Save home & decision snapshot' }).click();
+  await page.goto('/home');
+  const original = await page.evaluate(() => localStorage.getItem('ascent.homeowner-profiles.v1'));
+  await page.evaluate(() => {
+    Storage.prototype.setItem = () => {
+      throw new DOMException('Blocked', 'SecurityError');
+    };
+  });
+  await page.getByRole('button', { name: 'Remove saved home', exact: true }).click();
+  const dialog = page.getByRole('dialog');
+  await dialog.getByRole('button', { name: 'Remove home and history' }).click();
+  await expect(dialog.getByRole('status')).toContainText('has not been removed');
+  expect(await page.evaluate(() => localStorage.getItem('ascent.homeowner-profiles.v1'))).toBe(original);
+  await dialog.getByRole('button', { name: 'Keep saved home' }).click();
+  await expect(page.getByRole('heading', { name: '1200 Example Linden Court', exact: true })).toBeVisible();
 });

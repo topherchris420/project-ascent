@@ -2064,3 +2064,55 @@
     grid-template-columns: minmax(0, 1fr);
   }
 }
+/* Keep the same destinations available on small screens. */
+@media (max-width: 520px) {
+  .landing .lp-nav-actions {
+    gap: 6px;
+  }
+  .landing .lp-nav-actions .lp-btn-sm {
+    padding: 8px 10px;
+  }
+}
+.landing .lp-menu-toggle,
+.landing .lp-mobile-menu {
+  display: none;
+}
+.landing .lp-menu-toggle {
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--lp-line);
+  border-radius: 10px;
+  color: var(--lp-ink);
+  background: var(--lp-card);
+}
+.landing .lp-mobile-menu a,
+.landing .lp-mobile-menu button {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px 12px;
+  min-height: 48px;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--lp-line);
+  font: inherit;
+  text-align: left;
+  color: var(--lp-ink);
+  background: var(--lp-card);
+}
+.landing .lp-mobile-menu span {
+  color: var(--lp-soft);
+  font-size: 12px;
+}
+@media (max-width: 860px) {
+  .landing .lp-menu-toggle {
+    display: inline-flex;
+  }
+  .landing .lp-mobile-menu:not([hidden]) {
+    display: grid;
+    max-height: calc(100dvh - 68px);
+    overflow-y: auto;
+  }
+}

@@ -278,3 +278,28 @@
     break-inside: avoid;
   }
 }
+.home-remove-dialog {
+  width: min(520px, calc(100% - 32px));
+  max-height: calc(100dvh - 48px);
+  overflow-y: auto;
+  margin: auto;
+  padding: 28px;
+  border: 1px solid #cad8cb;
+  border-radius: 20px;
+  background: #fffdf8;
+  color: #213f33;
+  box-shadow: 0 24px 80px #13291c40;
+}
+.home-remove-dialog::backdrop {
+  background: #13291c80;
+}
+.home-remove-dialog h2 {
+  margin-bottom: 12px;
+  font-size: 24px;
+}
+.home-remove-dialog p {
+  line-height: 1.6;
+}
+.home-remove-dialog .home-nav {
+  margin-bottom: 0;
+}

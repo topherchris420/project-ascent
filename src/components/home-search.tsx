@@ -2,7 +2,7 @@
 import '@/app/home-search.css';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
-import { ArrowRight, Building2, Home, LoaderCircle, Search } from 'lucide-react';
+import { ArrowRight, Building2, Home, LoaderCircle, Search, X } from 'lucide-react';
 import { warmAddressSearch } from '@/lib/address-search-client';
 import { number } from './format';
 
@@ -55,6 +55,11 @@ const idle = (): Record<Api, Answer> => ({
   'dc-condos': { status: 'done', results: [] },
   maryland: { status: 'done', results: [] },
 });
+const loading = (): Record<Api, Answer> => ({
+  dc: { status: 'loading', results: [] },
+  'dc-condos': { status: 'loading', results: [] },
+  maryland: { status: 'loading', results: [] },
+});
 
 export const studioHref = (studio: string, parcelId: string) => `${studio}?parcel=${encodeURIComponent(parcelId)}`;
 
@@ -64,34 +69,67 @@ export function HomeSearch({ id = 'home-address', autoFocus = false }: { id?: st
   const [retry, setRetry] = useState(0);
   const list = useRef<HTMLDivElement>(null);
   const field = useRef<HTMLInputElement>(null);
+  const request = useRef(0);
   const term = query.trim();
   const warm = () => MARKETS.forEach(market => warmAddressSearch(market.api));
+  const changeQuery = (value: string) => {
+    // Clear old results synchronously, before any in-flight reply or effect cleanup.
+    if (value.trim() !== term) {
+      request.current += 1;
+      setAnswers(value.trim().length >= 3 ? loading() : idle());
+    }
+    setQuery(value);
+  };
 
   useEffect(() => {
+    const sequence = ++request.current;
     if (term.length < 3) {
       setAnswers(idle());
       return;
     }
     const controller = new AbortController();
-    setAnswers({
-      dc: { status: 'loading', results: [] },
-      'dc-condos': { status: 'loading', results: [] },
-      maryland: { status: 'loading', results: [] },
-    });
-    const timer = setTimeout(() => {
-      for (const market of MARKETS)
-        fetch(`/api/${market.api}/search?q=${encodeURIComponent(term)}`, { signal: controller.signal })
-          .then(async response => {
-            const body = await response.json();
-            if (!response.ok || !Array.isArray(body.results)) throw new Error('Search failed.');
-            return { status: 'done' as const, results: (body.results as Found[]).slice(0, PER_MARKET) };
-          })
-          .catch(() => ({ status: 'failed' as const, results: [] }))
-          .then(answer => {
-            if (!controller.signal.aborted) setAnswers(current => ({ ...current, [market.api]: answer }));
-          });
+    let active = true;
+    setAnswers(loading());
+    const timer = setTimeout(async () => {
+      // Keep successful markets visible if another market stalls or fails.
+      const deadline = setTimeout(() => controller.abort(), 30000);
+      try {
+        await Promise.all(
+          MARKETS.map(async market => {
+            let answer: Answer;
+            try {
+              const response = await fetch(`/api/${market.api}/search?q=${encodeURIComponent(term)}`, {
+                signal: controller.signal,
+              });
+              const body = await response.json();
+              if (
+                !response.ok ||
+                !Array.isArray(body.results) ||
+                !body.results.every(
+                  (home: Found) =>
+                    home &&
+                    typeof home.parcelId === 'string' &&
+                    typeof home.address === 'string' &&
+                    typeof home.zip === 'string' &&
+                    typeof home.sqft === 'number' &&
+                    (home.city === undefined || typeof home.city === 'string') &&
+                    (home.county === undefined || typeof home.county === 'string'),
+                )
+              )
+                throw new Error('Search failed.');
+              answer = { status: 'done', results: body.results.slice(0, PER_MARKET) };
+            } catch {
+              answer = { status: 'failed', results: [] };
+            }
+            if (active && sequence === request.current) setAnswers(current => ({ ...current, [market.api]: answer }));
+          }),
+        );
+      } finally {
+        clearTimeout(deadline);
+      }
     }, 250);
     return () => {
+      active = false;
       clearTimeout(timer);
       controller.abort();
     };
@@ -110,7 +148,9 @@ export function HomeSearch({ id = 'home-address', autoFocus = false }: { id?: st
           ? 'Searching DC and Maryland public records…'
           : failed.length === MARKETS.length
             ? 'Search is unavailable right now. Retry, or explore the fictional sample.'
-            : 'No covered home matches this address.';
+            : failed.length
+              ? 'No matches in the available records. Some areas could not be searched; retry to check them.'
+              : 'No covered home matches this address.';
   const focusResult = (step: number) => {
     const links = [...(list.current?.querySelectorAll('a') ?? [])];
     const at = links.indexOf(document.activeElement as HTMLAnchorElement);
@@ -128,27 +168,63 @@ export function HomeSearch({ id = 'home-address', autoFocus = false }: { id?: st
           id={id}
           type="search"
           autoComplete="off"
+          maxLength={100}
           enterKeyHint="search"
           autoFocus={autoFocus}
           placeholder="e.g. 313 Shepherd St NW"
           value={query}
           onFocus={warm}
           onPointerEnter={warm}
-          onChange={e => setQuery(e.target.value)}
+          onChange={e => changeQuery(e.target.value)}
           onKeyDown={e => {
-            if (e.key === 'Escape') setQuery('');
+            if (e.key === 'Escape') changeQuery('');
             if (e.key === 'ArrowDown' && count) {
               e.preventDefault();
               focusResult(1);
             }
           }}
           aria-describedby={`${id}-status`}
+          aria-controls={count ? `${id}-results` : undefined}
         />
         {pending.length > 0 && <LoaderCircle size={17} className="spin" aria-hidden="true" />}
+        {query && (
+          <button
+            className="home-search-clear"
+            type="button"
+            aria-label="Clear address"
+            onClick={() => {
+              changeQuery('');
+              field.current?.focus();
+            }}
+          >
+            <X size={18} aria-hidden="true" />
+          </button>
+        )}
       </div>
       <p id={`${id}-status`} className="home-search-status" role="status">
         {status}
       </p>
+      {!term && (
+        <div className="home-search-examples" role="group" aria-label="Try an example address">
+          <span>Try an example:</span>
+          {[
+            { label: 'DC house', address: '313 Shepherd' },
+            { label: 'Maryland home', address: '7300 Maple' },
+            { label: 'DC condo', address: '2123 California' },
+          ].map(example => (
+            <button
+              key={example.label}
+              type="button"
+              onClick={() => {
+                changeQuery(example.address);
+                field.current?.focus();
+              }}
+            >
+              {example.label} <ArrowRight size={13} aria-hidden="true" />
+            </button>
+          ))}
+        </div>
+      )}
       {term.length >= 3 && failed.length > 0 && (
         <div className="home-search-note">
           {failed.length < MARKETS.length && (
@@ -162,13 +238,17 @@ export function HomeSearch({ id = 'home-address', autoFocus = false }: { id?: st
       {groups.length > 0 && (
         <div
           className="home-search-results"
+          id={`${id}-results`}
           ref={list}
           onKeyDown={e => {
             if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
               e.preventDefault();
               focusResult(e.key === 'ArrowDown' ? 1 : -1);
             }
-            if (e.key === 'Escape') field.current?.focus();
+            if (e.key === 'Escape') {
+              changeQuery('');
+              field.current?.focus();
+            }
           }}
         >
           {groups.map(market => (
@@ -177,7 +257,7 @@ export function HomeSearch({ id = 'home-address', autoFocus = false }: { id?: st
               <ul aria-label={`Matching homes: ${market.label}`}>
                 {answers[market.api].results.map(home => (
                   <li key={home.parcelId}>
-                    <Link href={studioHref(market.studio, home.parcelId)}>
+                    <Link prefetch={false} href={studioHref(market.studio, home.parcelId)}>
                       {market.api === 'dc-condos' ? (
                         <Building2 size={16} aria-hidden="true" />
                       ) : (

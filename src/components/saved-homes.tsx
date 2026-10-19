@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import {
   HOME_STORAGE_KEY,
@@ -18,6 +18,13 @@ export function SavedHomes() {
   const [profiles, setProfiles] = useState<HomeProfile[]>([]),
     [ready, setReady] = useState(false),
     [status, setStatus] = useState('');
+  const [pendingRemoval, setPendingRemoval] = useState<HomeProfile | null>(null);
+  const removalDialog = useRef<HTMLDialogElement>(null);
+  const heading = useRef<HTMLHeadingElement>(null);
+  useEffect(() => {
+    if (pendingRemoval) removalDialog.current?.showModal();
+    else removalDialog.current?.close();
+  }, [pendingRemoval]);
   useEffect(() => {
     try {
       const raw = localStorage.getItem(HOME_STORAGE_KEY);
@@ -28,16 +35,28 @@ export function SavedHomes() {
     setReady(true);
   }, []);
   const remove = (id: string) => {
+    let next: HomeProfile[];
+    let draftKey: string | undefined;
     try {
       const raw = localStorage.getItem(HOME_STORAGE_KEY);
-      const next = (raw ? parseProfiles(raw) : []).filter(p => p.propertyId !== id);
+      const current = raw ? parseProfiles(raw) : [];
+      next = current.filter(p => p.propertyId !== id);
+      const removed = current.find(p => p.propertyId === id)?.snapshots.at(-1);
+      draftKey = removed ? studioStorageKey(removed.evidence.subject) : undefined;
       localStorage.setItem(HOME_STORAGE_KEY, JSON.stringify({ version: 1, profiles: next }));
-      const removed = profiles.find(p => p.propertyId === id)?.snapshots.at(-1);
-      if (removed) localStorage.removeItem(studioStorageKey(removed.evidence.subject));
-      setProfiles(next);
+    } catch {
+      setStatus('Could not update device storage. Your saved home has not been removed.');
+      return;
+    }
+    setProfiles(next);
+    setPendingRemoval(null);
+    try {
+      if (draftKey) localStorage.removeItem(draftKey);
       setStatus('Saved home and all homeowner snapshots removed from this device. Existing downloads are not revoked.');
     } catch {
-      setStatus('Could not update device storage. Nothing was reported as removed.');
+      setStatus(
+        'Saved home and history removed, but the studio draft could not be cleared. Open that studio to reset its saved inputs. Existing downloads are not revoked.',
+      );
     }
   };
   return (
@@ -50,7 +69,7 @@ export function SavedHomes() {
           <span className="brand-mark">A</span>ascent<span className="brand-dot">.</span>
         </Link>
         <span className="studio-header-label">MY HOME</span>
-        <Link className="button small" href="/dc">
+        <Link className="button small" href="/#find-home">
           Explore a property
         </Link>
       </header>
@@ -58,7 +77,7 @@ export function SavedHomes() {
         <div className="studio-intro">
           <div>
             <span className="eyebrow">PRIVATE BY CHOICE</span>
-            <h1>
+            <h1 ref={heading} tabIndex={-1}>
               Your home.
               <br />
               <span>Your working decisions.</span>
@@ -107,7 +126,13 @@ export function SavedHomes() {
                     >
                       Export private history (JSON)
                     </button>
-                    <button className="button small" onClick={() => remove(profile.propertyId)}>
+                    <button
+                      className="button small"
+                      onClick={() => {
+                        setStatus('');
+                        setPendingRemoval(profile);
+                      }}
+                    >
                       Remove saved home
                     </button>
                   </div>
@@ -143,6 +168,41 @@ export function SavedHomes() {
           </section>
         )}
         <p role="status">{status}</p>
+        <dialog
+          ref={removalDialog}
+          className="home-remove-dialog"
+          aria-labelledby="remove-home-title"
+          aria-describedby="remove-home-description"
+          onCancel={event => {
+            event.preventDefault();
+            setPendingRemoval(null);
+          }}
+          onClose={() => {
+            if (document.activeElement === document.body) heading.current?.focus();
+          }}
+        >
+          <h2 id="remove-home-title">Remove this saved home?</h2>
+          <p id="remove-home-description">
+            {pendingRemoval?.address} and all {pendingRemoval?.snapshots.length} saved decision version
+            {pendingRemoval?.snapshots.length === 1 ? '' : 's'} will be removed from this browser, including saved
+            financial inputs and notes. This cannot be undone. Export your private history first if you want a copy.
+          </p>
+          <div className="home-nav">
+            <button type="button" className="button primary" autoFocus onClick={() => setPendingRemoval(null)}>
+              Keep saved home
+            </button>
+            <button
+              type="button"
+              className="button"
+              onClick={() => {
+                if (pendingRemoval) remove(pendingRemoval.propertyId);
+              }}
+            >
+              Remove home and history
+            </button>
+          </div>
+          <p role="status">{pendingRemoval ? status : ''}</p>
+        </dialog>
         <section className="panel">
           <h2>Evidence, with visible limits.</h2>
           <p>

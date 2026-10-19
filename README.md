@@ -39,6 +39,8 @@ You see **recorded facts, calculated estimates, your assumptions, and unknowns a
 
 ## Find your starting point
 
+The homepage and **My Home** share one address search. Try a DC house, Maryland home, or DC condo with the example buttons, use the arrow keys to browse matches, and press Escape or **Clear address** to start again. If one market is unavailable, successful results stay usable and a retry is offered. The mobile menu keeps saved homes, accuracy results, and help within reach.
+
 | Your question | Where to go | Coverage and caution |
 | --- | --- | --- |
 | What supports the price of a DC house? | **[DC Pricing Studio](https://project-ascent-theta.vercel.app/dc)** | Eligible District single-family and rowhouse sales in a bounded public-record snapshot |
@@ -125,6 +127,7 @@ Ascent is designed to make the **limits visible alongside the evidence**, not hi
 - No account synchronization or encryption of browser storage is provided. Shared devices and cleared browser data matter.
 - Privacy-filtered exports **exclude private finances and notes by default**; sharing them intentionally requires an explicit private export.
 - Downloaded reports or JSON copies cannot be recalled once shared.
+- Removing a saved home asks you to confirm the address and history being deleted. Cancel or press Escape to keep it; export a private history first if you need an independent copy.
 - Public pricing drafts separately autosave selected asking price, selling fees, and payoff in the browser. Additional ownership inputs are explicitly saved.
 - Optional account-based workspaces have a separate data, authentication, and deployment model.
 

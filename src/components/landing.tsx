@@ -14,11 +14,13 @@ import {
   Handshake,
   Layers3,
   Lock,
+  Menu,
   Scale,
   ShieldCheck,
   SlidersHorizontal,
   Sparkles,
   Users,
+  X,
 } from 'lucide-react';
 import { calculateCma, defaultAssumptions, simulatePricing } from '@/lib/analytics';
 import { assessCmaEvidence, compareCmaDecisions } from '@/lib/decision-review';
@@ -654,12 +656,22 @@ const faqs = [
 ];
 
 export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAvailable = true }: LandingProps) {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuButton = useRef<HTMLButtonElement>(null);
   return (
     <div className="landing">
       <a className="lp-skip" href="#lp-main">
         Skip to content
       </a>
-      <header className="lp-nav">
+      <header
+        className="lp-nav"
+        onKeyDown={event => {
+          if (event.key === 'Escape' && menuOpen) {
+            setMenuOpen(false);
+            menuButton.current?.focus();
+          }
+        }}
+      >
         <div className="lp-wrap lp-nav-inner">
           <Link className="brand lp-brand" href="/" aria-label="Ascent home">
             <span className="brand-mark">A</span>ascent<span className="brand-dot">.</span>
@@ -675,11 +687,40 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAv
             <button type="button" className="lp-btn lp-btn-ghost lp-nav-login" onClick={onSignIn}>
               Log in
             </button>
-            <a className="lp-btn lp-btn-primary lp-btn-sm" href="#find-home">
-              Look up my home
+            <a className="lp-btn lp-btn-primary lp-btn-sm" href="#find-home" onClick={() => setMenuOpen(false)}>
+              Find your home
             </a>
+            <button
+              ref={menuButton}
+              type="button"
+              className="lp-menu-toggle"
+              aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+              aria-expanded={menuOpen}
+              aria-controls="lp-mobile-menu"
+              onClick={() => setMenuOpen(open => !open)}
+            >
+              {menuOpen ? <X size={22} aria-hidden="true" /> : <Menu size={22} aria-hidden="true" />}
+            </button>
           </div>
         </div>
+        <nav
+          id="lp-mobile-menu"
+          className="lp-mobile-menu"
+          aria-label="Mobile navigation"
+          hidden={!menuOpen}
+          onClick={() => setMenuOpen(false)}
+        >
+          <Link href="/home">
+            My Home <span>Saved evidence & decisions</span>
+          </Link>
+          <a href="#homeowners">Explore covered areas</a>
+          <a href="#workflow">More tools</a>
+          <a href="#accuracy">Published accuracy</a>
+          <a href="#faq">Questions & answers</a>
+          <button type="button" onClick={onSignIn}>
+            Log in to a workspace
+          </button>
+        </nav>
       </header>
 
       <main id="lp-main">
@@ -696,8 +737,8 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAv
                 <span>belongs to homeowners.</span>
               </h1>
               <p className="lp-lede">
-                You should never have to accept a number you cannot understand. Explore comparable sales, inspect the
-                calculations, test your assumptions, and keep the evidence behind your decision.
+                Understand what supports your home’s price, explore your next move, and keep the evidence behind your
+                decision. Start with an address. We’ll show you the recorded sales and the reasoning.
               </p>
               <div className="lp-find" id="find-home">
                 <HomeSearch />
@@ -976,8 +1017,8 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAv
                 <p>Start with comparable evidence. Keep a report you can question, share and explain.</p>
               </div>
               <div className="lp-cta-row">
-                <a className="lp-btn lp-btn-primary lp-btn-lg" href="#find-home">
-                  Look up my home <ArrowRight size={17} aria-hidden="true" />
+                <a className="lp-btn lp-btn-light lp-btn-lg" href="#find-home">
+                  Find your home <ArrowRight size={17} aria-hidden="true" />
                 </a>
                 <Link className="lp-btn lp-btn-outline lp-btn-lg" href="/demo">
                   Try the sample

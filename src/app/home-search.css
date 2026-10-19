@@ -38,11 +38,55 @@
   padding: 14px 0;
 }
 /* The field wrapper carries the focus ring. */
-.home-search-field input:focus-visible {
+.home-search .home-search-field input:focus-visible {
   outline: none;
 }
 .home-search-field input::placeholder {
   color: #6b7764;
+}
+.home-search-field > svg {
+  flex-shrink: 0;
+}
+.home-search-field input::-webkit-search-cancel-button {
+  display: none;
+}
+.home-search-clear {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--ink);
+}
+.home-search-examples {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+  margin-top: 12px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.home-search-examples button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 44px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--green);
+  font-size: 13px;
+  font-weight: 600;
+}
+.home-search-examples button:hover,
+.home-search-clear:hover {
+  background: var(--pale);
 }
 .home-search .home-search-status {
   margin-top: 8px;
