@@ -125,6 +125,7 @@ Ascent is designed to make the **limits visible alongside the evidence**, not hi
 **My Home** stores private ownership inputs and Property Evidence Passports locally in your browser, not in an Ascent account. You explicitly save the additional financial inputs and history you want to keep. The storage supports up to **10 homes and 10 versions per home**, subject to browser limits.
 
 - No account synchronization or encryption of browser storage is provided. Shared devices and cleared browser data matter.
+- **Back up & restore:** My Home can download a private backup of every saved home and version, then restore it in another browser after a preview. Restore skips duplicates, preserves existing working decisions and rejects the entire restore if storage limits would be exceeded. Files stay in your browser and are not uploaded. Backups contain unencrypted private finances and notes; keep them private. Earlier passport and history reports remain reference documents, not restorable backups.
 - Privacy-filtered exports **exclude private finances and notes by default**; sharing them intentionally requires an explicit private export.
 - Downloaded reports or JSON copies cannot be recalled once shared.
 - Removing a saved home asks you to confirm the address and history being deleted. Cancel or press Escape to keep it; export a private history first if you need an independent copy.
