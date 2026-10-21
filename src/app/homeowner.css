@@ -219,6 +219,27 @@
   display: grid;
   gap: 20px;
 }
+.home-backup input[type='file'] {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  margin: 12px 0;
+  font: inherit;
+}
+.home-backup-preview {
+  margin-top: 20px;
+  padding: 18px;
+  background: #f2f6f1;
+  border: 1px solid #d9e4d7;
+  border-radius: 12px;
+  overflow-wrap: anywhere;
+}
+.home-backup-preview ul {
+  padding-left: 20px;
+}
+.home-backup-preview li {
+  margin: 10px 0;
+}
 @media (max-width: 700px) {
   .home-chart svg text {
     display: none;

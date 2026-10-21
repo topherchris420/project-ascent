@@ -11,6 +11,7 @@ import {
 import { downloadJson } from '@/lib/browser-export';
 import { date } from './format';
 import { HomeSearch } from './home-search';
+import { createHomeBackup, parseHomeBackup, mergeHomeBackup, MAX_BACKUP_BYTES } from '@/lib/homeowner-backup';
 import '@/app/pricing-studio.css';
 import '@/app/homeowner.css';
 
@@ -19,6 +20,36 @@ export function SavedHomes() {
     [ready, setReady] = useState(false),
     [status, setStatus] = useState('');
   const [pendingRemoval, setPendingRemoval] = useState<HomeProfile | null>(null);
+  const [backup, setBackup] = useState<HomeProfile[] | null>(null);
+  const [readingBackup, setReadingBackup] = useState(false);
+  const [backupStatus, setBackupStatus] = useState('');
+  const backupInput = useRef<HTMLInputElement>(null);
+  const readSaved = () => {
+    const raw = localStorage.getItem(HOME_STORAGE_KEY);
+    return raw ? parseProfiles(raw) : [];
+  };
+  const restoreBackup = () => {
+    if (!backup) return;
+    try {
+      // Re-read at confirmation so edits in another tab since preview are retained.
+      const merged = mergeHomeBackup(readSaved(), backup);
+      if (merged.added)
+        localStorage.setItem(HOME_STORAGE_KEY, JSON.stringify({ version: 1, profiles: merged.profiles }));
+      setProfiles(merged.profiles);
+      setBackup(null);
+      if (backupInput.current) backupInput.current.value = '';
+      setBackupStatus(
+        `${merged.added} decision versions restored; ${merged.skipped} duplicates skipped. Existing working decisions kept.`,
+      );
+      backupInput.current?.focus();
+    } catch (error) {
+      setBackupStatus(
+        error instanceof Error && error.message.includes('This backup would')
+          ? error.message
+          : 'Restore could not be saved. Existing storage has been kept. Check available browser storage and your saved profiles.',
+      );
+    }
+  };
   const removalDialog = useRef<HTMLDialogElement>(null);
   const heading = useRef<HTMLHeadingElement>(null);
   useEffect(() => {
@@ -88,7 +119,7 @@ export function SavedHomes() {
         <p>
           Saved profiles stay in this browser on this device. They are not synchronized to an account. Other people
           using this browser may see them; clearing site storage removes them. Download a private passport to keep an
-          independent copy.
+          independent copy. Use a private backup below to restore homes in another browser.
         </p>
         {!ready ? (
           <p role="status">Reading saved homes…</p>
@@ -167,6 +198,102 @@ export function SavedHomes() {
             </nav>
           </section>
         )}
+        <section className="panel home-backup" aria-labelledby="home-backup-title">
+          <span className="eyebrow">TAKE YOUR DECISIONS WITH YOU</span>
+          <h2 id="home-backup-title">Back up & restore</h2>
+          <p>
+            A private backup keeps every saved home, decision version, financial assumption and note. Store it somewhere
+            private; the file is not encrypted.
+          </p>
+          <div className="home-nav">
+            <button
+              className="button"
+              disabled={!ready || !profiles.length}
+              onClick={() => {
+                try {
+                  downloadJson(createHomeBackup(readSaved()), 'ascent-private-backup.json');
+                  setBackupStatus('Private backup download started. Keep this file private.');
+                } catch {
+                  setBackupStatus('Could not create a backup. Existing storage has been kept.');
+                }
+              }}
+            >
+              Download private backup
+            </button>
+          </div>
+          <label className="home-wide-label" htmlFor="home-backup-file">
+            Choose a private backup to restore
+          </label>
+          <input
+            ref={backupInput}
+            id="home-backup-file"
+            type="file"
+            accept=".json,application/json"
+            disabled={!ready || readingBackup}
+            aria-describedby="home-backup-help"
+            onChange={async event => {
+              const file = event.currentTarget.files?.[0];
+              setBackup(null);
+              setBackupStatus('');
+              if (!file) return;
+              setReadingBackup(true);
+              try {
+                if (file.size > MAX_BACKUP_BYTES)
+                  throw new Error('This file is too large. Choose an Ascent backup smaller than 16 MB.');
+                const incoming = parseHomeBackup(await file.text());
+                setBackup(incoming);
+                setBackupStatus('Backup checked. Review the listed homes before restoring.');
+              } catch (error) {
+                setBackupStatus(error instanceof Error ? error.message : 'Could not read this backup.');
+                if (backupInput.current) backupInput.current.value = '';
+              } finally {
+                setReadingBackup(false);
+              }
+            }}
+          />
+          <p id="home-backup-help" className="fine">
+            Files are read in this browser, never uploaded. Passport and history reports are for reference; choose a
+            file created with “Download private backup.” Checksums detect damage, not authenticity. Only restore files
+            you trust.
+          </p>
+          {readingBackup ? <p role="status">Reading backup…</p> : null}
+          {backup ? (
+            <div className="home-backup-preview">
+              <h3>Review your backup</h3>
+              <ul>
+                {backup.map(profile => (
+                  <li key={profile.propertyId}>
+                    <strong>{profile.address}</strong> · {profile.snapshots.length} saved version
+                    {profile.snapshots.length === 1 ? '' : 's'}
+                  </li>
+                ))}
+              </ul>
+              <p>
+                Restore adds missing versions and skips duplicates. Your current working decision stays selected for
+                existing homes. Nothing is removed; a backup that exceeds storage limits is rejected in full.
+              </p>
+              <div className="home-nav">
+                <button className="button primary" onClick={restoreBackup}>
+                  Restore saved decisions
+                </button>
+                <button
+                  className="button"
+                  onClick={() => {
+                    setBackup(null);
+                    setBackupStatus('Restore canceled. Saved homes have not changed.');
+                    if (backupInput.current) {
+                      backupInput.current.value = '';
+                      backupInput.current.focus();
+                    }
+                  }}
+                >
+                  Cancel restore
+                </button>
+              </div>
+            </div>
+          ) : null}
+          <p role="status">{backupStatus}</p>
+        </section>
         <p role="status">{status}</p>
         <dialog
           ref={removalDialog}
