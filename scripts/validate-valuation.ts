@@ -6,7 +6,8 @@
  *   npm run validate:valuation -- --verify --market dc re-run from the dataset and require byte-identical results
  *   npm run validate:valuation -- --attest --market dc --key reviewer-ed25519.pem --reviewer "Name, Org"
  *
- * Markets: dc, king-county, maryland (Montgomery and Prince George's only). Without --market, every market is used.
+ * Markets: dc, king-county, maryland, maryland-v2, dc-condos and maryland-external (registered before its data was
+ * downloaded; see scripts/register-maryland-external.ts). Without --market, every market is used.
  * --attest lets an outside reviewer sign the exact report digest they reproduced with their own Ed25519 key.
  */
 import { createPrivateKey, createPublicKey, sign } from 'node:crypto';
@@ -19,7 +20,11 @@ import {
   kingCountyProtocol,
   marylandProtocol,
   marylandV2Protocol,
+  marylandExternalProtocol,
   dcCondoProtocol,
+  PENDING_DATA_LOCK,
+  protocolDigest,
+  registrationTemplate,
   runValuationValidation,
   verifyAttestation,
   verifyValidationReport,
@@ -28,9 +33,26 @@ import {
   type ValidationReport,
 } from '../src/lib/valuation-validation';
 import { benchmarkFromReport } from '../src/lib/valuation-safeguards';
+import { EXTERNAL, textDigest } from './maryland-external';
 
-type Market = { protocol: ValidationProtocol; dataset: string; report: string; samples: string; benchmark: string };
+type Market = {
+  protocol: ValidationProtocol;
+  dataset: string;
+  report: string;
+  samples: string;
+  benchmark: string;
+  /** Registered before its data existed; scoring requires the registration and a matching data lock. */
+  preDownload?: { registration: string; lock: string; procedure: readonly string[] };
+};
 const markets: Record<string, Market> = {
+  'maryland-external': {
+    protocol: marylandExternalProtocol,
+    dataset: EXTERNAL.dataset,
+    report: EXTERNAL.report,
+    samples: EXTERNAL.samples,
+    benchmark: EXTERNAL.benchmark,
+    preDownload: { registration: EXTERNAL.registration, lock: EXTERNAL.lock, procedure: EXTERNAL.procedure },
+  },
   'maryland-v2': {
     protocol: marylandV2Protocol,
     dataset: 'evidence/datasets/maryland-sales.csv.gz',
@@ -103,6 +125,44 @@ function committedChecks(market: Market) {
   return { report, checks };
 }
 
+/** The registration fixed everything but the fingerprint before download; the data lock fixed the fingerprint. */
+function registrationChecks(market: Market) {
+  const { registration: registrationPath, lock: lockPath, procedure } = market.preDownload!;
+  const registration = existsSync(registrationPath) ? JSON.parse(readFileSync(registrationPath, 'utf8')) : null;
+  const template = protocolDigest(registrationTemplate(market.protocol));
+  const checks = [
+    {
+      label: 'Pre-download registration',
+      passed: registration?.protocolDigest === template,
+      detail: registration
+        ? `Registered ${registration.registeredAt}; everything but the dataset fingerprint is ${template}.`
+        : `${registrationPath} is missing.`,
+    },
+    {
+      label: 'Registered fetch procedure',
+      passed: !!registration && procedure.every(path => registration.procedure.files[path] === textDigest(path)),
+      detail: procedure.join(', '),
+    },
+  ];
+  if (market.protocol.dataset.csvSha256 === PENDING_DATA_LOCK)
+    checks.push({
+      label: 'Data lock',
+      passed: !existsSync(market.report),
+      detail: 'No dataset is locked yet, so nothing can have been scored.',
+    });
+  else {
+    const lock = existsSync(lockPath) ? JSON.parse(readFileSync(lockPath, 'utf8')) : null;
+    checks.push({
+      label: 'Data lock',
+      passed: lock?.csvSha256 === market.protocol.dataset.csvSha256 && lock?.registrationProtocolDigest === template,
+      detail: lock
+        ? `Dataset ${lock.csvSha256} locked ${lock.lockedAt}, after registration commit ${lock.registrationCommit.slice(0, 12)}.`
+        : `${lockPath} is missing.`,
+    });
+  }
+  return checks;
+}
+
 function run(market: Market) {
   const started = Date.now();
   const { report, samples } = runValuationValidation(readGzipText(market.dataset), {
@@ -165,18 +225,25 @@ if (flag('--attest')) {
 } else
   for (const id of selected) {
     const market = markets[id];
+    const registered = market.preDownload ? registrationChecks(market) : [];
     if (flag('--check')) {
+      if (market.preDownload && !existsSync(market.report)) {
+        console.log(`${market.protocol.id}: registered, not yet scored.`);
+        ok = printChecks(registered) && ok;
+        continue;
+      }
       const { report, checks } = committedChecks(market);
       summary(report);
       if (!checks.some(check => check.label.startsWith('Attestation')))
         console.log('No third-party attestations are recorded for this report yet.');
-      ok = printChecks(checks) && ok;
+      ok = printChecks([...registered, ...checks]) && ok;
     } else if (flag('--verify')) {
       const { report, samples, seconds } = run(market);
       const committed = committedChecks(market);
       summary(report);
       ok =
         printChecks([
+          ...registered,
           ...committed.checks,
           {
             label: 'Independent re-run: report',
@@ -194,6 +261,8 @@ if (flag('--attest')) {
         throw new Error(
           `Refusing to overwrite ${market.report}. Use --verify to reproduce a published experiment; declare a new protocol and holdout for revisions.`,
         );
+      if (market.preDownload && !printChecks(registered))
+        throw new Error('Scoring requires the pre-download registration and a matching data lock.');
       if (['maryland-v2', 'dc-condos'].includes(id)) {
         const registration = JSON.parse(readFileSync(`evidence/${id}-protocol-registration.json`, 'utf8'));
         if (registration.protocolDigest !== digestOf(market.protocol))

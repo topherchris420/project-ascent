@@ -1,7 +1,7 @@
 import { createHash, verify as verifySignature } from 'node:crypto';
 import { calculateCma, comparableExclusion, defaultAssumptions, distanceMiles } from './analytics';
 import { engineFingerprint } from './valuation-safeguards';
-import type { CmaAssumptions, ValuationProperty } from './types';
+import type { CmaAssumptions, CmaResult, ValuationProperty } from './types';
 
 /**
  * Out-of-sample accuracy validation for Ascent's deterministic pricing engine.
@@ -258,12 +258,46 @@ export const dcCondoProtocol = {
   omittedFeatures: ['conditionValue'],
 } as const satisfies ValidationProtocol;
 
+/** Stands in for a dataset fingerprint that a registration fixes before the data is downloaded. */
+export const PENDING_DATA_LOCK = 'pending-data-lock';
+/** The registered form of a protocol whose dataset did not exist yet: everything but the fingerprint. */
+export const registrationTemplate = (protocol: ValidationProtocol): ValidationProtocol => ({
+  ...protocol,
+  dataset: { ...protocol.dataset, csvSha256: PENDING_DATA_LOCK },
+});
+
+/**
+ * External test of the Maryland v2 method in four counties whose sales Ascent had never fetched or scored:
+ * Anne Arundel, Baltimore County, Frederick and Howard (only per-county record counts were queried first).
+ * Registered before their data was downloaded; the fingerprint comes from the data lock committed after
+ * download and before scoring. Screening,
+ * fitting, selection, interval method and all nine bars are Maryland v2's, unchanged; the windows mirror the
+ * original Maryland experiment so the holdout covers a full year.
+ */
+export const marylandExternalProtocol = {
+  ...marylandV2Protocol,
+  id: 'ascent-valuation-validation-maryland-external-1',
+  dataset: {
+    id: 'maryland-anne-arundel-baltimore-frederick-howard',
+    csvSha256: PENDING_DATA_LOCK,
+    license: 'Public Domain',
+    sourceId: 'source-maryland-public-records',
+  },
+  windows: {
+    fit: { from: '2021-01-01', to: '2023-12-31' },
+    select: { from: '2024-01-01', to: '2024-06-30' },
+    calibrate: { from: '2024-07-01', to: '2025-06-30' },
+    test: { from: '2025-07-01', to: '2026-06-30' },
+  },
+} as const satisfies ValidationProtocol;
+
 export const validationProtocols: readonly ValidationProtocol[] = [
   dcProtocol,
   kingCountyProtocol,
   marylandProtocol,
   marylandV2Protocol,
   dcCondoProtocol,
+  marylandExternalProtocol,
 ];
 
 const DAY = 86_400_000;
@@ -639,6 +673,32 @@ export function valueSale(
   };
 }
 
+/**
+ * The full engine result behind one sale's primary estimate, built exactly as `valueSale` builds it, for
+ * supplementary studies that need comparables, weights and adjustments. Null where `valueSale` abstains.
+ */
+export function primaryCmaResult(
+  sale: ValidationSale,
+  index: SaleIndexLike,
+  assumptions: CmaAssumptions,
+  protocol: ValidationProtocol,
+): CmaResult | null {
+  const sourceId = protocol.dataset.sourceId;
+  const subject = asSubject(sale, sourceId);
+  const asOf = asOfFor(sale, protocol);
+  const eligible = index
+    .near(sale, assumptions, protocol.excludeSameParcel)
+    .map(candidate => asComparable(candidate, sourceId))
+    .filter(candidate => !comparableExclusion(subject, candidate, assumptions, Date.parse(asOf)));
+  if (!eligible.length) return null;
+  try {
+    return calculateCma(subject, eligible, assumptions, asOf);
+  } catch (error) {
+    if (error instanceof Error && error.message.startsWith('No eligible closed comparables.')) return null;
+    throw error;
+  }
+}
+
 export type RatioMetrics = {
   n: number;
   mdape: number;
@@ -699,7 +759,7 @@ function prng(seed: number) {
     return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
   };
 }
-function bootstrapIndices(n: number, resamples: number, seed: number): Uint32Array[] {
+export function bootstrapIndices(n: number, resamples: number, seed: number): Uint32Array[] {
   const random = prng(seed);
   return Array.from({ length: resamples }, () => {
     const sample = new Uint32Array(n);
@@ -827,7 +887,7 @@ export type ValidationReport = {
   reportDigest: string;
 };
 
-const percentileCi = (values: number[]): [number, number] => {
+export const percentileCi = (values: number[]): [number, number] => {
   const sorted = [...values].sort((a, b) => a - b);
   return [round(quantileOf(sorted, 0.025), 6), round(quantileOf(sorted, 0.975), 6)];
 };
@@ -867,6 +927,13 @@ export function samplesCsv(rows: ValuationRow[], variantIds: string[]): string {
 
 /** Report text per protocol; kept outside the protocol objects so the published King County digest is unchanged. */
 const protocolLimitations: Record<string, string[]> = {
+  'ascent-valuation-validation-maryland-external-1': [
+    'External test of the unchanged Maryland v2 method in Anne Arundel, Baltimore County, Frederick and Howard, registered before their data was downloaded. Internally executed; no independent reviewer has certified it.',
+    'Pooled four-county fit, as for Montgomery and Prince George’s. County slices are descriptive and establish no county calibration.',
+    'Quality is construction grade, not interior condition. Bedrooms and bathrooms are unavailable; both rates are fixed to zero. Grade coefficient constrained to $75,000 as in Maryland v2.',
+    'Current parcel characteristics, last three recorded transfers and surviving single-unit R/TH parcels; no historical feature snapshots, concessions, full title history or recording-time availability.',
+    'A passing result would describe these counties and this period only; it would not validate Montgomery, Prince George’s or the rest of Maryland, and Ascent serves no properties in these counties.',
+  ],
   'ascent-valuation-validation-maryland-2': [
     'Revised model after the failed v1 experiment; v1 remains published unchanged. This test uses previously unscored July–September 2026 sales from the already public snapshot, not prospectively collected outcomes.',
     'Only three months, with incomplete recording and seasonal coverage. Monthly counts were inspected before registration. No professional certification or long-term accuracy claim.',
