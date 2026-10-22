@@ -2,6 +2,19 @@
 
 # Remaining work and production gates
 
+## October 21: Home Decision Brief, financial depth and an external validation
+
+Delivered: the [Home Decision Brief](home-decision-brief.md) in every studio, exact financial sensitivity and break-evens, the brief in the Evidence Passport and report, Ask Ascent value and evidence answers with references, and an [external Maryland validation](valuation-validation.md#external-maryland-validation-four-counties-protocol-ascent-valuation-validation-maryland-external-1) registered before its data was downloaded. It failed acceptance; its supplement supports the verdict policy.
+
+Still open, in priority order:
+
+- **Comprehension.** The [usability protocol](usability-protocol.md) has not been run. No claim about how well homeowners understand the brief is possible until it has, with its results published.
+- **A prospective holdout for the served markets.** The registration, data-lock and supplement tooling now exists. A study of DC and Montgomery / Prince George's sales recorded after the current snapshots, registered before they exist, is the strongest next test of the shipped settings and the verdict policy.
+- **Maryland vertical equity.** The external diagnostic points to sale prices varying for reasons the records lack, not to compressed estimates. Better characteristics (interior condition, recent permits) are the plausible fix, not a recalibration. No authorized source for them is configured.
+- **Verdict policy revision.** The outlier check fired on 31% of stated values without separating accuracy. Any change needs its own registration and an untouched holdout; the external results cannot be used to tune it.
+- **Trend in rising markets.** The external fit's monthly trend (+1.1%) was double Maryland v2's and coincided with a 3% median over-valuation. Test this as a registered hypothesis, not a retune.
+- **Independent replication.** No third-party attestation exists for any report, including the external one.
+
 ## October 18: Maryland, Virginia permission drafts and DC condos
 
 - `/maryland` adds 462,347 searchable Montgomery and Prince George’s homes from public-domain state data, with unavailable rooms omitted and a published pooled accuracy result, including every miss. [Details](maryland-public-records.md). Separate county validation is still required before calibrated county ranges.

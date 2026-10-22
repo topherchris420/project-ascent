@@ -30,10 +30,11 @@ Imagine you are considering selling. Someone gives you a number. Usually, that's
 
 Ascent lets you investigate the number instead:
 
-1. **See the sales.** Inspect the recorded comparable properties, their differences, their adjustments, and how much each one influences the estimate.
-2. **Challenge the assumptions.** Test a different condition rating, exclude a questionable comparable with a reason, or explore another asking price.
-3. **Explore the decision.** Examine illustrative selling proceeds and, with your own financial inputs, compare selling, holding, renting, renovating before sale, refinancing, or buying while keeping your current home.
-4. **Keep the evidence.** Save a versioned Property Evidence Passport on your device, revisit changed assumptions, and export a report you can examine, print, or share.
+1. **Read your Home Decision Brief.** Seven plain-language answers come first: what the evidence suggests about value (or why it declines to state one), which sales support it, how reliable and current the evidence is, which facts are missing, what each choice would mean financially, which assumptions move each outcome, and what to obtain before deciding. Every figure is marked as a recorded fact, an assumption or a calculation you can reproduce.
+2. **See the sales.** Inspect the recorded comparable properties, their differences, their adjustments, and how much each one influences the estimate.
+3. **Challenge the assumptions.** Test a different condition rating, exclude a questionable comparable with a reason, or explore another asking price.
+4. **Explore the decision.** Examine illustrative selling proceeds and, with your own financial inputs, compare selling, holding, renting, renovating before sale, refinancing, or buying while keeping your current home.
+5. **Keep the evidence.** Save a versioned Property Evidence Passport on your device, revisit changed assumptions, and export a report you can examine, print, or share.
 
 You see **recorded facts, calculated estimates, your assumptions, and unknowns as different things**. Ascent does not present an adjusted-sale range as a statistical confidence interval or a scenario as a forecast.
 
@@ -54,11 +55,17 @@ The homepage and **My Home** share one address search. Try a DC house, Maryland 
 
 ## Built for decisions, not just estimates
 
-### 01 · Make the price explain itself
+### 01 · Start with your Home Decision Brief
+
+After you choose a property, the brief answers seven questions before any professional tables. It states a value only when the evidence supports one: with fewer than three eligible recorded sales, or when the release checks withhold the result, it says **Not stated** and explains why instead of showing a number. Estimates with known weaknesses say which checks they missed. Financial answers appear once you add your own inputs, and the choices are never ranked.
+
+[How the brief works, its verdict policy and its limits](docs/home-decision-brief.md)
+
+### 02 · Make the price explain itself
 
 Inspect closed sales, distance, size, age, weighting, adjustments, exclusions, and source provenance. Explore sensitivity to individual inputs and compare asking-price scenarios. A changed assumption produces a changed calculation, not a hidden AI opinion.
 
-### 02 · Follow the money
+### 03 · Follow the money
 
 The homeowner workbench connects property evidence to **six deterministic ownership choices**:
 
@@ -71,19 +78,21 @@ The homeowner workbench connects property evidence to **six deterministic owners
 
 Enter your own debt, rates, expenses, rents, and other assumptions. The workbench calculates applicable payment schedules, monthly cash flow, equity, cash requirements, and break-even comparisons. Missing inputs stay **unknown**; Ascent does not quietly manufacture your mortgage, tax bill, rent, or renovation costs.
 
+**What would change these results** re-runs the same calculation one input at a time to show which of your inputs moves each choice most, shows every choice at 1, 3, 5, 10 and 20 years, and solves five break-even thresholds: the sale price at which selling matches continuing to own, the annual property change at which owning matches selling, the rent at which renting matches selling, the vacancy at which rental cash flow reaches zero, and the refinance rate at which refinancing matches keeping your loan. These are arithmetic under your inputs, not forecasts.
+
 These are **illustrative, pre-tax comparisons**, not financial advice or predictions. They exclude important household considerations including replacement housing, tax effects, loan qualification, and financing availability. The choices do not represent equivalent housing outcomes and are not ranked as the best option for you.
 
 [How the homeowner workbench calculates and abstains](docs/homeowner-workbench.md)
 
-### 03 · Remember what changed
+### 04 · Remember what changed
 
-A **Property Evidence Passport** brings the property's public evidence, your saved decisions, assumptions, and calculation versions into one reproducible history. Compare saved versions, see whether records or assumptions actually changed, and export a privacy-filtered JSON or standalone printable HTML report. Use your browser's Print command to save a PDF.
+A **Property Evidence Passport** brings the property's public evidence, your saved decisions, assumptions, and calculation versions into one reproducible history. It carries the brief as a research record: the sales selected, ruled out and excluded, the settings you changed, the reliability checks, missing facts and next steps. The readable report opens with an executive summary. Compare saved versions, see whether records or assumptions actually changed, and export a privacy-filtered JSON or standalone printable HTML report. Use your browser's Print command to save a PDF.
 
 The **Decision Time Machine** distinguishes changed comparable evidence from changed homeowner assumptions. Its on-demand checks do **not** mean Ascent monitors the live market, fetches listings in the background, or sends price alerts.
 
-### 04 · Ask for the explanation
+### 05 · Ask for the explanation
 
-**Ask Ascent** can explain the calculations and evidence in context. Core pricing and homeowner financial computations are deterministic; **AI does not set the home's price**. Optional Groq/OpenAI integrations are separately configured, and production external-model synthesis remains blocked pending independent review.
+**Ask Ascent** can explain the calculations and evidence in context. Questions about value and evidence are answered from the brief's own figures, with references to the calculation, study and records behind each answer. Core pricing and homeowner financial computations are deterministic; **AI does not set the home's price**. Optional Groq/OpenAI integrations are separately configured, and production external-model synthesis remains blocked pending independent review.
 
 ## Our accuracy is public. So are the misses.
 
@@ -94,14 +103,16 @@ An impressive-looking price is not proof of accuracy. Ascent publishes reproduci
 | **DC single-family / rowhouses** | 2,254 | **9.98%** | 50.2% | **9/9**, several narrowly |
 | **Maryland, revised model** | 2,812 | **9.52%** | 52.0% | **8/9**; price-related bias criterion failed |
 | **DC condominiums** | 1,434 | **12.95%** | 41.16% | **4/9**; overall acceptance failed |
+| **Maryland method, four other counties** (registered before download) | 19,039 | **12.26%** | 42.49% | **5/9**; overall acceptance failed |
 
-*Published internal holdout studies as of October 18, 2026. Median error describes a tested group, **not** the expected error of your individual home. These are not independently certified results, appraisals, or guarantees.*
+*Published internal holdout studies as of October 21, 2026. Median error describes a tested group, **not** the expected error of your individual home. These are not independently certified results, appraisals, or guarantees.*
 
 A few distinctions matter:
 
 - **DC houses:** Results depend on the exact validated configuration. Only that unmodified eligible configuration may display a calibrated interval; custom changes or insufficient evidence remove that claim. Several acceptance bars were met narrowly.
 - **Maryland:** The revised study used a different holdout from an earlier failed model. Its improved headline number is **not** a like-for-like before/after comparison. One of nine criteria still fails; no current-home calibrated interval is released.
 - **DC condos:** Five of nine acceptance criteria failed. Important building attributes such as HOA fees, floor, view, parking, and amenities are unmodeled. No calibrated interval is released.
+- **External Maryland test:** Before the data was downloaded, the method, bars and analysis were committed and pushed for four counties Ascent does not serve: Anne Arundel, Baltimore County, Frederick and Howard. The method failed there, so Ascent claims nothing beyond Montgomery and Prince George’s. The same registration tested the Home Decision Brief’s verdicts on those untouched sales. Estimates the brief would not state had 16.8% median error, limited estimates 13.1% and supported estimates 9.0%. Both pre-registered hypotheses were supported.
 - **All markets:** Public records may be delayed or incomplete. An adjusted comparable-price envelope is not automatically a calibrated probability interval.
 
 **[Read the full results](https://project-ascent-theta.vercel.app/accuracy)** · [Methodology, protocols and historical findings](docs/valuation-validation.md) · [Latest release and validation gates](docs/production-readiness.md)
@@ -112,7 +123,8 @@ Ascent is **not a live MLS feed, licensed appraisal, brokerage, or automatic tra
 
 - Public address research currently covers qualifying **Washington, DC houses and condos** and **Montgomery / Prince George's County, Maryland** homes. It does not provide nationwide coverage.
 - **Virginia public-record pricing is not available**. Written source-use permission remains unresolved. Neither an open-source license nor public website access creates MLS or provider redistribution rights.
-- Listing status, concessions, property condition, renovations, title details, building characteristics, and other decisive facts can be missing.
+- Listing status, concessions, property condition, renovations, title details, building characteristics, and other decisive facts can be missing. The brief lists the ones that matter for your home and how to obtain them.
+- When fewer than three eligible recorded sales remain, or the release checks withhold the result, Ascent states no value for the home.
 - Seller scenarios do not predict buyer response, time on market, future prices, or renovation return on investment.
 - Ascent does not autonomously message clients, make offers, sign contracts, or decide what someone should do.
 

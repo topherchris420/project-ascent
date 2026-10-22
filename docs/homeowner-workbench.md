@@ -43,6 +43,16 @@ Each exported record has its source, applicable license, collection time, missin
 
 Monitoring is an on-demand comparison when a saved home is opened. Actual property/sale corrections and source-permission metadata changes are reviewable. Collection timestamps, saving time and unchanged data do not create property alerts. Financial-assumption changes appear in history separately. Preferences are saved explicitly. This does not refresh a source, promise periodic delivery or create live listing inventory.
 
+## October 21: what moves each choice, and the Home Decision Brief
+
+The [Home Decision Brief](home-decision-brief.md) now opens every studio and draws its financial answers from this workbench. The financial engine (`ascent-homeowner-finance-2`) is unchanged. `finance-sensitivity.ts` (`ascent-finance-sensitivity-1`) only re-runs it:
+
+- **Drivers.** Each input the homeowner entered is stepped down and up by a disclosed review step (for example ±5% for prices, ±1 point for the mortgage rate, ±3 months for timing) while every other input stays as entered. Unknown inputs are never stepped. Compare shows the six largest movers for the selected choice.
+- **Holding periods.** Every computable choice at 1, 3, 5, 10 and 20 years with the same inputs. A period that ends before an entered sale or renovation is marked not computable rather than extrapolated.
+- **Break-evens.** Five thresholds solved by bisection on the engine itself, re-running both choices at each trial value. A threshold that needs a missing input, or does not exist within a plausible range, says which.
+
+Exclusions (replacement housing, taxes, inflation, loan qualification) are now stated above the comparison table, not only in the method notes. When the brief declines to state a value, the estimate no longer fills the sale price or property value.
+
 ## Limits and release dependencies
 
 - No cloud synchronization or encryption of browser storage. Shared browser access and clearing site data matter. Ten homes/ten versions and a four-million-character bound keep storage finite; quota errors preserve the draft and never report a false save.
