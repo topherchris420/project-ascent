@@ -33,7 +33,7 @@ import {
   type ValidationReport,
 } from '../src/lib/valuation-validation';
 import { benchmarkFromReport } from '../src/lib/valuation-safeguards';
-import { EXTERNAL, textDigest } from './maryland-external';
+import { EXTERNAL, supplementChecks, textDigest } from './maryland-external';
 
 type Market = {
   protocol: ValidationProtocol;
@@ -236,7 +236,8 @@ if (flag('--attest')) {
       summary(report);
       if (!checks.some(check => check.label.startsWith('Attestation')))
         console.log('No third-party attestations are recorded for this report yet.');
-      ok = printChecks([...registered, ...checks]) && ok;
+      const supplement = id === 'maryland-external' ? supplementChecks(report) : [];
+      ok = printChecks([...registered, ...checks, ...supplement]) && ok;
     } else if (flag('--verify')) {
       const { report, samples, seconds } = run(market);
       const committed = committedChecks(market);

@@ -80,6 +80,14 @@ const markets: Record<string, { market: ValuationBenchmark['market']; dataset: s
     market: { id: 'maryland', label: 'Montgomery & Prince George’s, MD', state: 'MD' },
     dataset: 'Maryland SDAT/MDP recorded sales in Montgomery and Prince George’s',
   },
+  'ascent-valuation-validation-maryland-external-1': {
+    market: {
+      id: 'maryland-external',
+      label: 'Anne Arundel, Baltimore County, Frederick & Howard, MD (external)',
+      state: 'MD',
+    },
+    dataset: 'Maryland SDAT/MDP recorded sales in Anne Arundel, Baltimore County, Frederick and Howard',
+  },
 };
 
 export function benchmarkFromReport(report: ValidationReport): ValuationBenchmark {
