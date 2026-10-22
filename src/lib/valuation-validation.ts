@@ -279,7 +279,8 @@ export const marylandExternalProtocol = {
   id: 'ascent-valuation-validation-maryland-external-1',
   dataset: {
     id: 'maryland-anne-arundel-baltimore-frederick-howard',
-    csvSha256: PENDING_DATA_LOCK,
+    // From evidence/maryland-external-data-lock.json, committed after download and before any valuation.
+    csvSha256: '1b53827455c9256b70113ddb0778eb5a7862a4d869ee2ef4e2f7e43e11e97350',
     license: 'Public Domain',
     sourceId: 'source-maryland-public-records',
   },

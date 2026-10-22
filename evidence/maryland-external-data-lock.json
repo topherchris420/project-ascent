@@ -1,0 +1,20 @@
+{
+  "protocolId": "ascent-valuation-validation-maryland-external-1",
+  "registrationProtocolDigest": "sha256-1b7ca84a3fd1e5ad0da8263e036b32f3748d84726c3ae7c1009a0be8a2f90990",
+  "registrationSupplementDigest": "sha256-fe2f1b49150629cf70783fdee14008aa0e5a4b55ec47a9cd125c7eee3e9e9790",
+  "registrationCommit": "f5f15f401dfb2f0980d919a48ac272a7db72b12e",
+  "registrationCommittedAt": "2026-10-21T22:23:44-04:00",
+  "fetchedAt": "2026-10-22T02:24:04Z",
+  "csvSha256": "1b53827455c9256b70113ddb0778eb5a7862a4d869ee2ef4e2f7e43e11e97350",
+  "parcelCountiesCsvSha256": "f0a1e14ce1a4cb92c69b767826b5ba44dc0448315031e2f3a60e57ce0c8e3ffb",
+  "provenanceDigest": "sha256-7e8ead4dce77cb952fb6aa1106ceaf2008229fd8faaa4fd7437a0f82442966fd",
+  "rows": 144700,
+  "windowSales": {
+    "fit": 72332,
+    "select": 8549,
+    "calibrate": 17697,
+    "test": 19050
+  },
+  "lockedAt": "2026-10-22T02:37:10.683Z",
+  "statement": "Locked after download and before any valuation. Only fingerprints, row counts and per-window sale counts were read; no price was summarized and no estimate was computed."
+}
