@@ -42,6 +42,16 @@ const seedEarlierVisit = (page: Page) =>
     );
   });
 
+/** Prepared states keep nothing on the device: the seeded earlier visit is all that remains, unchanged. */
+const storageUntouched = async (page: Page) => {
+  await expect(page.getByRole('button', { name: 'Save home & decision snapshot' })).toBeDisabled();
+  expect(
+    await page.evaluate(() =>
+      Object.keys(localStorage).map(key => [key, JSON.parse(localStorage.getItem(key) ?? 'null')?.listPrice ?? null]),
+    ),
+  ).toEqual([['ascent.practice-studio.v1', 1234567]]);
+};
+
 for (const width of [390, 1440]) {
   test(`T1, T3–T5: the practice home shows the estimate, its limits, the leading sale and missing facts at ${width}px`, async ({
     page,
@@ -60,6 +70,7 @@ for (const width of [390, 1440]) {
     await expect(lead).toContainText(`${key.T3.weightPercent}% of the weight`);
     for (const fact of key.T5.facts) await expect(panel.locator('.brief-missing')).toContainText(fact);
     await accessible(page);
+    await storageUntouched(page);
   });
 
   test(`T2: the few-sales home states no value and says why at ${width}px`, async ({ page }) => {
@@ -108,6 +119,7 @@ for (const width of [390, 1440]) {
     const shared = await readFile(file!, 'utf8');
     expect(shared).not.toMatch(/"(mortgageBalance|payoff|finance)"/);
     await expect(home.getByText(/Mortgage, financial inputs and homeowner notes are omitted/)).toBeVisible();
+    await storageUntouched(page);
   });
 }
 

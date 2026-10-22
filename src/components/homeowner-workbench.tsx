@@ -306,6 +306,8 @@ export function HomeownerWorkbench({
     setProfiles(next);
   };
   const save = () => {
+    // A prepared study state starts the same for every participant, so it keeps nothing on the device.
+    if (session) return;
     try {
       const snap = snapshot();
       // Read latest storage so a second tab's saved homes are not overwritten by a stale render.
@@ -984,11 +986,15 @@ export function HomeownerWorkbench({
         </div>
       )}
       <div className="home-save">
-        <button className="button primary" disabled={!ready || !parsed.success} onClick={save}>
+        <button className="button primary" disabled={!ready || !parsed.success || !!session} onClick={save}>
           <Save size={16} aria-hidden="true" />
           Save home & decision snapshot
         </button>
-        <span className="fine">Browser only · no account needed · no automatic synchronization</span>
+        <span className="fine">
+          {session
+            ? 'Saving is off on this study page, so every session starts the same.'
+            : 'Browser only · no account needed · no automatic synchronization'}
+        </span>
       </div>
       <p className="home-storage-status" role="status">
         {status}

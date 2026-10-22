@@ -14,7 +14,7 @@ How to run one comprehension session of the [registered protocol](../usability-p
 
 ## Prepared states
 
-Each task starts from a fresh page at one of three unlisted addresses. They restore nothing and save no draft, so reloading starts over.
+Each task starts from a fresh page at one of three unlisted addresses. They restore nothing, save no draft and have the Save button switched off, so reloading starts over.
 
 | State | Path | What it shows |
 | --- | --- | --- |
