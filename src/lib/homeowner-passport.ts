@@ -12,6 +12,7 @@ import {
 import { cents, compareDecisions, decisionKinds, financeSchema, type FinanceInputs } from './homeowner-finance';
 import type { Source, ValuationProperty } from './types';
 import { accuracyReferenceSchema, homeownerAccuracyReference } from './homeowner-validation';
+import { BRIEF_POLICY_VERSION, buildHomeDecisionBrief, type HomeDecisionBrief } from './home-decision-brief';
 
 export const HOME_STORAGE_KEY = 'ascent.homeowner-profiles.v1';
 const text = z.string().max(1000);
@@ -354,6 +355,68 @@ export function propertyMonitorChanges(previous: HomeSnapshot, current: HomeSnap
     c => /^(property|sales)\./.test(c.path) || (/^sources\./.test(c.path) && !c.path.endsWith('.observedAt')),
   );
 }
+/**
+ * The brief as a research record. A public record is rebuilt without the asking price, payoff or financial
+ * inputs, and omits homeowner-written exclusion reasons and the checksum that covers private inputs.
+ */
+export function briefRecord(snapshot: HomeSnapshot, includePrivate: boolean) {
+  let brief: HomeDecisionBrief;
+  try {
+    brief = buildHomeDecisionBrief({
+      evidence: snapshot.evidence,
+      state: includePrivate ? snapshot.state : { ...snapshot.state, listPrice: null, payoff: 0 },
+      finance: includePrivate ? snapshot.finance : null,
+    });
+  } catch {
+    return null;
+  }
+  const figure = (item: { value: number; upper?: number; text: string } | null) =>
+    item && { value: item.value, upper: item.upper ?? null, text: item.text };
+  return {
+    version: brief.version,
+    policy: BRIEF_POLICY_VERSION,
+    checksum: includePrivate ? brief.checksum : null,
+    executiveSummary: {
+      verdict: brief.value.verdict,
+      label: brief.value.label,
+      value: brief.value.answer,
+      reasons: brief.value.reasons,
+      comparables: brief.comparables.answer,
+      reliability: brief.reliability.answer,
+      influences: brief.influences.answer,
+      choices: includePrivate ? brief.financial.answer : null,
+    },
+    uncertainty: {
+      estimate: figure(brief.value.estimate),
+      observedRange: figure(brief.value.range),
+      calibratedRange: figure(brief.value.calibrated),
+      study: brief.value.study?.text ?? null,
+    },
+    comparables: {
+      selected: brief.comparables.leading.map(item => ({
+        id: item.id,
+        address: item.address,
+        weightPercent: item.weightPercent,
+        soldPrice: item.soldPrice?.value ?? null,
+        adjustedPrice: item.adjustedPrice.value,
+        largestAdjustment: item.largestAdjustment,
+        enteredByHomeowner: item.entered,
+      })),
+      ruledOutByRules: brief.comparables.ruledOut,
+      excludedByHomeowner: brief.comparables.excludedByYou.map(item => ({
+        address: item.address,
+        reason: includePrivate ? item.reason : null,
+      })),
+    },
+    settings: brief.influences.settings,
+    reliabilityChecks: brief.reliability.checks.map(check => ({ label: check.label, status: check.status })),
+    missingFacts: brief.missingFacts,
+    nextSteps: brief.nextSteps,
+    financial: includePrivate ? { ...brief.financial, influences: brief.influences.financial } : null,
+    limits: brief.limits,
+  };
+}
+
 export function evidencePassport(snapshot: HomeSnapshot, includePrivate = false) {
   assertPortableEvidence(snapshot.evidence);
   const financial = includePrivate ? compareDecisions(snapshot.finance) : null;
@@ -434,6 +497,10 @@ export function evidencePassport(snapshot: HomeSnapshot, includePrivate = false)
     valuationOmission:
       !includePrivate && (snapshot.state.addedSales?.length || snapshot.state.subjectCondition !== undefined)
         ? 'The valuation contains homeowner-entered sales or a condition rating. Export a private passport to include it.'
+        : null,
+    brief:
+      includePrivate || (!snapshot.state.addedSales?.length && snapshot.state.subjectCondition === undefined)
+        ? briefRecord(snapshot, includePrivate)
         : null,
     freshness: sourceReview(snapshot.evidence.sources, snapshot.savedAt),
     missingEvidence: [

@@ -349,6 +349,25 @@ export function HomeDecisionBriefPanel({ brief }: { brief: HomeDecisionBrief }) 
               </ul>
             </div>
           )}
+          {influences.settings.reference && (
+            <div className="brief-reasons">
+              <h4>Settings you changed</h4>
+              {influences.settings.changes.length ? (
+                <ul>
+                  {influences.settings.changes.map(change => (
+                    <li key={change.key}>
+                      <strong>{change.label}:</strong> {change.current} instead of {change.reference}.
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p>None. Every setting matches {influences.settings.reference}.</p>
+              )}
+              {influences.settings.changes.length > 0 && (
+                <p className="fine">Compared with {influences.settings.reference}. The recorded sales are unchanged.</p>
+              )}
+            </div>
+          )}
           <p className="fine">
             Each assumption is changed by a disclosed step while everything else stays fixed. The steps are review
             checks, not forecasts or plausible ranges.

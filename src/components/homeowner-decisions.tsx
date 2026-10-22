@@ -7,6 +7,7 @@ import {
   type compareDecisions,
   type DecisionKind,
 } from '@/lib/homeowner-finance';
+import { FinanceWhatIf } from './finance-what-if';
 import { money } from './format';
 
 export type FinanceComparison = ReturnType<typeof compareDecisions>;
@@ -29,6 +30,9 @@ export function HomeownerDecisions({ comparison }: { comparison: FinanceComparis
       <p className="home-explainer">
         Compare {comparison.inputs.horizonMonths} months using the same assumptions. A blank input means unknown; enter
         0 only when you intend zero. These choices provide different housing arrangements.
+      </p>
+      <p className="home-exclusions">
+        <strong>Not included:</strong> {FINANCE_LIMITS[2]}
       </p>
       <p className="home-mobile-hint">Swipe or scroll sideways in the table to compare all amounts.</p>
       <div
@@ -188,6 +192,7 @@ export function HomeownerDecisions({ comparison }: { comparison: FinanceComparis
           </>
         )}
       </div>
+      <FinanceWhatIf comparison={comparison} selected={selected} />
       <details>
         <summary>How these numbers are calculated</summary>
         <ul className="studio-findings">

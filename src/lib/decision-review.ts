@@ -134,7 +134,7 @@ export function assessCmaEvidence(result: CmaResult, sources: Source[]): Evidenc
   };
 }
 
-const assumptionNames: Record<keyof CmaResult['assumptions'], string> = {
+export const assumptionNames: Record<keyof CmaResult['assumptions'], string> = {
   sqftRate: 'Living-area rate',
   bedroomValue: 'Bedroom adjustment',
   bathroomValue: 'Bathroom adjustment',

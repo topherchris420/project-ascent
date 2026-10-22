@@ -290,3 +290,23 @@ export function financeBreakEvens(raw: FinanceInputs): FinanceBreakEven[] {
     },
   ];
 }
+
+const usd = (value: number) =>
+  new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(value);
+/** One sentence per threshold, stating why a threshold is missing when it is. */
+export function breakEvenText(item: FinanceBreakEven) {
+  if (item.status === 'needs-inputs') return 'Needs more of your inputs.';
+  if (item.status === 'outside-range')
+    return item.id === 'vacancy-zero-cash-flow'
+      ? 'Rental cash flow does not reach zero between 0% and 100% vacancy under your inputs.'
+      : 'The two choices do not meet within the searched range under your inputs.';
+  const value =
+    item.unit === 'dollars'
+      ? usd(item.value!)
+      : item.unit === 'dollars per month'
+        ? `${usd(item.value!)} per month`
+        : item.unit === 'percent per year'
+          ? `${item.value!.toFixed(2)}% per year`
+          : `${item.value!.toFixed(2)}%`;
+  return `${value}. ${item.explanation}`;
+}

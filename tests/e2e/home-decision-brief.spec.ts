@@ -58,6 +58,15 @@ test('financial inputs flow into the brief, and Ask Ascent explains with referen
   await expect(panel).toContainText('Ascent does not rank them');
   await expect(panel.getByText('Break-even thresholds', { exact: true })).toBeVisible();
   await expect(panel).toContainText('Sale price at which selling matches continuing to own');
+  await expect(panel).toContainText('Every setting matches Ascent’s practice defaults');
+  // The Compare panel shows the exact re-runs behind those answers.
+  await expect(home.getByText('Not included:')).toBeVisible();
+  await expect(home.getByRole('heading', { name: 'What would change these results' })).toBeVisible();
+  await expect(home.getByRole('table', { name: /Change in net position at month 60/ })).toBeVisible();
+  await expect(home.getByRole('table', { name: /Net position at each holding period/ })).toBeVisible();
+  await expect(home.getByRole('columnheader', { name: '5 yr (yours)' })).toBeVisible();
+  await expect(home.locator('.home-breakevens > div')).toHaveCount(5);
+  await accessible(page);
   await home.getByRole('button', { name: 'Ask Ascent', exact: true }).click();
   await home.getByRole('button', { name: 'Why is my home valued this way?', exact: true }).click();
   await expect(home).toContainText('weighted average of 6 recorded sales');

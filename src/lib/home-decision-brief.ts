@@ -1,6 +1,6 @@
-import { calculationChecksum } from './analytics';
+import { calculationChecksum, defaultAssumptions } from './analytics';
 import { decisionDrivers, type DecisionDriver } from './decision-drivers';
-import { assessCmaEvidence } from './decision-review';
+import { assessCmaEvidence, assumptionNames } from './decision-review';
 import {
   PRACTICE_ENTRY_SOURCE,
   calculateStudio,
@@ -11,7 +11,7 @@ import {
   type StudioState,
 } from './demo-studio';
 import { condoBenchmark } from './dc-condo-studio';
-import { financeBreakEvens, financeSensitivity, type FinanceBreakEven } from './finance-sensitivity';
+import { breakEvenText, financeBreakEvens, financeSensitivity, type FinanceBreakEven } from './finance-sensitivity';
 import {
   compareDecisions,
   decisionKinds,
@@ -31,6 +31,7 @@ import {
   assessValuationRelease,
   dcBenchmark,
   usesValidatedConfiguration,
+  validatedAssumptions,
   type ReleaseAssessment,
   type ValuationBenchmark,
 } from './valuation-safeguards';
@@ -177,6 +178,11 @@ export type HomeDecisionBrief = {
     valuation: { label: string; swing: number; text: string }[];
     fragile: string[];
     financial: { kind: DecisionKind; label: string; drivers: { label: string; swing: number; text: string }[] }[];
+    /** Valuation settings that differ from the market's reference: the published study's, or practice defaults. */
+    settings: {
+      reference: string | null;
+      changes: { key: SettingKey; label: string; reference: string; current: string }[];
+    };
   };
   nextSteps: { item: string; why: string; affects: ('value' | 'reliability' | 'finances')[]; priority: 1 | 2 | 3 }[];
   limits: string[];
@@ -203,6 +209,43 @@ const list = (items: string[]) =>
 const lowerFirst = (text: string) => text.charAt(0).toLowerCase() + text.slice(1);
 /** "Monthly gross rent ($)" → "Monthly gross rent" for prose; tables keep the unit. */
 const plainLabel = (text: string) => text.replace(/\s*\([^)]*\)$/, '');
+
+type SettingKey = keyof CmaResult['assumptions'];
+const settingText = (key: SettingKey, value: number) =>
+  key === 'sqftRate'
+    ? `${usd(value)} per sq ft`
+    : key === 'monthlyTrend'
+      ? `${(value * 100).toFixed(2)}% per month`
+      : key === 'maxDistanceMiles'
+        ? `${value} miles`
+        : key === 'maxAgeDays'
+          ? `${value} days`
+          : key === 'maxSizeRatio'
+            ? `${value}×`
+            : usd(value);
+/** Which settings differ from the configuration the market's evidence was tested with (or practice defaults). */
+function settingChanges(state: StudioState, market: BriefMarketInfo): HomeDecisionBrief['influences']['settings'] {
+  const reference = market.benchmark
+    ? {
+        values: validatedAssumptions(market.benchmark),
+        label: `the settings fitted in the published ${market.label} study`,
+      }
+    : market.market === 'demo'
+      ? { values: defaultAssumptions, label: 'Ascent’s practice defaults' }
+      : null;
+  if (!reference) return { reference: null, changes: [] };
+  return {
+    reference: reference.label,
+    changes: (Object.keys(assumptionNames) as SettingKey[])
+      .filter(key => Math.abs((state.assumptions[key] ?? NaN) - reference.values[key]) > 1e-9)
+      .map(key => ({
+        key,
+        label: assumptionNames[key],
+        reference: settingText(key, reference.values[key]),
+        current: settingText(key, state.assumptions[key]),
+      })),
+  };
+}
 
 /** Plain-language names for the release gate's checks; the gate's own detail text stays alongside. */
 const plainCheck: Record<string, string> = {
@@ -355,23 +398,6 @@ const financeFromStudio = (state: StudioState, estimate: number | null): Finance
   concessions: state.concessions,
   mortgageBalance: state.payoff > 0 ? state.payoff : null,
 });
-
-function breakEvenText(item: FinanceBreakEven) {
-  if (item.status === 'needs-inputs') return 'Needs more of your inputs.';
-  if (item.status === 'outside-range')
-    return item.id === 'vacancy-zero-cash-flow'
-      ? 'Rental cash flow does not reach zero between 0% and 100% vacancy under your inputs.'
-      : 'The two choices do not meet within the searched range under your inputs.';
-  const value =
-    item.unit === 'dollars'
-      ? usd(item.value!)
-      : item.unit === 'dollars per month'
-        ? `${usd(item.value!)} per month`
-        : item.unit === 'percent per year'
-          ? `${item.value!.toFixed(2)}% per year`
-          : `${item.value!.toFixed(2)}%`;
-  return `${value}. ${item.explanation}`;
-}
 
 export type BriefInput = {
   evidence: StudioEvidence;
@@ -894,7 +920,13 @@ export function buildHomeDecisionBrief(input: BriefInput): HomeDecisionBrief {
       exclusions: FINANCE_LIMITS,
       calculationHash: comparison?.calculationHash ?? null,
     },
-    influences: { answer: influencesAnswer, valuation: valuationDrivers, fragile, financial: financialDrivers },
+    influences: {
+      answer: influencesAnswer,
+      valuation: valuationDrivers,
+      fragile,
+      financial: financialDrivers,
+      settings: settingChanges(state, market),
+    },
     nextSteps: nextSteps.sort((a, b) => a.priority - b.priority).slice(0, 8),
     limits,
     references: {

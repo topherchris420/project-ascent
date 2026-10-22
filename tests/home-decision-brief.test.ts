@@ -306,3 +306,24 @@ test('Ask Ascent answers use only the brief’s own figures and name their refer
   assert.match(declined.why.text, /not stating a value/);
   assert.match(declined['after-costs'].text, /did not state a value/);
 });
+
+test('the brief lists exactly the settings changed from the market’s reference configuration', () => {
+  const practice = sample().influences.settings;
+  assert.equal(practice.reference, 'Ascent’s practice defaults');
+  assert.deepEqual(practice.changes, []);
+  const edited = sample({ ...defaultDemoState, assumptions: { ...defaultDemoState.assumptions, sqftRate: 130 } });
+  assert.deepEqual(edited.influences.settings.changes, [
+    { key: 'sqftRate', label: 'Living-area rate', reference: '$110 per sq ft', current: '$130 per sq ft' },
+  ]);
+  const studied = buildHomeDecisionBrief({ evidence: dc(), state: dcDefaultState() }).influences.settings;
+  assert.match(studied.reference!, /published .* study/);
+  assert.deepEqual(studied.changes, []);
+  const widened = dcDefaultState();
+  widened.assumptions = { ...widened.assumptions, maxDistanceMiles: widened.assumptions.maxDistanceMiles + 1 };
+  const changes = buildHomeDecisionBrief({ evidence: dc(), state: widened }).influences.settings.changes;
+  assert.deepEqual(
+    changes.map(change => change.key),
+    ['maxDistanceMiles'],
+  );
+  assert.match(changes[0].current, /miles$/);
+});
