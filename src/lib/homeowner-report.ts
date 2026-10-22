@@ -19,6 +19,14 @@ export function renderHomeownerReport(snapshot: HomeSnapshot, includePrivate = f
   const section = (title: string, body: string) => `<section><h2>${e(title)}</h2>${body}</section>`;
   const list = (items: string[], tag = 'ul') =>
     items.length ? `<${tag}>${items.map(item => `<li>${e(item)}</li>`).join('')}</${tag}>` : '';
+  const facts = brief?.recordedFacts;
+  const recorded = facts
+    ? `<h3>What the public records show</h3><p>${e(facts.answer)}</p>${list(facts.facts.map(item => `${item.label}: ${item.value}`))}${
+        facts.permits?.shown.length
+          ? `<p>Permits on record, ${facts.permits.shown.length === facts.permits.total ? 'all' : `the ${facts.permits.shown.length} most recent of ${facts.permits.total}`}:</p>${list(facts.permits.shown.map(permit => permit.text))}<p>${e(facts.permits.statusNote)}</p>`
+          : ''
+      }`
+    : '';
   const summary = brief
     ? section(
         'Executive summary',
@@ -33,7 +41,7 @@ export function renderHomeownerReport(snapshot: HomeSnapshot, includePrivate = f
           )}${brief.executiveSummary.choices ? `<p>${e(brief.executiveSummary.choices)}</p>` : ''}<h3>What to obtain before deciding</h3>${list(
           brief.nextSteps.map(step => `${step.item} ${step.why}`),
           'ol',
-        )}${brief.missingFacts.length ? `<h3>Facts the records do not contain</h3>${list(brief.missingFacts.map(fact => `${fact.fact}: ${fact.why}`))}` : ''}<p>Home Decision Brief ${e(brief.version)} · verdict policy ${e(brief.policy)}${brief.checksum ? ` · ${e(brief.checksum)}` : ''}. Scenarios are arithmetic under stated assumptions, not predictions, and choices are not ranked.</p>`,
+        )}${recorded}${brief.missingFacts.length ? `<h3>Facts the records do not contain</h3>${list(brief.missingFacts.map(fact => `${fact.fact}: ${fact.why}`))}` : ''}<p>Home Decision Brief ${e(brief.version)} · verdict policy ${e(brief.policy)}${brief.checksum ? ` · ${e(brief.checksum)}` : ''}. Scenarios are arithmetic under stated assumptions, not predictions, and choices are not ranked.</p>`,
       )
     : '';
   const choicesMade = brief

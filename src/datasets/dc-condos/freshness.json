@@ -1,0 +1,7 @@
+{
+  "checkedAt": "2026-10-22T05:19:23Z",
+  "sales": 7,
+  "after": "2026-10-07",
+  "source": "District of Columbia Tax System Property Sales (CC BY 4.0), assessor-qualified sales of homes in this snapshot",
+  "query": "https://maps2.dcgis.dc.gov/dcgis/rest/services/DCGIS_DATA/Property_and_Land_WebMercator/FeatureServer/57 where QUALIFIED='Q' AND SALE_PRICE > 0 AND SALE_DATE > 2026-10-07; parcel and date only"
+}

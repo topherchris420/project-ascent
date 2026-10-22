@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { calculateCma, defaultAssumptions } from './analytics';
 import { SAMPLE_AS_OF, sampleCandidates, sampleSources, sampleSubject } from './pricing-sample';
+import type { PropertyFacts } from './property-facts';
 import type { CmaAssumptions, Source, ValuationProperty } from './types';
 
 /** User-entered practice sales are labeled separately from any fixture or public record. */
@@ -14,7 +15,15 @@ export type StudioEvidence = {
   candidates: ValuationProperty[];
   sources: Source[];
   asOf: string;
-  snapshot?: { salesFetchedAt: string; parcelsFetchedAt: string; salesSha256?: string; parcelsSha256?: string };
+  snapshot?: {
+    salesFetchedAt: string;
+    parcelsFetchedAt: string;
+    salesSha256?: string;
+    parcelsSha256?: string;
+    lastRecordedSale?: string | null;
+  };
+  /** Public-record facts beyond the valuation inputs; never read by the engine. Absent for fictional records. */
+  facts?: PropertyFacts;
 };
 
 export const practiceSaleSchemaFor = (conditionMax: number) =>
@@ -198,8 +207,10 @@ export const demoCandidates = (state: StudioState) => studioCandidates(sampleEvi
 export const demoSources = (state: StudioState) => studioSources(sampleEvidence, state);
 export const calculateDemo = (state: StudioState) => calculateStudio(sampleEvidence, state);
 export const demoCosts = studioCosts;
-export function demoReportHref(state: StudioState, format?: 'json') {
+/** `study: 'abstention'` reports on the comprehension study's separate fictional home with two sales. */
+export function demoReportHref(state: StudioState, format?: 'json', study?: 'abstention') {
   const query = new URLSearchParams({ state: JSON.stringify(state) });
   if (format) query.set('format', format);
+  if (study) query.set('study', study);
   return `/api/demo/report?${query}`;
 }

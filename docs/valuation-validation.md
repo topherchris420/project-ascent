@@ -214,7 +214,7 @@ The data and the re-derivation are independent of Ascent; the people who ran the
 5. **Unchanged production engine.** Every estimate comes from the same `calculateCma` the app runs. A frozen engine fingerprint (`fnv1a32-49f0c98b`) is part of both reports. The running app re-checks it, so a later engine change cannot silently inherit these accuracy claims.
 6. **Screening is about record quality, never outcome.** No sale is removed for its price or its error. DC's record rules use the District's own qualification flag and data-integrity conditions, listed above. King County removed 17 records with 0 or more than 12 bedrooms, or 0 bathrooms; its most expensive record ($7.7M) is kept like every other.
 7. **Separate re-derivation.** `verifyValidationReport` re-parses the published per-sale samples and recomputes MdAPE, PPE10, COD, PRD and coverage with code that shares nothing with the metric functions. It also checks every digest (including that the embedded protocol is the one this build declares) and every pass/fail verdict.
-8. **Third-party attestation.** A reviewer who reproduces a run can sign its exact report digest with their own Ed25519 key. Signatures are stored in `evidence/valuation-attestations.json` and checked on every `--check`. **No third-party attestation has been recorded yet.** Until one is, the claims are reproducible but not yet externally attested.
+8. **Third-party attestation.** A reviewer who reproduces a run can sign its exact report digest with their own Ed25519 key. Signatures are stored in `evidence/valuation-attestations.json` and checked on every `--check`. **No third-party attestation has been recorded yet.** Until one is, the claims are reproducible but not yet externally attested. A fuller route now exists: the [independent replication brief](independent-replication.md) asks an outside quantitative researcher to reproduce all six studies and assess the method against a ten-question rubric, and to publish a signed record (`ascent-replication-record-1`) that `--check` verifies and the accuracy page shows unedited. None has been submitted.
 
 ## Reproduce it
 
@@ -223,7 +223,11 @@ npm run validate:valuation -- --check                 # seconds: both markets' d
 npm run validate:valuation -- --verify --market dc    # ~1 minute: full DC re-run, must match byte for byte
 npm run validate:valuation -- --verify --market king-county   # ~3 minutes
 python3 -I scripts/datasets/fetch-dc-sales.py out.csv.gz out.json   # fresh DC snapshot (new fingerprint: the source is live)
+npm run replicate                                     # ~6 minutes: every study's checks plus an exact standard-library Python re-derivation
+npm run replicate -- --full                           # ~45 minutes: also re-runs every study's valuations
 ```
+
+`scripts/replication/rederive.py` recomputes every published metric, bootstrap interval, verdict and digest from the per-sale samples without Ascent's code; the [method specification](replication/method-specification.md) and [data dictionary](replication/data-dictionary.md) are written for someone reimplementing the method from scratch.
 
 To attest as a reviewer: `openssl genpkey -algorithm ed25519 -out reviewer.pem`, then `npm run validate:valuation -- --attest --market dc --key reviewer.pem --reviewer "Name, Organization"`. Publish your public key somewhere you control so others can tie it to you.
 

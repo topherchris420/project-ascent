@@ -49,7 +49,7 @@ The standalone HTML report uses exactly the same privacy filter as JSON, escapes
 
 Each exported record has its source, applicable license, collection time, missing-field indicators, quality explanations and provenance IDs. Property and sales collection dates remain separate, with the respective frozen CSV SHA-256 fingerprints. Unknown source observation times remain null; a closing date is an event date, not a manufactured collection timestamp. Added practice records are marked unverified and use the decision's save time as their snapshot collection time.
 
-Monitoring is an on-demand comparison when a saved home is opened. Actual property/sale corrections and source-permission metadata changes are reviewable. Collection timestamps, saving time and unchanged data do not create property alerts. Financial-assumption changes appear in history separately. Preferences are saved explicitly. This does not refresh a source, promise periodic delivery or create live listing inventory.
+Monitoring is an on-demand comparison when a saved home is opened. Actual property/sale corrections, changed recorded facts or permits ([property data](property-data.md)) and source-permission metadata changes are reviewable. Collection timestamps, saving time and unchanged data do not create property alerts. Financial-assumption changes appear in history separately. Preferences are saved explicitly. This does not refresh a source, promise periodic delivery or create live listing inventory.
 
 ## October 21: what moves each choice, and the Home Decision Brief
 

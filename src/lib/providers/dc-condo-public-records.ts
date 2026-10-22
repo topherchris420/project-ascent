@@ -5,8 +5,18 @@ import { gunzipSync } from 'node:zlib';
 import { distanceMiles } from '../analytics';
 import { recordedHistory } from './recorded-history';
 import { condoDefaultState, CONDO_ACCURACY_NOTICE } from '../dc-condo-studio';
+import {
+  dcPermitRecord,
+  displayName,
+  inferFloor,
+  newestFirst,
+  permitBeforeSale,
+  PROPERTY_FACTS_VERSION,
+  DC_PERMIT_STATUS_NOTE,
+  type PropertyFacts,
+} from '../property-facts';
 import type { Source, ValuationProperty } from '../types';
-import { csvRecords, displayDcAddress, normalizeDcAddress } from './dc-public-records';
+import { csvRecords, displayDcAddress, loadFacts, normalizeDcAddress } from './dc-public-records';
 import { compareAddressKeys, firstByOrder, lazyAddressIndex } from './address-index';
 
 const directory = join(process.cwd(), 'src/datasets/dc-condos');
@@ -21,9 +31,14 @@ type Condo = {
   baths: number;
   sqft: number;
   yearBuilt: number;
+  yearRemodeled: number;
   marId: string;
 };
-type Sale = Omit<Condo, 'address' | 'yearBuilt' | 'marId'> & { saleId: string; soldOn: string; price: number };
+type Sale = Omit<Condo, 'address' | 'yearBuilt' | 'yearRemodeled' | 'marId'> & {
+  saleId: string;
+  soldOn: string;
+  price: number;
+};
 type Provenance = {
   fetchedAt: string;
   attribution: string;
@@ -62,6 +77,7 @@ export function condoData() {
       baths: +row.baths,
       sqft: +row.sqft,
       yearBuilt: +row.year_built,
+      yearRemodeled: +row.year_remodeled,
       marId: row.mar_id,
     };
     parcels.set(condo.parcelId, condo);
@@ -108,6 +124,113 @@ export function searchCondoAddresses(query: string, limit = 8) {
     };
   });
 }
+let factsCache: ReturnType<typeof loadFacts> | undefined;
+/** Regime, unit and permit facts for covered condominium units; loaded once, after the core snapshots. */
+export function condoFactsData() {
+  factsCache ??= loadFacts(
+    directory,
+    'dc-condo-facts.provenance.json',
+    'dc-condo-facts.csv.gz',
+    'dc-condo-permits.csv.gz',
+  );
+  return factsCache;
+}
+const CONDO_FACTS_LICENSE =
+  'Contains District of Columbia open data licensed under CC BY 4.0. Joined and filtered by Ascent; not an inspection.';
+
+/**
+ * What District records show about a condominium unit and its building beyond the valuation inputs. The estimate
+ * never uses these. The floor is inferred from the unit number and always labeled as an inference.
+ */
+export function condoPropertyFacts(parcel: Condo, comparableSales: Sale[]): PropertyFacts {
+  const { facts, permits, provenance, later } = condoFactsData();
+  const row = facts.row(parcel.parcelId);
+  const unitPermits = permits.rows(parcel.parcelId).map(entry => dcPermitRecord(entry, 'home'));
+  const buildingPermits = row?.building_lot
+    ? permits.rows(row.building_lot).map(entry => dcPermitRecord(entry, 'building'))
+    : [];
+  const floor = inferFloor(parcel.address);
+  const other = Number(row?.regime_other_units || 0);
+  const recorded = [
+    ['Condominium', row?.regime_name ? displayName(row.regime_name) : ''],
+    ['Residential units in the condominium', row?.regime_units],
+    [
+      'Other recorded units in the condominium',
+      other ? `${other} with no residential assessor record, for example parking, storage or commercial` : '',
+    ],
+    [
+      'Floor',
+      floor.floor === null
+        ? ''
+        : `${floor.floor === 'penthouse' ? 'Penthouse' : floor.floor} (inferred from the unit number)`,
+    ],
+    ['Rooms', row?.rooms],
+    ['Year built', parcel.yearBuilt ? String(parcel.yearBuilt) : ''],
+    ['Last recorded remodel', parcel.yearRemodeled ? String(parcel.yearRemodeled) : 'None recorded'],
+    [
+      'Effective year built',
+      row?.effective_year_built ? `${row.effective_year_built} (the assessor’s estimate of age after updates)` : '',
+    ],
+    ['Heating', row?.heat],
+    ['Central air', row?.central_air === 'Y' ? 'Yes' : row?.central_air === 'N' ? 'No' : ''],
+    ['Fireplaces', row?.fireplaces],
+  ]
+    .filter((entry): entry is [string, string] => !!entry[1])
+    .map(([label, value]) => ({ label, value, source: 'dc-condo-assessor' }));
+  const comparables: PropertyFacts['comparables'] = {};
+  for (const sale of comparableSales) {
+    const building = facts.row(sale.parcelId)?.regime_id;
+    const prior = permitBeforeSale(
+      permits.rows(sale.parcelId).map(entry => dcPermitRecord(entry, 'home')),
+      sale.soldOn,
+    );
+    if (building || prior)
+      comparables[sale.saleId] = { ...(building ? { building } : {}), ...(prior ? { permitBeforeSale: prior } : {}) };
+  }
+  return {
+    version: PROPERTY_FACTS_VERSION,
+    sources: [
+      {
+        id: 'dc-condo-assessor',
+        label: 'District condominium assessor records and regimes',
+        license: CONDO_FACTS_LICENSE,
+        collectedAt: provenance.fetchedAt,
+      },
+      {
+        id: 'dc-permits',
+        label: 'District Department of Buildings permits',
+        license: CONDO_FACTS_LICENSE,
+        collectedAt: provenance.fetchedAt,
+      },
+    ],
+    recorded,
+    years: {
+      built: parcel.yearBuilt || null,
+      remodeled: parcel.yearRemodeled || null,
+      effective: row?.effective_year_built ? Number(row.effective_year_built) : null,
+    },
+    permits: {
+      source: 'dc-permits',
+      since: provenance.permitsSince,
+      coverage: `District permits issued since ${provenance.permitsSince.slice(0, 4)} for this unit and for its condominium’s record lot`,
+      closeOutRecorded: false,
+      statusNote: DC_PERMIT_STATUS_NOTE,
+      records: [...unitPermits, ...buildingPermits].sort(newestFirst).slice(0, 400),
+    },
+    permitGap: null,
+    building: {
+      name: row?.regime_name ? displayName(row.regime_name) : null,
+      units: row?.regime_units ? Number(row.regime_units) : null,
+      otherUnits: row?.regime_other_units ? other : null,
+      floor: floor.floor,
+      floorBasis: floor.basis,
+      id: row?.regime_id || null,
+    },
+    comparables,
+    later: later && { checkedAt: later.checkedAt, sales: later.sales, after: later.after, source: later.source },
+  };
+}
+
 export function condoValuationInputs(parcelId: string) {
   const { parcels, sales, salesProvenance } = condoData();
   const parcel = parcels.get(parcelId);
@@ -157,10 +280,15 @@ export function condoValuationInputs(parcelId: string) {
     confidence: 0,
     license: `${salesProvenance.attribution} ${CONDO_ACCURACY_NOTICE} Coordinates identify building addresses, not unit floors. Current assessor characteristics; recordings lag closing.`,
   };
+  const candidateIds = new Set(candidates.map(candidate => candidate.id));
   return {
     parcel,
     subject,
     candidates,
+    facts: condoPropertyFacts(
+      parcel,
+      sales.filter(sale => candidateIds.has(sale.saleId)),
+    ),
     sources: [source],
     asOf,
     assumptions: condoDefaultState().assumptions,

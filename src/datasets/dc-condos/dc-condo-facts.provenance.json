@@ -1,0 +1,84 @@
+{
+  "datasetId": "dc-condo-facts",
+  "attribution": "Contains District of Columbia open data licensed under CC BY 4.0: Condominium CAMA, Condo Relate Table and Building Permits. Joined and filtered by Ascent.",
+  "sources": {
+    "characteristics": "https://maps2.dcgis.dc.gov/dcgis/rest/services/DCGIS_DATA/Property_and_Land_WebMercator/FeatureServer/24",
+    "regimes": "https://maps2.dcgis.dc.gov/dcgis/rest/services/DCGIS_DATA/Property_and_Land_WebMercator/FeatureServer/52",
+    "permits": "https://maps2.dcgis.dc.gov/dcgis/rest/services/FEEDS/DCRA/FeatureServer/"
+  },
+  "fetchedAt": "2026-10-22T05:15:04Z",
+  "license": "CC-BY-4.0",
+  "licenseEvidence": {
+    "residential": "https://maps2.dcgis.dc.gov/dcgis/rest/services/DCGIS_DATA/Property_and_Land_WebMercator/FeatureServer/25/iteminfo?f=json",
+    "condominium": "https://maps2.dcgis.dc.gov/dcgis/rest/services/DCGIS_DATA/Property_and_Land_WebMercator/FeatureServer/24/iteminfo?f=json",
+    "relate": "https://maps2.dcgis.dc.gov/dcgis/rest/services/DCGIS_DATA/Property_and_Land_WebMercator/FeatureServer/52/iteminfo?f=json",
+    "permits2026": "https://maps2.dcgis.dc.gov/dcgis/rest/services/FEEDS/DCRA/FeatureServer/18/iteminfo?f=json"
+  },
+  "permitLayers": {
+    "2016": "https://maps2.dcgis.dc.gov/dcgis/rest/services/FEEDS/DCRA/FeatureServer/24",
+    "2017": "https://maps2.dcgis.dc.gov/dcgis/rest/services/FEEDS/DCRA/FeatureServer/37",
+    "2018": "https://maps2.dcgis.dc.gov/dcgis/rest/services/FEEDS/DCRA/FeatureServer/9",
+    "2019": "https://maps2.dcgis.dc.gov/dcgis/rest/services/FEEDS/DCRA/FeatureServer/8",
+    "2020": "https://maps2.dcgis.dc.gov/dcgis/rest/services/FEEDS/DCRA/FeatureServer/2",
+    "2021": "https://maps2.dcgis.dc.gov/dcgis/rest/services/FEEDS/DCRA/FeatureServer/3",
+    "2022": "https://maps2.dcgis.dc.gov/dcgis/rest/services/FEEDS/DCRA/FeatureServer/14",
+    "2023": "https://maps2.dcgis.dc.gov/dcgis/rest/services/FEEDS/DCRA/FeatureServer/15",
+    "2024": "https://maps2.dcgis.dc.gov/dcgis/rest/services/FEEDS/DCRA/FeatureServer/16",
+    "2025": "https://maps2.dcgis.dc.gov/dcgis/rest/services/FEEDS/DCRA/FeatureServer/17",
+    "2026": "https://maps2.dcgis.dc.gov/dcgis/rest/services/FEEDS/DCRA/FeatureServer/18"
+  },
+  "permitsSince": "2016-01-01",
+  "keptPermitSubtypes": {
+    "CONSTRUCTION": [
+      "ADDITION",
+      "ADDITION ALTERATION REPAIR",
+      "ALTERATION AND REPAIR",
+      "AWNING",
+      "DECK",
+      "DEMOLITION",
+      "FENCE",
+      "FOUNDATION ONLY",
+      "GARAGE",
+      "MISCELLANEOUS",
+      "NEW BUILDING",
+      "RAZE",
+      "RETAINING WALL",
+      "SHED",
+      "SOLAR SYSTEM",
+      "SWIMMING POOL"
+    ],
+    "SUPPLEMENTAL": [
+      "BOILER",
+      "ELECTRICAL",
+      "MECHANICAL",
+      "PLUMBING AND GAS"
+    ],
+    "POST CARD": [
+      "BUILDING",
+      "ELECTRICAL - GENERAL",
+      "ELECTRICAL - HEAVY UP",
+      "GAS FITTING",
+      "MECHANICAL",
+      "PLUMBING"
+    ]
+  },
+  "removedPermits": {
+    "canceledWithdrawnOrRevoked": 919,
+    "notACoveredLot": 232357,
+    "otherPermitKind": 1089
+  },
+  "fingerprintBasis": "SHA-256 of decompressed CSV bytes",
+  "derivation": "scripts/datasets/fetch-dc-facts.py",
+  "factsCsvSha256": "9b9bb790c5e741a942a37faccc94b1b2b61318b98367fe9ea3f17baa7831d894",
+  "permitsCsvSha256": "c2ab85213387e6202f2b8b2ee3319ba248bc6f0cde5f55f69de8d96bd0dfacfd",
+  "facts": 51340,
+  "permits": 22040,
+  "buildingLots": 3461,
+  "removedUnits": {},
+  "regimeUnitsNote": "regime_units counts units in the regime with one residential condominium assessor record; regime_other_units counts other recorded units in the regime with none, such as parking, storage or commercial units.",
+  "limitations": [
+    "No HOA dues, reserves, special assessments, view, deeded parking or amenities: none is published in these records.",
+    "Building permits are those recorded on the regime's record lot; permits filed on another lot are missed.",
+    "Permits are issued authorizations, not proof that work was finished or inspected; unpermitted work is absent. Status is the Department of Buildings status at collection. Permits from 2016 onward only."
+  ]
+}

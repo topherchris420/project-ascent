@@ -6,6 +6,12 @@ for (const width of [1440, 390]) {
     await page.setViewportSize({ width, height: 900 });
     await page.goto('/accuracy');
     await expect(page.getByRole('heading', { level: 1, name: 'Published accuracy experiments' })).toBeVisible();
+    // No outside replication exists yet, and the page says so before any result.
+    const replication = page.getByRole('region', { name: 'Independent replication' });
+    await expect(replication.getByTestId('replication-none')).toContainText(
+      'No outside researcher has reproduced these results or assessed the methodology yet.',
+    );
+    await expect(replication.getByRole('link', { name: 'How to replicate these studies' })).toBeVisible();
     for (const name of [
       'Maryland · revised model',
       'Maryland · original failed experiment, unchanged',

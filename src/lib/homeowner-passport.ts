@@ -13,6 +13,8 @@ import { cents, compareDecisions, decisionKinds, financeSchema, type FinanceInpu
 import type { Source, ValuationProperty } from './types';
 import { accuracyReferenceSchema, homeownerAccuracyReference } from './homeowner-validation';
 import { BRIEF_POLICY_VERSION, buildHomeDecisionBrief, type HomeDecisionBrief } from './home-decision-brief';
+import { SPARSE_STUDY_SUBJECT_ID, studyStatePath } from './study-states';
+import { permitText, propertyFactsSchema, type PropertyFacts } from './property-facts';
 
 export const HOME_STORAGE_KEY = 'ascent.homeowner-profiles.v1';
 const text = z.string().max(1000);
@@ -63,8 +65,10 @@ const evidenceSchema = z.object({
       parcelsFetchedAt: z.iso.datetime(),
       salesSha256: text.optional(),
       parcelsSha256: text.optional(),
+      lastRecordedSale: text.nullable().optional(),
     })
     .optional(),
+  facts: propertyFactsSchema.optional(),
 });
 const improvementSchema = z.object({
   year: z.number().int().min(1800).max(2200),
@@ -176,6 +180,8 @@ function parseStudioState(evidence: StudioEvidence, raw: unknown) {
 }
 export function propertyHref(subject: ValuationProperty) {
   if (subject.id === 'landing-subject' && subject.sourceId === 'source-synthetic-landing') return '/demo';
+  if (subject.id === SPARSE_STUDY_SUBJECT_ID && subject.sourceId === 'source-synthetic-landing')
+    return studyStatePath('abstention');
   const base =
     subject.sourceId === 'source-maryland-public-records'
       ? '/maryland'
@@ -192,7 +198,10 @@ export function createHomeSnapshot(
   notes: OwnerNotes,
   at: string,
 ): HomeSnapshot {
-  const clean = evidenceSchema.parse(evidence);
+  const parsed = evidenceSchema.parse(evidence);
+  // Per-comparable notes are display aids recomputed by the studio. Saved versions keep the home's own facts only,
+  // which adds a few percent to a version; the nearby sales it already carries dominate device storage.
+  const clean = parsed.facts ? { ...parsed, facts: { ...parsed.facts, comparables: {} } } : parsed;
   assertPortableEvidence(clean);
   const input = {
     savedAt: z.iso.datetime().parse(at),
@@ -227,6 +236,7 @@ export function createHomeSnapshot(
 }
 export function studioStorageKey(subject: ValuationProperty) {
   if (subject.id === 'landing-subject') return 'ascent.practice-studio.v1';
+  if (subject.id === SPARSE_STUDY_SUBJECT_ID) return 'ascent.study-session.abstention';
   const parcel = subject.id.replace(/^(dc-condo-parcel-|dc-parcel-|md-parcel-)/, '');
   const prefix =
     subject.sourceId === 'source-maryland-public-records'
@@ -273,6 +283,25 @@ export function sourceReview(sources: Source[], at: string) {
   });
 }
 /** Exact field differences, with the existing Decision Time Machine for the valuation component. */
+/**
+ * Saved public-record facts as they read in the brief, one fact and one permit per field, so a refresh shows which
+ * fact or permit changed. Collection dates and the newer-sales probe are collection metadata, not changes.
+ */
+function comparableFacts(facts: PropertyFacts | undefined) {
+  if (!facts) return undefined;
+  return {
+    recorded: Object.fromEntries(facts.recorded.map(item => [item.label, item.value])),
+    permits: Object.fromEntries(
+      (facts.permits?.records ?? []).map(record => [
+        `${record.id}${record.scope === 'building' ? ' (building)' : ''}`,
+        permitText(record),
+      ]),
+    ),
+  };
+}
+const factsSummary = (facts: NonNullable<ReturnType<typeof comparableFacts>>) =>
+  `${Object.keys(facts.recorded).length} recorded facts and ${Object.keys(facts.permits).length} permits`;
+
 export function compareHomeSnapshots(previous: HomeSnapshot, current: HomeSnapshot) {
   if (previous.evidence.subject.id !== current.evidence.subject.id)
     throw new Error('Compare versions of the same home.');
@@ -299,6 +328,16 @@ export function compareHomeSnapshots(previous: HomeSnapshot, current: HomeSnapsh
     sourceAfter = new Map(current.evidence.sources.map(s => [s.id, s]));
   for (const id of [...new Set([...sourceBefore.keys(), ...sourceAfter.keys()])].sort())
     walk(sourceBefore.get(id), sourceAfter.get(id), `sources.${id}`);
+  const factsBefore = comparableFacts(previous.evidence.facts),
+    factsAfter = comparableFacts(current.evidence.facts);
+  if (factsBefore && factsAfter) walk(factsBefore, factsAfter, 'facts');
+  // A version saved before facts were recorded is summarized in one row rather than one per fact.
+  else if (factsBefore || factsAfter)
+    changes.push({
+      path: 'facts',
+      before: factsBefore ? factsSummary(factsBefore) : null,
+      after: factsAfter ? factsSummary(factsAfter) : null,
+    });
   walk(previous.state, current.state, 'valuationChoices');
   walk(previous.calculation.valuationVersion, current.calculation.valuationVersion, 'calculation.valuationVersion');
   walk(previous.calculation.financeVersion, current.calculation.financeVersion, 'calculation.financeVersion');
@@ -349,10 +388,13 @@ export function compareFinancialSummaries(
     };
   });
 }
-/** A new collection timestamp alone is not a changed property or a market alert. */
+/**
+ * A new collection timestamp alone is not a changed property or a market alert. A changed recorded fact or permit
+ * is; facts first appearing because a version predates them are not.
+ */
 export function propertyMonitorChanges(previous: HomeSnapshot, current: HomeSnapshot) {
   return compareHomeSnapshots(previous, current).changes.filter(
-    c => /^(property|sales)\./.test(c.path) || (/^sources\./.test(c.path) && !c.path.endsWith('.observedAt')),
+    c => /^(property|sales|facts)\./.test(c.path) || (/^sources\./.test(c.path) && !c.path.endsWith('.observedAt')),
   );
 }
 /**
@@ -410,6 +452,7 @@ export function briefRecord(snapshot: HomeSnapshot, includePrivate: boolean) {
     },
     settings: brief.influences.settings,
     reliabilityChecks: brief.reliability.checks.map(check => ({ label: check.label, status: check.status })),
+    recordedFacts: brief.recorded,
     missingFacts: brief.missingFacts,
     nextSteps: brief.nextSteps,
     financial: includePrivate ? { ...brief.financial, influences: brief.influences.financial } : null,

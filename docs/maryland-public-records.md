@@ -24,6 +24,10 @@ SDAT quality grades run Low (1), Economy (2), Below Average (3), Average (4), Ab
 
 The server gathers earlier recorded sales within 3 miles and 365 days before the snapshot, excluding the subject’s own parcel. The studio starts at the settings fitted and selected by the Maryland protocol. Users can inspect, exclude, change grade/rates, test seller proceeds, add labeled unverified entries and export server-rebuilt reports or replayable JSON. The displayed range remains an **uncalibrated adjusted-comparable envelope**; the test’s calibrated-interval coverage is published as a test result, not presented as an assurance for a current home. No Maryland calibration is applied automatically to arbitrary Maryland workspace properties.
 
+## Recorded facts beyond the model (October 22)
+
+The Home Decision Brief also shows each home's dwelling type, exterior construction, lot size and the month the assessor last reviewed the record, from the same public-domain state dataset. In Montgomery County it lists residential permits issued since 2016 from the county's public-domain permit data, matched by address to 50,000 covered homes, with final approval dates; major work that was never closed out gets its own missing-fact item and next step. Prince George's County publishes permits without a stated open license, so none are shown and the brief says why. The state's dwelling condition field is blank for 464,075 of 464,125 records, so condition stays unavailable. None of these facts changes the estimate ([property data](property-data.md); importer `scripts/datasets/fetch-maryland-facts.py`).
+
 ## Accuracy test
 
 Protocol `ascent-valuation-validation-maryland-1` was committed in `a5a0249` before the first scoring run. Registration digest: `sha256-1db8867bf3d88493f43cdb9d43ba6807e03d814f7de463a449c42e1ba5e00cea`. The dataset, four disjoint windows, missing room features and **all nine unchanged DC acceptance thresholds** were fixed before scoring:
@@ -79,7 +83,7 @@ The result is published in the homepage accuracy section, `/maryland`, printable
 - **Incomplete history:** the state retains only the latest three transfers per current parcel. Older sale history is incomplete and subject to survivorship bias. This is a backtest on retained records, not a full deed-history reconstruction.
 - **Current characteristics:** quality and area describe the current assessor record. Build-year screening cannot remove unrecorded renovations or reconstruct characteristics at each historical closing.
 - **Recording availability:** chronology uses sale dates. Exact recording/publication times are unavailable, so an earlier closing is not proof it was already publicly visible on the historical analysis date.
-- **Scope:** these two counties, single-unit residential and townhouses only. No condominiums, other Maryland counties, Virginia, listing history, concessions, lot features or inspected interior condition.
+- **Scope:** these two counties, single-unit residential and townhouses only. No condominiums, other Maryland counties, Virginia, listing history, concessions or inspected interior condition. Lot size and Montgomery permits are shown in the brief but not priced.
 - **Static snapshot:** source updates and recordings lag closings; the newest months may be incomplete. The holdout ends June 2026 to allow for lag. A new snapshot changes the fingerprint and requires a new protocol and holdout before new accuracy claims.
 - **Internal validation:** reproducible results, not independent certification, an appraisal or a promise of future accuracy. No outside attestation has been received.
 

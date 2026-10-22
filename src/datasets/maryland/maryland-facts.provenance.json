@@ -1,0 +1,55 @@
+{
+  "datasetId": "maryland-facts",
+  "fetchedAt": "2026-10-22T05:16:42Z",
+  "license": "Public Domain",
+  "licenseEvidence": {
+    "sdat": "https://opendata.maryland.gov/api/views/ed4q-f8tm.json",
+    "montgomeryPermits": "https://data.montgomerycountymd.gov/api/views/m88u-pqki.json"
+  },
+  "attribution": "Maryland SDAT/MDP public-domain real property assessments (ed4q-f8tm) and Montgomery County Department of Permitting Services residential permits (m88u-pqki, public domain), joined by Ascent.",
+  "sources": {
+    "sdat": "https://opendata.maryland.gov/resource/ed4q-f8tm.json",
+    "montgomeryPermits": "https://data.montgomerycountymd.gov/resource/m88u-pqki.json"
+  },
+  "fieldsRequested": {
+    "parcel": "account_id_mdp_field_acctid",
+    "dwelling": "additional_c_a_m_a_data_dwelling_type_mdp_field_strubldg_sdat_field_265",
+    "construction": "additional_c_a_m_a_data_dwelling_construction_code_mdp_field_strucnst_sdat_field_263",
+    "land": "c_a_m_a_system_data_land_area_mdp_field_landarea_sdat_field_242",
+    "landUnit": "c_a_m_a_system_data_land_unit_of_measure_mdp_field_luom_sdat_field_243",
+    "inspected": "current_cycle_data_date_inspected_yyyy_mm_mdp_field_lastinsp_sdat_field_168",
+    "condition": "c_a_m_a_system_data_dwelling_condition_code_sdat_field_233"
+  },
+  "factsCsvSha256": "73f0d349fbbfac122b76796543ffa403a6f9a58be3be236f32c51004f57b704e",
+  "permitsCsvSha256": "1cf60a81b98ab930de41a53de2112d28613dab5d248a5ace5c9e0f6174e43edb",
+  "facts": 462347,
+  "removedFacts": {
+    "notInPropertySnapshot": 1778,
+    "propertyNotReturned": 0
+  },
+  "permits": 65618,
+  "permitsSince": "2016-01-01",
+  "permitRowsFetched": 71392,
+  "skippedPermits": {
+    "ambiguousAddress": 4,
+    "noCoveredParcel": 5409,
+    "unreadableAddress": 361
+  },
+  "dwellingConditionValues": {
+    "blank": 464075,
+    "Below Average": 36,
+    "Average": 8,
+    "Economy": 4,
+    "Above Average": 1,
+    "Good": 1
+  },
+  "dwellingConditionNote": "SDAT field #233 (dwelling condition) is recorded for almost no covered homes, so condition stays unavailable in Maryland; the counts above are kept to show why.",
+  "fingerprintBasis": "SHA-256 of decompressed CSV bytes",
+  "derivation": "scripts/datasets/fetch-maryland-facts.py; land in acres converted at 43,560 square feet; inspection months before 1950 (the source uses 1899-12 as a placeholder) left blank; permits matched on street number, name, suffix, directions and ZIP to exactly one covered Montgomery parcel.",
+  "limitations": [
+    "Dwelling type and exterior construction are the assessor's current record, not an inspection of condition.",
+    "The last inspection month is when the assessor last reviewed the record, often from the exterior; it is not an interior inspection.",
+    "Permits are Montgomery County only, from 2016. A permit authorizes work; finaled means the county approved it as complete. Unpermitted work is absent. Prince George's permits are not used because no license is stated.",
+    "Address matching can miss permits filed under a different address form, and skips any address shared by more than one covered parcel."
+  ]
+}

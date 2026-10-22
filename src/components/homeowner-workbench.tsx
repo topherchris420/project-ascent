@@ -29,6 +29,7 @@ import {
   type OwnerNotes,
 } from '@/lib/homeowner-passport';
 import type { StudioEvidence, StudioState } from '@/lib/demo-studio';
+import type { StudySession } from '@/lib/study-states';
 import { briefAnswers, type BriefQuestion, type HomeDecisionBrief } from '@/lib/home-decision-brief';
 import type { CmaResult } from '@/lib/types';
 import { HomeownerDecisions } from './homeowner-decisions';
@@ -117,6 +118,7 @@ export function HomeownerWorkbench({
   onFinanceChange,
   onStudioChange,
   missingEvidence,
+  session,
 }: {
   evidence: StudioEvidence;
   state: StudioState;
@@ -129,6 +131,8 @@ export function HomeownerWorkbench({
   onFinanceChange?: (finance: FinanceInputs) => void;
   onStudioChange: (patch: Partial<StudioState>) => void;
   missingEvidence: string;
+  /** A prepared study state: saved homes are not restored, and it may open with the illustrative inputs. */
+  session?: StudySession;
 }) {
   const [inputs, setInputs] = useState<FinanceInputs>(emptyFinance);
   const [notes, setNotes] = useState<OwnerNotes>(emptyOwnerNotes);
@@ -142,13 +146,30 @@ export function HomeownerWorkbench({
   const [focusInput, setFocusInput] = useState<FinanceKey | null>(null);
   const assumptions = useRef<HTMLDetailsElement>(null);
   const financeFields = useRef<Partial<Record<FinanceKey, HTMLInputElement>>>({});
-  const [panel, setPanel] = useState('overview'),
+  const [panel, setPanel] = useState<string>(session?.panel ?? 'overview'),
     [selectedVersion, setSelectedVersion] = useState('');
   const [targetVersion, setTargetVersion] = useState('current');
   const [question, setQuestion] = useState<string>(brief ? 'why' : 'less'),
     [draft, setDraft] = useState<string | null>(null);
   const [includePrivate, setIncludePrivate] = useState(false);
   const [improvement, setImprovement] = useState({ year: '', description: '', cost: '' });
+  const loadIllustrative = () => {
+    const a = exampleFinance();
+    setInputs(a);
+    setInputError('');
+    setInputErrorKey(null);
+    setFollowValue(false);
+    onStudioChange({
+      listPrice: a.salePrice,
+      commissionPercent: a.commissionPercent!,
+      closingPercent: a.closingPercent!,
+      concessions: a.concessions!,
+      payoff: a.mortgageBalance!,
+    });
+    setStatus(
+      'Illustrative financial assumptions loaded for the fictional sample. They are not property records or market forecasts.',
+    );
+  };
   useEffect(() => {
     if (!focusInput || !assumptions.current) return;
     assumptions.current.open = true;
@@ -160,6 +181,11 @@ export function HomeownerWorkbench({
     setFocusInput(key);
   };
   useEffect(() => {
+    if (session) {
+      if (session.illustrativeFinance) loadIllustrative();
+      setReady(true);
+      return;
+    }
     try {
       const raw = localStorage.getItem(HOME_STORAGE_KEY);
       const saved = raw ? parseProfiles(raw) : [];
@@ -280,6 +306,8 @@ export function HomeownerWorkbench({
     setProfiles(next);
   };
   const save = () => {
+    // A prepared study state starts the same for every participant, so it keeps nothing on the device.
+    if (session) return;
     try {
       const snap = snapshot();
       // Read latest storage so a second tab's saved homes are not overwritten by a stale render.
@@ -608,26 +636,7 @@ export function HomeownerWorkbench({
         </div>
       )}
       {panel === 'compare' && evidence.sources.every(s => s.kind === 'synthetic') && (
-        <button
-          className="button small"
-          onClick={() => {
-            const a = exampleFinance();
-            setInputs(a);
-            setInputError('');
-            setInputErrorKey(null);
-            setFollowValue(false);
-            onStudioChange({
-              listPrice: a.salePrice,
-              commissionPercent: a.commissionPercent!,
-              closingPercent: a.closingPercent!,
-              concessions: a.concessions!,
-              payoff: a.mortgageBalance!,
-            });
-            setStatus(
-              'Illustrative financial assumptions loaded for the fictional sample. They are not property records or market forecasts.',
-            );
-          }}
-        >
+        <button className="button small" onClick={loadIllustrative}>
           Try illustrative financial inputs
         </button>
       )}
@@ -977,11 +986,15 @@ export function HomeownerWorkbench({
         </div>
       )}
       <div className="home-save">
-        <button className="button primary" disabled={!ready || !parsed.success} onClick={save}>
+        <button className="button primary" disabled={!ready || !parsed.success || !!session} onClick={save}>
           <Save size={16} aria-hidden="true" />
           Save home & decision snapshot
         </button>
-        <span className="fine">Browser only · no account needed · no automatic synchronization</span>
+        <span className="fine">
+          {session
+            ? 'Saving is off on this study page, so every session starts the same.'
+            : 'Browser only · no account needed · no automatic synchronization'}
+        </span>
       </div>
       <p className="home-storage-status" role="status">
         {status}

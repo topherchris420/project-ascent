@@ -9,6 +9,7 @@
  * Markets: dc, king-county, maryland, maryland-v2, dc-condos and maryland-external (registered before its data was
  * downloaded; see scripts/register-maryland-external.ts). Without --market, every market is used.
  * --attest lets an outside reviewer sign the exact report digest they reproduced with their own Ed25519 key.
+ * --check also verifies every signed independent replication record in evidence/replications/.
  */
 import { createPrivateKey, createPublicKey, sign } from 'node:crypto';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
@@ -34,6 +35,7 @@ import {
 } from '../src/lib/valuation-validation';
 import { benchmarkFromReport } from '../src/lib/valuation-safeguards';
 import { EXTERNAL, supplementChecks, textDigest } from './maryland-external';
+import { replicationChecks } from './replication/records';
 
 type Market = {
   protocol: ValidationProtocol;
@@ -280,4 +282,14 @@ if (flag('--attest')) {
       );
     }
   }
+if (flag('--check')) {
+  // Replication records name reports across markets, so they are checked once, after every market.
+  const replications = replicationChecks();
+  console.log(
+    replications.records
+      ? `Independent replication records: ${replications.records}.`
+      : 'No independent replication record has been submitted yet.',
+  );
+  ok = printChecks(replications.checks) && ok;
+}
 process.exit(ok ? 0 : 1);

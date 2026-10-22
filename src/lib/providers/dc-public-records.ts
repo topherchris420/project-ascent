@@ -1,10 +1,21 @@
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { gunzipSync } from 'node:zlib';
 import { createHash } from 'node:crypto';
 import { distanceMiles } from '../analytics';
 import { recordedHistory } from './recorded-history';
 import { compareAddressKeys, firstByOrder, lazyAddressIndex } from './address-index';
+import { DC_CONDITION_LABELS } from '../dc-studio';
+import {
+  dcPermitRecord,
+  newestFirst,
+  permitBeforeSale,
+  PROPERTY_FACTS_VERSION,
+  DC_PERMIT_STATUS_NOTE,
+  structureLabel,
+  type PermitRecord,
+  type PropertyFacts,
+} from '../property-facts';
 import { dcBenchmark, validatedAssumptions } from '../valuation-safeguards';
 import type { CmaAssumptions, Source, ValuationProperty } from '../types';
 
@@ -110,12 +121,88 @@ export function csvRecords(text: string): Record<string, string>[] {
   return records;
 }
 
-const records = (file: string, expected: string) => {
-  const bytes = gunzipSync(readFileSync(join(DATA_DIR, file)));
+/** A bundled snapshot's decompressed text, after checking its fingerprint. */
+const snapshotText = (file: string, expected: string, directory = DATA_DIR) => {
+  const bytes = gunzipSync(readFileSync(join(directory, file)));
   if (createHash('sha256').update(bytes).digest('hex') !== expected)
     throw new Error('DC snapshot fingerprint mismatch.');
-  return csvRecords(bytes.toString('utf8'));
+  return bytes.toString('utf8');
 };
+const records = (file: string, expected: string, directory = DATA_DIR) =>
+  csvRecords(snapshotText(file, expected, directory));
+
+/**
+ * CSV rows kept as raw lines grouped by their first column, the parcel, and parsed only when a property asks for
+ * them. Held as objects, a quarter of a million permit rows would cost hundreds of megabytes per server instance.
+ */
+export class ParcelLines {
+  private constructor(
+    private readonly header: string[],
+    private readonly lines: Map<string, string[]>,
+    /** Rows in the file. */
+    readonly total: number,
+  ) {}
+  static parse(text: string) {
+    const lines = text.split('\n');
+    const grouped = new Map<string, string[]>();
+    let total = 0;
+    for (let i = 1; i < lines.length; i++) {
+      const line = lines[i];
+      if (!line) continue;
+      const parcel = line.slice(0, line.indexOf(','));
+      const group = grouped.get(parcel);
+      if (group) group.push(line);
+      else grouped.set(parcel, [line]);
+      total++;
+    }
+    return new ParcelLines(lines[0].split(','), grouped, total);
+  }
+  /** Distinct parcels. */
+  get size() {
+    return this.lines.size;
+  }
+  rows(parcel: string): Record<string, string>[] {
+    return (this.lines.get(parcel) ?? []).map(line => this.record(line));
+  }
+  row(parcel: string): Record<string, string> | undefined {
+    const line = this.lines.get(parcel)?.[0];
+    return line === undefined ? undefined : this.record(line);
+  }
+  private record(line: string) {
+    const cells = line.includes('"') ? parseCsv(line)[0] : line.split(',');
+    const record: Record<string, string> = {};
+    this.header.forEach((name, i) => (record[name] = cells[i] ?? ''));
+    return record;
+  }
+}
+export type FactsProvenance = {
+  fetchedAt: string;
+  attribution: string;
+  factsCsvSha256: string;
+  permitsCsvSha256: string;
+  facts: number;
+  permits: number;
+  permitsSince: string;
+};
+/** A dated count of qualifying sales the live source held beyond the snapshot (scripts/datasets/probe-freshness.py). */
+export type LaterSales = { checkedAt: string; sales: number; after: string; source: string };
+export const laterSales = (directory: string): LaterSales | null => {
+  const path = join(directory, 'freshness.json');
+  if (!existsSync(path)) return null;
+  const { checkedAt, sales, after, source } = JSON.parse(readFileSync(path, 'utf8')) as LaterSales;
+  return { checkedAt, sales, after, source };
+};
+/** Facts and permit files for one snapshot directory, checked against their provenance like every snapshot. */
+export function loadFacts(directory: string, provenanceFile: string, factsFile: string, permitsFile: string) {
+  const provenance = JSON.parse(readFileSync(join(directory, provenanceFile), 'utf8')) as FactsProvenance;
+  const facts = ParcelLines.parse(snapshotText(factsFile, provenance.factsCsvSha256, directory));
+  const permits = ParcelLines.parse(snapshotText(permitsFile, provenance.permitsCsvSha256, directory));
+  if (facts.total !== provenance.facts || facts.size !== facts.total || permits.total !== provenance.permits)
+    throw new Error('Incomplete or duplicate facts snapshot.');
+  return { provenance, facts, permits, later: laterSales(directory) };
+}
+const sqftText = (value: string) => `${Number(value).toLocaleString('en-US')} sq ft`;
+const yesNo = (value: string) => (value === 'Y' ? 'Yes' : value === 'N' ? 'No' : '');
 
 const SUFFIXES: Record<string, string> = {
   ST: 'STREET',
@@ -283,6 +370,104 @@ export function searchDcAddresses(query: string, limit = 8): DcSearchResult[] {
   );
 }
 
+let factsCache: ReturnType<typeof loadFacts> | undefined;
+/** Assessor facts and building permits for covered houses; loaded once, after the core snapshots. */
+export function dcFactsData() {
+  factsCache ??= loadFacts(
+    DATA_DIR,
+    'dc-residential-facts.provenance.json',
+    'dc-residential-facts.csv.gz',
+    'dc-house-permits.csv.gz',
+  );
+  return factsCache;
+}
+const DC_FACTS_LICENSE =
+  'Contains District of Columbia open data licensed under CC BY 4.0. Joined and filtered by Ascent; not an inspection.';
+
+/**
+ * What District records show about a house beyond the valuation inputs. The estimate never uses these: they say
+ * what the records show about structure, condition and renovations, and how current the sales are.
+ */
+export function dcPropertyFacts(parcel: DcParcel, comparableSales: DcSale[]): PropertyFacts {
+  const { facts, permits, provenance, later } = dcFactsData();
+  const row = facts.row(parcel.parcelId);
+  const history = permits
+    .rows(parcel.parcelId)
+    .map(entry => dcPermitRecord(entry, 'home'))
+    .sort(newestFirst);
+  const recorded = [
+    ['Structure', row?.structure ? structureLabel(row.structure) : ''],
+    ['Style', row?.style],
+    ['Construction grade', row?.grade],
+    [
+      'Assessor condition grade',
+      `${parcel.condition} of 6 (${DC_CONDITION_LABELS[parcel.condition] ?? 'unlabeled'}), used in the estimate`,
+    ],
+    ['Year built', parcel.yearBuilt ? String(parcel.yearBuilt) : ''],
+    ['Last recorded remodel', parcel.yearRemodeled ? String(parcel.yearRemodeled) : 'None recorded'],
+    [
+      'Effective year built',
+      row?.effective_year_built ? `${row.effective_year_built} (the assessor’s estimate of age after updates)` : '',
+    ],
+    ['Heating', row?.heat],
+    ['Central air', yesNo(row?.central_air ?? '')],
+    ['Kitchens', row?.kitchens],
+    ['Fireplaces', row?.fireplaces],
+    ['Exterior', row?.exterior],
+    ['Roof', row?.roof],
+    ['Floors', row?.floors],
+    ['Lot', row?.land_sqft ? sqftText(row.land_sqft) : ''],
+  ]
+    .filter((entry): entry is [string, string] => !!entry[1])
+    .map(([label, value]) => ({ label, value, source: 'dc-assessor' }));
+  const comparables: PropertyFacts['comparables'] = {};
+  for (const sale of comparableSales) {
+    const recordedStructure = facts.row(sale.parcelId)?.structure;
+    const structure = recordedStructure ? structureLabel(recordedStructure) : undefined;
+    const prior = permitBeforeSale(
+      permits.rows(sale.parcelId).map(entry => dcPermitRecord(entry, 'home')),
+      sale.soldOn,
+    );
+    if (structure || prior)
+      comparables[sale.saleId] = { ...(structure ? { structure } : {}), ...(prior ? { permitBeforeSale: prior } : {}) };
+  }
+  return {
+    version: PROPERTY_FACTS_VERSION,
+    sources: [
+      {
+        id: 'dc-assessor',
+        label: 'District assessor records (CAMA Residential)',
+        license: DC_FACTS_LICENSE,
+        collectedAt: provenance.fetchedAt,
+      },
+      {
+        id: 'dc-permits',
+        label: 'District Department of Buildings permits',
+        license: DC_FACTS_LICENSE,
+        collectedAt: provenance.fetchedAt,
+      },
+    ],
+    recorded,
+    years: {
+      built: parcel.yearBuilt || null,
+      remodeled: parcel.yearRemodeled || null,
+      effective: row?.effective_year_built ? Number(row.effective_year_built) : null,
+    },
+    permits: {
+      source: 'dc-permits',
+      since: provenance.permitsSince,
+      coverage: `District building permits issued on this lot since ${provenance.permitsSince.slice(0, 4)}`,
+      closeOutRecorded: false,
+      statusNote: DC_PERMIT_STATUS_NOTE,
+      records: history.slice(0, 400) as PermitRecord[],
+    },
+    permitGap: null,
+    building: null,
+    comparables,
+    later: later && { checkedAt: later.checkedAt, sales: later.sales, after: later.after, source: later.source },
+  };
+}
+
 export function dcSource(): Source {
   const { salesProvenance, parcelsProvenance } = dcData();
   return {
@@ -340,10 +525,15 @@ export function dcValuationInputs(parcelId: string) {
       soldAt: `${sale.soldOn}T12:00:00.000Z`,
       soldPrice: sale.price,
     }));
+  const candidateIds = new Set(candidates.map(candidate => candidate.id));
   return {
     parcel,
     subject,
     candidates,
+    facts: dcPropertyFacts(
+      parcel,
+      sales.filter(sale => candidateIds.has(sale.saleId)),
+    ),
     asOf,
     sources: [dcSource()],
     assumptions: validatedAssumptions(dcBenchmark) as CmaAssumptions,
