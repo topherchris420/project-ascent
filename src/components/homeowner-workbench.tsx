@@ -28,6 +28,7 @@ import {
   type OwnerNotes,
 } from '@/lib/homeowner-passport';
 import type { StudioEvidence, StudioState } from '@/lib/demo-studio';
+import type { StudySession } from '@/lib/study-states';
 import { briefAnswers, type BriefQuestion, type HomeDecisionBrief } from '@/lib/home-decision-brief';
 import type { CmaResult } from '@/lib/types';
 import { HomeownerDecisions } from './homeowner-decisions';
@@ -116,6 +117,7 @@ export function HomeownerWorkbench({
   onFinanceChange,
   onStudioChange,
   missingEvidence,
+  session,
 }: {
   evidence: StudioEvidence;
   state: StudioState;
@@ -128,6 +130,8 @@ export function HomeownerWorkbench({
   onFinanceChange?: (finance: FinanceInputs) => void;
   onStudioChange: (patch: Partial<StudioState>) => void;
   missingEvidence: string;
+  /** A prepared study state: saved homes are not restored, and it may open with the illustrative inputs. */
+  session?: StudySession;
 }) {
   const [inputs, setInputs] = useState<FinanceInputs>(emptyFinance);
   const [notes, setNotes] = useState<OwnerNotes>(emptyOwnerNotes);
@@ -136,14 +140,34 @@ export function HomeownerWorkbench({
     [ready, setReady] = useState(false);
   const [status, setStatus] = useState(''),
     [inputError, setInputError] = useState('');
-  const [panel, setPanel] = useState('overview'),
+  const [panel, setPanel] = useState<string>(session?.panel ?? 'overview'),
     [selectedVersion, setSelectedVersion] = useState('');
   const [targetVersion, setTargetVersion] = useState('current');
   const [question, setQuestion] = useState<string>(brief ? 'why' : 'less'),
     [draft, setDraft] = useState<string | null>(null);
   const [includePrivate, setIncludePrivate] = useState(false);
   const [improvement, setImprovement] = useState({ year: '', description: '', cost: '' });
+  const loadIllustrative = () => {
+    const a = exampleFinance();
+    setInputs(a);
+    setFollowValue(false);
+    onStudioChange({
+      listPrice: a.salePrice,
+      commissionPercent: a.commissionPercent!,
+      closingPercent: a.closingPercent!,
+      concessions: a.concessions!,
+      payoff: a.mortgageBalance!,
+    });
+    setStatus(
+      'Illustrative financial assumptions loaded for the fictional sample. They are not property records or market forecasts.',
+    );
+  };
   useEffect(() => {
+    if (session) {
+      if (session.illustrativeFinance) loadIllustrative();
+      setReady(true);
+      return;
+    }
     try {
       const raw = localStorage.getItem(HOME_STORAGE_KEY);
       const saved = raw ? parseProfiles(raw) : [];
@@ -581,24 +605,7 @@ export function HomeownerWorkbench({
         </div>
       )}
       {panel === 'compare' && evidence.sources.every(s => s.kind === 'synthetic') && (
-        <button
-          className="button small"
-          onClick={() => {
-            const a = exampleFinance();
-            setInputs(a);
-            setFollowValue(false);
-            onStudioChange({
-              listPrice: a.salePrice,
-              commissionPercent: a.commissionPercent!,
-              closingPercent: a.closingPercent!,
-              concessions: a.concessions!,
-              payoff: a.mortgageBalance!,
-            });
-            setStatus(
-              'Illustrative financial assumptions loaded for the fictional sample. They are not property records or market forecasts.',
-            );
-          }}
-        >
+        <button className="button small" onClick={loadIllustrative}>
           Try illustrative financial inputs
         </button>
       )}

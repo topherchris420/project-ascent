@@ -13,6 +13,7 @@ import { cents, compareDecisions, decisionKinds, financeSchema, type FinanceInpu
 import type { Source, ValuationProperty } from './types';
 import { accuracyReferenceSchema, homeownerAccuracyReference } from './homeowner-validation';
 import { BRIEF_POLICY_VERSION, buildHomeDecisionBrief, type HomeDecisionBrief } from './home-decision-brief';
+import { SPARSE_STUDY_SUBJECT_ID, studyStatePath } from './study-states';
 
 export const HOME_STORAGE_KEY = 'ascent.homeowner-profiles.v1';
 const text = z.string().max(1000);
@@ -176,6 +177,8 @@ function parseStudioState(evidence: StudioEvidence, raw: unknown) {
 }
 export function propertyHref(subject: ValuationProperty) {
   if (subject.id === 'landing-subject' && subject.sourceId === 'source-synthetic-landing') return '/demo';
+  if (subject.id === SPARSE_STUDY_SUBJECT_ID && subject.sourceId === 'source-synthetic-landing')
+    return studyStatePath('abstention');
   const base =
     subject.sourceId === 'source-maryland-public-records'
       ? '/maryland'
@@ -227,6 +230,7 @@ export function createHomeSnapshot(
 }
 export function studioStorageKey(subject: ValuationProperty) {
   if (subject.id === 'landing-subject') return 'ascent.practice-studio.v1';
+  if (subject.id === SPARSE_STUDY_SUBJECT_ID) return 'ascent.study-session.abstention';
   const parcel = subject.id.replace(/^(dc-condo-parcel-|dc-parcel-|md-parcel-)/, '');
   const prefix =
     subject.sourceId === 'source-maryland-public-records'

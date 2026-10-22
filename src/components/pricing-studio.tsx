@@ -19,6 +19,7 @@ import {
   studioStateSchema,
 } from '@/lib/demo-studio';
 import { buildHomeDecisionBrief } from '@/lib/home-decision-brief';
+import type { StudySession } from '@/lib/study-states';
 import type { FinanceInputs } from '@/lib/homeowner-finance';
 import { positionLabel } from '@/lib/pricing-narrative';
 import { assessValuationRelease, benchmarkForState, usesValidatedConfiguration } from '@/lib/valuation-safeguards';
@@ -74,6 +75,11 @@ export type StudioConfig = {
   before?: ReactNode;
   /** A chosen real home: its address and estimate lead the page and the market introduction follows, compact. */
   resultFirst?: boolean;
+  /**
+   * A prepared comprehension-study state: no draft is restored from or saved to this device, so every task
+   * starts fresh, and the homeowner workbench can open with the sample's illustrative financial inputs.
+   */
+  session?: StudySession;
 };
 
 export function PricingStudio(config: StudioConfig) {
@@ -119,6 +125,10 @@ export function PricingStudio(config: StudioConfig) {
     }
   }, [evidence, config.defaultState]);
   useEffect(() => {
+    if (config.session) {
+      setReady(true);
+      return;
+    }
     try {
       const saved = localStorage.getItem(config.storageKey);
       if (saved) {
@@ -132,15 +142,15 @@ export function PricingStudio(config: StudioConfig) {
       setStorageStatus('Device storage is unavailable. Keep this tab open or export your decision.');
     }
     setReady(true);
-  }, [config.storageKey, schema]);
+  }, [config.storageKey, schema, config.session]);
   useEffect(() => {
-    if (!ready) return;
+    if (!ready || config.session) return;
     try {
       localStorage.setItem(config.storageKey, JSON.stringify(state));
     } catch {
       setStorageStatus('Device storage is unavailable. Keep this tab open or export your decision.');
     }
-  }, [state, ready, config.storageKey]);
+  }, [state, ready, config.storageKey, config.session]);
   const calculation = useMemo(() => {
     try {
       return { result: calculateStudio(evidence, state), error: '' };
@@ -410,6 +420,7 @@ export function PricingStudio(config: StudioConfig) {
           onFinanceChange={setFinance}
           onStudioChange={patch}
           missingEvidence={config.passport.missing}
+          session={config.session}
         />
         <div id="studio-evidence" className="studio-section-anchor">
           {result && (

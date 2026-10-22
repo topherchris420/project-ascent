@@ -1,17 +1,22 @@
 'use client';
 import { defaultDemoState, demoReportHref, sampleEvidence } from '@/lib/demo-studio';
 import { SAMPLE_AS_OF } from '@/lib/pricing-sample';
+import { studyEvidence, studySession, studyStateLabels, type StudyState } from '@/lib/study-states';
 import { PricingStudio } from './pricing-studio';
 import { date } from './format';
 
-/** The account-free practice studio on the authored fictional Arlington sample. */
-export function DemoPricingStudio() {
+/**
+ * The account-free practice studio on the authored fictional Arlington sample. With `session`, it opens one of
+ * the comprehension study's prepared states: fresh on every load, nothing restored or saved as a draft.
+ */
+export function DemoPricingStudio({ session }: { session?: StudyState }) {
   return (
     <PricingStudio
-      evidence={sampleEvidence}
+      evidence={session ? studyEvidence(session) : sampleEvidence}
       defaultState={defaultDemoState}
-      storageKey="ascent.practice-studio.v1"
-      reportHref={demoReportHref}
+      storageKey={session ? `ascent.study-session.${session}` : 'ascent.practice-studio.v1'}
+      reportHref={(state, format) => demoReportHref(state, format, session === 'abstention' ? 'abstention' : undefined)}
+      session={session ? studySession(session) : undefined}
       conditionMax={5}
       intro={{
         eyebrow: 'A DECISION YOU CAN TAKE APART',
@@ -25,7 +30,10 @@ export function DemoPricingStudio() {
           </>
         ),
         badgeTitle: 'Account-free practice',
-        badgeLines: ['Fictional property and sales', 'No live data or model requests'],
+        badgeLines: [
+          'Fictional property and sales',
+          session ? `Prepared session · ${studyStateLabels[session]}` : 'No live data or model requests',
+        ],
       }}
       subjectEyebrow="SUBJECT · ARLINGTON, VIRGINIA"
       evidenceNote={`Evidence frozen ${date(SAMPLE_AS_OF)} · authored fictional records`}

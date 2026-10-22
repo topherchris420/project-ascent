@@ -198,8 +198,10 @@ export const demoCandidates = (state: StudioState) => studioCandidates(sampleEvi
 export const demoSources = (state: StudioState) => studioSources(sampleEvidence, state);
 export const calculateDemo = (state: StudioState) => calculateStudio(sampleEvidence, state);
 export const demoCosts = studioCosts;
-export function demoReportHref(state: StudioState, format?: 'json') {
+/** `study: 'abstention'` reports on the comprehension study's separate fictional home with two sales. */
+export function demoReportHref(state: StudioState, format?: 'json', study?: 'abstention') {
   const query = new URLSearchParams({ state: JSON.stringify(state) });
   if (format) query.set('format', format);
+  if (study) query.set('study', study);
   return `/api/demo/report?${query}`;
 }

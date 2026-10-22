@@ -23,6 +23,9 @@
     "validate:valuation": "tsx scripts/validate-valuation.ts",
     "replicate": "tsx scripts/replicate.ts",
     "replication:sign": "tsx scripts/replication/sign-record.ts",
+    "usability:register": "tsx scripts/usability/register.ts",
+    "usability:analyze": "tsx scripts/usability/analyze.ts",
+    "usability:answer-key": "tsx scripts/usability/answer-key.ts",
     "format": "prettier --write \"src/**/*.{ts,tsx,css}\" \"tests/**/*.ts\" \"scripts/**/*.{ts,mjs}\" \"*.ts\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,css}\" \"tests/**/*.ts\" \"scripts/**/*.{ts,mjs}\" \"*.ts\""
   },

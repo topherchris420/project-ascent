@@ -1,14 +1,16 @@
 import {
-  calculateDemo,
+  calculateStudio,
   defaultDemoState,
-  demoCandidates,
   demoCosts,
-  demoSources,
   demoStudioSchema,
-  demoSubject,
+  sampleEvidence,
+  studioCandidates,
+  studioSources,
+  studioSubject,
 } from '@/lib/demo-studio';
-import { sampleSubject, SAMPLE_AS_OF } from '@/lib/pricing-sample';
+import { SAMPLE_AS_OF } from '@/lib/pricing-sample';
 import { renderCmaReport } from '@/lib/report-html';
+import { sparseStudyEvidence, sparseStudySchema } from '@/lib/study-states';
 export const runtime = 'nodejs';
 
 /**
@@ -21,12 +23,15 @@ export async function GET(request: Request) {
   const headers = { 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff' };
   try {
     if (raw && raw.length > 6000) throw new Error('Oversized input');
-    const state = demoStudioSchema.parse(raw ? JSON.parse(raw) : defaultDemoState);
-    const result = calculateDemo(state);
+    // The comprehension study's prepared state with two sales is a separate fictional home.
+    const sparse = url.searchParams.get('study') === 'abstention';
+    const evidence = sparse ? sparseStudyEvidence : sampleEvidence;
+    const state = (sparse ? sparseStudySchema : demoStudioSchema).parse(raw ? JSON.parse(raw) : defaultDemoState);
+    const result = calculateStudio(evidence, state);
     const record = {
-      id: 'public-fictional-sample',
-      propertyId: sampleSubject.id,
-      name: 'Linden Court · practice pricing decision',
+      id: sparse ? 'public-fictional-study-sparse' : 'public-fictional-sample',
+      propertyId: evidence.subject.id,
+      name: `${sparse ? 'Quarry Lane' : 'Linden Court'} · practice pricing decision`,
       createdAt: SAMPLE_AS_OF,
       result,
       reviewNotes: state.exclusions.map(e => ({ propertyId: e.id, reason: e.reason })),
@@ -37,7 +42,7 @@ export async function GET(request: Request) {
           format: 'ascent-practice-decision-1',
           mode: 'fictional-demonstration',
           record,
-          sources: demoSources(state),
+          sources: studioSources(evidence, state),
           scenario: { ...state, listPrice: state.listPrice ?? result.estimate },
           reproduction:
             'Recalculate record.result.inputSnapshot with the archived assumptions and asOf using the stated Ascent engine version. Check calculationHash.',
@@ -49,12 +54,12 @@ export async function GET(request: Request) {
     return new Response(
       renderCmaReport({
         record,
-        property: demoSubject(state),
-        candidates: demoCandidates(state),
+        property: studioSubject(evidence, state),
+        candidates: studioCandidates(evidence, state),
         organization: 'Account-free practice studio',
         preparedBy: 'Practice user',
         synthetic: true,
-        sources: demoSources(state),
+        sources: studioSources(evidence, state),
         costs: demoCosts(state),
         payoff: state.payoff,
         selectedListPrice: state.listPrice ?? result.estimate,

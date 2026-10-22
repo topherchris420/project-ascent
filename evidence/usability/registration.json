@@ -1,0 +1,140 @@
+{
+  "protocol": {
+    "id": "ascent-usability-brief-1",
+    "question": "Can homeowners who are not real estate professionals correctly interpret what the brief says, and what it does not say, well enough to decide what to do next?",
+    "participants": {
+      "min": 12,
+      "max": 16,
+      "eligibility": "Adults who own a home, or expect to sell one within two years, in a covered market (DC or Montgomery / Prince George’s, Maryland).",
+      "excluded": "Licensed real estate agents, appraisers and lenders.",
+      "consent": "Informed consent, the right to stop at any time, and modest compensation set before recruitment. Participant identities and recordings are never published.",
+      "finances": "Participants never enter their real mortgage or finances. Scored tasks use the prepared fictional states; afterwards a participant may explore a public-record address of their choice, unscored.",
+      "targets": [
+        {
+          "id": "phone",
+          "label": "At least half of participants use a phone",
+          "minShare": 0.5
+        },
+        {
+          "id": "assistive",
+          "label": "At least two participants use a screen reader or magnification",
+          "minCount": 2
+        },
+        {
+          "id": "housing",
+          "label": "Both house and condo owners take part",
+          "minCount": 1
+        },
+        {
+          "id": "age",
+          "label": "Participants come from more than one age band",
+          "minCount": 2
+        }
+      ]
+    },
+    "procedure": "Tasks run in order T1–T9. Each starts from a fresh page at its prepared state. The facilitator reads the prompt verbatim and does not explain the interface; a hint, if one is given, is recorded and the task is not unaided.",
+    "tasks": [
+      {
+        "id": "T1",
+        "name": "Value",
+        "state": "value",
+        "prompt": "What does Ascent say this home is worth, and how sure is it?",
+        "criterion": "States the estimate and that it is an estimate with stated limits; does not call the observed range a confidence interval or guarantee",
+        "accept": "Gives the estimate (approximately is fine) and says it is an estimate with limits, such as a practice figure from fictional sales or one that needs care.",
+        "reject": "Treats the figure as a sale price, appraisal or guarantee, or calls the range of adjusted sales a confidence interval."
+      },
+      {
+        "id": "T2",
+        "name": "Abstention",
+        "state": "abstention",
+        "prompt": "What does Ascent say this home is worth?",
+        "criterion": "States that Ascent does not give a value for this home and names the reason (too few sales)",
+        "accept": "Says no value is stated, and that only two eligible recorded sales were found or that there were too few sales.",
+        "reject": "Gives a number as the value, or says no value is stated without the reason."
+      },
+      {
+        "id": "T3",
+        "name": "Evidence",
+        "state": "value",
+        "prompt": "Which recorded sale influences the estimate most, and why?",
+        "criterion": "Names the highest-weight sale and one reason (weight, distance, similarity or adjustment)",
+        "accept": "Names the leading sale in the answer key and one reason: its weight, closeness, recency, similar size or its adjustments.",
+        "reject": "Names another sale, or a reason unrelated to the arithmetic, such as the highest price."
+      },
+      {
+        "id": "T4",
+        "name": "Ranges",
+        "state": "value",
+        "prompt": "Is the home certain to sell within the range shown?",
+        "criterion": "Says no: the range is the spread of adjusted sales, not a promise",
+        "accept": "Says no, and that the range is the spread of the adjusted sales rather than a promise or prediction.",
+        "reject": "Says yes or probably, or describes the range as a probability or confidence interval."
+      },
+      {
+        "id": "T5",
+        "name": "Missing facts",
+        "state": "value",
+        "prompt": "What would you need to find out before relying on this?",
+        "criterion": "Names at least two missing facts from the brief",
+        "accept": "Names two or more facts listed under the brief’s missing facts, in their own words.",
+        "reject": "Names fewer than two, or only facts the brief does not list."
+      },
+      {
+        "id": "T6",
+        "name": "Choices",
+        "state": "finance",
+        "prompt": "What would you have after selling now, and how does renting compare?",
+        "criterion": "States the net proceeds after selling costs, and that the choices are not ranked or equivalent housing",
+        "accept": "Gives the net proceeds from selling now in the answer key and compares renting without treating either as recommended, ranked or equivalent housing.",
+        "reject": "Gives the sale price as the proceeds, or states that one choice is the better or recommended one."
+      },
+      {
+        "id": "T7",
+        "name": "Sensitivity",
+        "state": "finance",
+        "prompt": "Which of your inputs changes the 'Continue owning' result most?",
+        "criterion": "Names the top driver from the Compare panel",
+        "accept": "Names the top driver for Continue owning in the answer key.",
+        "reject": "Names another input."
+      },
+      {
+        "id": "T8",
+        "name": "Break-even",
+        "state": "finance",
+        "prompt": "Below what sale price does selling leave you worse off than continuing to own, under these inputs?",
+        "criterion": "States the break-even sale price and that it depends on the entered assumptions",
+        "accept": "Gives the break-even sale price in the answer key and says it depends on the entered inputs.",
+        "reject": "Gives another figure, or treats the threshold as a forecast or a recommended price."
+      },
+      {
+        "id": "T9",
+        "name": "Sharing",
+        "state": "finance",
+        "prompt": "Export something you could send to a relative without including your mortgage.",
+        "criterion": "Produces the default (public) export and confirms it omits the mortgage",
+        "accept": "Downloads the sharing passport with private details left out and says the mortgage is not included.",
+        "reject": "Includes private details, or cannot produce or describe the export."
+      }
+    ],
+    "successShare": 0.8,
+    "measures": [
+      "Whether each criterion was met",
+      "Time on task",
+      "Completion without assistance",
+      "Errors",
+      "Every misinterpretation, verbatim",
+      "System Usability Scale score",
+      "Accessibility barriers observed with assistive technology"
+    ],
+    "analysis": [
+      "A criterion is met when at least 80% of participants meet it. A participant who did not attempt a task counts as not meeting it.",
+      "Each criterion is reported as a count with a 95% Wilson interval; small samples are counts, not population rates.",
+      "Every misinterpretation and accessibility barrier is reported.",
+      "Interface changes made in response are listed with the finding that prompted them and re-tested with new participants, never the same ones.",
+      "Results, including failed criteria, are published with the date, the commit tested and the facilitators’ notes."
+    ]
+  },
+  "protocolDigest": "sha256-5ae60b44f30b19411b5fbe56a068f842ddb0397ce1519b096cfd0b5319d2ec2f",
+  "registeredAt": "2026-10-22T05:06:25.816Z",
+  "statement": "Registered before any participant was recruited or any session took place. Tasks, prepared states, criteria, the 80% threshold, measures and analysis are fixed by this digest. Every result will be published, including failed criteria; interface changes made in response will be re-tested with new participants under a new study id."
+}

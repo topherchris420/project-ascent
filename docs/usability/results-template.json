@@ -1,0 +1,107 @@
+{
+  "schema": "ascent-usability-results-1",
+  "protocolId": "ascent-usability-brief-1",
+  "protocolDigest": "sha256-5ae60b44f30b19411b5fbe56a068f842ddb0397ce1519b096cfd0b5319d2ec2f",
+  "studyId": "example-template",
+  "commit": "0000000000000000000000000000000000000000",
+  "retestOf": null,
+  "facilitators": [
+    "Facilitator name"
+  ],
+  "facilitatorNotes": "Placeholder values only. Replace every field; keep participant codes, never names.",
+  "sessions": [
+    {
+      "participant": "P01",
+      "date": "2026-11-02",
+      "device": "phone",
+      "assistiveTechnology": "none",
+      "housing": "house",
+      "ageBand": "35-49",
+      "tasks": [
+        {
+          "task": "T1",
+          "outcome": "not-attempted",
+          "unaided": false,
+          "seconds": null,
+          "errors": 0,
+          "misinterpretations": [],
+          "notes": ""
+        },
+        {
+          "task": "T2",
+          "outcome": "not-attempted",
+          "unaided": false,
+          "seconds": null,
+          "errors": 0,
+          "misinterpretations": [],
+          "notes": ""
+        },
+        {
+          "task": "T3",
+          "outcome": "not-attempted",
+          "unaided": false,
+          "seconds": null,
+          "errors": 0,
+          "misinterpretations": [],
+          "notes": ""
+        },
+        {
+          "task": "T4",
+          "outcome": "not-attempted",
+          "unaided": false,
+          "seconds": null,
+          "errors": 0,
+          "misinterpretations": [],
+          "notes": ""
+        },
+        {
+          "task": "T5",
+          "outcome": "not-attempted",
+          "unaided": false,
+          "seconds": null,
+          "errors": 0,
+          "misinterpretations": [],
+          "notes": ""
+        },
+        {
+          "task": "T6",
+          "outcome": "not-attempted",
+          "unaided": false,
+          "seconds": null,
+          "errors": 0,
+          "misinterpretations": [],
+          "notes": ""
+        },
+        {
+          "task": "T7",
+          "outcome": "not-attempted",
+          "unaided": false,
+          "seconds": null,
+          "errors": 0,
+          "misinterpretations": [],
+          "notes": ""
+        },
+        {
+          "task": "T8",
+          "outcome": "not-attempted",
+          "unaided": false,
+          "seconds": null,
+          "errors": 0,
+          "misinterpretations": [],
+          "notes": ""
+        },
+        {
+          "task": "T9",
+          "outcome": "not-attempted",
+          "unaided": false,
+          "seconds": null,
+          "errors": 0,
+          "misinterpretations": [],
+          "notes": ""
+        }
+      ],
+      "sus": null,
+      "barriers": []
+    }
+  ]
+}
