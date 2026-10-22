@@ -2116,3 +2116,36 @@
     overflow-y: auto;
   }
 }
+
+/* Independent replication status on the accuracy page. */
+.landing .lp-replication {
+  margin: 24px 0 8px;
+}
+.landing .lp-replication h2 {
+  margin: 0 0 10px;
+}
+.landing .lp-replication p {
+  margin: 8px 0;
+  font-size: 15px;
+  line-height: 1.55;
+}
+.landing .lp-replication-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 16px;
+}
+.landing .lp-replication-list li {
+  padding-top: 12px;
+  border-top: 1px solid var(--lp-line);
+}
+.landing .lp-replication-list h3 {
+  font-size: 17px;
+}
+.landing .lp-replication blockquote {
+  margin: 8px 0;
+  padding-left: 12px;
+  border-left: 3px solid var(--lp-line);
+  color: var(--lp-soft);
+}

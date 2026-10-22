@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { AccuracyScorecard } from '@/components/accuracy-scorecard';
+import { ReplicationStatus } from '@/components/replication-status';
 import { marylandBenchmark, marylandRevisedBenchmark } from '@/lib/maryland-studio';
 import { condoBenchmark } from '@/lib/dc-condo-studio';
 import externalJson from '@/lib/valuation-benchmark-maryland-external.json';
@@ -16,10 +17,11 @@ export default function Page() {
           <Link href="/">Return to Ascent</Link>
           <h1>Published accuracy experiments</h1>
           <p>
-            Results are internal, reproducible measurements. Independent professional certification is pending. Failed
-            results remain public. Each population and time window has its own criteria; results do not transfer between
-            them.
+            Results are internal, reproducible measurements. Whether any outside researcher has reproduced them is shown
+            below. Failed results remain public. Each population and time window has its own criteria; results do not
+            transfer between them.
           </p>
+          <ReplicationStatus />
           <h2>Maryland · revised model</h2>
           <AccuracyScorecard benchmark={marylandRevisedBenchmark} />
           <h2>Maryland · original failed experiment, unchanged</h2>
