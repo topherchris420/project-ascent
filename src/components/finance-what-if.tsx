@@ -36,19 +36,18 @@ export function FinanceWhatIf({ comparison, selected }: { comparison: FinanceCom
         <p>Enter the inputs this choice needs to see what moves it.</p>
       ) : drivers.length ? (
         <div
-          className="home-table-wrap"
+          className="home-table-wrap home-table-wrap-compact"
           tabIndex={0}
           role="region"
-          aria-label="Inputs that move this choice, scroll horizontally for all columns"
+          aria-label="Inputs that move this choice"
         >
-          <table className="home-table">
+          <table className="home-table home-table-compact">
             <caption>
               Change in net position at month {horizon} · {decisionLabels[selected]}
             </caption>
             <thead>
               <tr>
-                <th scope="col">Your input</th>
-                <th scope="col">Moved by</th>
+                <th scope="col">Your input and the step tested</th>
                 <th scope="col">Lower</th>
                 <th scope="col">Higher</th>
               </tr>
@@ -56,8 +55,10 @@ export function FinanceWhatIf({ comparison, selected }: { comparison: FinanceCom
             <tbody>
               {drivers.map(driver => (
                 <tr key={driver.key}>
-                  <th scope="row">{driver.label}</th>
-                  <td>{driver.step}</td>
+                  <th scope="row">
+                    {driver.label}
+                    <span className="home-step">Moved {driver.step}</span>
+                  </th>
                   <td>{signed(driver.lower)}</td>
                   <td>{signed(driver.higher)}</td>
                 </tr>

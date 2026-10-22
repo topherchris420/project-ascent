@@ -218,6 +218,30 @@
 .home-table tr[aria-selected='true'] {
   background: #f0f7f2;
 }
+/* Few short numeric columns: fits a phone without sideways scrolling; the row label wraps instead. */
+.home-table-compact {
+  min-width: 0;
+}
+.home-table-wrap-compact {
+  max-width: 680px;
+}
+.home-table-compact th {
+  white-space: normal;
+  hyphens: auto;
+}
+.home-table-compact td,
+.home-table-compact thead th:not(:first-child) {
+  white-space: nowrap;
+  overflow-wrap: normal;
+  text-align: right;
+}
+.home-step {
+  display: block;
+  margin-top: 3px;
+  color: #4d6356;
+  font-size: 12px;
+  font-weight: 400;
+}
 .home-table .text-button {
   text-align: left;
   min-height: 36px;
@@ -310,6 +334,10 @@
 @media (max-width: 460px) {
   .home-metrics {
     grid-template-columns: 1fr;
+  }
+  .home-table-compact th,
+  .home-table-compact td {
+    padding: 11px 9px;
   }
   .home-input-grid {
     grid-template-columns: 1fr;
