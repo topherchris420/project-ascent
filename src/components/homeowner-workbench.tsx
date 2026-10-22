@@ -28,6 +28,7 @@ import {
   type OwnerNotes,
 } from '@/lib/homeowner-passport';
 import type { StudioEvidence, StudioState } from '@/lib/demo-studio';
+import { briefAnswers, type BriefQuestion, type HomeDecisionBrief } from '@/lib/home-decision-brief';
 import type { CmaResult } from '@/lib/types';
 import { HomeownerDecisions } from './homeowner-decisions';
 import { downloadJson, openHtmlReport } from '@/lib/browser-export';
@@ -89,6 +90,20 @@ const groups: { title: string; keys: FinanceKey[]; note: string }[] = [
     note: 'Annual property changes and cash returns are hypothetical. Choose 0 explicitly for a flat scenario; they are never supplied as a forecast.',
   },
 ];
+const valueQuestions: [BriefQuestion, string][] = [
+  ['why', 'Why is my home valued this way?'],
+  ['top-comp', 'Which sale influences the estimate most?'],
+  ['changes', 'What would materially change this?'],
+  ['unsupported', 'What is not supported by the evidence?'],
+];
+const choiceQuestions = [
+  ['after-costs', 'What would I receive after selling costs?'],
+  ['less', 'What if I sell for $25,000 less?'],
+  ['rent', 'How does renting compare with selling?'],
+  ['renovate', 'What is the renovation break-even?'],
+  ['missing', 'Which missing information matters?'],
+  ['saved', 'What changed since my saved decision?'],
+] as const;
 const valueText = (value: unknown) =>
   typeof value === 'number' ? String(value) : typeof value === 'string' ? value : JSON.stringify(value);
 
@@ -96,12 +111,21 @@ export function HomeownerWorkbench({
   evidence,
   state,
   result,
+  valueStated = true,
+  brief,
+  onFinanceChange,
   onStudioChange,
   missingEvidence,
 }: {
   evidence: StudioEvidence;
   state: StudioState;
   result: CmaResult | null;
+  /** False when the evidence does not support a stated value; the estimate then never fills a financial input. */
+  valueStated?: boolean;
+  /** The page's Home Decision Brief, which answers the evidence questions in Ask Ascent. */
+  brief?: HomeDecisionBrief;
+  /** Receives each distinct set of effective financial inputs, valid or not. */
+  onFinanceChange?: (finance: FinanceInputs) => void;
   onStudioChange: (patch: Partial<StudioState>) => void;
   missingEvidence: string;
 }) {
@@ -115,7 +139,7 @@ export function HomeownerWorkbench({
   const [panel, setPanel] = useState('overview'),
     [selectedVersion, setSelectedVersion] = useState('');
   const [targetVersion, setTargetVersion] = useState('current');
-  const [question, setQuestion] = useState('less'),
+  const [question, setQuestion] = useState<string>(brief ? 'why' : 'less'),
     [draft, setDraft] = useState<string | null>(null);
   const [includePrivate, setIncludePrivate] = useState(false);
   const [improvement, setImprovement] = useState({ year: '', description: '', cost: '' });
@@ -150,20 +174,24 @@ export function HomeownerWorkbench({
     // The studio remounts for each property. Restore once without reacting to edits in its parent.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [evidence.subject.id]);
+  const modeled = valueStated ? (result?.estimate ?? null) : null;
   const effective: FinanceInputs = {
     ...inputs,
-    propertyValue: followValue ? (result?.estimate ?? null) : inputs.propertyValue,
-    salePrice: state.listPrice ?? result?.estimate ?? null,
+    propertyValue: followValue ? modeled : inputs.propertyValue,
+    salePrice: state.listPrice ?? modeled,
     commissionPercent: state.commissionPercent,
     closingPercent: state.closingPercent,
     concessions: state.concessions,
     mortgageBalance: inputs.mortgageBalance !== null || state.payoff > 0 ? state.payoff : null,
   };
+  const effectiveKey = JSON.stringify(effective);
   const parsed = financeSchema.safeParse(effective);
-  const comparison = useMemo(
-    () => (parsed.success ? compareDecisions(parsed.data) : null),
-    [JSON.stringify(effective)],
-  );
+  const comparison = useMemo(() => (parsed.success ? compareDecisions(parsed.data) : null), [effectiveKey]);
+  useEffect(() => {
+    onFinanceChange?.(effective);
+    // Report each distinct set of inputs once; the parent re-renders on every report.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [effectiveKey]);
   const sensitivity = parsed.success ? saleSensitivity(parsed.data) : null;
   const savedProfile = profiles.find(p => p.propertyId === evidence.subject.id);
   const selected = savedProfile?.snapshots.find(s => s.id === selectedVersion) ?? savedProfile?.snapshots.at(-1);
@@ -280,6 +308,7 @@ export function HomeownerWorkbench({
       setStatus('Correct the financial inputs before exporting this passport.');
     }
   };
+  const briefReplies = brief ? briefAnswers(brief) : null;
   const questionAnswers = {
     saved: (() => {
       if (!selected || !comparison)
@@ -292,8 +321,11 @@ export function HomeownerWorkbench({
         : 'The saved and current decisions do not yet have a complete financial choice in common. Missing inputs remain unknown.';
     })(),
     less: sensitivity
-      ? `Selling for $25,000 less changes the sell scenario’s horizon net position by ${money(sensitivity.netDifference)} under the current fees, payoff, timeline and hypothetical cash return. This is arithmetic, not a sale-price forecast.`
-      : 'Enter a sale price of at least $25,000, mortgage payoff, fees and hypothetical cash return to calculate this comparison.',
+      ? `Selling for $25,000 less changes the sell scenario’s horizon net position by ${money(sensitivity.netDifference)} under the current fees, payoff, timeline and hypothetical cash return. This is arithmetic, not a sale-price forecast.${briefReplies ? ` ${briefReplies.lower.text}` : ''}`
+      : `${briefReplies ? `${briefReplies.lower.text} ` : ''}Enter a sale price of at least $25,000, mortgage payoff, fees and hypothetical cash return to calculate the full sell-scenario comparison.`,
+    'after-costs':
+      briefReplies?.['after-costs'].text ??
+      'Choose a sale price and selling costs in the pricing strategy section to see proceeds after selling costs.',
     rent: (() => {
       const rent = comparison?.results.find(r => r.kind === 'rent'),
         sell = comparison?.results.find(r => r.kind === 'sell');
@@ -314,7 +346,12 @@ export function HomeownerWorkbench({
         .join('; ') || 'The hold scenario has its required inputs, but they remain unverified assumptions.'
     } Verify the lender payoff statement, tax bill, insurance quote and renovation bids before deciding.`,
   };
-  const answer = questionAnswers[question as keyof typeof questionAnswers];
+  const briefReply =
+    briefReplies && valueQuestions.some(([id]) => id === question) ? briefReplies[question as BriefQuestion] : null;
+  const answer = briefReply?.text ?? questionAnswers[question as keyof typeof questionAnswers] ?? '';
+  const references = briefReply
+    ? briefReply.refs.join(' · ')
+    : `finance ${comparison?.calculationHash ?? 'awaiting inputs'} · valuation ${result?.calculationHash ?? 'unavailable'}`;
   const monthlyCosts = ['monthlyTax', 'monthlyInsurance', 'monthlyHoa', 'monthlyMaintenance', 'monthlyCapex'] as const;
   const monthlyKnown = monthlyCosts.every(k => effective[k] !== null);
   return (
@@ -353,11 +390,19 @@ export function HomeownerWorkbench({
           <div className="home-metrics">
             <div>
               <span>Property value assumption</span>
-              <strong>{effective.propertyValue === null ? 'Unavailable' : money(effective.propertyValue)}</strong>
+              <strong>
+                {effective.propertyValue !== null
+                  ? money(effective.propertyValue)
+                  : followValue && result && !valueStated
+                    ? 'Not stated'
+                    : 'Unavailable'}
+              </strong>
               <small>
-                {followValue
-                  ? 'Linked to modeled estimate; see evidence limits'
-                  : 'Homeowner-entered or saved assumption'}
+                {!followValue
+                  ? 'Homeowner-entered or saved assumption'
+                  : valueStated
+                    ? 'Linked to modeled estimate; see evidence limits'
+                    : 'The evidence does not support a value; enter your own assumption'}
               </small>
             </div>
             <div>
@@ -565,7 +610,7 @@ export function HomeownerWorkbench({
             The existing studio’s selected price, selling fees and payoff use these same controls. Default fees are
             editable assumptions, not quotes. Blank ownership inputs remain unknown.
           </p>
-          <button className="text-button" disabled={!result} onClick={() => setFollowValue(true)}>
+          <button className="text-button" disabled={!result || !valueStated} onClick={() => setFollowValue(true)}>
             Use current modeled estimate for property value
           </button>
           {groups.map(group => (
@@ -601,31 +646,47 @@ export function HomeownerWorkbench({
         <div className="home-ask">
           <h3>Ask about the decision on screen</h3>
           <p className="fine">Deterministic evidence mode · no external model request</p>
+          {brief && (
+            <>
+              <h4 className="home-ask-group">About the value and the evidence</h4>
+              <div className="home-nav" role="group" aria-label="Questions about the value and evidence">
+                {valueQuestions.map(([id, label]) => (
+                  <button
+                    key={id}
+                    className="button small"
+                    aria-pressed={question === id}
+                    onClick={() => {
+                      setQuestion(id);
+                      setDraft(null);
+                    }}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+              <h4 className="home-ask-group">About your choices</h4>
+            </>
+          )}
           <div className="home-nav" role="group" aria-label="Homeowner decision questions">
-            {[
-              ['less', 'What if I sell for $25,000 less?'],
-              ['rent', 'How does renting compare with selling?'],
-              ['renovate', 'What is the renovation break-even?'],
-              ['missing', 'Which missing information matters?'],
-              ['saved', 'What changed since my saved decision?'],
-            ].map(([id, label]) => (
-              <button
-                key={id}
-                className="button small"
-                aria-pressed={question === id}
-                onClick={() => {
-                  setQuestion(id);
-                  setDraft(null);
-                }}
-              >
-                {label}
-              </button>
-            ))}
+            {choiceQuestions
+              .filter(([id]) => brief || id !== 'after-costs')
+              .map(([id, label]) => (
+                <button
+                  key={id}
+                  className="button small"
+                  aria-pressed={question === id}
+                  onClick={() => {
+                    setQuestion(id);
+                    setDraft(null);
+                  }}
+                >
+                  {label}
+                </button>
+              ))}
           </div>
           <p aria-live="polite">{answer}</p>
           <p className="fine">
-            References: finance {comparison?.calculationHash ?? 'awaiting inputs'} · valuation{' '}
-            {result?.calculationHash ?? 'unavailable'} · {evidence.sources.map(s => s.label).join('; ')}
+            References: {references} · {evidence.sources.map(s => s.label).join('; ')}
           </p>
           <label className="home-wide-label">
             Editable explanation for your report
@@ -637,10 +698,12 @@ export function HomeownerWorkbench({
               downloadJson(
                 {
                   format: 'ascent-homeowner-explanation-1',
+                  question,
                   text: draft ?? answer,
                   edited: draft !== null,
                   finance: comparison?.calculationHash,
                   valuation: result?.calculationHash,
+                  brief: brief ? { version: brief.version, checksum: brief.checksum } : undefined,
                   sources: evidence.sources,
                 },
                 'ascent-explanation.json',

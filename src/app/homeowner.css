@@ -34,6 +34,12 @@
   text-decoration: underline;
   text-underline-offset: 3px;
 }
+.home-ask-group {
+  margin: 18px 0 -10px;
+  font-size: 13px;
+  font-weight: 650;
+  color: #2b4b3a;
+}
 .home-metrics {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -271,6 +277,8 @@
   }
   .home-nav .button {
     padding: 9px 11px;
+    white-space: normal;
+    text-align: left;
   }
 }
 @media print {
