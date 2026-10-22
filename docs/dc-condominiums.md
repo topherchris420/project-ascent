@@ -23,13 +23,15 @@ Only one CAMA row and one unambiguous unit/building address per SSL are admitted
 
 The importer is `scripts/datasets/fetch-dc-condos.py`. Compressed snapshots and provenance live in `src/datasets/dc-condos/`. Both CSV fingerprints and row counts are checked at runtime. The house files and their validation fingerprint are not changed.
 
+**Building facts (October 22).** The Home Decision Brief also shows each unit's condominium from the Condo Relate regime (named for 51,243 units in 3,035 condominiums), its residential and other recorded units, the unit's rooms and systems, and permits since 2016 for the unit and its condominium's record lot. The floor is inferred from three- and four-digit unit numbers and `PH` labels for 33,511 units and always marked as an inference. Each leading sale says whether it is in the same condominium. None of this changes the estimate ([property data](property-data.md); importer `scripts/datasets/fetch-dc-facts.py`).
+
 ## Model and limits
 
 The engine uses general **untuned** assumptions for size, room counts, distance and recency. **Condominium CAMA has no condition field.** It remains missing and its adjustment is fixed to zero. Condition controls are hidden; request validation rejects an attempt to enable the adjustment. An added practice record also retains unknown condition.
 
 Sales are gathered within 3 miles and the previous 365 days, with the unit's own sales excluded. The default engine filters then apply 3 miles, 180 days and a 1.35 size ratio. These are disclosed starting assumptions, not condo-calibrated choices. Filter edits, exclusions, labeled practice entries, seller-cost scenarios and server-rebuilt reports use the same studio as houses.
 
-Unmodeled differences include floor, view, parking rights, HOA dues, reserves, special assessments, amenities and interior condition. Current assessor characteristics are not reconstructed as of each historical closing. Recording and source updates lag closings. This is neither an appraisal nor MLS data.
+Unmodeled differences include floor, view, parking rights, HOA dues, reserves, special assessments, amenities and interior condition. The inferred floor and the building facts are shown, not priced; dues, reserves, assessments, view, parking and amenities are in no public record used here. Current assessor characteristics are not reconstructed as of each historical closing. Recording and source updates lag closings. This is neither an appraisal nor MLS data.
 
 ## Before calibrated condo ranges
 

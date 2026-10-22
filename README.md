@@ -59,7 +59,9 @@ The homepage and **My Home** share one address search. Try a DC house, Maryland 
 
 After you choose a property, the brief answers seven questions before any professional tables. It states a value only when the evidence supports one: with fewer than three eligible recorded sales, or when the release checks withhold the result, it says **Not stated** and explains why instead of showing a number. Estimates with known weaknesses say which checks they missed. Financial answers appear once you add your own inputs, and the choices are never ranked.
 
-[How the brief works, its verdict policy and its limits](docs/home-decision-brief.md)
+It also shows what public records say about the home beyond the estimate's inputs: structure and systems, building permits since 2016 (DC and Montgomery County), the condominium a unit belongs to, and how old the newest recorded sale is today. Permitted work after the last recorded remodel is flagged as something the recorded condition may not reflect. None of these facts changes the estimate.
+
+[How the brief works, its verdict policy and its limits](docs/home-decision-brief.md) · [Property records and freshness](docs/property-data.md)
 
 ### 02 · Make the price explain itself
 
@@ -114,6 +116,7 @@ A few distinctions matter:
 - **DC condos:** Five of nine acceptance criteria failed. Important building attributes such as HOA fees, floor, view, parking, and amenities are unmodeled. No calibrated interval is released.
 - **External Maryland test:** Before the data was downloaded, the method, bars and analysis were committed and pushed for four counties Ascent does not serve: Anne Arundel, Baltimore County, Frederick and Howard. The method failed there, so Ascent claims nothing beyond Montgomery and Prince George’s. The same registration tested the Home Decision Brief’s verdicts on those untouched sales. Estimates the brief would not state had 16.8% median error, limited estimates 13.1% and supported estimates 9.0%. Both pre-registered hypotheses were supported.
 - **All markets:** Public records may be delayed or incomplete. An adjusted comparable-price envelope is not automatically a calibrated probability interval.
+- **No outside replication yet:** Every result above is reproducible internal validation. A [replication kit](docs/independent-replication.md) is ready for an outside quantitative researcher: one command re-checks every study, a standard-library Python script re-derives every published figure, and a signed record of their findings, favorable or not, would appear on the accuracy page unedited.
 
 **[Read the full results](https://project-ascent-theta.vercel.app/accuracy)** · [Methodology, protocols and historical findings](docs/valuation-validation.md) · [Latest release and validation gates](docs/production-readiness.md)
 
@@ -123,7 +126,7 @@ Ascent is **not a live MLS feed, licensed appraisal, brokerage, or automatic tra
 
 - Public address research currently covers qualifying **Washington, DC houses and condos** and **Montgomery / Prince George's County, Maryland** homes. It does not provide nationwide coverage.
 - **Virginia public-record pricing is not available**. Written source-use permission remains unresolved. Neither an open-source license nor public website access creates MLS or provider redistribution rights.
-- Listing status, concessions, property condition, renovations, title details, building characteristics, and other decisive facts can be missing. The brief lists the ones that matter for your home and how to obtain them.
+- Listing status, concessions, interior condition, unpermitted renovations, condominium dues and reserves, title details, and other decisive facts can be missing. Recorded permits show authorized work, not finished work or current condition. The brief lists the facts that matter for your home and how to obtain them.
 - When fewer than three eligible recorded sales remain, or the release checks withhold the result, Ascent states no value for the home.
 - Seller scenarios do not predict buyer response, time on market, future prices, or renovation return on investment.
 - Ascent does not autonomously message clients, make offers, sign contracts, or decide what someone should do.
@@ -184,11 +187,12 @@ npm test
 npm run validate:valuation -- --check
 npm run build
 npm run test:e2e
+npm run replicate -- --quick   # an outside reviewer's starting point; see docs/independent-replication.md
 ```
 
 Browser tests need Chromium installed and configured. CI additionally includes offline domain/AI checks and a disposable PostgreSQL restore drill; **check the actual run status** rather than treating the presence of tests as a certificate of production readiness.
 
-**Contributions are welcome**, especially ones that improve homeowner comprehension, mobile accessibility, reproducible valuation, provenance, privacy, and authorized data coverage. Preserve the frozen evaluation history, source permissions, workspace isolation, and explicit unknowns. Do not improve a headline metric by concealing a failed test.
+**Contributions are welcome**, especially ones that improve homeowner comprehension, mobile accessibility, reproducible valuation, provenance, privacy, and authorized data coverage. Two need people rather than code: an [independent replication](docs/independent-replication.md) of the valuation studies, and sessions of the registered [homeowner comprehension study](docs/usability/README.md). Neither has a participant yet. Preserve the frozen evaluation history, source permissions, workspace isolation, and explicit unknowns. Do not improve a headline metric by concealing a failed test.
 
 [Current CI](https://github.com/topherchris420/project-ascent/actions/workflows/ci.yml) · [Verification history](docs/verification-results.md) · [Capability matrix](docs/capability-matrix.md) · [Production readiness](docs/production-readiness.md)
 

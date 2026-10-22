@@ -2,6 +2,22 @@
 
 # Remaining work and production gates
 
+## October 22: a replication kit, a runnable comprehension study and better property records
+
+Delivered. The parts that need people are ready, but no person has taken part yet:
+
+- **Independent replication.** A [brief for an outside quantitative researcher](independent-replication.md): a ten-question methodology rubric, four levels of replication, a method specification and data dictionary written for reimplementation, `npm run replicate` (evidence checks, dataset fingerprints and an exact standard-library Python re-derivation of every published figure; `--full` re-runs every study's valuations), and a signed record format (`ascent-replication-record-1`, Ed25519) that `--check` verifies and the accuracy page shows unedited. The Python re-derivation reproduced all six reports exactly, digests and bootstrap intervals included. **No researcher has been engaged and no record exists.**
+- **Homeowner comprehension.** The [usability protocol](usability-protocol.md) is registered (`ascent-usability-brief-1`, digest `sha256-5ae60b44…`) with nine tasks; fixed study pages at `/demo/study/{value,abstention,finance}` that never read or write device storage; a screener, consent form, facilitator guide, SUS, scoring sheet and generated answer key; and `npm run usability:analyze` with Wilson intervals ([study kit](usability/README.md)). Browser pre-flight checks pass on all three pages. **No participant has completed a session and there are no results.**
+- **Property records.** The brief now shows [assessor facts, building permits since 2016 (DC and Montgomery County), condominium building facts and snapshot freshness](property-data.md). None of them reaches the estimate; the engine and every calculation hash are unchanged.
+
+Still open, in priority order:
+
+- **Recruit and run.** An outside researcher for the replication brief, and 12–16 homeowners for the comprehension study, including at least two screen-reader or magnification users and at least half on phones. Both need people, not code. Until they report, Ascent claims neither independent replication nor homeowner comprehension.
+- **A registered study of the new facts.** Effective year built, permitted work after the last remodel and structure type are the plausible remedy for Maryland's price-related bias and DC's unrecorded renovations. Using them in the model needs a new protocol and an untouched holdout first.
+- **Facts no public source records.** Interior condition, condominium dues, reserves and special assessments. Prince George's permits need a stated open license.
+- **Authorized fresher sales.** On October 22 the live sources already held 31 DC house sales and 7 condo sales beyond the snapshots, and no Maryland sales. Folding them in changes the validated fingerprints and needs a new registered protocol. A live listing or sales feed needs a license none of the current sources grants.
+- The prospective holdout, verdict-policy revision and rising-market trend items from October 21 remain as listed below.
+
 ## October 21: Home Decision Brief, financial depth and an external validation
 
 Delivered: the [Home Decision Brief](home-decision-brief.md) in every studio, exact financial sensitivity and break-evens, the brief in the Evidence Passport and report, Ask Ascent value and evidence answers with references, and an [external Maryland validation](valuation-validation.md#external-maryland-validation-four-counties-protocol-ascent-valuation-validation-maryland-external-1) registered before its data was downloaded. It failed acceptance; its supplement supports the verdict policy.

@@ -8,6 +8,7 @@
 | --- | --- | --- |
 | `dc-residential-sales.csv.gz` | 10,174 assessor-qualified single-family recorded sales, Jan 2022 – Oct 2026 | Byte-identical copy of the snapshot the DC valuation validation scored; a unit test checks the SHA-256 against both the evidence copy and the published benchmark |
 | `dc-residential-properties.csv.gz` | 92,142 single-family parcels with active street addresses, beds, baths, gross building area, assessor condition grade and years built/remodeled | CAMA Residential joined to active Address Points, same single-family rules as the sales file |
+| `dc-residential-facts.csv.gz`, `dc-house-permits.csv.gz` | The same houses' structure, style, construction grade, effective year built, systems and lot; 242,193 building permits issued since 2016 on their lots | CAMA Residential and Department of Buildings permits, collected October 22. Shown in the Home Decision Brief and never used in the estimate ([property data](property-data.md)) |
 
 Both have provenance files with fetch time, source URLs, row counts, removals by rule and SHA-256. Owner names and mailing addresses are never requested. Attribution: *Contains District of Columbia open data licensed under CC BY 4.0. Joined and filtered by Ascent.* It appears in the studio, the source record, every report and the JSON export.
 
@@ -24,7 +25,8 @@ In a spread sample of 231 parcels, 222 could be priced with the validated settin
 
 - Not MLS data: no listing history, active competition, days on market, concessions or photos.
 - The assessor's condition grade is not an inspection, and the validated settings weigh it heavily (about $88,000 per grade point); the input-sensitivity chart shows this for every home.
-- Assessor characteristics are current, not as of each sale. Recent sales take weeks to be recorded.
+- Assessor characteristics are current, not as of each sale. Recent sales take weeks to be recorded; the brief reports how many newer qualifying sales the live source held when last checked, and how old the newest recorded sale is today.
+- Permits since 2016 are listed in the brief, and major work after the last recorded remodel is named as something the condition grade may not reflect. A permit is an authorization, not an inspection, and District statuses rarely record completion.
 - This validated house model excludes condominiums, multi-unit buildings and multi-building lots. [DC condos](dc-condominiums.md) now have a separate unvalidated studio at `/dc/condos`; no house calibration is reused. [Maryland](maryland-public-records.md) has a separate reduced model for Montgomery and Prince George’s. Virginia awaits permission.
 - The snapshot is static. Refresh it deliberately (below); a refreshed sales file changes the validated fingerprint and requires re-running the validation before the calibrated range can be shown.
 
@@ -32,7 +34,11 @@ In a spread sample of 231 parcels, 222 could be priced with the validated settin
 
 ```bash
 python3 -I scripts/datasets/fetch-dc-properties.py src/datasets/dc/dc-residential-properties.csv.gz src/datasets/dc/dc-residential-properties.provenance.json
+python3 -I scripts/datasets/fetch-dc-facts.py      # assessor facts and permits for houses and condos
+python3 -I scripts/datasets/probe-freshness.py     # newer sales in the live source, parcel and date only
 ```
+
+The facts, permits and freshness probe never reach the estimate, so they can be refreshed at any time.
 
 Only refresh the sales file together with a new validation run (`npm run validate:valuation -- --market dc`) and its review; otherwise the published accuracy would describe different data.
 
