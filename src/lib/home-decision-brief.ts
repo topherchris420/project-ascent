@@ -25,6 +25,15 @@ import {
   type FinanceInputs,
 } from './homeowner-finance';
 import { marylandRevisedBenchmark } from './maryland-studio';
+import {
+  isMajorWork,
+  monthYear,
+  PROPERTY_FACTS_VERSION,
+  permitText,
+  renovationSignals,
+  type PermitKind,
+  type PropertyFacts,
+} from './property-facts';
 import { saleNetBeforePayoff } from './selling-costs';
 import type { CmaResult, Source } from './types';
 import {
@@ -43,7 +52,7 @@ import { evidenceVerdict, VERDICT_POLICY, VERDICT_POLICY_VERSION } from './valua
  * value. Every figure carries traces naming the record, assumption or calculation it comes from; missing
  * inputs stay missing, and no choice is recommended or ranked.
  */
-export const BRIEF_VERSION = 'ascent-home-decision-brief-1';
+export const BRIEF_VERSION = 'ascent-home-decision-brief-2';
 /** The rule deciding whether the brief states a value; shared with the pre-registered external study. */
 export const BRIEF_POLICY_VERSION = VERDICT_POLICY_VERSION;
 export const BRIEF_POLICY = VERDICT_POLICY;
@@ -143,6 +152,8 @@ export type HomeDecisionBrief = {
       ageDays: number;
       largestAdjustment: string | null;
       entered: boolean;
+      /** Recorded differences that matter for comparing this sale: structure, building, recent permitted work. */
+      notes: string[];
     }[];
     ruledOut: number;
     excludedByYou: { address: string; reason: string }[];
@@ -156,7 +167,25 @@ export type HomeDecisionBrief = {
     collected: { sales: string | null; parcels: string | null };
     sources: { label: string; kind: Source['kind']; observedAt: string; license: string }[];
     tierReference: string | null;
+    /** Qualifying sales the live public source held beyond this snapshot when last checked. */
+    later: string | null;
+    /** The snapshot's newest recorded sale; the page shows its age on the day it is viewed. */
+    newestRecorded: string | null;
   };
+  /** What the public records do show about the home beyond the valuation inputs; null for fictional records. */
+  recorded: {
+    answer: string;
+    facts: { label: string; value: string }[];
+    permits: {
+      coverage: string;
+      statusNote: string;
+      total: number;
+      major: number;
+      shown: { id: string; kind: PermitKind; text: string }[];
+    } | null;
+    permitGap: string | null;
+    sources: { label: string; license: string; collectedAt: string }[];
+  } | null;
   missingFacts: { fact: string; why: string; obtain: string }[];
   financial: {
     answer: string;
@@ -194,6 +223,7 @@ export type HomeDecisionBrief = {
     studyReport: string | null;
     sources: string[];
     snapshot: { salesSha256: string | null; parcelsSha256: string | null };
+    facts: { version: string; sources: { id: string; collectedAt: string }[] } | null;
   };
   checksum: string;
 };
@@ -332,6 +362,21 @@ export function briefValuationVerdict(input: {
 /** Facts the records do not contain, by market. Nothing here is inferred or filled in. */
 function missingFacts(evidence: StudioEvidence, state: StudioState, market: BriefMarketInfo) {
   const subject = evidence.subject;
+  const recorded = evidence.facts;
+  const signals = renovationSignals(recorded, evidence.asOf);
+  const since = signals.sinceRecord[0];
+  // Permitted work after the last recorded remodel, or with no remodel on record, is the clearest sign that the
+  // recorded characteristics and grade may predate the home as it is now.
+  const sinceText =
+    since && signals.recordYear
+      ? ` A permit for ${since.work.toLowerCase()} was issued in ${since.issued.slice(0, 4)}; ${
+          recorded?.years.remodeled
+            ? `the last recorded remodel was in ${recorded.years.remodeled}`
+            : market.market === 'maryland'
+              ? 'the state records carry no remodel year'
+              : `the records show no remodel since the home was built in ${signals.recordYear}`
+        }, so the recorded characteristics may not reflect that work.`
+      : '';
   const facts: HomeDecisionBrief['missingFacts'] = [];
   if (subject.roomCountsUnavailable)
     facts.push({
@@ -342,19 +387,23 @@ function missingFacts(evidence: StudioEvidence, state: StudioState, market: Brie
   if (subject.condition === undefined)
     facts.push({
       fact: 'Condition',
-      why: 'The condominium records have no condition field, so condition is not adjusted.',
+      why: `The condominium records have no condition field, so condition is not adjusted.${sinceText}`,
       obtain: 'An inspection or an agent walk-through.',
     });
   else if (subject.ratingKind === 'quality-grade')
     facts.push({
       fact: 'Interior condition and updates',
-      why: 'The assessor quality grade describes construction quality, not current condition or renovations.',
+      why: `The assessor quality grade describes construction quality, not current condition or renovations.${
+        recorded && market.market === 'maryland'
+          ? ' The state record’s condition field is blank for almost every home in these counties.'
+          : ''
+      }${sinceText}`,
       obtain: 'An inspection, contractor or agent walk-through.',
     });
   else if (state.subjectCondition === undefined)
     facts.push({
       fact: 'Current interior condition',
-      why: 'The condition rating is the assessor’s grade, not an inspection; it moves the estimate.',
+      why: `The condition rating is the assessor’s grade, not an inspection; it moves the estimate.${sinceText}`,
       obtain: 'An inspection, or your own honest rating entered in the condition field.',
     });
   else
@@ -363,12 +412,31 @@ function missingFacts(evidence: StudioEvidence, state: StudioState, market: Brie
       why: 'Your rating changes the estimate but is not verified.',
       obtain: 'An inspection or an agent walk-through.',
     });
-  if (market.market === 'dc-condos')
+  const open = signals.unresolved[0];
+  if (open)
     facts.push({
-      fact: 'Floor, view, parking, HOA dues, reserves and special assessments',
-      why: 'They often differ between units in one building and are not modeled.',
+      fact: 'Whether permitted work was finished and closed out',
+      why: `The permit for ${open.work.toLowerCase()} issued ${monthYear(open.issued)} is ${
+        open.status === 'issued'
+          ? 'still not shown as completed'
+          : `recorded as ${open.status === 'expired' ? 'expired' : 'stopped'}`
+      }${signals.unresolved.length > 1 ? `, and ${signals.unresolved.length - 1} more major permit${signals.unresolved.length > 2 ? 's are' : ' is'} unresolved` : ''}. Open or expired permits can delay a sale or need work before closing.`,
+      obtain:
+        market.market === 'maryland'
+          ? 'The Montgomery County permit record, or the contractor’s final inspection.'
+          : 'The Department of Buildings permit record, or the contractor’s final inspection.',
+    });
+  if (market.market === 'dc-condos') {
+    const building = recorded?.building;
+    facts.push({
+      fact:
+        building && building.floor !== null
+          ? 'View, deeded parking, HOA dues, reserves and special assessments'
+          : 'Floor, view, parking, HOA dues, reserves and special assessments',
+      why: `They often differ between units in one building and are not modeled.${building ? ` ${building.floorBasis}` : ''}`,
       obtain: 'The condo resale package and the association’s budget.',
     });
+  }
   facts.push(
     {
       fact: 'Seller credits and terms in the comparable sales',
@@ -377,16 +445,97 @@ function missingFacts(evidence: StudioEvidence, state: StudioState, market: Brie
     },
     {
       fact: 'Sales after the data snapshot, and current competing listings',
-      why: `Recorded sales run through ${day(evidence.asOf)}; recording lags closing by weeks, and active listings are not connected.`,
+      why: `Recorded sales run through ${day(evidence.asOf)}; recording lags closing by weeks, and active listings are not connected.${
+        recorded?.later?.sales
+          ? ` The live public records already held ${recorded.later.sales} newer qualifying sale${recorded.later.sales === 1 ? '' : 's'} when checked on ${day(recorded.later.checkedAt)}.`
+          : ''
+      }`,
       obtain: 'Recent closed sales and active listings from an agent.',
     },
-    {
-      fact: 'Lot, permits and location features',
-      why: 'Lot size, permits, school boundaries and similar features are not priced by this model.',
-      obtain: 'County permit records and a site visit.',
-    },
+    recorded?.permits
+      ? {
+          fact: 'Lot and location features',
+          why: `${recorded.recorded.some(item => item.label === 'Lot') ? 'The lot size is recorded above, but lot size,' : 'Lot size,'} school boundaries and similar features are not priced by this model. The permits above are records, not inspections, and do not change the estimate.`,
+          obtain: 'A site visit, and school and zoning maps.',
+        }
+      : {
+          fact: 'Lot, permits and location features',
+          why: `Lot size, permits, school boundaries and similar features are not priced by this model.${recorded?.permitGap ? ` ${recorded.permitGap}` : ''}`,
+          obtain: 'County permit records and a site visit.',
+        },
   );
   return facts;
+}
+
+const plainStructure = (comparable: string, subject: string | undefined) =>
+  !subject
+    ? `Structure: ${comparable.toLowerCase()}`
+    : comparable === subject
+      ? `Structure: ${comparable.toLowerCase()}, the same as this home`
+      : `Structure: ${comparable.toLowerCase()} (this home: ${subject.toLowerCase()})`;
+/** Recorded differences between this home and one comparable sale, from the public facts. Never adjusts a price. */
+function comparableNotes(recorded: PropertyFacts | undefined, id: string, soldAt: string | undefined) {
+  const comparable = recorded?.comparables[id];
+  if (!comparable) return [];
+  const subjectStructure = recorded.recorded.find(item => item.label === 'Structure' || item.label === 'Dwelling type');
+  const notes: string[] = [];
+  if (comparable.structure) notes.push(plainStructure(comparable.structure, subjectStructure?.value));
+  if (comparable.building && recorded.building?.id)
+    notes.push(
+      comparable.building === recorded.building.id
+        ? 'In the same condominium as this unit'
+        : 'In a different condominium',
+    );
+  if (comparable.permitBeforeSale && soldAt) {
+    const months = Math.max(
+      0,
+      Math.round(
+        (Date.parse(soldAt) - Date.parse(`${comparable.permitBeforeSale.issued}T00:00:00Z`)) / (30.4375 * 86400000),
+      ),
+    );
+    notes.push(
+      `${comparable.permitBeforeSale.work} permitted ${months} month${months === 1 ? '' : 's'} before this sale; it may have sold in better condition than its records show`,
+    );
+  }
+  return notes;
+}
+
+/** The public-record facts section, in plain words. Nothing here feeds the estimate. */
+function recordedSection(recorded: PropertyFacts | undefined): HomeDecisionBrief['recorded'] {
+  if (!recorded) return null;
+  const permits = recorded.permits;
+  const major = permits?.records.filter(record => isMajorWork(record) && record.scope === 'home');
+  const collected = recorded.sources[0]?.collectedAt;
+  const answer = [
+    `Public records${collected ? ` collected ${day(collected)}` : ''} describe this home’s ${recorded.building ? 'unit and building' : 'structure, systems and lot'}.`,
+    permits
+      ? permits.records.length
+        ? `They list ${permits.records.length} permit${permits.records.length === 1 ? '' : 's'} issued since ${permits.since.slice(0, 4)}${
+            major?.length ? `, ${major.length} for renovation, additions or larger work on the home` : ''
+          }.`
+        : `They list no permit issued since ${permits.since.slice(0, 4)}.`
+      : (recorded.permitGap ?? ''),
+    'A permit shows authorized work, not finished work or current condition, and unpermitted work never appears.',
+  ]
+    .filter(Boolean)
+    .join(' ');
+  return {
+    answer,
+    facts: recorded.recorded.map(({ label, value }) => ({ label, value })),
+    permits: permits
+      ? {
+          coverage: permits.coverage,
+          statusNote: permits.statusNote,
+          total: permits.records.length,
+          major: major?.length ?? 0,
+          shown: permits.records
+            .slice(0, 8)
+            .map(record => ({ id: record.id, kind: record.kind, text: permitText(record) })),
+        }
+      : null,
+    permitGap: recorded.permitGap,
+    sources: recorded.sources.map(({ label, license, collectedAt }) => ({ label, license, collectedAt })),
+  };
 }
 
 const financeFromStudio = (state: StudioState, estimate: number | null): FinanceInputs => ({
@@ -528,6 +677,7 @@ export function buildHomeDecisionBrief(input: BriefInput): HomeDecisionBrief {
             largestAdjustment:
               largest && largest.amount !== 0 ? `${largest.factor} ${signedUsd(largest.amount)}` : null,
             entered,
+            notes: entered ? [] : comparableNotes(evidence.facts, comp.propertyId, sale?.soldAt),
           };
         })
     : [];
@@ -560,12 +710,18 @@ export function buildHomeDecisionBrief(input: BriefInput): HomeDecisionBrief {
       ? `For held-out sales with ${gate.reference.tier} evidence like this (${gate.reference.holdoutSales.toLocaleString('en-US')} sales), the study’s median error was ${gate.reference.mdape === null ? 'not measured' : pct(gate.reference.mdape)}.`
       : null;
   const passing = checks.filter(check => check.status === 'pass').length;
+  const later = evidence.facts?.later;
+  const laterText = later
+    ? later.sales
+      ? `When checked on ${day(later.checkedAt)}, the live public records listed ${later.sales} qualifying sale${later.sales === 1 ? '' : 's'} of covered homes dated after this snapshot’s newest, ${day(later.after)}; none is in this estimate.`
+      : `When checked on ${day(later.checkedAt)}, the live public records held no qualifying sale dated after this snapshot’s newest, ${day(later.after)}.`
+    : null;
   const reliabilityAnswer = result
     ? `${passing} of ${checks.length} evidence checks pass.${newestSaleDays === null ? '' : ` The newest sale closed ${newestSaleDays} days before the data date, ${day(evidence.asOf)}.`}${
         evidence.snapshot
           ? ` Sales were collected ${day(evidence.snapshot.salesFetchedAt)}; this is a snapshot, not a live feed.`
           : ''
-      }${study ? ` ${benchmark!.accepted ? 'The method passed its published study for this market.' : 'The method did not pass its published study for this market.'}` : fictional ? ' Fictional records have no accuracy study.' : ''}`
+      }${study ? ` ${benchmark!.accepted ? 'The method passed its published study for this market.' : 'The method did not pass its published study for this market.'}` : fictional ? ' Fictional records have no accuracy study.' : ''}${laterText ? ` ${laterText}` : ''}`
     : 'Reliability cannot be assessed without eligible sales.';
 
   // 5. Finances.
@@ -761,9 +917,21 @@ export function buildHomeDecisionBrief(input: BriefInput): HomeDecisionBrief {
       affects: ['value', 'finances'],
       priority: 1,
     });
+  const signals = renovationSignals(evidence.facts, evidence.asOf);
+  if (signals.unresolved.length)
+    nextSteps.push({
+      item: `The status of the open or expired permit${signals.unresolved.length === 1 ? '' : 's'} from ${market.market === 'maryland' ? 'Montgomery County’s Department of Permitting Services' : 'the DC Department of Buildings'}`,
+      why: 'Permits not shown as completed can delay a sale or need work before closing.',
+      affects: ['value', 'reliability'],
+      priority: 2,
+    });
   nextSteps.push({
     item: 'An inspection or walk-through of the home’s condition',
-    why: 'Condition is the most common unmodeled difference between your home and the sales.',
+    why: `Condition is the most common unmodeled difference between your home and the sales.${
+      signals.sinceRecord.length && signals.recordYear
+        ? ` Permitted work since ${signals.recordYear} may not be reflected in the records.`
+        : ''
+    }`,
     affects: ['value'],
     priority: 2,
   });
@@ -813,6 +981,11 @@ export function buildHomeDecisionBrief(input: BriefInput): HomeDecisionBrief {
     `Recorded sales are a snapshot through ${day(evidence.asOf)}; no live listings or real-time data are used.`,
     'Financial scenarios are pre-tax arithmetic under your assumptions. Replacement housing, taxes and loan qualification are not modeled.',
     'A published study describes past sales in aggregate; it is not a guarantee for this home.',
+    ...(evidence.facts?.sources[0]
+      ? [
+          `Recorded facts and permits come from public records collected ${day(evidence.facts.sources[0].collectedAt)}. They are not an inspection, they never change the estimate, and unpermitted work does not appear.`,
+        ]
+      : []),
     ...(fictional ? ['Fictional practice data: do not use these figures for a real home.'] : []),
   ];
 
@@ -908,7 +1081,10 @@ export function buildHomeDecisionBrief(input: BriefInput): HomeDecisionBrief {
         license: source.license,
       })),
       tierReference,
+      later: laterText,
+      newestRecorded: evidence.snapshot?.lastRecordedSale ?? evidence.facts?.later?.after ?? null,
     },
+    recorded: recordedSection(evidence.facts),
     missingFacts: missingFacts(evidence, state, market),
     financial: {
       answer: financialAnswer,
@@ -940,6 +1116,12 @@ export function buildHomeDecisionBrief(input: BriefInput): HomeDecisionBrief {
         salesSha256: evidence.snapshot?.salesSha256 ?? null,
         parcelsSha256: evidence.snapshot?.parcelsSha256 ?? null,
       },
+      facts: evidence.facts
+        ? {
+            version: evidence.facts.version,
+            sources: evidence.facts.sources.map(({ id, collectedAt }) => ({ id, collectedAt })),
+          }
+        : null,
     },
   };
   return { ...brief, checksum: calculationChecksum(brief) };

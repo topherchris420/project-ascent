@@ -1,0 +1,91 @@
+{
+  "datasetId": "dc-residential-facts",
+  "attribution": "Contains District of Columbia open data licensed under CC BY 4.0: Computer Assisted Mass Appraisal - Residential and Building Permits. Joined and filtered by Ascent.",
+  "sources": {
+    "characteristics": "https://maps2.dcgis.dc.gov/dcgis/rest/services/DCGIS_DATA/Property_and_Land_WebMercator/FeatureServer/25",
+    "permits": "https://maps2.dcgis.dc.gov/dcgis/rest/services/FEEDS/DCRA/FeatureServer/"
+  },
+  "fetchedAt": "2026-10-22T05:15:04Z",
+  "license": "CC-BY-4.0",
+  "licenseEvidence": {
+    "residential": "https://maps2.dcgis.dc.gov/dcgis/rest/services/DCGIS_DATA/Property_and_Land_WebMercator/FeatureServer/25/iteminfo?f=json",
+    "condominium": "https://maps2.dcgis.dc.gov/dcgis/rest/services/DCGIS_DATA/Property_and_Land_WebMercator/FeatureServer/24/iteminfo?f=json",
+    "relate": "https://maps2.dcgis.dc.gov/dcgis/rest/services/DCGIS_DATA/Property_and_Land_WebMercator/FeatureServer/52/iteminfo?f=json",
+    "permits2026": "https://maps2.dcgis.dc.gov/dcgis/rest/services/FEEDS/DCRA/FeatureServer/18/iteminfo?f=json"
+  },
+  "permitLayers": {
+    "2016": "https://maps2.dcgis.dc.gov/dcgis/rest/services/FEEDS/DCRA/FeatureServer/24",
+    "2017": "https://maps2.dcgis.dc.gov/dcgis/rest/services/FEEDS/DCRA/FeatureServer/37",
+    "2018": "https://maps2.dcgis.dc.gov/dcgis/rest/services/FEEDS/DCRA/FeatureServer/9",
+    "2019": "https://maps2.dcgis.dc.gov/dcgis/rest/services/FEEDS/DCRA/FeatureServer/8",
+    "2020": "https://maps2.dcgis.dc.gov/dcgis/rest/services/FEEDS/DCRA/FeatureServer/2",
+    "2021": "https://maps2.dcgis.dc.gov/dcgis/rest/services/FEEDS/DCRA/FeatureServer/3",
+    "2022": "https://maps2.dcgis.dc.gov/dcgis/rest/services/FEEDS/DCRA/FeatureServer/14",
+    "2023": "https://maps2.dcgis.dc.gov/dcgis/rest/services/FEEDS/DCRA/FeatureServer/15",
+    "2024": "https://maps2.dcgis.dc.gov/dcgis/rest/services/FEEDS/DCRA/FeatureServer/16",
+    "2025": "https://maps2.dcgis.dc.gov/dcgis/rest/services/FEEDS/DCRA/FeatureServer/17",
+    "2026": "https://maps2.dcgis.dc.gov/dcgis/rest/services/FEEDS/DCRA/FeatureServer/18"
+  },
+  "permitsSince": "2016-01-01",
+  "keptPermitSubtypes": {
+    "CONSTRUCTION": [
+      "ADDITION",
+      "ADDITION ALTERATION REPAIR",
+      "ALTERATION AND REPAIR",
+      "AWNING",
+      "DECK",
+      "DEMOLITION",
+      "FENCE",
+      "FOUNDATION ONLY",
+      "GARAGE",
+      "MISCELLANEOUS",
+      "NEW BUILDING",
+      "RAZE",
+      "RETAINING WALL",
+      "SHED",
+      "SOLAR SYSTEM",
+      "SWIMMING POOL"
+    ],
+    "SUPPLEMENTAL": [
+      "BOILER",
+      "ELECTRICAL",
+      "MECHANICAL",
+      "PLUMBING AND GAS"
+    ],
+    "POST CARD": [
+      "BUILDING",
+      "ELECTRICAL - GENERAL",
+      "ELECTRICAL - HEAVY UP",
+      "GAS FITTING",
+      "MECHANICAL",
+      "PLUMBING"
+    ]
+  },
+  "removedPermits": {
+    "canceledWithdrawnOrRevoked": 919,
+    "notACoveredLot": 232357,
+    "otherPermitKind": 1089
+  },
+  "fingerprintBasis": "SHA-256 of decompressed CSV bytes",
+  "derivation": "scripts/datasets/fetch-dc-facts.py",
+  "factsCsvSha256": "2044435956fb174ac3310e8dfa6a7919a0921c9ee00a9ec7da210f0ea2a77c8a",
+  "permitsCsvSha256": "d9c3977f7132298fbb6f59d80f7e6b1b72faa86d256a2eaaefc32b6bad846aea",
+  "facts": 92142,
+  "permits": 242193,
+  "coveredParcels": 92142,
+  "removedParcels": {},
+  "parcelSnapshotChanges": {
+    "anyCharacteristic": 194,
+    "baths": 47,
+    "beds": 20,
+    "condition": 49,
+    "sqft": 74,
+    "year_remodeled": 114
+  },
+  "parcelSnapshotChangesNote": "Covered parcels whose bedrooms, baths, gross building area, condition grade, build year or remodel year in the live assessor record now differ from the bundled parcel snapshot. The valuation keeps using the snapshot; these counts measure how much it has aged.",
+  "limitations": [
+    "Assessor characteristics, not an inspection. Effective year built is the assessor's judgment of age after updates.",
+    "Floors is the assessor's interior finish description (for example hardwood or carpet).",
+    "Permits are issued authorizations, not proof that work was finished or inspected; unpermitted work is absent. Status is the Department of Buildings status at collection. Permits from 2016 onward only."
+  ]
+}

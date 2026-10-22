@@ -538,3 +538,114 @@
     break-inside: avoid;
   }
 }
+/* What the public records show: recorded facts and permits, separate from what is missing. */
+.brief-recorded h4 {
+  font-size: 14px;
+  margin: 16px 0 6px;
+}
+.brief-recorded > h4:first-child {
+  margin-top: 0;
+}
+.brief-facts {
+  margin: 12px 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+  gap: 8px 16px;
+}
+.brief-facts > div {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: 10px;
+  padding: 6px 0;
+  border-bottom: 1px solid #e6ece2;
+  font-size: 14px;
+}
+.brief-facts dt {
+  color: #3f5145;
+}
+.brief-facts dd {
+  margin: 0;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+.brief-permits {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 8px;
+}
+.brief-permits li {
+  display: flex;
+  gap: 12px;
+  align-items: baseline;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.brief-permits li > span:last-child {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+.brief-permits small {
+  color: #4f6155;
+  font-size: 12px;
+}
+.brief-permit-kind {
+  flex: 0 0 auto;
+  min-width: 120px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #eef3ea;
+  color: #2b4a3a;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+}
+.brief-permits li[data-kind='renovation'] .brief-permit-kind,
+.brief-permits li[data-kind='addition'] .brief-permit-kind,
+.brief-permits li[data-kind='new-construction'] .brief-permit-kind,
+.brief-permits li[data-kind='demolition'] .brief-permit-kind {
+  background: #fbefdc;
+  color: #6b4513;
+}
+.brief-sale-notes {
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 4px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #34463a;
+}
+@media (max-width: 480px) {
+  .brief-permits li {
+    flex-direction: column;
+    gap: 4px;
+  }
+  .brief-permit-kind {
+    min-width: 0;
+  }
+  .brief-facts > div {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+}
+/* How old the newest recorded sale is today. */
+.brief-freshness {
+  margin: 10px 0;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 14px;
+  line-height: 1.55;
+  background: #eef3ea;
+  color: #23402f;
+}
+.brief-freshness[data-status='aging'] {
+  background: #fbefdc;
+  color: #5c3a0f;
+}
+.brief-freshness[data-status='stale'] {
+  background: #f8e5e1;
+  color: #772a1c;
+}

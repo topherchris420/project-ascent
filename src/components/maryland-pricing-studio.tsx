@@ -11,6 +11,7 @@ import {
   marylandVerdict,
 } from '@/lib/maryland-studio';
 import { AccuracyScorecard } from './accuracy-scorecard';
+import type { PropertyFacts } from '@/lib/property-facts';
 import type { CmaAssumptions, Source, ValuationProperty } from '@/lib/types';
 import { PricingStudio } from './pricing-studio';
 import { warmAddressSearch } from '@/lib/address-search-client';
@@ -32,6 +33,7 @@ type PropertyPayload = {
     salesSha256?: string;
     parcelsSha256?: string;
   };
+  facts?: PropertyFacts;
   attribution: string;
 };
 
@@ -235,6 +237,7 @@ export function MarylandPricingStudio() {
             sources: data.sources,
             asOf: data.asOf,
             snapshot: data.snapshot,
+            facts: data.facts,
           }
         : null,
     [data],
@@ -280,11 +283,11 @@ export function MarylandPricingStudio() {
         evidenceNote={`Recorded sales as of ${date(data.asOf)} · the newest weeks may not be recorded yet · ${data.candidates.length} recorded sales within 3 miles in the past year`}
         passport={{
           facts:
-            "Address, structure area, location and dwelling quality grade come from Maryland state records. Comparable prices and dates are private arm's-length improved transfers. Bedrooms and bathrooms are unavailable.",
+            "Address, structure area, location and dwelling quality grade come from Maryland state records, with dwelling type, exterior construction, lot and the assessor's last review. Montgomery County permits since 2016 are listed in the brief. Comparable prices and dates are private arm's-length improved transfers. Bedrooms and bathrooms are unavailable.",
           assumptions:
             'Rates and filters were fitted on earlier Maryland transfers. Room adjustments are fixed to zero. The 1–9 quality grade measures construction quality, not interior condition or renovation.',
           missing:
-            'No bedrooms, bathrooms, MLS listing history, concessions, interior condition, permits or owner information. Only the latest three transfers per parcel are retained; older history is incomplete. Condominiums and multi-unit homes are excluded. Current assessor facts can postdate sales.',
+            'No bedrooms, bathrooms, MLS listing history, concessions, interior condition or owner information. The state condition field is blank for almost every home here. Prince George’s permits carry no open license, so none are shown. Only the latest three transfers per parcel are retained; older history is incomplete. Condominiums and multi-unit homes are excluded. Current assessor facts can postdate sales.',
           footnote: `${data.attribution} Ascent joined and filtered these records; see the provenance files in the repository.`,
         }}
         reportNote="Draft · Maryland public records · not reviewed by a licensed professional"

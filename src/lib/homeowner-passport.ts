@@ -14,6 +14,7 @@ import type { Source, ValuationProperty } from './types';
 import { accuracyReferenceSchema, homeownerAccuracyReference } from './homeowner-validation';
 import { BRIEF_POLICY_VERSION, buildHomeDecisionBrief, type HomeDecisionBrief } from './home-decision-brief';
 import { SPARSE_STUDY_SUBJECT_ID, studyStatePath } from './study-states';
+import { propertyFactsSchema } from './property-facts';
 
 export const HOME_STORAGE_KEY = 'ascent.homeowner-profiles.v1';
 const text = z.string().max(1000);
@@ -64,8 +65,10 @@ const evidenceSchema = z.object({
       parcelsFetchedAt: z.iso.datetime(),
       salesSha256: text.optional(),
       parcelsSha256: text.optional(),
+      lastRecordedSale: text.nullable().optional(),
     })
     .optional(),
+  facts: propertyFactsSchema.optional(),
 });
 const improvementSchema = z.object({
   year: z.number().int().min(1800).max(2200),
@@ -195,7 +198,10 @@ export function createHomeSnapshot(
   notes: OwnerNotes,
   at: string,
 ): HomeSnapshot {
-  const clean = evidenceSchema.parse(evidence);
+  const parsed = evidenceSchema.parse(evidence);
+  // Per-comparable notes are display aids recomputed by the studio. Saved versions keep the home's own facts only,
+  // which adds a few percent to a version; the nearby sales it already carries dominate device storage.
+  const clean = parsed.facts ? { ...parsed, facts: { ...parsed.facts, comparables: {} } } : parsed;
   assertPortableEvidence(clean);
   const input = {
     savedAt: z.iso.datetime().parse(at),
@@ -414,6 +420,7 @@ export function briefRecord(snapshot: HomeSnapshot, includePrivate: boolean) {
     },
     settings: brief.influences.settings,
     reliabilityChecks: brief.reliability.checks.map(check => ({ label: check.label, status: check.status })),
+    recordedFacts: brief.recorded,
     missingFacts: brief.missingFacts,
     nextSteps: brief.nextSteps,
     financial: includePrivate ? { ...brief.financial, influences: brief.influences.financial } : null,

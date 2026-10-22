@@ -1,7 +1,9 @@
 'use client';
-import type { ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { ArrowRight, CircleAlert, CircleCheck, CircleSlash } from 'lucide-react';
 import type { BriefFigure, HomeDecisionBrief, Trace } from '@/lib/home-decision-brief';
+import { snapshotAge } from '@/lib/data-freshness';
+import { permitKindLabels } from '@/lib/property-facts';
 import { date } from './format';
 import '@/app/home-brief.css';
 
@@ -78,6 +80,10 @@ export function HomeDecisionBriefPanel({ brief }: { brief: HomeDecisionBrief }) 
   const VerdictIcon = verdictIcons[value.verdict];
   const computed = financial.choices.filter(choice => choice.available);
   const pending = financial.choices.filter(choice => !choice.available);
+  // The snapshot's age depends on today, so it is computed after hydration and never enters the brief itself.
+  const [now, setNow] = useState<number | null>(null);
+  useEffect(() => setNow(Date.now()), []);
+  const age = now !== null && reliability.newestRecorded ? snapshotAge(reliability.newestRecorded, now) : null;
   return (
     <section id="home-decision-brief" className="panel home-brief" aria-labelledby="home-brief-title">
       <div className="brief-heading">
@@ -165,6 +171,13 @@ export function HomeDecisionBriefPanel({ brief }: { brief: HomeDecisionBrief }) 
                     {sale.largestAdjustment ? ` · largest adjustment: ${sale.largestAdjustment}` : ''}
                     {sale.entered ? ' · entered by you, unverified' : ''}
                   </p>
+                  {sale.notes.length > 0 && (
+                    <ul className="brief-sale-notes" aria-label={`Recorded differences for ${sale.address}`}>
+                      {sale.notes.map(note => (
+                        <li key={note}>{note}</li>
+                      ))}
+                    </ul>
+                  )}
                 </li>
               ))}
             </ol>
@@ -188,6 +201,14 @@ export function HomeDecisionBriefPanel({ brief }: { brief: HomeDecisionBrief }) 
         </Question>
         <Question index={2}>
           <p className="brief-answer">{reliability.answer}</p>
+          {age && (
+            <p className="brief-freshness" data-status={age.status} data-testid="brief-freshness">
+              <strong>
+                {age.status === 'current' ? 'Current' : age.status === 'aging' ? 'Aging' : 'Out of date'}:
+              </strong>{' '}
+              {age.text}
+            </p>
+          )}
           {reliability.checks.length > 0 && (
             <ul className="brief-checks">
               {reliability.checks.map(check => (
@@ -228,6 +249,49 @@ export function HomeDecisionBriefPanel({ brief }: { brief: HomeDecisionBrief }) 
           </details>
         </Question>
         <Question index={3}>
+          {brief.recorded && (
+            <div className="brief-recorded">
+              <h4>What the public records show</h4>
+              <p className="brief-answer">{brief.recorded.answer}</p>
+              {brief.recorded.facts.length > 0 && (
+                <dl className="brief-facts">
+                  {brief.recorded.facts.map(item => (
+                    <div key={item.label}>
+                      <dt>{item.label}</dt>
+                      <dd>{item.value}</dd>
+                    </div>
+                  ))}
+                </dl>
+              )}
+              {brief.recorded.permits && brief.recorded.permits.shown.length > 0 && (
+                <>
+                  <h4>Permits on record</h4>
+                  <ul className="brief-permits">
+                    {brief.recorded.permits.shown.map(permit => (
+                      <li key={permit.id} data-kind={permit.kind}>
+                        <span className="brief-permit-kind">{permitKindLabels[permit.kind]}</span>
+                        <span>
+                          {permit.text}
+                          <small>Permit {permit.id}</small>
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              )}
+              <p className="fine">
+                {brief.recorded.permits
+                  ? `${brief.recorded.permits.coverage}${brief.recorded.permits.total > brief.recorded.permits.shown.length ? `; the ${brief.recorded.permits.shown.length} most recent of ${brief.recorded.permits.total} are shown` : ''}. ${brief.recorded.permits.statusNote} `
+                  : ''}
+                Sources:{' '}
+                {brief.recorded.sources
+                  .map(source => `${source.label}, collected ${date(source.collectedAt)}`)
+                  .join('; ')}
+                .
+              </p>
+              <h4>What the records do not show</h4>
+            </div>
+          )}
           <p className="brief-answer">
             The records behind this brief do not include the facts below. Ascent does not guess them, and none is filled
             in for you.

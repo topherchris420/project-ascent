@@ -6,6 +6,7 @@ import { DC_CONDITION_LABELS, DC_CONDITION_MAX, dcDefaultState, dcReportHref } f
 import { dcBenchmark } from '@/lib/valuation-safeguards';
 import { condoBenchmark, condoDefaultState, condoReportHref, CONDO_ACCURACY_NOTICE } from '@/lib/dc-condo-studio';
 import { AccuracyScorecard } from './accuracy-scorecard';
+import type { PropertyFacts } from '@/lib/property-facts';
 import type { CmaAssumptions, Source, ValuationProperty } from '@/lib/types';
 import { PricingStudio } from './pricing-studio';
 import { warmAddressSearch } from '@/lib/address-search-client';
@@ -27,6 +28,7 @@ type PropertyPayload = {
     salesSha256?: string;
     parcelsSha256?: string;
   };
+  facts?: PropertyFacts;
   attribution: string;
 };
 
@@ -242,6 +244,7 @@ export function DcPricingStudio({ condos = false }: { condos?: boolean }) {
             sources: data.sources,
             asOf: data.asOf,
             snapshot: data.snapshot,
+            facts: data.facts,
           }
         : null,
     [data],
@@ -294,14 +297,14 @@ export function DcPricingStudio({ condos = false }: { condos?: boolean }) {
         evidenceNote={`Recorded sales as of ${date(data.asOf)} · the newest weeks may not be recorded yet · ${data.candidates.length} recorded sales within ${condos ? 3 : 2} miles in the past year`}
         passport={{
           facts: condos
-            ? 'Unit address, recorded bedrooms, baths and living area come from Condominium CAMA and Condo Relate, joined to building address points. Prices are District-qualified recorded transfers. No condition field is provided.'
-            : "Address, coordinates, living area, bedrooms, baths and the assessor's condition grade come from District records. Comparable prices and dates are recorded deed transfers the District marks as arm's-length.",
+            ? 'Unit address, recorded bedrooms, baths and living area come from Condominium CAMA and Condo Relate, joined to building address points, with the condominium’s name and units, rooms, systems and permits for the unit and its building since 2016. Prices are District-qualified recorded transfers. No condition field is provided.'
+            : "Address, coordinates, living area, bedrooms, baths and the assessor's condition grade come from District records, with structure type, construction grade, effective age, systems and lot. Building permits since 2016 are listed in the brief. Comparable prices and dates are recorded deed transfers the District marks as arm's-length.",
           assumptions: condos
             ? 'Condo-specific fitted rates and search filters. Condition adjustment is fixed to zero. The condo holdout failed acceptance; DC single-family accuracy does not apply.'
             : "Adjustment rates, the trend and the search filters start at the DC-validated settings fitted on earlier recorded sales. The assessor's condition grade is not an inspection.",
           missing: condos
             ? CONDO_ACCURACY_NOTICE
-            : 'No MLS listing history, active competition, concessions, interior condition, permits or owner information. Condominiums and multi-unit buildings are not covered, and recent sales can take weeks to be recorded.',
+            : 'No MLS listing history, active competition, concessions, interior condition or owner information. Permits show authorized work, not finished work, and never unpermitted work. Condominiums and multi-unit buildings are not covered, and recent sales can take weeks to be recorded.',
           footnote: `${data.attribution} Ascent joined and filtered these records; see the provenance files in the repository.`,
         }}
         reportNote="Draft · District public records · not reviewed by a licensed professional"

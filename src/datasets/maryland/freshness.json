@@ -1,0 +1,7 @@
+{
+  "checkedAt": "2026-10-22T05:19:23Z",
+  "sales": 0,
+  "after": "2026-09-24",
+  "source": "Maryland SDAT/MDP real property assessments (public domain), private arms-length improved transfers of homes in this snapshot; source last updated 2026-10-06",
+  "query": "https://opendata.maryland.gov/resource/ed4q-f8tm.json most recent transfer after 2026-09-24; parcel only"
+}
