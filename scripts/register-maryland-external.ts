@@ -12,8 +12,12 @@ import {
   PENDING_DATA_LOCK,
   protocolDigest,
   registrationTemplate,
+  type ValidationProtocol,
 } from '../src/lib/valuation-validation';
 import { ANALYSIS, EXTERNAL, textDigest } from './maryland-external';
+
+// Widened: once locked, the declared fingerprint is a literal that can no longer equal the pending marker.
+const protocol: ValidationProtocol = marylandExternalProtocol;
 
 const template = registrationTemplate(marylandExternalProtocol);
 if (existsSync(EXTERNAL.registration)) {
@@ -27,7 +31,7 @@ if (existsSync(EXTERNAL.registration)) {
 } else {
   for (const path of [EXTERNAL.dataset, EXTERNAL.lock, EXTERNAL.report])
     if (existsSync(path)) throw new Error(`${path} exists; registration must come before the data.`);
-  if (marylandExternalProtocol.dataset.csvSha256 !== PENDING_DATA_LOCK)
+  if (protocol.dataset.csvSha256 !== PENDING_DATA_LOCK)
     throw new Error('The protocol already names a dataset fingerprint.');
   const registration = {
     protocol: template,
