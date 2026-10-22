@@ -13,7 +13,7 @@ import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { arch, cpus, platform, release, totalmem } from 'node:os';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 import { gunzipSync } from 'node:zlib';
 import { blankDraft, publishedReports } from './replication/records';
 
@@ -67,9 +67,14 @@ function filesBelow(directory: string): string[] {
   });
 }
 
-/** Every bundled CSV fingerprint a provenance file declares must match a bundled file, byte for byte. */
-function datasetFingerprints() {
-  const files = ['evidence/datasets', 'src/datasets'].flatMap(filesBelow);
+/**
+ * Every fingerprint a provenance file declares must match a bundled CSV, byte for byte, and every bundled CSV must
+ * match a declaration. A declaration lists the file beside it, or a copy elsewhere when its own directory holds none
+ * (the evidence copy of a runtime-only file). A damaged copy therefore fails even though its declaration can still
+ * find an intact twin.
+ */
+export function datasetFingerprints(roots = ['evidence/datasets', 'src/datasets']) {
+  const files = roots.flatMap(filesBelow);
   const sha = new Map(
     files
       .filter(path => path.endsWith('.csv.gz'))
@@ -85,17 +90,56 @@ function datasetFingerprints() {
     .flatMap(provenance =>
       Object.entries(JSON.parse(readFileSync(provenance, 'utf8')) as Record<string, unknown>)
         .filter(([key, value]) => /^(csvSha256|\w+CsvSha256)$/.test(key) && typeof value === 'string')
-        .map(([key, value]) => ({
-          provenance,
-          key,
-          sha256: value as string,
-          matches: [...sha].filter(([, digest]) => digest === value).map(([path]) => path),
-        })),
+        .map(([key, value]) => {
+          const copies = [...sha].filter(([, digest]) => digest === value).map(([path]) => path);
+          const beside = copies.filter(path => dirname(path) === dirname(provenance));
+          return { provenance, key, sha256: value as string, matches: beside.length ? beside : copies };
+        }),
     );
+  const unmatchedFiles = [...sha.keys()].filter(path => !declared.some(item => item.matches.includes(path)));
   return {
     declared,
-    unmatchedFiles: [...sha.keys()].filter(path => !declared.some(item => item.matches.includes(path))),
+    unmatchedFiles,
+    passed: declared.every(item => item.matches.length > 0) && unmatchedFiles.length === 0,
   };
+}
+
+/**
+ * The signable draft for one run. A run on a working tree with uncommitted changes describes no published commit,
+ * so nothing it observed is pre-filled: the commit stays a placeholder the signer refuses, and every outcome stays
+ * not attempted until the reviewer re-runs from a clean checkout or completes them deliberately.
+ */
+export function replicationDraft(run: {
+  commit: string | null;
+  uncommittedChanges: number;
+  environment: string;
+  date: string;
+  quick: boolean;
+  rederived: { reports: { reportDigest: string; passed: boolean }[] } | null;
+  reruns: Map<string, boolean>;
+}) {
+  const clean = run.uncommittedChanges === 0;
+  const draft = blankDraft(clean ? (run.commit ?? undefined) : undefined);
+  draft.environment = run.environment;
+  for (const study of draft.studies) {
+    if (!clean) {
+      study.notes = `Not pre-filled: the run had ${run.uncommittedChanges} uncommitted change(s), so its results describe no published commit.`;
+      continue;
+    }
+    const derivation = run.rederived?.reports.find(report => report.reportDigest === study.reportDigest);
+    study.rederive = !derivation || run.quick ? 'not-attempted' : derivation.passed ? 'reproduced' : 'differs';
+    const rerun = run.reruns.get(study.reportDigest);
+    study.rerun = rerun === undefined ? 'not-attempted' : rerun ? 'reproduced' : 'differs';
+    study.notes = [
+      derivation &&
+        `scripts/replication/rederive.py ${run.quick ? 'matched the point figures with the bootstrap skipped' : derivation.passed ? 'matched every figure, bootstrap included' : 'found differences'} on ${run.date}.`,
+      rerun !== undefined &&
+        `validate:valuation --verify ${rerun ? 'reproduced the report and every per-sale estimate' : 'did not reproduce the report'}.`,
+    ]
+      .filter(Boolean)
+      .join(' ');
+  }
+  return draft;
 }
 
 const lastLine = (text: string, pattern: RegExp) =>
@@ -124,14 +168,17 @@ function main() {
 
   process.stderr.write('Dataset fingerprints…\n');
   const datasets = datasetFingerprints();
-  const datasetsPassed = datasets.declared.every(item => item.matches.length > 0);
   steps.push({
     label: 'Dataset fingerprints',
     command: 'SHA-256 of every decompressed bundled CSV against its provenance file',
-    passed: datasetsPassed,
+    passed: datasets.passed,
     seconds: 0,
     log: 'datasets.json',
-    detail: `${datasets.declared.filter(item => item.matches.length).length} of ${datasets.declared.length} declared fingerprints match a bundled file.`,
+    detail: `${datasets.declared.filter(item => item.matches.length).length} of ${datasets.declared.length} declared fingerprints match a bundled file; ${
+      datasets.unmatchedFiles.length
+        ? `${datasets.unmatchedFiles.length} bundled CSV(s) match no declaration: ${datasets.unmatchedFiles.join(', ')}.`
+        : 'every bundled CSV matches one.'
+    }`,
   });
   writeFileSync(join(out, 'datasets.json'), `${JSON.stringify(datasets, null, 2)}\n`);
 
@@ -177,22 +224,15 @@ function main() {
       reruns.set(JSON.parse(readFileSync(reportPath, 'utf8')).reportDigest, item.passed);
     }
 
-  const draft = blankDraft(environment.commit ?? undefined);
-  draft.environment = `${environment.os}; ${environment.cpu}; ${environment.memoryGb} GB; Node ${environment.node}; ${environment.python ?? 'no Python'}`;
-  for (const study of draft.studies) {
-    const derivation = rederived?.reports.find(report => report.reportDigest === study.reportDigest);
-    study.rederive = !derivation || quick ? 'not-attempted' : derivation.passed ? 'reproduced' : 'differs';
-    const rerun = reruns.get(study.reportDigest);
-    study.rerun = rerun === undefined ? 'not-attempted' : rerun ? 'reproduced' : 'differs';
-    study.notes = [
-      derivation &&
-        `scripts/replication/rederive.py ${quick ? 'matched the point figures with the bootstrap skipped' : derivation.passed ? 'matched every figure, bootstrap included' : 'found differences'} on ${environment.startedAt.slice(0, 10)}.`,
-      rerun !== undefined &&
-        `validate:valuation --verify ${rerun ? 'reproduced the report and every per-sale estimate' : 'did not reproduce the report'}.`,
-    ]
-      .filter(Boolean)
-      .join(' ');
-  }
+  const draft = replicationDraft({
+    commit: environment.commit,
+    uncommittedChanges: environment.uncommittedChanges,
+    environment: `${environment.os}; ${environment.cpu}; ${environment.memoryGb} GB; Node ${environment.node}; ${environment.python ?? 'no Python'}`,
+    date: environment.startedAt.slice(0, 10),
+    quick,
+    rederived,
+    reruns,
+  });
   writeFileSync(join(out, 'replication-record.draft.json'), `${JSON.stringify(draft, null, 2)}\n`);
 
   const passed = steps.every(item => item.passed);
@@ -234,6 +274,12 @@ function main() {
     '',
     '## Next',
     '',
+    ...(environment.uncommittedChanges
+      ? [
+          'This working tree had uncommitted changes (untracked files count), so the draft pre-fills neither the commit nor any outcome. Re-run from a clean checkout of the commit you are reviewing before you sign.',
+          '',
+        ]
+      : []),
     '1. Complete `replication-record.draft.json`: every REPLACE field, the rubric ratings and your conclusion.',
     '2. Write your narrative assessment in Markdown, including disagreements and anything you could not reproduce.',
     '3. `npx tsx scripts/replication/sign-record.ts --draft <draft> --assessment <assessment.md> --key <your-ed25519.pem>`',

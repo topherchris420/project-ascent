@@ -43,7 +43,7 @@ The District importer also measured how far the live assessor record has moved s
 3. **Comparable sales.** Each leading sale lists recorded differences: its structure against this home's, the same or a different condominium, and major permitted work in the three years before it sold, which may mean it sold in better condition than its records show. The notes never adjust a price.
 4. **Reliability.** The answer reports how many newer qualifying sales the live source held when last checked. The page shows the newest recorded sale's age on the day it is viewed.
 
-The facts are part of the brief's checksum and of the Evidence Passport's brief record. The readable report prints them. Saved passports keep the home's own facts but drop the per-comparable notes, which the studio recomputes. The facts add 1–3% to a typical saved version, and about 9% for a unit in the condominium with the most permits; the nearby sales a version already carries take most of the device storage.
+The facts are part of the brief's checksum and of the Evidence Passport's brief record. The readable report prints them. Comparing two saved versions lists each recorded fact or permit that changed, and the on-demand monitor reports them; new collection dates alone are not changes. Saved passports keep the home's own facts but drop the per-comparable notes, which the studio recomputes. The facts add 1–3% to a typical saved version, and about 9% for a unit in the condominium with the most permits; the nearby sales a version already carries take most of the device storage.
 
 ### Rules
 

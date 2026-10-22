@@ -1,8 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { generateKeyPairSync, sign, type KeyObject } from 'node:crypto';
-import { readFileSync } from 'node:fs';
+import { createHash, generateKeyPairSync, sign, type KeyObject } from 'node:crypto';
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { gzipSync } from 'node:zlib';
 import {
   assessmentDigest,
   REPLICATION_SCHEMA,
@@ -15,7 +18,7 @@ import {
 } from '../src/lib/replication';
 import { bootstrapIndices, type ValidationReport } from '../src/lib/valuation-validation';
 import { blankDraft, PLACEHOLDER, publishedReports, replicationChecks } from '../scripts/replication/records';
-import { MARKET_REPORTS } from '../scripts/replicate';
+import { datasetFingerprints, MARKET_REPORTS, replicationDraft } from '../scripts/replicate';
 
 const dc = JSON.parse(readFileSync('evidence/valuation-validation-dc.json', 'utf8')) as ValidationReport;
 const condos = JSON.parse(readFileSync('evidence/valuation-validation-dc-condos.json', 'utf8')) as ValidationReport;
@@ -190,6 +193,54 @@ test('the replication runner re-runs every published report and nothing else', (
     path => (JSON.parse(readFileSync(path, 'utf8')) as ValidationReport).reportDigest,
   );
   assert.deepEqual(digests.sort(), published.map(report => report.reportDigest).sort());
+});
+
+test('a run on a modified working tree pre-fills nothing a reviewer could sign', () => {
+  const run = {
+    commit: 'a'.repeat(40),
+    environment: 'test machine',
+    date: '2026-11-01',
+    quick: false,
+    rederived: { reports: published.map(report => ({ reportDigest: report.reportDigest, passed: true })) },
+    reruns: new Map<string, boolean>(),
+  };
+  const clean = replicationDraft({ ...run, uncommittedChanges: 0 });
+  assert.equal(clean.commit, run.commit);
+  assert.ok(clean.studies.every(study => study.rederive === 'reproduced' && study.rerun === 'not-attempted'));
+  const dirty = replicationDraft({ ...run, uncommittedChanges: 2 });
+  assert.match(dirty.commit, new RegExp(`^${PLACEHOLDER}`));
+  assert.ok(dirty.studies.every(study => study.rederive === 'not-attempted' && study.rerun === 'not-attempted'));
+  assert.ok(dirty.studies.every(study => /2 uncommitted change/.test(study.notes)));
+});
+
+test('a damaged copy of a bundled CSV fails the fingerprint step even when its twin is intact', () => {
+  const root = mkdtempSync(join(tmpdir(), 'ascent-fingerprints-'));
+  const put = (path: string, text: string) => {
+    mkdirSync(join(root, path, '..'), { recursive: true });
+    writeFileSync(join(root, path), path.endsWith('.gz') ? gzipSync(text) : text);
+  };
+  const sha = (text: string) => createHash('sha256').update(text).digest('hex');
+  try {
+    put('runtime/sales.csv.gz', 'id,price\n1,100\n');
+    put('runtime/sales.provenance.json', JSON.stringify({ csvSha256: sha('id,price\n1,100\n') }));
+    put('evidence/sales.csv.gz', 'id,price\n1,100\n');
+    // The evidence provenance also declares a runtime-only file, which it may find in another directory.
+    put('runtime/homes.csv.gz', 'id\n1\n');
+    put(
+      'evidence/sales.provenance.json',
+      JSON.stringify({ csvSha256: sha('id,price\n1,100\n'), propertyCsvSha256: sha('id\n1\n') }),
+    );
+    const roots = [join(root, 'evidence'), join(root, 'runtime')];
+    const intact = datasetFingerprints(roots);
+    assert.equal(intact.passed, true);
+    assert.deepEqual(intact.unmatchedFiles, []);
+    put('runtime/sales.csv.gz', 'id,price\n1,999\n');
+    const damaged = datasetFingerprints(roots);
+    assert.equal(damaged.passed, false);
+    assert.deepEqual(damaged.unmatchedFiles, [join(root, 'runtime/sales.csv.gz')]);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
 });
 
 const python = ['python3', 'python'].find(command =>

@@ -29,7 +29,13 @@ import { calculateStudio, type StudioEvidence } from '../src/lib/demo-studio';
 import { dcDefaultState } from '../src/lib/dc-studio';
 import { condoDefaultState } from '../src/lib/dc-condo-studio';
 import { marylandDefaultState } from '../src/lib/maryland-studio';
-import { briefRecord, createHomeSnapshot, emptyOwnerNotes } from '../src/lib/homeowner-passport';
+import {
+  briefRecord,
+  compareHomeSnapshots,
+  createHomeSnapshot,
+  emptyOwnerNotes,
+  propertyMonitorChanges,
+} from '../src/lib/homeowner-passport';
 import { renderHomeownerReport } from '../src/lib/homeowner-report';
 import { emptyFinance } from '../src/lib/homeowner-finance';
 
@@ -263,6 +269,60 @@ test('saved passports keep the home’s facts but not the per-comparable notes, 
   const report = renderHomeownerReport(snapshot);
   assert.match(report, /<h3>What the public records show<\/h3>/);
   assert.match(report, /Permits on record, (all|the \d+ most recent of \d+):/);
+});
+
+test('version comparisons name the recorded fact or permit that changed, never collection dates alone', () => {
+  const inputs = dcValuationInputs('0016____0046')!;
+  const save = (facts: PropertyFacts | undefined) =>
+    createHomeSnapshot(
+      evidenceOf({ ...inputs, facts: facts as PropertyFacts }),
+      dcDefaultState(),
+      emptyFinance(),
+      emptyOwnerNotes(),
+      '2026-10-22T12:00:00.000Z',
+    );
+  const facts = inputs.facts;
+  const before = save(facts);
+  const recollected: PropertyFacts = {
+    ...facts,
+    sources: facts.sources.map(source => ({ ...source, collectedAt: '2026-11-22T05:00:00Z' })),
+    later: facts.later && { ...facts.later, checkedAt: '2026-11-22T05:00:00Z', sales: facts.later.sales + 40 },
+  };
+  const factPaths = (after: ReturnType<typeof save>) =>
+    compareHomeSnapshots(before, after).changes.filter(change => change.path.startsWith('facts'));
+  assert.deepEqual(factPaths(save(recollected)), []);
+  const [permit, ...others] = facts.permits!.records;
+  const [fact, ...rest] = facts.recorded;
+  const refreshed: PropertyFacts = {
+    ...recollected,
+    recorded: [{ ...fact, value: `${fact.value} (corrected)` }, ...rest],
+    permits: {
+      ...facts.permits!,
+      records: [{ ...permit, status: permit.status === 'expired' ? 'completed' : 'expired' }, ...others],
+    },
+  };
+  const changes = factPaths(save(refreshed));
+  assert.deepEqual(
+    changes.map(change => change.path),
+    [`facts.permits.${permit.id}`, `facts.recorded.${fact.label}`],
+  );
+  assert.equal(changes[1].after, `${fact.value} (corrected)`);
+  assert.deepEqual(
+    propertyMonitorChanges(before, save(refreshed))
+      .map(change => change.path)
+      .filter(path => path.startsWith('facts')),
+    changes.map(change => change.path),
+  );
+  // A version saved before facts existed differs by one summary row, which is not a property alert.
+  const older = save(undefined);
+  assert.deepEqual(factPaths(older), [
+    {
+      path: 'facts',
+      before: `${facts.recorded.length} recorded facts and ${facts.permits!.records.length} permits`,
+      after: null,
+    },
+  ]);
+  assert.ok(!propertyMonitorChanges(before, older).some(change => change.path.startsWith('facts')));
 });
 
 test('a snapshot’s age today follows the published freshness policy', () => {

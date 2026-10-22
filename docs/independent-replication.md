@@ -52,7 +52,7 @@ npm run replicate -- --quick   # the same without bootstrap intervals (~1 minute
 npm run replicate -- --full    # also re-runs every study from its dataset (~45 minutes)
 ```
 
-Each run writes `replication-output/<time>/`: `summary.md`, `summary.json`, a log per step and `replication-record.draft.json`, pre-filled with the commit, your environment and what the run reproduced. Results from a working tree with uncommitted changes are flagged as not describing a published commit.
+Each run writes `replication-output/<time>/`: `summary.md`, `summary.json`, a log per step and `replication-record.draft.json`, pre-filled with the commit, your environment and what the run reproduced. A run from a working tree with uncommitted changes, untracked files included, describes no published commit, so its draft pre-fills neither the commit nor any outcome, and the signer refuses it until the commit is filled in; re-run from a clean checkout instead. The fingerprint step fails if any declared fingerprint matches no bundled CSV or any bundled CSV matches no declaration.
 
 ## Methodology rubric
 
