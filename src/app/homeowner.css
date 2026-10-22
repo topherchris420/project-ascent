@@ -34,6 +34,57 @@
   text-decoration: underline;
   text-underline-offset: 3px;
 }
+.home-exclusions {
+  margin: 0 0 14px;
+  padding: 10px 12px;
+  border-left: 4px solid #b7791f;
+  background: #fbf3e4;
+  color: #4a3510;
+  font-size: 14px;
+}
+.home-whatif {
+  margin-top: 26px;
+  padding-top: 18px;
+  border-top: 1px solid #dfe6dc;
+}
+.home-whatif h4 {
+  margin: 20px 0 8px;
+  font-size: 15px;
+}
+.home-whatif th[aria-current='true'] {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.home-breakevens {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+  gap: 10px;
+  margin: 0;
+}
+.home-breakevens > div {
+  padding: 10px 12px;
+  border: 1px solid #dfe6dc;
+  border-radius: 8px;
+  background: #fbfcfa;
+}
+.home-breakevens > div[data-status='found'] {
+  border-color: #9cc2ae;
+}
+.home-breakevens dt {
+  font-weight: 650;
+  font-size: 14px;
+}
+.home-breakevens dd {
+  margin: 4px 0 0;
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+.home-ask-group {
+  margin: 18px 0 -10px;
+  font-size: 13px;
+  font-weight: 650;
+  color: #2b4b3a;
+}
 .home-metrics {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -167,6 +218,30 @@
 .home-table tr[aria-selected='true'] {
   background: #f0f7f2;
 }
+/* Few short numeric columns: fits a phone without sideways scrolling; the row label wraps instead. */
+.home-table-compact {
+  min-width: 0;
+}
+.home-table-wrap-compact {
+  max-width: 680px;
+}
+.home-table-compact th {
+  white-space: normal;
+  hyphens: auto;
+}
+.home-table-compact td,
+.home-table-compact thead th:not(:first-child) {
+  white-space: nowrap;
+  overflow-wrap: normal;
+  text-align: right;
+}
+.home-step {
+  display: block;
+  margin-top: 3px;
+  color: #4d6356;
+  font-size: 12px;
+  font-weight: 400;
+}
 .home-table .text-button {
   text-align: left;
   min-height: 36px;
@@ -260,6 +335,10 @@
   .home-metrics {
     grid-template-columns: 1fr;
   }
+  .home-table-compact th,
+  .home-table-compact td {
+    padding: 11px 9px;
+  }
   .home-input-grid {
     grid-template-columns: 1fr;
   }
@@ -271,6 +350,8 @@
   }
   .home-nav .button {
     padding: 9px 11px;
+    white-space: normal;
+    text-align: left;
   }
 }
 @media print {

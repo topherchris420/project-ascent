@@ -1,0 +1,4211 @@
+{
+  "datasetId": "maryland-anne-arundel-baltimore-frederick-howard",
+  "fetchedAt": "2026-10-22T02:24:04Z",
+  "publisher": "Maryland SDAT and Maryland Department of Planning",
+  "license": "Public Domain",
+  "source": "https://opendata.maryland.gov/d/ed4q-f8tm",
+  "metadata": "https://opendata.maryland.gov/api/views/ed4q-f8tm.json",
+  "attribution": "Maryland SDAT/MDP public-domain real property assessments (ed4q-f8tm), filtered and transformed by Ascent.",
+  "fieldsRequested": {
+    "parcel": "account_id_mdp_field_acctid",
+    "county": "jurisdiction_code_mdp_field_jurscode",
+    "address": "mdp_street_address_mdp_field_address",
+    "city": "mdp_street_address_city_mdp_field_city",
+    "zip": "mdp_street_address_zip_code_mdp_field_zipcode",
+    "lat": "mdp_latitude_mdp_field_digycord_converted_to_wgs84",
+    "lng": "mdp_longitude_mdp_field_digxcord_converted_to_wgs84",
+    "use": "land_use_code_mdp_field_lu_desclu_sdat_field_50",
+    "units": "c_a_m_a_system_data_number_of_dwelling_units_mdp_field_bldg_units_sdat_field_239",
+    "grade": "c_a_m_a_system_data_dwelling_grade_code_and_description_mdp_field_strugrad_strudesc_sdat_field_230",
+    "built": "c_a_m_a_system_data_year_built_yyyy_mdp_field_yearblt_sdat_field_235",
+    "sqft": "c_a_m_a_system_data_structure_area_sq_ft_mdp_field_sqftstrc_sdat_field_241",
+    "date1": "sales_segment_1_transfer_date_yyyy_mm_dd_mdp_field_tradate_sdat_field_89",
+    "price1": "sales_segment_1_consideration_mdp_field_considr1_sdat_field_90",
+    "convey1": "sales_segment_1_how_conveyed_ind_mdp_field_convey1_sdat_field_87",
+    "date2": "sales_segment_2_transfer_date_yyyy_mm_dd_sdat_field_109",
+    "price2": "sales_segment_2_consideration_sdat_field_110",
+    "convey2": "sales_segment_2_how_conveyed_ind_sdat_field_107",
+    "date3": "sales_segment_3_transfer_date_yyyy_mm_dd_sdat_field_129",
+    "price3": "sales_segment_3_consideration_sdat_field_130",
+    "convey3": "sales_segment_3_how_conveyed_ind_sdat_field_127"
+  },
+  "countyCodes": {
+    "ANNE": "Anne Arundel",
+    "BACO": "Baltimore County",
+    "FRED": "Frederick",
+    "HOWA": "Howard"
+  },
+  "locationBounds": {
+    "latitude": [
+      37.85,
+      39.76
+    ],
+    "longitude": [
+      -79.52,
+      -75.02
+    ]
+  },
+  "sourceRows": 761337,
+  "sourceUseAndUnitsCounts": [
+    {
+      "use": "Agricultural (A)",
+      "units": "0",
+      "n": "4179"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "0",
+      "n": "498"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "0",
+      "n": "5681"
+    },
+    {
+      "use": "Commercial Condominium (CC)",
+      "units": "0",
+      "n": "889"
+    },
+    {
+      "use": "Commercial Residential (CR)",
+      "units": "0",
+      "n": "158"
+    },
+    {
+      "use": "Country Club (CA)",
+      "units": "0",
+      "n": "79"
+    },
+    {
+      "use": "Exempt Commercial (EC)",
+      "units": "0",
+      "n": "3333"
+    },
+    {
+      "use": "Exempt (E)",
+      "units": "0",
+      "n": "19202"
+    },
+    {
+      "use": "Industrial (I)",
+      "units": "0",
+      "n": "3048"
+    },
+    {
+      "use": "Marsh Land (MA)",
+      "units": "0",
+      "n": "43"
+    },
+    {
+      "use": "Residential Commercial (RC)",
+      "units": "0",
+      "n": "74"
+    },
+    {
+      "use": "Residential Condominium (U)",
+      "units": "0",
+      "n": "734"
+    },
+    {
+      "use": "Residential (R)",
+      "units": "0",
+      "n": "49921"
+    },
+    {
+      "use": "Town House (TH)",
+      "units": "0",
+      "n": "1314"
+    },
+    {
+      "use": "Agricultural (A)",
+      "units": "1",
+      "n": "6176"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "1",
+      "n": "2048"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "1",
+      "n": "8470"
+    },
+    {
+      "use": "Commercial Condominium (CC)",
+      "units": "1",
+      "n": "3401"
+    },
+    {
+      "use": "Commercial Residential (CR)",
+      "units": "1",
+      "n": "2139"
+    },
+    {
+      "use": "Country Club (CA)",
+      "units": "1",
+      "n": "4"
+    },
+    {
+      "use": "Exempt Commercial (EC)",
+      "units": "1",
+      "n": "1933"
+    },
+    {
+      "use": "Exempt (E)",
+      "units": "1",
+      "n": "13208"
+    },
+    {
+      "use": "Industrial (I)",
+      "units": "1",
+      "n": "1577"
+    },
+    {
+      "use": "Marsh Land (MA)",
+      "units": "1",
+      "n": "1"
+    },
+    {
+      "use": "Residential Commercial (RC)",
+      "units": "1",
+      "n": "252"
+    },
+    {
+      "use": "Residential Condominium (U)",
+      "units": "1",
+      "n": "59814"
+    },
+    {
+      "use": "Residential (R)",
+      "units": "1",
+      "n": "513748"
+    },
+    {
+      "use": "Town House (TH)",
+      "units": "1",
+      "n": "47785"
+    },
+    {
+      "use": "Agricultural (A)",
+      "units": "2",
+      "n": "768"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "2",
+      "n": "34"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "2",
+      "n": "2703"
+    },
+    {
+      "use": "Commercial Condominium (CC)",
+      "units": "2",
+      "n": "138"
+    },
+    {
+      "use": "Commercial Residential (CR)",
+      "units": "2",
+      "n": "168"
+    },
+    {
+      "use": "Country Club (CA)",
+      "units": "2",
+      "n": "11"
+    },
+    {
+      "use": "Exempt Commercial (EC)",
+      "units": "2",
+      "n": "704"
+    },
+    {
+      "use": "Exempt (E)",
+      "units": "2",
+      "n": "41"
+    },
+    {
+      "use": "Industrial (I)",
+      "units": "2",
+      "n": "673"
+    },
+    {
+      "use": "Residential Commercial (RC)",
+      "units": "2",
+      "n": "5"
+    },
+    {
+      "use": "Residential Condominium (U)",
+      "units": "2",
+      "n": "6"
+    },
+    {
+      "use": "Residential (R)",
+      "units": "2",
+      "n": "2200"
+    },
+    {
+      "use": "Town House (TH)",
+      "units": "2",
+      "n": "1"
+    },
+    {
+      "use": "Agricultural (A)",
+      "units": "3",
+      "n": "133"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "3",
+      "n": "8"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "3",
+      "n": "502"
+    },
+    {
+      "use": "Commercial Condominium (CC)",
+      "units": "3",
+      "n": "21"
+    },
+    {
+      "use": "Commercial Residential (CR)",
+      "units": "3",
+      "n": "26"
+    },
+    {
+      "use": "Country Club (CA)",
+      "units": "3",
+      "n": "6"
+    },
+    {
+      "use": "Exempt Commercial (EC)",
+      "units": "3",
+      "n": "171"
+    },
+    {
+      "use": "Exempt (E)",
+      "units": "3",
+      "n": "6"
+    },
+    {
+      "use": "Industrial (I)",
+      "units": "3",
+      "n": "126"
+    },
+    {
+      "use": "Residential Condominium (U)",
+      "units": "3",
+      "n": "2"
+    },
+    {
+      "use": "Residential (R)",
+      "units": "3",
+      "n": "194"
+    },
+    {
+      "use": "Town House (TH)",
+      "units": "3",
+      "n": "2"
+    },
+    {
+      "use": "Agricultural (A)",
+      "units": "4",
+      "n": "40"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "4",
+      "n": "60"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "4",
+      "n": "217"
+    },
+    {
+      "use": "Commercial Condominium (CC)",
+      "units": "4",
+      "n": "2"
+    },
+    {
+      "use": "Commercial Residential (CR)",
+      "units": "4",
+      "n": "25"
+    },
+    {
+      "use": "Country Club (CA)",
+      "units": "4",
+      "n": "8"
+    },
+    {
+      "use": "Exempt Commercial (EC)",
+      "units": "4",
+      "n": "63"
+    },
+    {
+      "use": "Exempt (E)",
+      "units": "4",
+      "n": "2"
+    },
+    {
+      "use": "Industrial (I)",
+      "units": "4",
+      "n": "71"
+    },
+    {
+      "use": "Residential (R)",
+      "units": "4",
+      "n": "49"
+    },
+    {
+      "use": "Agricultural (A)",
+      "units": "5",
+      "n": "19"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "5",
+      "n": "30"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "5",
+      "n": "106"
+    },
+    {
+      "use": "Commercial Residential (CR)",
+      "units": "5",
+      "n": "5"
+    },
+    {
+      "use": "Country Club (CA)",
+      "units": "5",
+      "n": "1"
+    },
+    {
+      "use": "Exempt Commercial (EC)",
+      "units": "5",
+      "n": "22"
+    },
+    {
+      "use": "Exempt (E)",
+      "units": "5",
+      "n": "2"
+    },
+    {
+      "use": "Industrial (I)",
+      "units": "5",
+      "n": "25"
+    },
+    {
+      "use": "Residential (R)",
+      "units": "5",
+      "n": "9"
+    },
+    {
+      "use": "Agricultural (A)",
+      "units": "6",
+      "n": "3"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "6",
+      "n": "37"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "6",
+      "n": "51"
+    },
+    {
+      "use": "Commercial Residential (CR)",
+      "units": "6",
+      "n": "3"
+    },
+    {
+      "use": "Exempt Commercial (EC)",
+      "units": "6",
+      "n": "22"
+    },
+    {
+      "use": "Exempt (E)",
+      "units": "6",
+      "n": "1"
+    },
+    {
+      "use": "Industrial (I)",
+      "units": "6",
+      "n": "11"
+    },
+    {
+      "use": "Residential Condominium (U)",
+      "units": "6",
+      "n": "1"
+    },
+    {
+      "use": "Residential (R)",
+      "units": "6",
+      "n": "12"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "7",
+      "n": "11"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "7",
+      "n": "41"
+    },
+    {
+      "use": "Commercial Residential (CR)",
+      "units": "7",
+      "n": "2"
+    },
+    {
+      "use": "Exempt Commercial (EC)",
+      "units": "7",
+      "n": "8"
+    },
+    {
+      "use": "Industrial (I)",
+      "units": "7",
+      "n": "6"
+    },
+    {
+      "use": "Residential (R)",
+      "units": "7",
+      "n": "4"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "8",
+      "n": "13"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "8",
+      "n": "23"
+    },
+    {
+      "use": "Commercial Residential (CR)",
+      "units": "8",
+      "n": "4"
+    },
+    {
+      "use": "Country Club (CA)",
+      "units": "8",
+      "n": "2"
+    },
+    {
+      "use": "Exempt Commercial (EC)",
+      "units": "8",
+      "n": "7"
+    },
+    {
+      "use": "Industrial (I)",
+      "units": "8",
+      "n": "2"
+    },
+    {
+      "use": "Residential (R)",
+      "units": "8",
+      "n": "3"
+    },
+    {
+      "use": "Agricultural (A)",
+      "units": "9",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "9",
+      "n": "7"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "9",
+      "n": "16"
+    },
+    {
+      "use": "Commercial Condominium (CC)",
+      "units": "9",
+      "n": "2"
+    },
+    {
+      "use": "Exempt Commercial (EC)",
+      "units": "9",
+      "n": "7"
+    },
+    {
+      "use": "Industrial (I)",
+      "units": "9",
+      "n": "3"
+    },
+    {
+      "use": "Residential (R)",
+      "units": "9",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "10",
+      "n": "9"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "10",
+      "n": "16"
+    },
+    {
+      "use": "Exempt Commercial (EC)",
+      "units": "10",
+      "n": "2"
+    },
+    {
+      "use": "Industrial (I)",
+      "units": "10",
+      "n": "1"
+    },
+    {
+      "use": "Residential Condominium (U)",
+      "units": "10",
+      "n": "1"
+    },
+    {
+      "use": "Residential (R)",
+      "units": "10",
+      "n": "3"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "11",
+      "n": "9"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "11",
+      "n": "7"
+    },
+    {
+      "use": "Exempt Commercial (EC)",
+      "units": "11",
+      "n": "2"
+    },
+    {
+      "use": "Industrial (I)",
+      "units": "11",
+      "n": "1"
+    },
+    {
+      "use": "Residential (R)",
+      "units": "11",
+      "n": "1"
+    },
+    {
+      "use": "Agricultural (A)",
+      "units": "12",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "12",
+      "n": "14"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "12",
+      "n": "6"
+    },
+    {
+      "use": "Country Club (CA)",
+      "units": "12",
+      "n": "1"
+    },
+    {
+      "use": "Exempt Commercial (EC)",
+      "units": "12",
+      "n": "9"
+    },
+    {
+      "use": "Industrial (I)",
+      "units": "12",
+      "n": "4"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "13",
+      "n": "3"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "13",
+      "n": "3"
+    },
+    {
+      "use": "Exempt Commercial (EC)",
+      "units": "13",
+      "n": "1"
+    },
+    {
+      "use": "Industrial (I)",
+      "units": "13",
+      "n": "1"
+    },
+    {
+      "use": "Residential Condominium (U)",
+      "units": "13",
+      "n": "5"
+    },
+    {
+      "use": "Residential (R)",
+      "units": "13",
+      "n": "7"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "14",
+      "n": "4"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "14",
+      "n": "7"
+    },
+    {
+      "use": "Exempt Commercial (EC)",
+      "units": "14",
+      "n": "3"
+    },
+    {
+      "use": "Industrial (I)",
+      "units": "14",
+      "n": "1"
+    },
+    {
+      "use": "Residential (R)",
+      "units": "14",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "15",
+      "n": "2"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "15",
+      "n": "18"
+    },
+    {
+      "use": "Exempt Commercial (EC)",
+      "units": "15",
+      "n": "3"
+    },
+    {
+      "use": "Industrial (I)",
+      "units": "15",
+      "n": "1"
+    },
+    {
+      "use": "Residential (R)",
+      "units": "15",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "16",
+      "n": "10"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "16",
+      "n": "5"
+    },
+    {
+      "use": "Exempt Commercial (EC)",
+      "units": "16",
+      "n": "3"
+    },
+    {
+      "use": "Industrial (I)",
+      "units": "16",
+      "n": "1"
+    },
+    {
+      "use": "Residential Condominium (U)",
+      "units": "16",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "17",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "17",
+      "n": "5"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "18",
+      "n": "3"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "18",
+      "n": "7"
+    },
+    {
+      "use": "Exempt Commercial (EC)",
+      "units": "18",
+      "n": "1"
+    },
+    {
+      "use": "Residential (R)",
+      "units": "18",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "19",
+      "n": "2"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "19",
+      "n": "3"
+    },
+    {
+      "use": "Country Club (CA)",
+      "units": "19",
+      "n": "1"
+    },
+    {
+      "use": "Industrial (I)",
+      "units": "19",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "20",
+      "n": "10"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "20",
+      "n": "7"
+    },
+    {
+      "use": "Exempt Commercial (EC)",
+      "units": "20",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "21",
+      "n": "2"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "21",
+      "n": "4"
+    },
+    {
+      "use": "Commercial Residential (CR)",
+      "units": "21",
+      "n": "1"
+    },
+    {
+      "use": "Agricultural (A)",
+      "units": "22",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "22",
+      "n": "5"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "22",
+      "n": "4"
+    },
+    {
+      "use": "Exempt (E)",
+      "units": "22",
+      "n": "6"
+    },
+    {
+      "use": "Residential (R)",
+      "units": "22",
+      "n": "114"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "23",
+      "n": "8"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "23",
+      "n": "4"
+    },
+    {
+      "use": "Exempt Commercial (EC)",
+      "units": "23",
+      "n": "1"
+    },
+    {
+      "use": "Industrial (I)",
+      "units": "23",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "24",
+      "n": "10"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "24",
+      "n": "5"
+    },
+    {
+      "use": "Commercial Condominium (CC)",
+      "units": "24",
+      "n": "1"
+    },
+    {
+      "use": "Exempt Commercial (EC)",
+      "units": "24",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "25",
+      "n": "3"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "25",
+      "n": "51"
+    },
+    {
+      "use": "Commercial Residential (CR)",
+      "units": "25",
+      "n": "1"
+    },
+    {
+      "use": "Exempt Commercial (EC)",
+      "units": "25",
+      "n": "1"
+    },
+    {
+      "use": "Exempt (E)",
+      "units": "25",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "26",
+      "n": "3"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "26",
+      "n": "9"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "27",
+      "n": "6"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "27",
+      "n": "2"
+    },
+    {
+      "use": "Country Club (CA)",
+      "units": "27",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "28",
+      "n": "3"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "28",
+      "n": "2"
+    },
+    {
+      "use": "Exempt Commercial (EC)",
+      "units": "28",
+      "n": "2"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "29",
+      "n": "2"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "29",
+      "n": "5"
+    },
+    {
+      "use": "Exempt Commercial (EC)",
+      "units": "29",
+      "n": "1"
+    },
+    {
+      "use": "Residential (R)",
+      "units": "29",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "30",
+      "n": "4"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "30",
+      "n": "4"
+    },
+    {
+      "use": "Exempt Commercial (EC)",
+      "units": "30",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "31",
+      "n": "4"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "31",
+      "n": "5"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "32",
+      "n": "2"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "32",
+      "n": "6"
+    },
+    {
+      "use": "Exempt Commercial (EC)",
+      "units": "32",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "33",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "33",
+      "n": "3"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "34",
+      "n": "4"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "34",
+      "n": "6"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "35",
+      "n": "6"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "35",
+      "n": "4"
+    },
+    {
+      "use": "Exempt Commercial (EC)",
+      "units": "35",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "36",
+      "n": "29"
+    },
+    {
+      "use": "Industrial (I)",
+      "units": "36",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "37",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "37",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "38",
+      "n": "2"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "38",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "39",
+      "n": "2"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "39",
+      "n": "5"
+    },
+    {
+      "use": "Exempt Commercial (EC)",
+      "units": "39",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "40",
+      "n": "4"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "40",
+      "n": "3"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "41",
+      "n": "4"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "41",
+      "n": "2"
+    },
+    {
+      "use": "Industrial (I)",
+      "units": "41",
+      "n": "1"
+    },
+    {
+      "use": "Residential (R)",
+      "units": "41",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "42",
+      "n": "7"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "42",
+      "n": "5"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "43",
+      "n": "2"
+    },
+    {
+      "use": "Industrial (I)",
+      "units": "43",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "44",
+      "n": "3"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "44",
+      "n": "6"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "45",
+      "n": "5"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "45",
+      "n": "4"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "46",
+      "n": "2"
+    },
+    {
+      "use": "Industrial (I)",
+      "units": "46",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "47",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "47",
+      "n": "4"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "48",
+      "n": "10"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "48",
+      "n": "3"
+    },
+    {
+      "use": "Exempt Commercial (EC)",
+      "units": "48",
+      "n": "5"
+    },
+    {
+      "use": "Industrial (I)",
+      "units": "48",
+      "n": "1"
+    },
+    {
+      "use": "Residential (R)",
+      "units": "48",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "49",
+      "n": "5"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "49",
+      "n": "5"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "50",
+      "n": "6"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "50",
+      "n": "5"
+    },
+    {
+      "use": "Exempt Commercial (EC)",
+      "units": "50",
+      "n": "1"
+    },
+    {
+      "use": "Residential (R)",
+      "units": "50",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "51",
+      "n": "3"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "51",
+      "n": "2"
+    },
+    {
+      "use": "Exempt Commercial (EC)",
+      "units": "51",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "52",
+      "n": "2"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "52",
+      "n": "4"
+    },
+    {
+      "use": "Exempt Commercial (EC)",
+      "units": "52",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "53",
+      "n": "1"
+    },
+    {
+      "use": "Exempt Commercial (EC)",
+      "units": "53",
+      "n": "2"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "54",
+      "n": "5"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "55",
+      "n": "5"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "55",
+      "n": "2"
+    },
+    {
+      "use": "Exempt Commercial (EC)",
+      "units": "55",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "56",
+      "n": "4"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "56",
+      "n": "3"
+    },
+    {
+      "use": "Exempt Commercial (EC)",
+      "units": "56",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "57",
+      "n": "4"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "58",
+      "n": "4"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "58",
+      "n": "4"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "59",
+      "n": "2"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "59",
+      "n": "2"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "60",
+      "n": "13"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "60",
+      "n": "2"
+    },
+    {
+      "use": "Exempt Commercial (EC)",
+      "units": "60",
+      "n": "2"
+    },
+    {
+      "use": "Exempt (E)",
+      "units": "60",
+      "n": "1"
+    },
+    {
+      "use": "Industrial (I)",
+      "units": "60",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "61",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "61",
+      "n": "2"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "62",
+      "n": "4"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "62",
+      "n": "6"
+    },
+    {
+      "use": "Industrial (I)",
+      "units": "62",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "63",
+      "n": "6"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "63",
+      "n": "3"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "64",
+      "n": "3"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "64",
+      "n": "5"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "65",
+      "n": "2"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "65",
+      "n": "2"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "66",
+      "n": "4"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "66",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "67",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "68",
+      "n": "7"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "68",
+      "n": "3"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "69",
+      "n": "2"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "69",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "70",
+      "n": "3"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "70",
+      "n": "3"
+    },
+    {
+      "use": "Exempt Commercial (EC)",
+      "units": "70",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "71",
+      "n": "5"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "71",
+      "n": "1"
+    },
+    {
+      "use": "Exempt Commercial (EC)",
+      "units": "71",
+      "n": "2"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "72",
+      "n": "19"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "72",
+      "n": "1"
+    },
+    {
+      "use": "Commercial Residential (CR)",
+      "units": "72",
+      "n": "1"
+    },
+    {
+      "use": "Exempt Commercial (EC)",
+      "units": "72",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "73",
+      "n": "3"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "73",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "74",
+      "n": "3"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "74",
+      "n": "3"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "75",
+      "n": "2"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "75",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "76",
+      "n": "8"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "76",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "77",
+      "n": "3"
+    },
+    {
+      "use": "Industrial (I)",
+      "units": "77",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "78",
+      "n": "4"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "78",
+      "n": "3"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "79",
+      "n": "2"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "79",
+      "n": "2"
+    },
+    {
+      "use": "Industrial (I)",
+      "units": "79",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "80",
+      "n": "4"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "80",
+      "n": "4"
+    },
+    {
+      "use": "Commercial Condominium (CC)",
+      "units": "80",
+      "n": "1"
+    },
+    {
+      "use": "Commercial Residential (CR)",
+      "units": "80",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "81",
+      "n": "4"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "81",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "82",
+      "n": "3"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "82",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "83",
+      "n": "6"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "83",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "84",
+      "n": "11"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "84",
+      "n": "5"
+    },
+    {
+      "use": "Exempt (E)",
+      "units": "84",
+      "n": "3"
+    },
+    {
+      "use": "Residential (R)",
+      "units": "84",
+      "n": "116"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "85",
+      "n": "3"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "85",
+      "n": "2"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "86",
+      "n": "2"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "86",
+      "n": "4"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "87",
+      "n": "2"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "87",
+      "n": "3"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "88",
+      "n": "3"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "88",
+      "n": "2"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "89",
+      "n": "2"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "90",
+      "n": "5"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "90",
+      "n": "3"
+    },
+    {
+      "use": "Industrial (I)",
+      "units": "90",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "91",
+      "n": "3"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "91",
+      "n": "2"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "92",
+      "n": "2"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "92",
+      "n": "1"
+    },
+    {
+      "use": "Exempt Commercial (EC)",
+      "units": "92",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "93",
+      "n": "2"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "94",
+      "n": "4"
+    },
+    {
+      "use": "Commercial Condominium (CC)",
+      "units": "94",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "95",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "95",
+      "n": "2"
+    },
+    {
+      "use": "Industrial (I)",
+      "units": "95",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "96",
+      "n": "11"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "96",
+      "n": "4"
+    },
+    {
+      "use": "Exempt Commercial (EC)",
+      "units": "96",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "97",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "97",
+      "n": "4"
+    },
+    {
+      "use": "Commercial Residential (CR)",
+      "units": "97",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "98",
+      "n": "4"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "98",
+      "n": "2"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "99",
+      "n": "2"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "100",
+      "n": "19"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "100",
+      "n": "5"
+    },
+    {
+      "use": "Exempt Commercial (EC)",
+      "units": "100",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "101",
+      "n": "3"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "101",
+      "n": "2"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "102",
+      "n": "10"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "103",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "103",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "104",
+      "n": "6"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "104",
+      "n": "3"
+    },
+    {
+      "use": "Commercial Residential (CR)",
+      "units": "104",
+      "n": "2"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "105",
+      "n": "4"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "105",
+      "n": "2"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "106",
+      "n": "3"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "106",
+      "n": "1"
+    },
+    {
+      "use": "Exempt Commercial (EC)",
+      "units": "106",
+      "n": "2"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "107",
+      "n": "2"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "108",
+      "n": "9"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "108",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "109",
+      "n": "5"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "109",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "110",
+      "n": "2"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "110",
+      "n": "3"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "111",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "112",
+      "n": "4"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "112",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "113",
+      "n": "2"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "115",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "115",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "116",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "116",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "117",
+      "n": "2"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "118",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "119",
+      "n": "2"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "119",
+      "n": "2"
+    },
+    {
+      "use": "Exempt Commercial (EC)",
+      "units": "119",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "120",
+      "n": "12"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "120",
+      "n": "7"
+    },
+    {
+      "use": "Industrial (I)",
+      "units": "120",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "121",
+      "n": "4"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "121",
+      "n": "2"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "122",
+      "n": "4"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "122",
+      "n": "3"
+    },
+    {
+      "use": "Industrial (I)",
+      "units": "122",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "123",
+      "n": "2"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "123",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "124",
+      "n": "2"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "124",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "125",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "125",
+      "n": "2"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "126",
+      "n": "4"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "126",
+      "n": "2"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "127",
+      "n": "1"
+    },
+    {
+      "use": "Exempt Commercial (EC)",
+      "units": "127",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "128",
+      "n": "2"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "129",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "129",
+      "n": "3"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "130",
+      "n": "2"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "130",
+      "n": "2"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "131",
+      "n": "3"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "132",
+      "n": "4"
+    },
+    {
+      "use": "Exempt Commercial (EC)",
+      "units": "132",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "133",
+      "n": "3"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "133",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "134",
+      "n": "2"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "134",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "135",
+      "n": "1"
+    },
+    {
+      "use": "Exempt Commercial (EC)",
+      "units": "135",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "136",
+      "n": "5"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "136",
+      "n": "2"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "137",
+      "n": "3"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "137",
+      "n": "4"
+    },
+    {
+      "use": "Industrial (I)",
+      "units": "138",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "139",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "140",
+      "n": "2"
+    },
+    {
+      "use": "Industrial (I)",
+      "units": "140",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "141",
+      "n": "2"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "142",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "142",
+      "n": "1"
+    },
+    {
+      "use": "Exempt Commercial (EC)",
+      "units": "142",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "143",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "144",
+      "n": "11"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "144",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "145",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "145",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "146",
+      "n": "3"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "147",
+      "n": "4"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "147",
+      "n": "1"
+    },
+    {
+      "use": "Industrial (I)",
+      "units": "147",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "148",
+      "n": "1"
+    },
+    {
+      "use": "Industrial (I)",
+      "units": "149",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "150",
+      "n": "8"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "150",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "151",
+      "n": "3"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "153",
+      "n": "2"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "154",
+      "n": "7"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "154",
+      "n": "1"
+    },
+    {
+      "use": "Exempt Commercial (EC)",
+      "units": "155",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "156",
+      "n": "12"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "156",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "157",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "158",
+      "n": "3"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "158",
+      "n": "4"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "159",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "159",
+      "n": "1"
+    },
+    {
+      "use": "Industrial (I)",
+      "units": "159",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "160",
+      "n": "3"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "160",
+      "n": "2"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "161",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "162",
+      "n": "5"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "163",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "163",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "164",
+      "n": "4"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "165",
+      "n": "3"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "166",
+      "n": "4"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "166",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "167",
+      "n": "2"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "167",
+      "n": "2"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "168",
+      "n": "15"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "169",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "170",
+      "n": "4"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "170",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "171",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "172",
+      "n": "4"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "173",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "174",
+      "n": "3"
+    },
+    {
+      "use": "Industrial (I)",
+      "units": "174",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "175",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "176",
+      "n": "4"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "178",
+      "n": "4"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "179",
+      "n": "2"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "179",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "180",
+      "n": "7"
+    },
+    {
+      "use": "Exempt Commercial (EC)",
+      "units": "180",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "181",
+      "n": "3"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "181",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "182",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "182",
+      "n": "2"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "183",
+      "n": "2"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "183",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "184",
+      "n": "2"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "186",
+      "n": "3"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "187",
+      "n": "2"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "187",
+      "n": "5"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "188",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "188",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "189",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "190",
+      "n": "2"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "190",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "191",
+      "n": "2"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "192",
+      "n": "9"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "192",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "193",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "194",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "195",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "196",
+      "n": "4"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "196",
+      "n": "10"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "198",
+      "n": "5"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "199",
+      "n": "3"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "200",
+      "n": "7"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "200",
+      "n": "1"
+    },
+    {
+      "use": "Commercial Condominium (CC)",
+      "units": "200",
+      "n": "1"
+    },
+    {
+      "use": "Exempt Commercial (EC)",
+      "units": "200",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "201",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "202",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "203",
+      "n": "5"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "204",
+      "n": "10"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "204",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "206",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "207",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "208",
+      "n": "6"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "208",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "209",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "210",
+      "n": "5"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "211",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "211",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "212",
+      "n": "2"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "212",
+      "n": "2"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "214",
+      "n": "2"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "215",
+      "n": "3"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "216",
+      "n": "8"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "218",
+      "n": "3"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "220",
+      "n": "3"
+    },
+    {
+      "use": "Exempt Commercial (EC)",
+      "units": "220",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "222",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "222",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "223",
+      "n": "2"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "223",
+      "n": "2"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "224",
+      "n": "4"
+    },
+    {
+      "use": "Exempt Commercial (EC)",
+      "units": "224",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "225",
+      "n": "2"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "226",
+      "n": "2"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "227",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "228",
+      "n": "4"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "228",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "229",
+      "n": "1"
+    },
+    {
+      "use": "Industrial (I)",
+      "units": "229",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "230",
+      "n": "2"
+    },
+    {
+      "use": "Industrial (I)",
+      "units": "230",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "231",
+      "n": "2"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "232",
+      "n": "4"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "233",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "233",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "234",
+      "n": "2"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "234",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "235",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "235",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "236",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "237",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "238",
+      "n": "2"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "238",
+      "n": "2"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "239",
+      "n": "1"
+    },
+    {
+      "use": "Industrial (I)",
+      "units": "239",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "240",
+      "n": "7"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "240",
+      "n": "2"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "241",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "242",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "243",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "244",
+      "n": "4"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "245",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "245",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "246",
+      "n": "4"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "248",
+      "n": "2"
+    },
+    {
+      "use": "Exempt Commercial (EC)",
+      "units": "248",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "250",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "250",
+      "n": "2"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "251",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "251",
+      "n": "2"
+    },
+    {
+      "use": "Exempt Commercial (EC)",
+      "units": "251",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "252",
+      "n": "6"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "253",
+      "n": "2"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "254",
+      "n": "2"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "255",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "256",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "257",
+      "n": "3"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "258",
+      "n": "2"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "259",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "259",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "260",
+      "n": "2"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "260",
+      "n": "3"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "261",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "262",
+      "n": "2"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "263",
+      "n": "2"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "264",
+      "n": "4"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "264",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "265",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "270",
+      "n": "5"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "270",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "272",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "273",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "276",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "277",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "278",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "278",
+      "n": "1"
+    },
+    {
+      "use": "Industrial (I)",
+      "units": "278",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "279",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "280",
+      "n": "4"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "280",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "281",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "282",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "283",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "285",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "286",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "287",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "290",
+      "n": "2"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "293",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "294",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "296",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "297",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "298",
+      "n": "2"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "299",
+      "n": "3"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "300",
+      "n": "5"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "301",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "302",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "303",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "303",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "304",
+      "n": "3"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "304",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "305",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "306",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "306",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "307",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "308",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "310",
+      "n": "1"
+    },
+    {
+      "use": "Industrial (I)",
+      "units": "310",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "312",
+      "n": "4"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "314",
+      "n": "3"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "316",
+      "n": "2"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "316",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "318",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "319",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "320",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "323",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "324",
+      "n": "2"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "326",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "334",
+      "n": "2"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "335",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "336",
+      "n": "4"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "344",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "345",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "345",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "347",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "348",
+      "n": "2"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "350",
+      "n": "2"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "352",
+      "n": "2"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "352",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "356",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "356",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "364",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "364",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "365",
+      "n": "2"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "367",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "369",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "376",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "376",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "379",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "382",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "384",
+      "n": "2"
+    },
+    {
+      "use": "Industrial (I)",
+      "units": "384",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "392",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "395",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "400",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "406",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "408",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "416",
+      "n": "3"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "424",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "433",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "437",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "440",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "447",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "460",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "464",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "468",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "478",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "491",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "492",
+      "n": "1"
+    },
+    {
+      "use": "Industrial (I)",
+      "units": "495",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "501",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "501",
+      "n": "1"
+    },
+    {
+      "use": "Industrial (I)",
+      "units": "501",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "502",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "504",
+      "n": "1"
+    },
+    {
+      "use": "Industrial (I)",
+      "units": "505",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "510",
+      "n": "2"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "521",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "525",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "531",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "540",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "541",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "554",
+      "n": "1"
+    },
+    {
+      "use": "Industrial (I)",
+      "units": "556",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "581",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "595",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "600",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "600",
+      "n": "1"
+    },
+    {
+      "use": "Industrial (I)",
+      "units": "600",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "603",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "607",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "608",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "620",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "632",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "634",
+      "n": "1"
+    },
+    {
+      "use": "Industrial (I)",
+      "units": "644",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "652",
+      "n": "1"
+    },
+    {
+      "use": "Industrial (I)",
+      "units": "663",
+      "n": "1"
+    },
+    {
+      "use": "Industrial (I)",
+      "units": "684",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "689",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "691",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "692",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "700",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "715",
+      "n": "1"
+    },
+    {
+      "use": "Industrial (I)",
+      "units": "716",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "730",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "741",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "743",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "751",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "752",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "757",
+      "n": "1"
+    },
+    {
+      "use": "Industrial (I)",
+      "units": "779",
+      "n": "1"
+    },
+    {
+      "use": "Industrial (I)",
+      "units": "783",
+      "n": "1"
+    },
+    {
+      "use": "Industrial (I)",
+      "units": "806",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "863",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "874",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "895",
+      "n": "1"
+    },
+    {
+      "use": "Industrial (I)",
+      "units": "895",
+      "n": "1"
+    },
+    {
+      "use": "Commercial Condominium (CC)",
+      "units": "897",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "900",
+      "n": "2"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "922",
+      "n": "1"
+    },
+    {
+      "use": "Industrial (I)",
+      "units": "929",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "940",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "965",
+      "n": "1"
+    },
+    {
+      "use": "Industrial (I)",
+      "units": "970",
+      "n": "1"
+    },
+    {
+      "use": "Industrial (I)",
+      "units": "989",
+      "n": "1"
+    },
+    {
+      "use": "Industrial (I)",
+      "units": "1151",
+      "n": "1"
+    },
+    {
+      "use": "Industrial (I)",
+      "units": "1175",
+      "n": "1"
+    },
+    {
+      "use": "Industrial (I)",
+      "units": "1201",
+      "n": "1"
+    },
+    {
+      "use": "Industrial (I)",
+      "units": "1259",
+      "n": "1"
+    },
+    {
+      "use": "Apartments (M)",
+      "units": "1350",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "1600",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "2179",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "3000",
+      "n": "1"
+    },
+    {
+      "use": "Industrial (I)",
+      "units": "4030",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "6595",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "8253",
+      "n": "1"
+    },
+    {
+      "use": "Commercial (C)",
+      "units": "8400",
+      "n": "1"
+    },
+    {
+      "use": "Industrial (I)",
+      "units": "9432",
+      "n": "1"
+    }
+  ],
+  "singleUnitResidentialRows": 561533,
+  "properties": 559010,
+  "rows": 144700,
+  "parcelsWithSales": 128881,
+  "removedProperties": {
+    "missingAddress": 2122,
+    "smallOrMissingStructure": 10,
+    "missingGrade": 391
+  },
+  "removedSales": {
+    "missingDateOrBefore2020": 1387207,
+    "notPrivateArmsLengthImproved": 126891,
+    "characteristicsMayPostdateSale": 17663,
+    "nonpositiveConsideration": 278,
+    "sameDayOrFuture": 1,
+    "duplicateRecording": 168,
+    "conflictingDuplicateRecording": 122
+  },
+  "csvSha256": "1b53827455c9256b70113ddb0778eb5a7862a4d869ee2ef4e2f7e43e11e97350",
+  "parcelCountiesCsvSha256": "f0a1e14ce1a4cb92c69b767826b5ba44dc0448315031e2f3a60e57ce0c8e3ffb",
+  "fingerprintBasis": "SHA-256 of decompressed CSV bytes",
+  "firstSale": "2020-01-02",
+  "lastSale": "2026-09-23",
+  "monthlySalesByCounty": {
+    "ANNE": {
+      "2020-01": 579,
+      "2020-02": 460,
+      "2020-03": 522,
+      "2020-04": 501,
+      "2020-05": 522,
+      "2020-06": 630,
+      "2020-07": 652,
+      "2020-08": 720,
+      "2020-09": 742,
+      "2020-10": 912,
+      "2020-11": 730,
+      "2020-12": 589,
+      "2021-01": 779,
+      "2021-02": 635,
+      "2021-03": 693,
+      "2021-04": 657,
+      "2021-05": 864,
+      "2021-06": 1223,
+      "2021-07": 960,
+      "2021-08": 876,
+      "2021-09": 939,
+      "2021-10": 886,
+      "2021-11": 822,
+      "2021-12": 677,
+      "2022-01": 738,
+      "2022-02": 464,
+      "2022-03": 669,
+      "2022-04": 788,
+      "2022-05": 819,
+      "2022-06": 755,
+      "2022-07": 666,
+      "2022-08": 717,
+      "2022-09": 670,
+      "2022-10": 502,
+      "2022-11": 391,
+      "2022-12": 439,
+      "2023-01": 385,
+      "2023-02": 326,
+      "2023-03": 499,
+      "2023-04": 396,
+      "2023-05": 504,
+      "2023-06": 591,
+      "2023-07": 419,
+      "2023-08": 518,
+      "2023-09": 491,
+      "2023-10": 420,
+      "2023-11": 387,
+      "2023-12": 374,
+      "2024-01": 376,
+      "2024-02": 316,
+      "2024-03": 377,
+      "2024-04": 419,
+      "2024-05": 515,
+      "2024-06": 533,
+      "2024-07": 520,
+      "2024-08": 517,
+      "2024-09": 475,
+      "2024-10": 476,
+      "2024-11": 396,
+      "2024-12": 511,
+      "2025-01": 425,
+      "2025-02": 297,
+      "2025-03": 424,
+      "2025-04": 443,
+      "2025-05": 457,
+      "2025-06": 541,
+      "2025-07": 509,
+      "2025-08": 500,
+      "2025-09": 578,
+      "2025-10": 472,
+      "2025-11": 436,
+      "2025-12": 445,
+      "2026-01": 409,
+      "2026-02": 388,
+      "2026-03": 491,
+      "2026-04": 432,
+      "2026-05": 601,
+      "2026-06": 733,
+      "2026-07": 575,
+      "2026-08": 552,
+      "2026-09": 408
+    },
+    "BACO": {
+      "2020-01": 667,
+      "2020-02": 498,
+      "2020-03": 507,
+      "2020-04": 560,
+      "2020-05": 627,
+      "2020-06": 943,
+      "2020-07": 328,
+      "2020-08": 654,
+      "2020-09": 520,
+      "2020-10": 941,
+      "2020-11": 659,
+      "2020-12": 966,
+      "2021-01": 808,
+      "2021-02": 788,
+      "2021-03": 924,
+      "2021-04": 625,
+      "2021-05": 820,
+      "2021-06": 1203,
+      "2021-07": 1013,
+      "2021-08": 885,
+      "2021-09": 879,
+      "2021-10": 949,
+      "2021-11": 1177,
+      "2021-12": 1197,
+      "2022-01": 1032,
+      "2022-02": 807,
+      "2022-03": 853,
+      "2022-04": 856,
+      "2022-05": 904,
+      "2022-06": 1125,
+      "2022-07": 564,
+      "2022-08": 713,
+      "2022-09": 831,
+      "2022-10": 561,
+      "2022-11": 591,
+      "2022-12": 601,
+      "2023-01": 563,
+      "2023-02": 374,
+      "2023-03": 605,
+      "2023-04": 558,
+      "2023-05": 643,
+      "2023-06": 755,
+      "2023-07": 369,
+      "2023-08": 619,
+      "2023-09": 582,
+      "2023-10": 521,
+      "2023-11": 448,
+      "2023-12": 524,
+      "2024-01": 569,
+      "2024-02": 460,
+      "2024-03": 551,
+      "2024-04": 524,
+      "2024-05": 497,
+      "2024-06": 831,
+      "2024-07": 474,
+      "2024-08": 774,
+      "2024-09": 529,
+      "2024-10": 706,
+      "2024-11": 566,
+      "2024-12": 593,
+      "2025-01": 630,
+      "2025-02": 395,
+      "2025-03": 446,
+      "2025-04": 579,
+      "2025-05": 537,
+      "2025-06": 645,
+      "2025-07": 701,
+      "2025-08": 772,
+      "2025-09": 627,
+      "2025-10": 653,
+      "2025-11": 538,
+      "2025-12": 687,
+      "2026-01": 594,
+      "2026-02": 484,
+      "2026-03": 566,
+      "2026-04": 654,
+      "2026-05": 567,
+      "2026-06": 819,
+      "2026-07": 621,
+      "2026-08": 774,
+      "2026-09": 342
+    },
+    "FRED": {
+      "2020-01": 319,
+      "2020-02": 249,
+      "2020-03": 261,
+      "2020-04": 317,
+      "2020-05": 239,
+      "2020-06": 389,
+      "2020-07": 332,
+      "2020-08": 373,
+      "2020-09": 468,
+      "2020-10": 375,
+      "2020-11": 285,
+      "2020-12": 373,
+      "2021-01": 426,
+      "2021-02": 310,
+      "2021-03": 372,
+      "2021-04": 321,
+      "2021-05": 393,
+      "2021-06": 645,
+      "2021-07": 292,
+      "2021-08": 475,
+      "2021-09": 450,
+      "2021-10": 436,
+      "2021-11": 331,
+      "2021-12": 402,
+      "2022-01": 410,
+      "2022-02": 219,
+      "2022-03": 344,
+      "2022-04": 319,
+      "2022-05": 314,
+      "2022-06": 489,
+      "2022-07": 262,
+      "2022-08": 347,
+      "2022-09": 309,
+      "2022-10": 249,
+      "2022-11": 222,
+      "2022-12": 203,
+      "2023-01": 211,
+      "2023-02": 177,
+      "2023-03": 228,
+      "2023-04": 236,
+      "2023-05": 246,
+      "2023-06": 325,
+      "2023-07": 209,
+      "2023-08": 314,
+      "2023-09": 212,
+      "2023-10": 197,
+      "2023-11": 190,
+      "2023-12": 167,
+      "2024-01": 207,
+      "2024-02": 163,
+      "2024-03": 198,
+      "2024-04": 189,
+      "2024-05": 253,
+      "2024-06": 323,
+      "2024-07": 200,
+      "2024-08": 290,
+      "2024-09": 236,
+      "2024-10": 218,
+      "2024-11": 204,
+      "2024-12": 205,
+      "2025-01": 228,
+      "2025-02": 141,
+      "2025-03": 197,
+      "2025-04": 211,
+      "2025-05": 251,
+      "2025-06": 317,
+      "2025-07": 185,
+      "2025-08": 255,
+      "2025-09": 230,
+      "2025-10": 255,
+      "2025-11": 170,
+      "2025-12": 237,
+      "2026-01": 187,
+      "2026-02": 171,
+      "2026-03": 221,
+      "2026-04": 253,
+      "2026-05": 265,
+      "2026-06": 370,
+      "2026-07": 264,
+      "2026-08": 267,
+      "2026-09": 111
+    },
+    "HOWA": {
+      "2020-01": 245,
+      "2020-02": 194,
+      "2020-03": 185,
+      "2020-04": 261,
+      "2020-05": 250,
+      "2020-06": 307,
+      "2020-07": 292,
+      "2020-08": 345,
+      "2020-09": 397,
+      "2020-10": 415,
+      "2020-11": 303,
+      "2020-12": 331,
+      "2021-01": 381,
+      "2021-02": 239,
+      "2021-03": 362,
+      "2021-04": 292,
+      "2021-05": 390,
+      "2021-06": 552,
+      "2021-07": 259,
+      "2021-08": 484,
+      "2021-09": 501,
+      "2021-10": 471,
+      "2021-11": 369,
+      "2021-12": 344,
+      "2022-01": 350,
+      "2022-02": 190,
+      "2022-03": 295,
+      "2022-04": 309,
+      "2022-05": 372,
+      "2022-06": 531,
+      "2022-07": 256,
+      "2022-08": 364,
+      "2022-09": 338,
+      "2022-10": 250,
+      "2022-11": 237,
+      "2022-12": 178,
+      "2023-01": 154,
+      "2023-02": 127,
+      "2023-03": 219,
+      "2023-04": 185,
+      "2023-05": 268,
+      "2023-06": 315,
+      "2023-07": 181,
+      "2023-08": 314,
+      "2023-09": 243,
+      "2023-10": 206,
+      "2023-11": 181,
+      "2023-12": 167,
+      "2024-01": 153,
+      "2024-02": 141,
+      "2024-03": 194,
+      "2024-04": 197,
+      "2024-05": 188,
+      "2024-06": 375,
+      "2024-07": 206,
+      "2024-08": 308,
+      "2024-09": 208,
+      "2024-10": 227,
+      "2024-11": 169,
+      "2024-12": 208,
+      "2025-01": 148,
+      "2025-02": 154,
+      "2025-03": 170,
+      "2025-04": 191,
+      "2025-05": 264,
+      "2025-06": 390,
+      "2025-07": 152,
+      "2025-08": 243,
+      "2025-09": 324,
+      "2025-10": 241,
+      "2025-11": 170,
+      "2025-12": 185,
+      "2026-01": 151,
+      "2026-02": 173,
+      "2026-03": 160,
+      "2026-04": 168,
+      "2026-05": 287,
+      "2026-06": 341,
+      "2026-07": 218,
+      "2026-08": 5,
+      "2026-09": 1
+    }
+  },
+  "gradeScale": "SDAT dwelling QUALITY grade: Low (1), Economy (2), Below Average (3), Average (4), Above Average (5), Good (6), Very Good (7), Excellent (8), Superior (9). Not condition or inspection.",
+  "missingFeatures": [
+    "bedrooms",
+    "bathrooms"
+  ],
+  "internalEncoding": "beds=baths=0 are neutral arithmetic sentinels for unavailable counts, not observed zero rooms. Both rates are fixed to zero. condition carries the ordered quality grade, not interior condition.",
+  "limitations": [
+    "Only the latest three transfers retained per current parcel; older transaction history is incomplete and survivorship biased.",
+    "Current assessor characteristics, not historical sale-time characteristics; build-year screening cannot remove unrecorded renovations.",
+    "Structure area is the state SQFTSTRC field; not a verified MLS living-area measurement.",
+    "No listing history, concessions, bedrooms, bathrooms, interior condition, owner names or mailing addresses.",
+    "Snapshot is static; recording and upstream updates lag closing. These counties are not all of Maryland."
+  ]
+}

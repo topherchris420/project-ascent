@@ -44,6 +44,9 @@ export function AccuracyScorecard({ benchmark = valuationBenchmark }: { benchmar
   const ppsf = benchmark.paired.find(item => item.baseline === 'baseline-median-ppsf')!;
   const passed = benchmark.acceptance.filter(item => item.passed).length;
   const narrow = narrowPasses(benchmark);
+  const atBar = benchmark.acceptance.filter(
+    item => item.passed && (item.value === item.max || item.value === item.min),
+  );
   const other = kingCountyBenchmark;
   return (
     <div className="lp-accuracy">
@@ -126,6 +129,19 @@ export function AccuracyScorecard({ benchmark = valuationBenchmark }: { benchmar
             <a href="/accuracy">Read both experiments</a>. No calibrated range is released.
           </p>
         )}
+        {benchmark.market.id === 'maryland-external' && (
+          <p className="lp-accuracy-caveat">
+            External test of the revised Maryland method in four counties Ascent does not serve. The protocol, bars and
+            analysis were committed and pushed before these counties’ records were downloaded; the data was locked
+            before any valuation, and the holdout was scored once. The method was refitted only on these counties’
+            earlier sales. It did not meet acceptance, so it does not support the method beyond Montgomery and Prince
+            George’s, and no calibrated range is released anywhere in Maryland.{' '}
+            <a href="https://github.com/topherchris420/project-ascent/blob/master/docs/valuation-validation.md">
+              Registration, results and analysis
+            </a>
+            .
+          </p>
+        )}
         {benchmark.market.id === 'dc-condos' && (
           <p className="lp-accuracy-caveat">
             Condo-specific study; studios included, condition adjustment disabled. Missing floor, view, parking, HOA
@@ -145,6 +161,12 @@ export function AccuracyScorecard({ benchmark = valuationBenchmark }: { benchmar
         {narrow.length > 0 && (
           <p className="lp-accuracy-caveat">
             Met narrowly: the 95% intervals for {narrow.join(' and ')} include values on the wrong side of the bar.
+          </p>
+        )}
+        {atBar.length > 0 && (
+          <p className="lp-accuracy-caveat">
+            Met exactly at the bar: {atBar.map(item => `${item.label.toLowerCase()} (${measured(item)})`).join(' and ')}
+            . Any worse would have failed.
           </p>
         )}
         <p className="lp-accuracy-foot">

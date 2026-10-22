@@ -1,0 +1,237 @@
+{
+  "reportDigest": "sha256-60f04f4d65eb2efe48b2076c731b492f130512b749818e6cf6df28ddaab9ec6c",
+  "protocolDigest": "sha256-072727116c4fc7ee6340cf93edd4acd0774a3826ff9dc76afea39a71cbd41a5e",
+  "protocolId": "ascent-valuation-validation-maryland-external-1",
+  "market": {
+    "id": "maryland-external",
+    "label": "Anne Arundel, Baltimore County, Frederick & Howard, MD (external)",
+    "state": "MD"
+  },
+  "accepted": false,
+  "dataset": {
+    "id": "maryland-anne-arundel-baltimore-frederick-howard",
+    "label": "Maryland SDAT/MDP recorded sales in Anne Arundel, Baltimore County, Frederick and Howard",
+    "license": "Public Domain",
+    "csvSha256": "1b53827455c9256b70113ddb0778eb5a7862a4d869ee2ef4e2f7e43e11e97350",
+    "screened": 144621
+  },
+  "holdout": {
+    "from": "2025-07-01",
+    "to": "2026-06-30",
+    "sales": 19039
+  },
+  "windows": {
+    "fit": {
+      "from": "2021-01-01",
+      "to": "2023-12-31"
+    },
+    "select": {
+      "from": "2024-01-01",
+      "to": "2024-06-30"
+    },
+    "calibrate": {
+      "from": "2024-07-01",
+      "to": "2025-06-30"
+    },
+    "test": {
+      "from": "2025-07-01",
+      "to": "2026-06-30"
+    }
+  },
+  "engine": {
+    "version": "ascent-cma-1.0",
+    "fingerprint": "fnv1a32-49f0c98b"
+  },
+  "primary": {
+    "id": "locally-calibrated",
+    "label": "Engine with locally fitted rates and selected search filters",
+    "valuedShare": 0.963128,
+    "mdape": 0.122565,
+    "mdapeCi95": [
+      0.120282,
+      0.124869
+    ],
+    "ppe10Ci95": [
+      0.417353,
+      0.43175
+    ],
+    "ppe5": 0.225555,
+    "ppe10": 0.424933,
+    "ppe20": 0.700987,
+    "medianSignedError": 0.03,
+    "cod": 18.5958,
+    "prd": 1.065053
+  },
+  "shipped": {
+    "id": "shipped-defaults",
+    "label": "Engine with shipped default assumptions (untuned)",
+    "valuedShare": 0.996481,
+    "mdape": 0.130943,
+    "mdapeCi95": [
+      0.128679,
+      0.133611
+    ],
+    "ppe10Ci95": [
+      0.390311,
+      0.404122
+    ],
+    "ppe5": 0.208992,
+    "ppe10": 0.396953,
+    "ppe20": 0.68443,
+    "medianSignedError": 0.007695,
+    "cod": 19.8418,
+    "prd": 1.079978
+  },
+  "baselines": [
+    {
+      "id": "baseline-median-ppsf",
+      "label": "Median $/sqft of the primary configuration’s comparables × subject sqft",
+      "mdape": 0.125377,
+      "ppe10": 0.413154
+    },
+    {
+      "id": "baseline-zip-median",
+      "label": "Median recorded price in the same ZIP over the prior 180 days",
+      "mdape": 0.216216,
+      "ppe10": 0.249619
+    }
+  ],
+  "paired": [
+    {
+      "baseline": "baseline-median-ppsf",
+      "mdapeDelta": -0.002812,
+      "ci95": [
+        -0.004996,
+        -0.000761
+      ],
+      "winRate": 0.531276
+    },
+    {
+      "baseline": "baseline-zip-median",
+      "mdapeDelta": -0.089471,
+      "ci95": [
+        -0.0935,
+        -0.085369
+      ],
+      "winRate": 0.679051
+    }
+  ],
+  "intervals": {
+    "target": 0.8,
+    "calibratedCoverage": 0.772536,
+    "calibratedMedianWidth": 0.442162,
+    "envelopeCoverage": 0.825435
+  },
+  "tiers": [
+    {
+      "id": "sparse",
+      "maxComps": 2,
+      "holdoutSales": 1247,
+      "mdape": 0.167605,
+      "coverage": 0.777867,
+      "lowerPercent": -29.09,
+      "upperPercent": 40.75,
+      "lowerLogRatio": -0.343756,
+      "upperLogRatio": 0.34178
+    },
+    {
+      "id": "moderate",
+      "maxComps": 9,
+      "holdoutSales": 3165,
+      "mdape": 0.127342,
+      "coverage": 0.779147,
+      "lowerPercent": -24.73,
+      "upperPercent": 25.31,
+      "lowerLogRatio": -0.28405,
+      "upperLogRatio": 0.225615
+    },
+    {
+      "id": "dense",
+      "maxComps": null,
+      "holdoutSales": 13925,
+      "mdape": 0.119108,
+      "coverage": 0.770557,
+      "lowerPercent": -24.15,
+      "upperPercent": 20.07,
+      "lowerLogRatio": -0.276401,
+      "upperLogRatio": 0.18288
+    }
+  ],
+  "fittedAssumptions": {
+    "sqftRate": 114.79,
+    "bedroomValue": 0,
+    "bathroomValue": 0,
+    "conditionValue": 56080,
+    "monthlyTrend": 0.01115,
+    "maxDistanceMiles": 1,
+    "maxAgeDays": 180,
+    "maxSizeRatio": 1.35
+  },
+  "acceptance": [
+    {
+      "id": "A1",
+      "label": "Holdout sales valued",
+      "value": 0.963128,
+      "min": 0.9,
+      "passed": true
+    },
+    {
+      "id": "A2",
+      "label": "Median absolute percentage error",
+      "value": 0.122565,
+      "max": 0.1,
+      "passed": false
+    },
+    {
+      "id": "A3",
+      "label": "Share within ±10% of sale price",
+      "value": 0.424933,
+      "min": 0.5,
+      "passed": false
+    },
+    {
+      "id": "A4",
+      "label": "Coefficient of dispersion (COD)",
+      "value": 18.5958,
+      "max": 15,
+      "passed": false
+    },
+    {
+      "id": "A5",
+      "label": "Price-related differential (PRD)",
+      "value": 1.065053,
+      "min": 0.98,
+      "max": 1.03,
+      "passed": false
+    },
+    {
+      "id": "A6",
+      "label": "Absolute median signed error",
+      "value": 0.03,
+      "max": 0.03,
+      "passed": true
+    },
+    {
+      "id": "A7",
+      "label": "Beats median $/sqft of the same comparables",
+      "value": -0.000761,
+      "max": 0,
+      "passed": true
+    },
+    {
+      "id": "A8",
+      "label": "Beats trailing ZIP median price",
+      "value": -0.085369,
+      "max": 0,
+      "passed": true
+    },
+    {
+      "id": "A9",
+      "label": "Calibrated 80% interval coverage",
+      "value": 0.772536,
+      "min": 0.75,
+      "max": 0.85,
+      "passed": true
+    }
+  ]
+}

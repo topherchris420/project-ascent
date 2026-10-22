@@ -83,6 +83,12 @@ The result is published in the homepage accuracy section, `/maryland`, printable
 - **Static snapshot:** source updates and recordings lag closings; the newest months may be incomplete. The holdout ends June 2026 to allow for lag. A new snapshot changes the fingerprint and requires a new protocol and holdout before new accuracy claims.
 - **Internal validation:** reproducible results, not independent certification, an appraisal or a promise of future accuracy. No outside attestation has been received.
 
+## External test dataset: four counties Ascent does not serve
+
+October 21, 2026. `scripts/datasets/fetch-maryland-external.py` reuses this importer's fields, query and record rules unchanged for Anne Arundel, Baltimore County, Frederick and Howard, and also writes each parcel's county for descriptive slices. Its digest and the base importer's were registered and pushed before it ran. The snapshot, fetched at 02:24 UTC on October 22, has **559,010 single-unit properties** and **144,700 qualifying transfers** (January 2, 2020 – September 23, 2026). Provenance and every removal count are in `evidence/datasets/maryland-external.provenance.json`.
+
+This data exists only to test the method. The app does not search, price or display these counties. The [external validation](valuation-validation.md#external-maryland-validation-four-counties-protocol-ascent-valuation-validation-maryland-external-1) failed acceptance there; it neither supports nor changes the Montgomery and Prince George's result.
+
 ## Reproduction and routes
 
 ```bash

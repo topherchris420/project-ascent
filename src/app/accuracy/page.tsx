@@ -2,7 +2,11 @@ import Link from 'next/link';
 import { AccuracyScorecard } from '@/components/accuracy-scorecard';
 import { marylandBenchmark, marylandRevisedBenchmark } from '@/lib/maryland-studio';
 import { condoBenchmark } from '@/lib/dc-condo-studio';
+import externalJson from '@/lib/valuation-benchmark-maryland-external.json';
+import type { ValuationBenchmark } from '@/lib/valuation-safeguards';
 import '../landing.css';
+
+const marylandExternalBenchmark = externalJson as unknown as ValuationBenchmark;
 export const metadata = { title: 'Published accuracy experiments · Ascent' };
 export default function Page() {
   return (
@@ -20,6 +24,8 @@ export default function Page() {
           <AccuracyScorecard benchmark={marylandRevisedBenchmark} />
           <h2>Maryland · original failed experiment, unchanged</h2>
           <AccuracyScorecard benchmark={marylandBenchmark} />
+          <h2>Maryland method · four other counties, registered before download</h2>
+          <AccuracyScorecard benchmark={marylandExternalBenchmark} />
           <h2>DC condominiums · separate population test</h2>
           <AccuracyScorecard benchmark={condoBenchmark} />
         </div>

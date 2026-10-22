@@ -241,3 +241,61 @@ test('readable reports use the same privacy filter, escape notes and remain self
   assert.match(privateReport, /@media print/);
   assert.match(privateReport, /cannot revoke copies/);
 });
+test('the passport carries the brief as a research record under the same privacy filter', () => {
+  const excluded = sampleEvidence.candidates.find(candidate => candidate.id === 'landing-c5')!;
+  const state = {
+    ...defaultDemoState,
+    payoff: 313337,
+    listPrice: 987654,
+    exclusions: [{ id: excluded.id, reason: 'PRIVATE note about the neighbour' }],
+  };
+  const snap = createHomeSnapshot(
+    sampleEvidence,
+    state,
+    { ...exampleFinance(), mortgageBalance: 313337 },
+    emptyOwnerNotes(),
+    at,
+  );
+  const shared = evidencePassport(snap);
+  const encoded = JSON.stringify(shared);
+  assert.ok(shared.brief);
+  assert.equal(shared.brief.checksum, null);
+  assert.equal(shared.brief.financial, null);
+  assert.equal(shared.brief.executiveSummary.choices, null);
+  assert.deepEqual(shared.brief.comparables.excludedByHomeowner, [{ address: excluded.address, reason: null }]);
+  for (const token of ['313337', '313,337', '987654', '987,654', 'PRIVATE']) assert.ok(!encoded.includes(token), token);
+  // The public record cannot depend on the asking price, payoff or financial inputs.
+  const plain = createHomeSnapshot(
+    sampleEvidence,
+    { ...state, payoff: 0, listPrice: null },
+    exampleFinance(),
+    emptyOwnerNotes(),
+    at,
+  );
+  assert.deepEqual(evidencePassport(plain).brief, shared.brief);
+  const own = evidencePassport(snap, true).brief!;
+  assert.match(own.checksum!, /\S{8,}/);
+  assert.equal(own.comparables.excludedByHomeowner[0].reason, 'PRIVATE note about the neighbour');
+  assert.ok(own.financial && own.executiveSummary.choices);
+  assert.equal(own.executiveSummary.value, shared.brief.executiveSummary.value);
+});
+test('the readable report opens with the brief and never presents a declined estimate as a value', () => {
+  const supported = renderHomeownerReport(snapshot());
+  assert.match(supported, /<h2>Executive summary<\/h2>/);
+  assert.match(supported, /What to obtain before deciding/);
+  assert.match(supported, /Every setting matches Ascent’s practice defaults/);
+  const declinedState = {
+    ...defaultDemoState,
+    exclusions: ['landing-c1', 'landing-c2', 'landing-c3', 'landing-c4'].map(id => ({
+      id,
+      reason: 'Removed for the test',
+    })),
+  };
+  const declined = createHomeSnapshot(sampleEvidence, declinedState, exampleFinance(), emptyOwnerNotes(), at);
+  const sharing = renderHomeownerReport(declined);
+  assert.match(sharing, /class="number">Not stated/);
+  assert.match(sharing, /working figure for professional review/);
+  assert.match(sharing, /reason withheld from this public report/);
+  assert.doesNotMatch(sharing, /Removed for the test/);
+  assert.match(renderHomeownerReport(declined, true), /Removed for the test/);
+});

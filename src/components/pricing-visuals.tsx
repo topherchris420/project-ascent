@@ -142,8 +142,20 @@ const settingText = (driver: DecisionDriver, value: number, conditionMax = 5) =>
 };
 
 /** "What changes my decision?" — the tested arithmetic dependency of the estimate on each input. */
-export function DecisionDrivers({ result, conditionMax = 5 }: { result: CmaResult; conditionMax?: number }) {
-  const drivers = useMemo(() => decisionDrivers(result, { conditionMax }), [result, conditionMax]);
+export function DecisionDrivers({
+  result,
+  conditionMax = 5,
+  precomputed,
+}: {
+  result: CmaResult;
+  conditionMax?: number;
+  /** The same `decisionDrivers(result)` output when the page has already computed it. */
+  precomputed?: DecisionDriver[];
+}) {
+  const drivers = useMemo(
+    () => precomputed ?? decisionDrivers(result, { conditionMax }),
+    [precomputed, result, conditionMax],
+  );
   if (!drivers.length) return null;
   const scale = Math.max(1, ...drivers.map(d => d.swing));
   const bar = (outcome: DecisionDriver['lower'], driver: DecisionDriver, side: 'lower' | 'higher') => {

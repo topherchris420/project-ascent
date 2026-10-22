@@ -1,0 +1,480 @@
+{
+  "plan": "ascent-valuation-supplement-maryland-external-1",
+  "planDigest": "sha256-fe2f1b49150629cf70783fdee14008aa0e5a4b55ec47a9cd125c7eee3e9e9790",
+  "baseReportDigest": "sha256-60f04f4d65eb2efe48b2076c731b492f130512b749818e6cf6df28ddaab9ec6c",
+  "shippedReportDigest": "sha256-1c420bbcfa8218b63bca9d49fad4d892955e224f74c37c346a80780036a721a3",
+  "engine": {
+    "fingerprint": "fnv1a32-49f0c98b",
+    "expected": "fnv1a32-49f0c98b"
+  },
+  "analysisFiles": {
+    "src/lib/valuation-supplement.ts": "sha256-5fb568e5e965a5c16d0bcc454ac033c3234a215effe46993482d1daa507eb509",
+    "src/lib/valuation-verdict.ts": "sha256-e911f46deecd6e4cec406fe43755e8ff3e79aa5a22388e96044eea1324fbfa59",
+    "src/lib/valuation-safeguards.ts": "sha256-9a662de0ad37d87dcb3da915ad8708751818ada9f471695c48c6f7f3a1aac9a7",
+    "scripts/maryland-external-supplement.ts": "sha256-5300cb6335891ce748dbc44f8362c1f62f142b616b83afbe6654156dc88da8d3"
+  },
+  "analysisChangedSinceRegistration": [
+    "src/lib/valuation-safeguards.ts"
+  ],
+  "abstention": {
+    "policy": "ascent-brief-verdict-1",
+    "holdoutSales": 19039,
+    "valued": 18337,
+    "notValued": 702,
+    "groups": {
+      "declined": {
+        "n": 1247,
+        "shareOfValued": 0.068005,
+        "mdape": 0.167605,
+        "ppe10": 0.336006,
+        "medianRatio": 1.016422,
+        "calibratedCoverage": 0.777867
+      },
+      "limited": {
+        "n": 13126,
+        "shareOfValued": 0.71582,
+        "mdape": 0.131048,
+        "ppe10": 0.39776,
+        "medianRatio": 1.032131,
+        "calibratedCoverage": 0.739677
+      },
+      "supported": {
+        "n": 3964,
+        "shareOfValued": 0.216175,
+        "mdape": 0.089833,
+        "ppe10": 0.542886,
+        "medianRatio": 1.026625,
+        "calibratedCoverage": 0.879667
+      },
+      "stated": {
+        "n": 17090,
+        "shareOfValued": 0.931995,
+        "mdape": 0.12021,
+        "ppe10": 0.431422,
+        "medianRatio": 1.030724,
+        "calibratedCoverage": 0.772147
+      }
+    },
+    "byCheck": [
+      {
+        "check": "engine-integrity",
+        "flagged": 0,
+        "flaggedMdape": null,
+        "clearMdape": 0.12021
+      },
+      {
+        "check": "dispersion",
+        "flagged": 11398,
+        "flaggedMdape": 0.13935,
+        "clearMdape": 0.088947
+      },
+      {
+        "check": "gross-adjustment",
+        "flagged": 298,
+        "flaggedMdape": 0.161476,
+        "clearMdape": 0.119899
+      },
+      {
+        "check": "freshness",
+        "flagged": 23,
+        "flaggedMdape": 0.155746,
+        "clearMdape": 0.120206
+      },
+      {
+        "check": "independent-cross-check",
+        "flagged": 2040,
+        "flaggedMdape": 0.162782,
+        "clearMdape": 0.115275
+      },
+      {
+        "check": "outliers",
+        "flagged": 5267,
+        "flaggedMdape": 0.116345,
+        "clearMdape": 0.121755
+      }
+    ],
+    "hypotheses": [
+      {
+        "id": "S1a",
+        "statement": "Declined sales have a higher median absolute percentage error than sales with a stated value.",
+        "outcome": "supported",
+        "detail": "MdAPE difference 0.047395 (95% CI 0.030952 to 0.055711).",
+        "result": {
+          "n": [
+            1247,
+            17090
+          ],
+          "difference": 0.047395,
+          "ci95": [
+            0.030952,
+            0.055711
+          ]
+        }
+      },
+      {
+        "id": "S1b",
+        "statement": "Limited sales have a higher median absolute percentage error than supported sales.",
+        "outcome": "supported",
+        "detail": "MdAPE difference 0.041215 (95% CI 0.03635 to 0.044925).",
+        "result": {
+          "n": [
+            13126,
+            3964
+          ],
+          "difference": 0.041215,
+          "ci95": [
+            0.03635,
+            0.044925
+          ]
+        }
+      }
+    ]
+  },
+  "verticalEquity": {
+    "primary": {
+      "n": 18337,
+      "mdape": 0.122565,
+      "ppe10": 0.424933,
+      "cod": 18.5958,
+      "prd": 1.065053,
+      "prb": {
+        "n": 18337,
+        "prb": -0.100533,
+        "ci95": [
+          -0.108245,
+          -0.09282
+        ]
+      },
+      "medianRatioByPriceQuartile": [
+        {
+          "band": "Q1",
+          "n": 4507,
+          "medianRatio": 1.157904
+        },
+        {
+          "band": "Q2",
+          "n": 4629,
+          "medianRatio": 1.036011
+        },
+        {
+          "band": "Q3",
+          "n": 4589,
+          "medianRatio": 1.007869
+        },
+        {
+          "band": "Q4",
+          "n": 4612,
+          "medianRatio": 0.963084
+        }
+      ],
+      "medianRatioByEstimateQuartile": [
+        {
+          "band": "Q1",
+          "n": 4584,
+          "medianRatio": 1.011396
+        },
+        {
+          "band": "Q2",
+          "n": 4584,
+          "medianRatio": 1.032595
+        },
+        {
+          "band": "Q3",
+          "n": 4583,
+          "medianRatio": 1.041016
+        },
+        {
+          "band": "Q4",
+          "n": 4586,
+          "medianRatio": 1.034196
+        }
+      ]
+    },
+    "candidates": [
+      {
+        "id": "forward-log-linear",
+        "fit": {
+          "direction": "forward",
+          "n": 17068,
+          "alpha": 0.101111282,
+          "beta": 0.989444538
+        },
+        "corrected": {
+          "n": 18337,
+          "mdape": 0.120982,
+          "ppe10": 0.430823,
+          "cod": 18.5765,
+          "prd": 1.067562,
+          "prb": {
+            "n": 18337,
+            "prb": -0.109138,
+            "ci95": [
+              -0.116849,
+              -0.101427
+            ]
+          },
+          "medianRatioByPriceQuartile": [
+            {
+              "band": "Q1",
+              "n": 4507,
+              "medianRatio": 1.120212
+            },
+            {
+              "band": "Q2",
+              "n": 4629,
+              "medianRatio": 1.000231
+            },
+            {
+              "band": "Q3",
+              "n": 4589,
+              "medianRatio": 0.970208
+            },
+            {
+              "band": "Q4",
+              "n": 4612,
+              "medianRatio": 0.923137
+            }
+          ],
+          "medianRatioByEstimateQuartile": [
+            {
+              "band": "Q1",
+              "n": 4584,
+              "medianRatio": 0.979114
+            },
+            {
+              "band": "Q2",
+              "n": 4584,
+              "medianRatio": 0.996409
+            },
+            {
+              "band": "Q3",
+              "n": 4583,
+              "medianRatio": 1.001947
+            },
+            {
+              "band": "Q4",
+              "n": 4586,
+              "medianRatio": 0.990965
+            }
+          ]
+        },
+        "criteria": [
+          {
+            "id": "prd",
+            "value": 1.067562,
+            "passed": false
+          },
+          {
+            "id": "prb",
+            "value": -0.109138,
+            "passed": false
+          },
+          {
+            "id": "mdape-increase",
+            "value": -0.001583,
+            "passed": true
+          },
+          {
+            "id": "cod-increase",
+            "value": -0.0193,
+            "passed": true
+          }
+        ],
+        "passed": false
+      },
+      {
+        "id": "reverse-log-linear",
+        "fit": {
+          "direction": "reverse",
+          "n": 17068,
+          "alpha": 2.712277526,
+          "beta": 0.795090407
+        },
+        "corrected": {
+          "n": 18337,
+          "mdape": 0.147865,
+          "ppe10": 0.359819,
+          "cod": 21.3788,
+          "prd": 1.003207,
+          "prb": {
+            "n": 18337,
+            "prb": 0.094131,
+            "ci95": [
+              0.086222,
+              0.102041
+            ]
+          },
+          "medianRatioByPriceQuartile": [
+            {
+              "band": "Q1",
+              "n": 4507,
+              "medianRatio": 0.997308
+            },
+            {
+              "band": "Q2",
+              "n": 4629,
+              "medianRatio": 0.957369
+            },
+            {
+              "band": "Q3",
+              "n": 4589,
+              "medianRatio": 0.999121
+            },
+            {
+              "band": "Q4",
+              "n": 4612,
+              "medianRatio": 1.060713
+            }
+          ],
+          "medianRatioByEstimateQuartile": [
+            {
+              "band": "Q1",
+              "n": 4584,
+              "medianRatio": 0.858624
+            },
+            {
+              "band": "Q2",
+              "n": 4584,
+              "medianRatio": 0.957565
+            },
+            {
+              "band": "Q3",
+              "n": 4583,
+              "medianRatio": 1.032909
+            },
+            {
+              "band": "Q4",
+              "n": 4586,
+              "medianRatio": 1.154313
+            }
+          ]
+        },
+        "criteria": [
+          {
+            "id": "prd",
+            "value": 1.003207,
+            "passed": true
+          },
+          {
+            "id": "prb",
+            "value": 0.094131,
+            "passed": false
+          },
+          {
+            "id": "mdape-increase",
+            "value": 0.0253,
+            "passed": false
+          },
+          {
+            "id": "cod-increase",
+            "value": 2.783,
+            "passed": false
+          }
+        ],
+        "passed": false
+      }
+    ],
+    "promotion": "Never promoted from this study; a passing candidate needs its own prospective holdout."
+  },
+  "counties": [
+    {
+      "county": "ANNE",
+      "sales": 5990,
+      "valuedShare": 0.97596,
+      "metrics": {
+        "n": 5846,
+        "mdape": 0.12485,
+        "mape": 0.203821,
+        "ppe5": 0.218098,
+        "ppe10": 0.415327,
+        "ppe20": 0.691755,
+        "medianRatio": 1.039943,
+        "medianSignedError": 0.039943,
+        "cod": 19.2919,
+        "prd": 1.079502
+      },
+      "calibratedCoverage": 0.764967
+    },
+    {
+      "county": "BACO",
+      "sales": 7657,
+      "valuedShare": 0.968526,
+      "metrics": {
+        "n": 7416,
+        "mdape": 0.133337,
+        "mape": 0.217993,
+        "ppe5": 0.208198,
+        "ppe10": 0.399542,
+        "ppe20": 0.657362,
+        "medianRatio": 1.022581,
+        "medianSignedError": 0.022581,
+        "cod": 21.2153,
+        "prd": 1.075556
+      },
+      "calibratedCoverage": 0.714132
+    },
+    {
+      "county": "FRED",
+      "sales": 2799,
+      "valuedShare": 0.920329,
+      "metrics": {
+        "n": 2576,
+        "mdape": 0.111855,
+        "mape": 0.153602,
+        "ppe5": 0.240295,
+        "ppe10": 0.44837,
+        "ppe20": 0.763975,
+        "medianRatio": 1.038432,
+        "medianSignedError": 0.038432,
+        "cod": 14.49,
+        "prd": 1.034217
+      },
+      "calibratedCoverage": 0.857143
+    },
+    {
+      "county": "HOWA",
+      "sales": 2593,
+      "valuedShare": 0.963749,
+      "metrics": {
+        "n": 2499,
+        "mdape": 0.100516,
+        "mape": 0.138173,
+        "ppe5": 0.279312,
+        "ppe10": 0.498599,
+        "ppe20": 0.787115,
+        "medianRatio": 1.026181,
+        "medianSignedError": 0.026181,
+        "cod": 13.2709,
+        "prd": 1.030528
+      },
+      "calibratedCoverage": 0.876351
+    }
+  ],
+  "transport": {
+    "sales": 19039,
+    "valuedShare": 0.901413,
+    "metrics": {
+      "n": 17162,
+      "mdape": 0.110053,
+      "mape": 0.181203,
+      "ppe5": 0.252884,
+      "ppe10": 0.462534,
+      "ppe20": 0.725964,
+      "medianRatio": 1.011658,
+      "medianSignedError": 0.011658,
+      "cod": 17.8764,
+      "prd": 1.053921
+    },
+    "prb": {
+      "n": 17162,
+      "prb": -0.085701,
+      "ci95": [
+        -0.093653,
+        -0.077749
+      ]
+    },
+    "calibratedCoverage": 0.731383
+  },
+  "samplesDigest": "sha256-87630e637d3191f166fa9f7e05aeba17787299a29a90d3c9dd79ebee4937ee33",
+  "digest": "sha256-46b47c664b3f5381da6d4d45af0b09dca53ced56d9b6df905a82d3acee032ea5"
+}

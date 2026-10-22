@@ -1,0 +1,311 @@
+{
+  "protocol": {
+    "id": "ascent-valuation-validation-maryland-external-1",
+    "dataset": {
+      "id": "maryland-anne-arundel-baltimore-frederick-howard",
+      "csvSha256": "pending-data-lock",
+      "license": "Public Domain",
+      "sourceId": "source-maryland-public-records"
+    },
+    "windows": {
+      "fit": {
+        "from": "2021-01-01",
+        "to": "2023-12-31"
+      },
+      "select": {
+        "from": "2024-01-01",
+        "to": "2024-06-30"
+      },
+      "calibrate": {
+        "from": "2024-07-01",
+        "to": "2025-06-30"
+      },
+      "test": {
+        "from": "2025-07-01",
+        "to": "2026-06-30"
+      }
+    },
+    "screening": {
+      "minBeds": 0,
+      "maxBeds": 0,
+      "minBaths": 0,
+      "minSqft": 300,
+      "minPrice": 50000
+    },
+    "excludeSameParcel": true,
+    "asOfOffsetMs": -1,
+    "fit": {
+      "neighbours": 5,
+      "search": {
+        "maxDistanceMiles": 1,
+        "maxAgeDays": 180,
+        "maxSizeRatio": 1.35
+      },
+      "huberIterations": 3,
+      "huberK": 1.345,
+      "maxQualityAdjustment": 75000
+    },
+    "selectionGrid": [
+      {
+        "maxDistanceMiles": 0.5,
+        "maxAgeDays": 90,
+        "maxSizeRatio": 1.35
+      },
+      {
+        "maxDistanceMiles": 0.5,
+        "maxAgeDays": 180,
+        "maxSizeRatio": 1.35
+      },
+      {
+        "maxDistanceMiles": 1,
+        "maxAgeDays": 90,
+        "maxSizeRatio": 1.35
+      },
+      {
+        "maxDistanceMiles": 1,
+        "maxAgeDays": 180,
+        "maxSizeRatio": 1.35
+      },
+      {
+        "maxDistanceMiles": 2,
+        "maxAgeDays": 90,
+        "maxSizeRatio": 1.35
+      },
+      {
+        "maxDistanceMiles": 2,
+        "maxAgeDays": 180,
+        "maxSizeRatio": 1.35
+      },
+      {
+        "maxDistanceMiles": 3,
+        "maxAgeDays": 90,
+        "maxSizeRatio": 1.35
+      },
+      {
+        "maxDistanceMiles": 3,
+        "maxAgeDays": 180,
+        "maxSizeRatio": 1.35
+      }
+    ],
+    "selectionMinValuedShare": 0.9,
+    "interval": {
+      "target": 0.8,
+      "minTierSize": 50,
+      "tiers": [
+        {
+          "id": "sparse",
+          "maxComps": 2
+        },
+        {
+          "id": "moderate",
+          "maxComps": 9
+        },
+        {
+          "id": "dense",
+          "maxComps": null
+        }
+      ]
+    },
+    "bootstrap": {
+      "resamples": 1000,
+      "seed": 20261017
+    },
+    "primaryVariant": "locally-calibrated",
+    "acceptance": [
+      {
+        "id": "A1",
+        "label": "Holdout sales valued",
+        "metric": "valuedShare",
+        "min": 0.9,
+        "basis": "Abstention is reported, not hidden; at least 90% of screened holdout sales must receive a valuation."
+      },
+      {
+        "id": "A2",
+        "label": "Median absolute percentage error",
+        "metric": "mdape",
+        "max": 0.1,
+        "basis": "Typical published off-market AVM accuracy is in the single digits to low teens; 10% is the pre-registered bar."
+      },
+      {
+        "id": "A3",
+        "label": "Share within ±10% of sale price",
+        "metric": "ppe10",
+        "min": 0.5,
+        "basis": "Industry PPE10 convention: at least half of sales within ten percent."
+      },
+      {
+        "id": "A4",
+        "label": "Coefficient of dispersion (COD)",
+        "metric": "cod",
+        "max": 15,
+        "basis": "IAAO Standard on Ratio Studies (2013), residential upper bound of 15."
+      },
+      {
+        "id": "A5",
+        "label": "Price-related differential (PRD)",
+        "metric": "prd",
+        "min": 0.98,
+        "max": 1.03,
+        "basis": "IAAO Standard on Ratio Studies (2013) vertical-equity range 0.98–1.03."
+      },
+      {
+        "id": "A6",
+        "label": "Absolute median signed error",
+        "metric": "absMedianSignedError",
+        "max": 0.03,
+        "basis": "Systematic over- or under-valuation must stay within ±3%."
+      },
+      {
+        "id": "A7",
+        "label": "Beats median $/sqft of the same comparables",
+        "metric": "pairedMdapeDeltaUpper:baseline-median-ppsf",
+        "max": 0,
+        "basis": "Paired bootstrap 95% upper bound of the MdAPE difference must be below zero: adjustments must add value."
+      },
+      {
+        "id": "A8",
+        "label": "Beats trailing ZIP median price",
+        "metric": "pairedMdapeDeltaUpper:baseline-zip-median",
+        "max": 0,
+        "basis": "Paired bootstrap 95% upper bound of the MdAPE difference must be below zero."
+      },
+      {
+        "id": "A9",
+        "label": "Calibrated 80% interval coverage",
+        "metric": "calibratedCoverage",
+        "min": 0.75,
+        "max": 0.85,
+        "basis": "Out-of-sample coverage of the calibrated interval must land within five points of its 80% target."
+      }
+    ],
+    "omittedFeatures": [
+      "bedroomValue",
+      "bathroomValue"
+    ]
+  },
+  "protocolDigest": "sha256-1b7ca84a3fd1e5ad0da8263e036b32f3748d84726c3ae7c1009a0be8a2f90990",
+  "supplement": {
+    "id": "ascent-valuation-supplement-maryland-external-1",
+    "baseProtocol": "ascent-valuation-validation-maryland-external-1",
+    "population": "Every screened holdout sale of the base protocol. Studies of error use the sales its primary configuration valued; no sale is removed for its price, error or verdict.",
+    "gate": {
+      "policy": "ascent-valuation-safeguards-1",
+      "thresholds": {
+        "minComparables": 3,
+        "maxDispersion": 0.15,
+        "maxGrossAdjustment": 0.25,
+        "maxNewestCompAgeDays": 120,
+        "maxBaselineDivergence": 0.15,
+        "outlierRobustZ": 3.5
+      },
+      "invocation": "Each holdout sale’s primary-configuration engine result is assessed with the release switch enabled, engine integrity compared with the base report’s engine fingerprint, no source records (so no illustrative context) and no benchmark (the measured-accuracy context never changes a decision)."
+    },
+    "abstention": {
+      "policy": "ascent-brief-verdict-1",
+      "minComparables": 3,
+      "rule": "declined: fewer than the minimum eligible comparables or a withheld release; limited: any release-gate review check; supported: every check passes.",
+      "minimumGroupSize": 30,
+      "resamples": 1000,
+      "hypotheses": [
+        {
+          "id": "S1a",
+          "statement": "Declined sales have a higher median absolute percentage error than sales with a stated value.",
+          "compare": [
+            "declined",
+            "stated"
+          ],
+          "seed": 911,
+          "supportedWhen": "the 95% two-sample bootstrap interval of MdAPE(declined) − MdAPE(stated) lies above zero"
+        },
+        {
+          "id": "S1b",
+          "statement": "Limited sales have a higher median absolute percentage error than supported sales.",
+          "compare": [
+            "limited",
+            "supported"
+          ],
+          "seed": 912,
+          "supportedWhen": "the 95% two-sample bootstrap interval of MdAPE(limited) − MdAPE(supported) lies above zero"
+        }
+      ],
+      "descriptive": "Share of holdout sales in each verdict, calibrated-interval coverage per verdict, how often each review check fires, and MdAPE of stated sales with and without each check. No hypothesis test."
+    },
+    "verticalEquity": {
+      "measures": [
+        "PRD, IAAO range 0.98–1.03",
+        "PRB, IAAO range −0.05 to 0.05, with a 95% ordinary-least-squares interval",
+        "median ratio by sale-price quartile",
+        "median ratio by estimate quartile: ratios that also fall across estimate quartiles indicate systematic compression; flat or rising ratios indicate that regressivity measured against sale prices comes from noise in the individual prices rather than from the estimates"
+      ],
+      "candidates": [
+        {
+          "id": "forward-log-linear",
+          "target": "accuracy",
+          "fit": "ordinary least squares of ln(sale price) on ln(estimate), calibration-window sales valued by the primary configuration",
+          "apply": "round(exp(α + β·ln(estimate)))",
+          "expectation": "Targets accuracy: removes systematic compression but shrinks toward the mean in proportion to estimation noise, so regressivity measured against sale prices can remain."
+        },
+        {
+          "id": "reverse-log-linear",
+          "target": "vertical equity",
+          "fit": "ordinary least squares of ln(estimate) on ln(sale price), the same sales",
+          "apply": "round(exp((ln(estimate) − α) / β)); invalid when β ≤ 0",
+          "expectation": "Targets vertical equity: removes compression measured against sale prices, including any that only reflects noise in the prices themselves, possibly at some cost in accuracy."
+        }
+      ],
+      "passWhen": {
+        "prdMin": 0.98,
+        "prdMax": 1.03,
+        "prbMin": -0.05,
+        "prbMax": 0.05,
+        "maxMdapeIncrease": 0.005,
+        "maxCodIncrease": 0.5
+      },
+      "promotion": "Never promoted from this study; a passing candidate needs its own prospective holdout."
+    },
+    "transport": {
+      "statement": "The configuration Ascent ships for Montgomery and Prince George’s (Maryland v2 fitted rates, search filters and calibrated interval), applied unchanged to this holdout. Descriptive; no acceptance decision.",
+      "reportDigest": "sha256-1c420bbcfa8218b63bca9d49fad4d892955e224f74c37c346a80780036a721a3"
+    },
+    "cohorts": "Descriptive slices by county (from each parcel’s jurisdiction code); no county fitting or acceptance."
+  },
+  "supplementDigest": "sha256-fe2f1b49150629cf70783fdee14008aa0e5a4b55ec47a9cd125c7eee3e9e9790",
+  "procedure": {
+    "steps": [
+      "Commit and push this registration.",
+      "python -I scripts/datasets/fetch-maryland-external.py",
+      "npx tsx scripts/lock-maryland-external.ts, then set the protocol’s csvSha256 to the locked fingerprint and commit both before any valuation.",
+      "npm run validate:valuation -- --market maryland-external",
+      "npx tsx scripts/maryland-external-supplement.ts",
+      "Publish every result, including failures."
+    ],
+    "files": {
+      "scripts/datasets/fetch-maryland.py": "sha256-fa162c8ec1c08924b2678737cdd3d95b5c4f681a4b2b7df79cc3046118b71a02",
+      "scripts/datasets/fetch-maryland-external.py": "sha256-eb99ec5d733b19460b92e9b37acdbb85d0ea52a34744e27c64e6083e8b4ad352"
+    },
+    "fileDigestBasis": "SHA-256 of the UTF-8 text with line endings normalized to LF"
+  },
+  "analysis": {
+    "files": {
+      "src/lib/valuation-supplement.ts": "sha256-5fb568e5e965a5c16d0bcc454ac033c3234a215effe46993482d1daa507eb509",
+      "src/lib/valuation-verdict.ts": "sha256-e911f46deecd6e4cec406fe43755e8ff3e79aa5a22388e96044eea1324fbfa59",
+      "src/lib/valuation-safeguards.ts": "sha256-b44968afe42844a4caf9b0a49cd61059d6a6333d4fb466a6bba493ec5c15307e",
+      "scripts/maryland-external-supplement.ts": "sha256-5300cb6335891ce748dbc44f8362c1f62f142b616b83afbe6654156dc88da8d3"
+    },
+    "note": "Code that computes S1–S4. A later change does not block the run, but the results record every changed file."
+  },
+  "priorQueries": [
+    {
+      "purpose": "Confirm that each county has records in the source. Counts of all records per jurisdiction code (every property type and transfer, no prices, dates or characteristics); no sale-level data was requested.",
+      "request": "https://opendata.maryland.gov/resource/ed4q-f8tm.json?$select=jurisdiction_code_mdp_field_jurscode as county,count(*) as n&$group=jurisdiction_code_mdp_field_jurscode&$order=jurisdiction_code_mdp_field_jurscode",
+      "result": {
+        "ANNE": 229245,
+        "BACO": 306537,
+        "FRED": 112759,
+        "HOWA": 112796
+      }
+    }
+  ],
+  "registeredAt": "2026-10-22T02:23:17.432Z",
+  "statement": "External test of the Maryland v2 method in Anne Arundel, Baltimore County, Frederick and Howard. No data for these counties is in this repository, and none had been fetched in this work apart from the record counts above. Screening, fitting, selection, interval method and all nine acceptance bars are Maryland v2’s, refitted on these counties’ own fit window; the windows repeat Maryland v1’s so the holdout covers July 2025 – June 2026. The dataset fingerprint is fixed by a data lock committed after download and before any valuation. Supplementary studies S1–S4 are fixed in the supplement plan. Every outcome will be published, including failures; a pass would describe these counties and period only, and Ascent serves no properties in them."
+}

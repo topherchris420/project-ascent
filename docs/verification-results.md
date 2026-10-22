@@ -1,5 +1,18 @@
 # Verification results
 
+## October 21, 2026 — Home Decision Brief, financial depth and external validation
+
+Branch `feat/home-decision-brief` from `c4d316b` (PR #11); master had not moved when this was checked.
+
+- **Type checking passes; 407/407 logic tests pass.** The tests cover the brief's verdict policy, traces, missing facts, settings changes and checksums; the finance sensitivity, break-evens and holding periods against the unchanged engine; the passport's public brief record (a test proves it cannot depend on the asking price, payoff or financial inputs); and the external study's analysis on synthetic data, including the compression and price-noise cases.
+- **The complete browser suite passes: 68 cases, with the existing opt-in cached-live provider case skipped** (12.7 minutes in Chrome). It includes eight brief cases (1440, 390 and 320 pixels; DC, Maryland, condo and the sample; the declined state; Ask Ascent references), the new /accuracy check at 1440 and 390 pixels, and the workbench, pricing, backup and search suites. Axe WCAG A/AA checks and page-overflow checks pass in every exercised brief, what-if and accuracy view.
+- **The evidence check passes for all six experiments.** The five earlier report digests are unchanged. For the external study, `--check` also verifies the registration, data lock, supplement digest and samples, and re-derives the verdict-policy, county and transport results. A deliberately altered supplement figure failed the check (exit 1); the file was then restored byte for byte.
+- **Offline evaluations pass**: domain, 32/32 safety and 11/11 rule cases; AI, 9/9 mocked cases with zero live provider requests.
+- **The optimized production build passes**: 58 pages generated, with /accuracy prerendered as static content and no build warnings.
+- **Screenshots inspected** at 1440, 390 and 320 pixels: the brief, the financial drivers table (which previously hid its amounts off-screen on phones) and /accuracy. New evidence: [brief, desktop](../evidence/ascent-home-decision-brief-1440.png), [brief, mobile](../evidence/ascent-home-decision-brief-390.png), [financial what-if, mobile](../evidence/ascent-finance-whatif-390.png), [external study on /accuracy, mobile](../evidence/ascent-accuracy-external-390.png).
+
+Not established by these checks: comprehension (the [protocol](usability-protocol.md) has not been run), independent replication of any study, production account security, and CI on the final commit. Read CI from the pull request. Two local issues are recorded rather than hidden. Playwright's 120-second server start timed out while the valuation scoring ran on the same laptop; the suite passed against a pre-started server with the same isolated settings. Commit `9d8f9c6` briefly broke type checking; `9d81656` fixed it.
+
 ## October 19, 2026 — homeowner search recovery and safer saved history
 
 Integrated with `3dbeae2` (PR #10), retaining its shared address search, indexed public-record lookup, and property-first studios. This follow-up adds example-address shortcuts, explicit clearing, immediate stale-response invalidation, a 30-second request deadline, partial-failure recovery, mobile navigation, and confirmation before deleting local home history.

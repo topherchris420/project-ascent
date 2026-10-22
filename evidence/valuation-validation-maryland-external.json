@@ -1,0 +1,770 @@
+{
+  "schema": "ascent-valuation-validation-report-1",
+  "protocol": {
+    "id": "ascent-valuation-validation-maryland-external-1",
+    "dataset": {
+      "id": "maryland-anne-arundel-baltimore-frederick-howard",
+      "csvSha256": "1b53827455c9256b70113ddb0778eb5a7862a4d869ee2ef4e2f7e43e11e97350",
+      "license": "Public Domain",
+      "sourceId": "source-maryland-public-records"
+    },
+    "windows": {
+      "fit": {
+        "from": "2021-01-01",
+        "to": "2023-12-31"
+      },
+      "select": {
+        "from": "2024-01-01",
+        "to": "2024-06-30"
+      },
+      "calibrate": {
+        "from": "2024-07-01",
+        "to": "2025-06-30"
+      },
+      "test": {
+        "from": "2025-07-01",
+        "to": "2026-06-30"
+      }
+    },
+    "screening": {
+      "minBeds": 0,
+      "maxBeds": 0,
+      "minBaths": 0,
+      "minSqft": 300,
+      "minPrice": 50000
+    },
+    "excludeSameParcel": true,
+    "asOfOffsetMs": -1,
+    "fit": {
+      "neighbours": 5,
+      "search": {
+        "maxDistanceMiles": 1,
+        "maxAgeDays": 180,
+        "maxSizeRatio": 1.35
+      },
+      "huberIterations": 3,
+      "huberK": 1.345,
+      "maxQualityAdjustment": 75000
+    },
+    "selectionGrid": [
+      {
+        "maxDistanceMiles": 0.5,
+        "maxAgeDays": 90,
+        "maxSizeRatio": 1.35
+      },
+      {
+        "maxDistanceMiles": 0.5,
+        "maxAgeDays": 180,
+        "maxSizeRatio": 1.35
+      },
+      {
+        "maxDistanceMiles": 1,
+        "maxAgeDays": 90,
+        "maxSizeRatio": 1.35
+      },
+      {
+        "maxDistanceMiles": 1,
+        "maxAgeDays": 180,
+        "maxSizeRatio": 1.35
+      },
+      {
+        "maxDistanceMiles": 2,
+        "maxAgeDays": 90,
+        "maxSizeRatio": 1.35
+      },
+      {
+        "maxDistanceMiles": 2,
+        "maxAgeDays": 180,
+        "maxSizeRatio": 1.35
+      },
+      {
+        "maxDistanceMiles": 3,
+        "maxAgeDays": 90,
+        "maxSizeRatio": 1.35
+      },
+      {
+        "maxDistanceMiles": 3,
+        "maxAgeDays": 180,
+        "maxSizeRatio": 1.35
+      }
+    ],
+    "selectionMinValuedShare": 0.9,
+    "interval": {
+      "target": 0.8,
+      "minTierSize": 50,
+      "tiers": [
+        {
+          "id": "sparse",
+          "maxComps": 2
+        },
+        {
+          "id": "moderate",
+          "maxComps": 9
+        },
+        {
+          "id": "dense",
+          "maxComps": null
+        }
+      ]
+    },
+    "bootstrap": {
+      "resamples": 1000,
+      "seed": 20261017
+    },
+    "primaryVariant": "locally-calibrated",
+    "acceptance": [
+      {
+        "id": "A1",
+        "label": "Holdout sales valued",
+        "metric": "valuedShare",
+        "min": 0.9,
+        "basis": "Abstention is reported, not hidden; at least 90% of screened holdout sales must receive a valuation."
+      },
+      {
+        "id": "A2",
+        "label": "Median absolute percentage error",
+        "metric": "mdape",
+        "max": 0.1,
+        "basis": "Typical published off-market AVM accuracy is in the single digits to low teens; 10% is the pre-registered bar."
+      },
+      {
+        "id": "A3",
+        "label": "Share within ±10% of sale price",
+        "metric": "ppe10",
+        "min": 0.5,
+        "basis": "Industry PPE10 convention: at least half of sales within ten percent."
+      },
+      {
+        "id": "A4",
+        "label": "Coefficient of dispersion (COD)",
+        "metric": "cod",
+        "max": 15,
+        "basis": "IAAO Standard on Ratio Studies (2013), residential upper bound of 15."
+      },
+      {
+        "id": "A5",
+        "label": "Price-related differential (PRD)",
+        "metric": "prd",
+        "min": 0.98,
+        "max": 1.03,
+        "basis": "IAAO Standard on Ratio Studies (2013) vertical-equity range 0.98–1.03."
+      },
+      {
+        "id": "A6",
+        "label": "Absolute median signed error",
+        "metric": "absMedianSignedError",
+        "max": 0.03,
+        "basis": "Systematic over- or under-valuation must stay within ±3%."
+      },
+      {
+        "id": "A7",
+        "label": "Beats median $/sqft of the same comparables",
+        "metric": "pairedMdapeDeltaUpper:baseline-median-ppsf",
+        "max": 0,
+        "basis": "Paired bootstrap 95% upper bound of the MdAPE difference must be below zero: adjustments must add value."
+      },
+      {
+        "id": "A8",
+        "label": "Beats trailing ZIP median price",
+        "metric": "pairedMdapeDeltaUpper:baseline-zip-median",
+        "max": 0,
+        "basis": "Paired bootstrap 95% upper bound of the MdAPE difference must be below zero."
+      },
+      {
+        "id": "A9",
+        "label": "Calibrated 80% interval coverage",
+        "metric": "calibratedCoverage",
+        "min": 0.75,
+        "max": 0.85,
+        "basis": "Out-of-sample coverage of the calibrated interval must land within five points of its 80% target."
+      }
+    ],
+    "omittedFeatures": [
+      "bedroomValue",
+      "bathroomValue"
+    ]
+  },
+  "protocolDigest": "sha256-072727116c4fc7ee6340cf93edd4acd0774a3826ff9dc76afea39a71cbd41a5e",
+  "dataset": {
+    "csvSha256": "1b53827455c9256b70113ddb0778eb5a7862a4d869ee2ef4e2f7e43e11e97350",
+    "rows": 144700,
+    "screened": 144621,
+    "removed": {
+      "bedrooms": 0,
+      "bathrooms": 0,
+      "livingArea": 0,
+      "duplicateSale": 0,
+      "recordedConsideration": 79
+    },
+    "windows": {
+      "fit": {
+        "sales": 72300
+      },
+      "select": {
+        "sales": 8545
+      },
+      "calibrate": {
+        "sales": 17692
+      },
+      "test": {
+        "sales": 19039
+      }
+    }
+  },
+  "engine": {
+    "version": "ascent-cma-1.0",
+    "fingerprint": "fnv1a32-49f0c98b"
+  },
+  "fitted": {
+    "sqftRate": 114.79,
+    "bedroomValue": 0,
+    "bathroomValue": 0,
+    "conditionValue": 56080,
+    "monthlyTrend": 0.01115,
+    "pairs": 328026,
+    "clampedToZero": []
+  },
+  "selection": {
+    "candidates": [
+      {
+        "search": {
+          "maxDistanceMiles": 0.5,
+          "maxAgeDays": 90,
+          "maxSizeRatio": 1.35
+        },
+        "valuedShare": 0.815565,
+        "mdape": 0.109921
+      },
+      {
+        "search": {
+          "maxDistanceMiles": 0.5,
+          "maxAgeDays": 180,
+          "maxSizeRatio": 1.35
+        },
+        "valuedShare": 0.891281,
+        "mdape": 0.103431
+      },
+      {
+        "search": {
+          "maxDistanceMiles": 1,
+          "maxAgeDays": 90,
+          "maxSizeRatio": 1.35
+        },
+        "valuedShare": 0.925922,
+        "mdape": 0.115367
+      },
+      {
+        "search": {
+          "maxDistanceMiles": 1,
+          "maxAgeDays": 180,
+          "maxSizeRatio": 1.35
+        },
+        "valuedShare": 0.959274,
+        "mdape": 0.11138
+      },
+      {
+        "search": {
+          "maxDistanceMiles": 2,
+          "maxAgeDays": 90,
+          "maxSizeRatio": 1.35
+        },
+        "valuedShare": 0.978701,
+        "mdape": 0.120163
+      },
+      {
+        "search": {
+          "maxDistanceMiles": 2,
+          "maxAgeDays": 180,
+          "maxSizeRatio": 1.35
+        },
+        "valuedShare": 0.990404,
+        "mdape": 0.118052
+      },
+      {
+        "search": {
+          "maxDistanceMiles": 3,
+          "maxAgeDays": 90,
+          "maxSizeRatio": 1.35
+        },
+        "valuedShare": 0.991574,
+        "mdape": 0.12162
+      },
+      {
+        "search": {
+          "maxDistanceMiles": 3,
+          "maxAgeDays": 180,
+          "maxSizeRatio": 1.35
+        },
+        "valuedShare": 0.996021,
+        "mdape": 0.121034
+      }
+    ],
+    "chosen": {
+      "maxDistanceMiles": 1,
+      "maxAgeDays": 180,
+      "maxSizeRatio": 1.35
+    }
+  },
+  "variants": [
+    {
+      "id": "shipped-defaults",
+      "label": "Engine with shipped default assumptions (untuned)",
+      "assumptions": {
+        "sqftRate": 110,
+        "bedroomValue": 0,
+        "bathroomValue": 0,
+        "conditionValue": 14000,
+        "monthlyTrend": 0,
+        "maxDistanceMiles": 3,
+        "maxAgeDays": 180,
+        "maxSizeRatio": 1.35
+      }
+    },
+    {
+      "id": "locally-calibrated",
+      "label": "Engine with locally fitted rates and selected search filters",
+      "assumptions": {
+        "sqftRate": 114.79,
+        "bedroomValue": 0,
+        "bathroomValue": 0,
+        "conditionValue": 56080,
+        "monthlyTrend": 0.01115,
+        "maxDistanceMiles": 1,
+        "maxAgeDays": 180,
+        "maxSizeRatio": 1.35
+      }
+    },
+    {
+      "id": "baseline-median-ppsf",
+      "label": "Median $/sqft of the primary configuration’s comparables × subject sqft",
+      "assumptions": null
+    },
+    {
+      "id": "baseline-zip-median",
+      "label": "Median recorded price in the same ZIP over the prior 180 days",
+      "assumptions": null
+    }
+  ],
+  "calibration": {
+    "target": 0.8,
+    "tiers": [
+      {
+        "id": "sparse",
+        "maxComps": 2,
+        "n": 1064,
+        "lowerLogRatio": -0.343756,
+        "upperLogRatio": 0.34178,
+        "pooled": false
+      },
+      {
+        "id": "moderate",
+        "maxComps": 9,
+        "n": 2913,
+        "lowerLogRatio": -0.28405,
+        "upperLogRatio": 0.225615,
+        "pooled": false
+      },
+      {
+        "id": "dense",
+        "maxComps": null,
+        "n": 13091,
+        "lowerLogRatio": -0.276401,
+        "upperLogRatio": 0.18288,
+        "pooled": false
+      }
+    ]
+  },
+  "holdout": {
+    "window": {
+      "from": "2025-07-01",
+      "to": "2026-06-30"
+    },
+    "screenedSales": 19039,
+    "perVariant": {
+      "shipped-defaults": {
+        "valuedShare": 0.996481,
+        "metrics": {
+          "n": 18972,
+          "mdape": 0.130943,
+          "mape": 0.200074,
+          "ppe5": 0.208992,
+          "ppe10": 0.396953,
+          "ppe20": 0.68443,
+          "medianRatio": 1.007695,
+          "medianSignedError": 0.007695,
+          "cod": 19.8418,
+          "prd": 1.079978
+        },
+        "mdapeCi95": [
+          0.128679,
+          0.133611
+        ],
+        "ppe10Ci95": [
+          0.390311,
+          0.404122
+        ]
+      },
+      "locally-calibrated": {
+        "valuedShare": 0.963128,
+        "metrics": {
+          "n": 18337,
+          "mdape": 0.122565,
+          "mape": 0.193551,
+          "ppe5": 0.225555,
+          "ppe10": 0.424933,
+          "ppe20": 0.700987,
+          "medianRatio": 1.03,
+          "medianSignedError": 0.03,
+          "cod": 18.5958,
+          "prd": 1.065053
+        },
+        "mdapeCi95": [
+          0.120282,
+          0.124869
+        ],
+        "ppe10Ci95": [
+          0.417353,
+          0.43175
+        ]
+      },
+      "baseline-median-ppsf": {
+        "valuedShare": 0.963128,
+        "metrics": {
+          "n": 18337,
+          "mdape": 0.125377,
+          "mape": 0.194307,
+          "ppe5": 0.221737,
+          "ppe10": 0.413154,
+          "ppe20": 0.685499,
+          "medianRatio": 0.997861,
+          "medianSignedError": -0.002139,
+          "cod": 19.4712,
+          "prd": 1.066124
+        },
+        "mdapeCi95": [
+          0.123383,
+          0.127658
+        ],
+        "ppe10Ci95": [
+          0.406117,
+          0.419863
+        ]
+      },
+      "baseline-zip-median": {
+        "valuedShare": 0.999475,
+        "metrics": {
+          "n": 19029,
+          "mdape": 0.216216,
+          "mape": 0.297432,
+          "ppe5": 0.127647,
+          "ppe10": 0.249619,
+          "ppe20": 0.47086,
+          "medianRatio": 1,
+          "medianSignedError": 0,
+          "cod": 29.7432,
+          "prd": 1.187819
+        },
+        "mdapeCi95": [
+          0.212244,
+          0.22001
+        ],
+        "ppe10Ci95": [
+          0.243574,
+          0.255718
+        ]
+      }
+    },
+    "commonSet": {
+      "n": 18330,
+      "perVariant": {
+        "shipped-defaults": {
+          "n": 18330,
+          "mdape": 0.130042,
+          "mape": 0.197752,
+          "ppe5": 0.210584,
+          "ppe10": 0.399236,
+          "ppe20": 0.688161,
+          "medianRatio": 1.008335,
+          "medianSignedError": 0.008335,
+          "cod": 19.5961,
+          "prd": 1.078394
+        },
+        "locally-calibrated": {
+          "n": 18330,
+          "mdape": 0.12253,
+          "mape": 0.193517,
+          "ppe5": 0.225532,
+          "ppe10": 0.424986,
+          "ppe20": 0.701037,
+          "medianRatio": 1.030003,
+          "medianSignedError": 0.030003,
+          "cod": 18.5927,
+          "prd": 1.065071
+        },
+        "baseline-median-ppsf": {
+          "n": 18330,
+          "mdape": 0.125371,
+          "mape": 0.194258,
+          "ppe5": 0.221768,
+          "ppe10": 0.413148,
+          "ppe20": 0.685597,
+          "medianRatio": 0.997847,
+          "medianSignedError": -0.002153,
+          "cod": 19.4666,
+          "prd": 1.06614
+        },
+        "baseline-zip-median": {
+          "n": 18330,
+          "mdape": 0.212001,
+          "mape": 0.291089,
+          "ppe5": 0.13006,
+          "ppe10": 0.254228,
+          "ppe20": 0.478778,
+          "medianRatio": 1,
+          "medianSignedError": 0,
+          "cod": 29.1089,
+          "prd": 1.171371
+        }
+      }
+    },
+    "paired": [
+      {
+        "variant": "shipped-defaults",
+        "baseline": "baseline-median-ppsf",
+        "n": 18337,
+        "mdapeDelta": 0.004671,
+        "ci95": [
+          0.002289,
+          0.006765
+        ],
+        "winRate": 0.4979
+      },
+      {
+        "variant": "shipped-defaults",
+        "baseline": "baseline-zip-median",
+        "n": 18963,
+        "mdapeDelta": -0.084753,
+        "ci95": [
+          -0.088774,
+          -0.080391
+        ],
+        "winRate": 0.675315
+      },
+      {
+        "variant": "locally-calibrated",
+        "baseline": "baseline-median-ppsf",
+        "n": 18337,
+        "mdapeDelta": -0.002812,
+        "ci95": [
+          -0.004996,
+          -0.000761
+        ],
+        "winRate": 0.531276
+      },
+      {
+        "variant": "locally-calibrated",
+        "baseline": "baseline-zip-median",
+        "n": 18330,
+        "mdapeDelta": -0.089471,
+        "ci95": [
+          -0.0935,
+          -0.085369
+        ],
+        "winRate": 0.679051
+      }
+    ],
+    "intervals": {
+      "envelopeCoverage": 0.825435,
+      "envelopeMedianWidth": 0.696039,
+      "calibratedCoverage": 0.772536,
+      "calibratedMedianWidth": 0.442162,
+      "byTier": [
+        {
+          "tier": "sparse",
+          "n": 1247,
+          "coverage": 0.777867,
+          "medianWidth": 0.698349,
+          "mdape": 0.167605
+        },
+        {
+          "tier": "moderate",
+          "n": 3165,
+          "coverage": 0.779147,
+          "medianWidth": 0.500364,
+          "mdape": 0.127342
+        },
+        {
+          "tier": "dense",
+          "n": 13925,
+          "coverage": 0.770557,
+          "medianWidth": 0.442162,
+          "mdape": 0.119108
+        }
+      ]
+    },
+    "byPriceBand": [
+      {
+        "band": "Q1",
+        "from": 50000,
+        "to": 350000,
+        "n": 4507,
+        "metrics": {
+          "n": 4507,
+          "mdape": 0.183276,
+          "mape": 0.334164,
+          "ppe5": 0.166408,
+          "ppe10": 0.3144,
+          "ppe20": 0.524517,
+          "medianRatio": 1.157904,
+          "medianSignedError": 0.157904,
+          "cod": 25.3859,
+          "prd": 1.057001
+        }
+      },
+      {
+        "band": "Q2",
+        "from": 350000,
+        "to": 465000,
+        "n": 4802,
+        "metrics": {
+          "n": 4802,
+          "mdape": 0.1114,
+          "mape": 0.148808,
+          "ppe5": 0.247189,
+          "ppe10": 0.46085,
+          "ppe20": 0.750521,
+          "medianRatio": 1.035406,
+          "medianSignedError": 0.035406,
+          "cod": 14.0683,
+          "prd": 1.000294
+        }
+      },
+      {
+        "band": "Q3",
+        "from": 465000,
+        "to": 650000,
+        "n": 4488,
+        "metrics": {
+          "n": 4488,
+          "mdape": 0.109203,
+          "mape": 0.139039,
+          "ppe5": 0.23975,
+          "ppe10": 0.464349,
+          "ppe20": 0.779635,
+          "medianRatio": 1.006325,
+          "medianSignedError": 0.006325,
+          "cod": 13.8077,
+          "prd": 1.001382
+        }
+      },
+      {
+        "band": "Q4",
+        "from": 650000,
+        "to": null,
+        "n": 4540,
+        "metrics": {
+          "n": 4540,
+          "mdape": 0.111786,
+          "mape": 0.155174,
+          "ppe5": 0.247357,
+          "ppe10": 0.457709,
+          "ppe20": 0.746035,
+          "medianRatio": 0.963286,
+          "medianSignedError": -0.036714,
+          "cod": 15.717,
+          "prd": 1.031816
+        }
+      }
+    ]
+  },
+  "acceptance": [
+    {
+      "id": "A1",
+      "label": "Holdout sales valued",
+      "value": 0.963128,
+      "min": 0.9,
+      "passed": true,
+      "basis": "Abstention is reported, not hidden; at least 90% of screened holdout sales must receive a valuation."
+    },
+    {
+      "id": "A2",
+      "label": "Median absolute percentage error",
+      "value": 0.122565,
+      "max": 0.1,
+      "passed": false,
+      "basis": "Typical published off-market AVM accuracy is in the single digits to low teens; 10% is the pre-registered bar."
+    },
+    {
+      "id": "A3",
+      "label": "Share within ±10% of sale price",
+      "value": 0.424933,
+      "min": 0.5,
+      "passed": false,
+      "basis": "Industry PPE10 convention: at least half of sales within ten percent."
+    },
+    {
+      "id": "A4",
+      "label": "Coefficient of dispersion (COD)",
+      "value": 18.5958,
+      "max": 15,
+      "passed": false,
+      "basis": "IAAO Standard on Ratio Studies (2013), residential upper bound of 15."
+    },
+    {
+      "id": "A5",
+      "label": "Price-related differential (PRD)",
+      "value": 1.065053,
+      "min": 0.98,
+      "max": 1.03,
+      "passed": false,
+      "basis": "IAAO Standard on Ratio Studies (2013) vertical-equity range 0.98–1.03."
+    },
+    {
+      "id": "A6",
+      "label": "Absolute median signed error",
+      "value": 0.03,
+      "max": 0.03,
+      "passed": true,
+      "basis": "Systematic over- or under-valuation must stay within ±3%."
+    },
+    {
+      "id": "A7",
+      "label": "Beats median $/sqft of the same comparables",
+      "value": -0.000761,
+      "max": 0,
+      "passed": true,
+      "basis": "Paired bootstrap 95% upper bound of the MdAPE difference must be below zero: adjustments must add value."
+    },
+    {
+      "id": "A8",
+      "label": "Beats trailing ZIP median price",
+      "value": -0.085369,
+      "max": 0,
+      "passed": true,
+      "basis": "Paired bootstrap 95% upper bound of the MdAPE difference must be below zero."
+    },
+    {
+      "id": "A9",
+      "label": "Calibrated 80% interval coverage",
+      "value": 0.772536,
+      "min": 0.75,
+      "max": 0.85,
+      "passed": true,
+      "basis": "Out-of-sample coverage of the calibrated interval must land within five points of its 80% target."
+    }
+  ],
+  "accepted": false,
+  "samples": {
+    "file": "evidence/valuation-validation-maryland-external-samples.csv.gz",
+    "sha256": "359b47177c0572ce3654182b38207f6ec2461f746199aa4371c045e277d89a7b",
+    "rows": 19039
+  },
+  "limitations": [
+    "External test of the unchanged Maryland v2 method in Anne Arundel, Baltimore County, Frederick and Howard, registered before their data was downloaded. Internally executed; no independent reviewer has certified it.",
+    "Pooled four-county fit, as for Montgomery and Prince George’s. County slices are descriptive and establish no county calibration.",
+    "Quality is construction grade, not interior condition. Bedrooms and bathrooms are unavailable; both rates are fixed to zero. Grade coefficient constrained to $75,000 as in Maryland v2.",
+    "Current parcel characteristics, last three recorded transfers and surviving single-unit R/TH parcels; no historical feature snapshots, concessions, full title history or recording-time availability.",
+    "A passing result would describe these counties and this period only; it would not validate Montgomery, Prince George’s or the rest of Maryland, and Ascent serves no properties in these counties."
+  ],
+  "reportDigest": "sha256-60f04f4d65eb2efe48b2076c731b492f130512b749818e6cf6df28ddaab9ec6c"
+}

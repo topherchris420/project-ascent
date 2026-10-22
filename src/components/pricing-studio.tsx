@@ -1,8 +1,9 @@
 'use client';
-import { useEffect, useMemo, useState, type ReactNode } from 'react';
+import { useDeferredValue, useEffect, useMemo, useState, type ReactNode } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, ArrowRight, Check, FileText, Plus, RotateCcw, ShieldCheck } from 'lucide-react';
 import { comparableExclusion, distanceMiles, simulatePricing } from '@/lib/analytics';
+import { decisionDrivers } from '@/lib/decision-drivers';
 import { assessCmaEvidence } from '@/lib/decision-review';
 import {
   calculateStudio,
@@ -17,12 +18,15 @@ import {
   type StudioState,
   studioStateSchema,
 } from '@/lib/demo-studio';
+import { buildHomeDecisionBrief } from '@/lib/home-decision-brief';
+import type { FinanceInputs } from '@/lib/homeowner-finance';
 import { positionLabel } from '@/lib/pricing-narrative';
 import { assessValuationRelease, benchmarkForState, usesValidatedConfiguration } from '@/lib/valuation-safeguards';
 import { ComparableExplorer, DecisionArithmetic } from './comparable-explorer';
 import { DecisionDrivers, PriceEvidenceStrip, SellerPlanTable } from './pricing-visuals';
 import { PricingQuestions } from './pricing-questions';
 import { HomeownerWorkbench } from './homeowner-workbench';
+import { HomeDecisionBriefPanel } from './home-decision-brief';
 import { money, number } from './format';
 import '@/app/pricing-studio.css';
 
@@ -106,6 +110,7 @@ export function PricingStudio(config: StudioConfig) {
   const [step, setStep] = useState(1),
     [reportOpened, setReportOpened] = useState(false),
     [inspectId, setInspectId] = useState('');
+  const [finance, setFinance] = useState<FinanceInputs | null>(null);
   const baseline = useMemo(() => {
     try {
       return calculateStudio(evidence, config.defaultState);
@@ -157,6 +162,14 @@ export function PricingStudio(config: StudioConfig) {
       result && market ? assessValuationRelease(result, { sources, release: { enabled: true, reason: '' } }) : null,
     [result, market, sources],
   );
+  const drivers = useMemo(() => (result ? decisionDrivers(result, { conditionMax }) : []), [result, conditionMax]);
+  // Typing a financial input re-runs the brief's sensitivity sweep; deferring it keeps the form responsive.
+  const briefFinance = useDeferredValue(finance);
+  const brief = useMemo(
+    () => buildHomeDecisionBrief({ evidence, state, result, finance: briefFinance, drivers }),
+    [evidence, state, result, briefFinance, drivers],
+  );
+  const declined = brief.value.verdict === 'declined';
   const conditionText = (value?: number) =>
     value === undefined
       ? 'condition unknown'
@@ -319,13 +332,19 @@ export function PricingStudio(config: StudioConfig) {
       </div>
       <div className="studio-estimate" aria-live="polite">
         <span>Comparable-supported estimate</span>
-        <strong data-testid="studio-estimate">{result ? money(result.estimate) : 'No usable sales'}</strong>
+        <strong data-testid="studio-estimate">
+          {!result ? 'No usable sales' : declined ? 'Not stated' : money(result.estimate)}
+        </strong>
         <span>
-          {result
-            ? `${money(result.low)}–${money(result.high)} · ${result.comps.length} eligible sale${result.comps.length === 1 ? '' : 's'}`
-            : 'Restore a sale or reset assumptions below.'}
+          {!result
+            ? 'Restore a sale or reset assumptions below.'
+            : declined
+              ? brief.value.reasons[0]
+              : `${money(result.low)}–${money(result.high)} · ${result.comps.length} eligible sale${result.comps.length === 1 ? '' : 's'}`}
         </span>
-        {validated && gate?.calibratedInterval ? (
+        {result && declined ? (
+          <small>The sales and arithmetic stay open below for review; Ascent does not turn them into a value.</small>
+        ) : validated && gate?.calibratedInterval ? (
           <small data-testid="calibrated-interval">
             Calibrated {Math.round(gate.calibratedInterval.target * 100)}% range {money(gate.calibratedInterval.low)}–
             {money(gate.calibratedInterval.high)}: in the published {gate.calibratedInterval.market} holdout it held{' '}
@@ -362,14 +381,16 @@ export function PricingStudio(config: StudioConfig) {
         {config.resultFirst ? (
           <>
             {summaryBlock}
+            <HomeDecisionBriefPanel brief={brief} />
             {stepNav}
             {compactIntroBlock}
           </>
         ) : (
           <>
             {introBlock}
-            {stepNav}
             {summaryBlock}
+            <HomeDecisionBriefPanel brief={brief} />
+            {stepNav}
           </>
         )}
         {calculation.error && (
@@ -384,6 +405,9 @@ export function PricingStudio(config: StudioConfig) {
           evidence={evidence}
           state={state}
           result={result}
+          valueStated={!declined}
+          brief={brief}
+          onFinanceChange={setFinance}
           onStudioChange={patch}
           missingEvidence={config.passport.missing}
         />
@@ -418,6 +442,13 @@ export function PricingStudio(config: StudioConfig) {
                 <h2>Three positions. Explicit tradeoffs.</h2>
               </div>
             </div>
+            {declined && (
+              <p className="studio-warning">
+                Ascent is not stating a value for this home. These positions come straight from the arithmetic of{' '}
+                {result.comps.length} sale{result.comps.length === 1 ? '' : 's'}: working figures for a professional to
+                review, not supported prices.
+              </p>
+            )}
             <p className="studio-muted">
               Choosing an asking price does not change the evidence-supported valuation. Proceeds assume a sale at that
               price; no outcome or timing is predicted.
@@ -517,7 +548,7 @@ export function PricingStudio(config: StudioConfig) {
             Change a rating or rate, exclude a sale with a reason, or add a sale you know about. The original
             calculation stays frozen for comparison.
           </p>
-          {result && <DecisionDrivers result={result} conditionMax={conditionMax} />}
+          {result && <DecisionDrivers result={result} conditionMax={conditionMax} precomputed={drivers} />}
           <h3 className="studio-subhead">Your assumptions</h3>
           <div className="studio-assumption-fields">
             {evidence.subject.condition !== undefined && (

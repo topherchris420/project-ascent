@@ -1,8 +1,92 @@
+> October 21 follow-up: an [external Maryland study](#external-maryland-validation-four-counties-protocol-ascent-valuation-validation-maryland-external-1), registered and pushed before its data was downloaded, failed acceptance in four other counties. Its registered supplement supports the Home Decision Brief’s verdict policy. Every earlier result below is unchanged.
+>
 > October 18 follow-up: [current production-readiness checkpoint](production-readiness.md). Maryland v2 and DC condo results are now published separately; both fail acceptance and keep calibrated ranges disabled. The original Maryland failure below is preserved.
 
 # Valuation accuracy validation and production safeguards
 
 Most residential pricing tools publish no error rate. Ascent publishes one for its home market, Washington, DC, measured out of sample on the District's own recorded sales against thresholds set before scoring. A second market, King County, WA, is published alongside it, including the criteria it missed. Anyone can reproduce either result byte for byte.
+
+## External Maryland validation: four counties (protocol `ascent-valuation-validation-maryland-external-1`)
+
+**Did not meet the acceptance criteria: 5 of 9 criteria met, one of them exactly at the bar and one by 0.08 points.** Holdout: **19,039 sales** recorded July 2025–June 2026 in Anne Arundel, Baltimore County, Frederick and Howard, four counties Ascent does not serve. The revised Maryland method was refitted on these counties’ own earlier sales. Primary median absolute percentage error **12.26%** (95% CI 12.03–12.49), **42.49%** within ±10%.
+
+This is the first Ascent study whose data did not exist on this machine when the method, bars and analysis were fixed:
+
+1. **Registration before download.** `evidence/maryland-external-protocol-registration.json` holds the unchanged Maryland v2 method, the windows, the acceptance bars, the digests of the fetch scripts and the analysis code, and the supplementary plan below with its hypotheses. GitHub records its push (commit `f5f15f4`) at 02:23:56 UTC on October 22, 2026; the download began at 02:24:04. Before registering, only per-county record counts had been queried, and the registration says so.
+2. **Data lock before valuation.** `evidence/maryland-external-data-lock.json` records the dataset fingerprints, row counts and per-window sale counts, and nothing about prices. Its push (`9d8f9c6`) is recorded at 02:37:48 UTC; scoring started afterwards. `validate:valuation` refuses to score a pre-registered protocol without a matching lock.
+3. **Scored once, then the registered supplement.** One deviation: after writing the report and samples, the scoring run stopped while building the display summary because the new protocol had no display label. The label was added to `src/lib/valuation-safeguards.ts` and the summary was generated from the unchanged report. That file is one of the registered analysis files, so the supplement records it as changed after registration. The change is the label alone.
+
+| Configuration | Valued | Median error (95% CI) | Within ±10% (95% CI) | COD | PRD |
+| --- | --- | --- | --- | --- | --- |
+| Refitted on these counties (primary) | 96.31% | 12.26% (12.03–12.49) | 42.49% (41.74–43.18) | 18.60 | 1.065 |
+| Ascent general defaults, untuned | 99.65% | 13.09% (12.87–13.36) | 39.70% (39.03–40.41) | 19.84 | 1.080 |
+| Median $/sqft of the same comparables | 96.31% | 12.54% (12.34–12.77) | 41.32% (40.61–41.99) | 19.47 | 1.066 |
+| Trailing ZIP median | 99.95% | 21.62% (21.22–22.00) | 24.96% (24.36–25.57) | 29.74 | 1.188 |
+
+| Criterion | Threshold | Measured | Verdict |
+| --- | --- | --- | --- |
+| A1 · Holdout sales valued | ≥ 90.00% | 96.31% | Met |
+| A2 · Median absolute percentage error | ≤ 10.00% | 12.26% | **Missed** |
+| A3 · Share within ±10% of sale price | ≥ 50.00% | 42.49% | **Missed** |
+| A4 · Coefficient of dispersion (COD) | ≤ 15.00 | 18.60 | **Missed** |
+| A5 · Price-related differential (PRD) | 0.98–1.03 | 1.065 | **Missed** |
+| A6 · Absolute median signed error | ≤ 3.00% | 3.00% (median ratio 1.030) | Met exactly at the bar |
+| A7 · Beats median $/sqft of the same comparables | Paired 95% upper bound below 0 | −0.08 points | Met narrowly |
+| A8 · Beats trailing ZIP median price | Paired 95% upper bound below 0 | −8.54 points | Met |
+| A9 · Calibrated 80% interval coverage | 75.00%–85.00% | 77.25% | Met |
+
+Paired bootstrap, primary minus baseline: −0.28 points against median $/sqft of the same comparables (95% CI −0.50 to −0.08; the engine is closer on 53.1% of sales) and −8.95 points against the ZIP median (CI −9.35 to −8.54). Adjustments added very little over a plain median $/sqft of the same sales.
+
+Fitted on 2021–2023 sales: $114.79 per square foot, $56,080 per construction-quality grade (below the registered $75,000 cap), +1.115% per month; room rates fixed at zero because the source has no room counts. The half-mile search options valued fewer than the registered 90% of selection-window sales, so the rule chose 1 mile, 180 days and a 1.35 size ratio. The calibrated 80% interval contained 77.3% of valued sales: 77.8% with 1–2 comparables, 77.9% with 3–9 and 77.1% with 10 or more. The observed envelope contained 82.5% but was much wider (median width 69.6% of the estimate, against 44.2%).
+
+| Sale-price quartile | Sales | Median error | Median estimate ÷ price | COD |
+| --- | --- | --- | --- | --- |
+| Under $350,000 | 4,507 | 18.33% | 1.158 | 25.39 |
+| $350,000–$465,000 | 4,802 | 11.14% | 1.035 | 14.07 |
+| $465,000–$650,000 | 4,488 | 10.92% | 1.006 | 13.81 |
+| Over $650,000 | 4,540 | 11.18% | 0.963 | 15.72 |
+
+### Registered supplement (`ascent-valuation-supplement-maryland-external-1`)
+
+Fixed in the same registration and run on the frozen primary configuration after scoring. `--check` re-derives the verdict, county and transport results from `evidence/valuation-maryland-external-supplement-samples.csv.gz` and requires every estimate to equal the published report samples. Supplement digest: `sha256-46b47c664b3f5381da6d4d45af0b09dca53ced56d9b6df905a82d3acee032ea5`.
+
+**S1 · Does the Home Decision Brief’s verdict policy separate better estimates from worse ones?** Each holdout result was assessed with the release checks exactly as the brief does, under [`ascent-brief-verdict-1`](home-decision-brief.md#verdict-policy-ascent-brief-verdict-1).
+
+| Verdict | Sales | Share of valued | Median error | Within ±10% | Median estimate ÷ price | Calibrated 80% coverage |
+| --- | --- | --- | --- | --- | --- | --- |
+| Value not stated (fewer than 3 sales) | 1,247 | 6.80% | 16.76% | 33.60% | 1.016 | 77.79% |
+| Estimate with stated limits | 13,126 | 71.58% | 13.10% | 39.78% | 1.032 | 73.97% |
+| Supported by the evidence | 3,964 | 21.62% | 8.98% | 54.29% | 1.027 | 87.97% |
+| Any stated value | 17,090 | 93.20% | 12.02% | 43.14% | 1.031 | 77.21% |
+
+- **S1a supported.** Not-stated sales had a higher median error than sales with a stated value: +4.74 points (two-sample bootstrap 95% CI +3.10 to +5.57).
+- **S1b supported.** Limited sales had a higher median error than supported ones: +4.12 points (CI +3.64 to +4.49).
+
+The verdict tracks accuracy on sales the policy never saw. The supported group is a descriptive subgroup, not an acceptance result, and its intervals over-covered (88%). Among stated values, the agreement check carried most of the separation: 11,398 flagged sales had 13.94% median error against 8.89% for the rest. The price-per-square-foot cross-check (2,040 flagged; 16.28% against 11.53%) and the adjustment-size check (298; 16.15% against 11.99%) also separated. The outlier check flagged 5,267 sales without separating them (11.63% against 12.18%). Changing the policy would need its own registration and an untouched holdout; these results cannot tune it.
+
+**S2 · Can a recalibration fix vertical equity?** Primary PRD 1.065 and PRB −0.101 (95% CI −0.108 to −0.093). Median estimate ÷ price falls across sale-price quartiles (1.158, 1.036, 1.008, 0.963) but not across estimate quartiles (1.011, 1.033, 1.041, 1.034). Under the registered diagnostic, that pattern means the regressivity measured against sale prices comes from individual sale prices varying for reasons the records do not show, such as interior condition, distress or concessions, rather than from estimates compressed toward the middle.
+
+| Candidate, fitted on 17,068 calibration-window sales | Slope | Median error | COD | PRD | PRB | Verdict |
+| --- | --- | --- | --- | --- | --- | --- |
+| Forward log-linear (accuracy) | 0.989 | 12.10% | 18.58 | 1.068 | −0.109 | Fails PRD and PRB |
+| Reverse log-linear (vertical equity) | 0.795 | 14.79% (+2.53 points) | 21.38 | 1.003 | +0.094 | Fails PRB, accuracy and COD |
+
+Neither candidate passed, as the registered price-noise expectation predicted. Nothing is promoted; a passing candidate would have needed its own prospective holdout. For homeowners this matters: homes with low *estimates* were not over-valued (median ratio 1.011 in the lowest estimate quartile), so a price-band correction applied to one home’s estimate would be wrong.
+
+**S3 · Counties** (descriptive slices of the pooled model; no county fitting or acceptance):
+
+| County | Holdout sales | Valued | Median error | Within ±10% | COD | PRD | Calibrated 80% coverage |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Anne Arundel | 5,990 | 97.60% | 12.49% | 41.53% | 19.29 | 1.080 | 76.50% |
+| Baltimore County | 7,657 | 96.85% | 13.33% | 39.95% | 21.22 | 1.076 | 71.41% |
+| Frederick | 2,799 | 92.03% | 11.19% | 44.84% | 14.49 | 1.034 | 85.71% |
+| Howard | 2,593 | 96.37% | 10.05% | 49.86% | 13.27 | 1.031 | 87.64% |
+
+**S4 · Transport.** The configuration Ascent ships for Montgomery and Prince George’s (Maryland v2’s fitted rates, half-mile search and calibrated interval), applied unchanged: 90.14% valued, 11.01% median error, 46.25% within ±10%, COD 17.88, PRD 1.054, PRB −0.086 (CI −0.094 to −0.078), calibrated interval coverage 73.14%, below the 75–85% band. It valued fewer, generally better-evidenced sales than the primary, so the two are not a paired comparison. The locally fitted trend (+1.115% per month, from 2021–2023) is double Maryland v2’s (+0.523%), and the primary over-valued by 3.0% at the median against 1.2% for the transported settings. A trend fitted in a rising market may overstate later appreciation. That is a hypothesis for a future registered study, not a finding.
+
+**What follows.** The method is not supported beyond Montgomery and Prince George’s. No calibrated range is released anywhere in Maryland, and Ascent claims no accuracy for these four counties. The brief’s verdict policy is supported as a way to say how far an estimate can be trusted.
+
+Reproduce: `npm run validate:valuation -- --check --market maryland-external` (seconds) or `--verify` to re-run the valuation from the locked dataset (about 20 minutes on a laptop). The supplement script, `npx tsx scripts/maryland-external-supplement.ts`, refuses to overwrite its published output.
 
 ## Maryland: Montgomery and Prince George’s (protocol `ascent-valuation-validation-maryland-1`)
 
