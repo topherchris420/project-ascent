@@ -415,6 +415,10 @@ export function compareDecisions(raw: FinanceInputs) {
     calculationHash: calculationChecksum({ version: FINANCE_VERSION, inputs, results }),
   };
 }
+/** One choice, computed by the same arithmetic as `compareDecisions` without hashing; for what-if analysis. */
+export function evaluateDecision(raw: FinanceInputs, kind: DecisionKind): DecisionResult {
+  return decision(financeSchema.parse(raw), kind);
+}
 export function saleSensitivity(raw: FinanceInputs, reduction = 25000) {
   const inputs = financeSchema.parse(raw);
   if (!Number.isFinite(reduction) || reduction < 0 || inputs.salePrice === null || inputs.salePrice < reduction)
