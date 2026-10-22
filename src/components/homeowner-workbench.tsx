@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { Download, Home, LockKeyhole, Save, Trash2 } from 'lucide-react';
 import {
@@ -12,6 +12,7 @@ import {
   saleSensitivity,
   type FinanceInputs,
   type FinanceKey,
+  type DecisionKind,
 } from '@/lib/homeowner-finance';
 import {
   compareHomeSnapshots,
@@ -140,6 +141,11 @@ export function HomeownerWorkbench({
     [ready, setReady] = useState(false);
   const [status, setStatus] = useState(''),
     [inputError, setInputError] = useState('');
+  const [inputErrorKey, setInputErrorKey] = useState<FinanceKey | null>(null);
+  const [decisionChoice, setDecisionChoice] = useState<DecisionKind>('hold');
+  const [focusInput, setFocusInput] = useState<FinanceKey | null>(null);
+  const assumptions = useRef<HTMLDetailsElement>(null);
+  const financeFields = useRef<Partial<Record<FinanceKey, HTMLInputElement>>>({});
   const [panel, setPanel] = useState<string>(session?.panel ?? 'overview'),
     [selectedVersion, setSelectedVersion] = useState('');
   const [targetVersion, setTargetVersion] = useState('current');
@@ -150,6 +156,8 @@ export function HomeownerWorkbench({
   const loadIllustrative = () => {
     const a = exampleFinance();
     setInputs(a);
+    setInputError('');
+    setInputErrorKey(null);
     setFollowValue(false);
     onStudioChange({
       listPrice: a.salePrice,
@@ -161,6 +169,16 @@ export function HomeownerWorkbench({
     setStatus(
       'Illustrative financial assumptions loaded for the fictional sample. They are not property records or market forecasts.',
     );
+  };
+  useEffect(() => {
+    if (!focusInput || !assumptions.current) return;
+    assumptions.current.open = true;
+    financeFields.current[focusInput]?.focus();
+    setFocusInput(null);
+  }, [focusInput, panel]);
+  const reviewInput = (key: FinanceKey) => {
+    if (panel !== 'overview' && panel !== 'compare') setPanel('compare');
+    setFocusInput(key);
   };
   useEffect(() => {
     if (session) {
@@ -210,6 +228,14 @@ export function HomeownerWorkbench({
   };
   const effectiveKey = JSON.stringify(effective);
   const parsed = financeSchema.safeParse(effective);
+  const fieldErrors: Partial<Record<FinanceKey, string>> = {};
+  if (!parsed.success) {
+    for (const issue of parsed.error.issues) {
+      const key = issue.path[0] as FinanceKey;
+      if (key in financeLabels) fieldErrors[key] = issue.message;
+    }
+  }
+  if (inputError && inputErrorKey) fieldErrors[inputErrorKey] = inputError;
   const comparison = useMemo(() => (parsed.success ? compareDecisions(parsed.data) : null), [effectiveKey]);
   useEffect(() => {
     onFinanceChange?.(effective);
@@ -252,6 +278,7 @@ export function HomeownerWorkbench({
         setInputError(
           `Enter ${key === 'salePrice' ? 'a positive sale price' : `a value from 0 to ${max}`} for ${financeLabels[key]}. These controls share the pricing draft.`,
         );
+        setInputErrorKey(key);
         return;
       }
     }
@@ -259,11 +286,13 @@ export function HomeownerWorkbench({
     const next = { ...effective, [key]: value };
     if (value !== null && !Number.isFinite(value)) {
       setInputError('Enter a finite number or leave the field blank.');
+      setInputErrorKey(key);
       return;
     }
     // Keep invalid draft values visible. Calculations and save/export stop until they are corrected.
     setInputs(next);
     setInputError('');
+    setInputErrorKey(null);
     setStatus('Draft changed. Save a new decision snapshot to keep it.');
     setDraft(null);
     if (key === 'salePrice') onStudioChange({ listPrice: value });
@@ -609,9 +638,16 @@ export function HomeownerWorkbench({
           Try illustrative financial inputs
         </button>
       )}
-      {panel === 'compare' && comparison && <HomeownerDecisions comparison={comparison} />}
+      {panel === 'compare' && comparison && (
+        <HomeownerDecisions
+          comparison={comparison}
+          selected={decisionChoice}
+          onSelect={setDecisionChoice}
+          onReviewInput={reviewInput}
+        />
+      )}
       {(panel === 'overview' || panel === 'compare') && (
-        <details className="home-assumptions">
+        <details className="home-assumptions" ref={assumptions}>
           <summary>Edit financial assumptions</summary>
           <p className="fine">
             The existing studio’s selected price, selling fees and payoff use these same controls. Default fees are
@@ -620,34 +656,66 @@ export function HomeownerWorkbench({
           <button className="text-button" disabled={!result || !valueStated} onClick={() => setFollowValue(true)}>
             Use current modeled estimate for property value
           </button>
-          {groups.map(group => (
+          {groups.map((group, groupIndex) => (
             <fieldset key={group.title}>
               <legend>{group.title}</legend>
-              <p className="fine">{group.note}</p>
+              <p className="fine" id={`home-finance-group-${groupIndex}`}>
+                {group.note}
+              </p>
               <div className="home-input-grid">
                 {group.keys.map(key => (
-                  <label key={key}>
-                    {financeLabels[key]}
+                  <div className="home-finance-field" key={key}>
+                    <label htmlFor={`home-finance-${key}`}>{financeLabels[key]}</label>
                     <input
+                      id={`home-finance-${key}`}
+                      ref={element => {
+                        if (element) financeFields.current[key] = element;
+                        else delete financeFields.current[key];
+                      }}
                       type="number"
                       inputMode="decimal"
                       step={key.endsWith('Months') ? '1' : 'any'}
                       value={effective[key] ?? ''}
                       placeholder="Unknown"
+                      aria-invalid={!!fieldErrors[key]}
+                      aria-describedby={`home-finance-group-${groupIndex}${fieldErrors[key] ? ` home-finance-${key}-error` : ''}`}
                       onChange={e => changeInput(key, e.target.value)}
                     />
-                  </label>
+                    {fieldErrors[key] && (
+                      <p className="home-field-error" id={`home-finance-${key}-error`}>
+                        {fieldErrors[key]}
+                      </p>
+                    )}
+                  </div>
                 ))}
               </div>
             </fieldset>
           ))}
+          {panel === 'compare' && comparison && (
+            <a className="button small" href="#home-decision-setup-title">
+              Return to your comparison
+            </a>
+          )}
         </details>
       )}
       {(inputError || !parsed.success) && (
-        <p role="alert" className="error-box">
-          {inputError ||
-            `Correct these inputs: ${!parsed.success ? parsed.error.issues.map(i => `${i.path.join('.')}: ${i.message}`).join('; ') : ''}`}
-        </p>
+        <div role="alert" className="error-box home-finance-errors">
+          <p>
+            <strong>Review your financial inputs.</strong> Choose a field below to correct it.
+          </p>
+          <ul>
+            {Object.entries(fieldErrors).map(([key, message]) => (
+              <li key={key}>
+                <button className="text-button" onClick={() => reviewInput(key as FinanceKey)}>
+                  {financeLabels[key as FinanceKey]}
+                </button>
+                : {message}
+              </li>
+            ))}
+          </ul>
+          {!parsed.success &&
+            parsed.error.issues.filter(issue => !issue.path.length).map((issue, i) => <p key={i}>{issue.message}</p>)}
+        </div>
       )}
       {panel === 'ask' && (
         <div className="home-ask">

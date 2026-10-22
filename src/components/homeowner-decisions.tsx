@@ -1,20 +1,30 @@
 'use client';
-import { useState } from 'react';
 import {
   decisionLabels,
   financeLabels,
   FINANCE_LIMITS,
   type compareDecisions,
   type DecisionKind,
+  type FinanceKey,
 } from '@/lib/homeowner-finance';
 import { FinanceWhatIf } from './finance-what-if';
 import { money } from './format';
 
 export type FinanceComparison = ReturnType<typeof compareDecisions>;
 const display = (value: number | null) => (value === null ? 'Needs inputs' : money(value));
-export function HomeownerDecisions({ comparison }: { comparison: FinanceComparison }) {
-  const [selected, setSelected] = useState<DecisionKind>('hold');
+export function HomeownerDecisions({
+  comparison,
+  selected,
+  onSelect,
+  onReviewInput,
+}: {
+  comparison: FinanceComparison;
+  selected: DecisionKind;
+  onSelect: (kind: DecisionKind) => void;
+  onReviewInput: (key: FinanceKey) => void;
+}) {
   const current = comparison.results.find(r => r.kind === selected)!;
+  const readyCount = comparison.results.filter(r => r.available).length;
   const rows = current.trajectory;
   const values = rows.map(r => r.netPosition),
     min = Math.min(0, ...values),
@@ -27,6 +37,63 @@ export function HomeownerDecisions({ comparison }: { comparison: FinanceComparis
     .join(' ');
   return (
     <div className="home-decisions">
+      <section className="home-decision-setup" aria-labelledby="home-decision-setup-title">
+        <span className="eyebrow">ONE DECISION AT A TIME</span>
+        <h3 id="home-decision-setup-title" tabIndex={-1}>
+          Build your comparison
+        </h3>
+        <label className="home-wide-label" htmlFor="home-decision-choice">
+          Which choice would you like to explore?
+        </label>
+        <select id="home-decision-choice" value={selected} onChange={e => onSelect(e.target.value as DecisionKind)}>
+          {comparison.results.map(r => (
+            <option key={r.kind} value={r.kind}>
+              {decisionLabels[r.kind]}
+            </option>
+          ))}
+        </select>
+        <p role="status" className="home-setup-status">
+          {current.available
+            ? 'Ready to calculate with your assumptions.'
+            : `${current.missing.length} input${current.missing.length === 1 ? '' : 's'} to review for this choice.`}{' '}
+          {readyCount} of {comparison.results.length} choices can be calculated.
+        </p>
+        {current.available ? (
+          <p className="fine">
+            Ready means the inputs are present, not that the assumptions are verified or this choice is recommended.
+          </p>
+        ) : (
+          <>
+            <p>
+              Choose an item to go straight to its field. Leave anything you do not know blank; enter 0 only when you
+              mean zero.
+            </p>
+            <ul className="home-input-checklist">
+              {current.missing.map(key => (
+                <li key={key}>
+                  <button type="button" className="text-button" onClick={() => onReviewInput(key)}>
+                    {financeLabels[key]}
+                    <span>{comparison.inputs[key] === null ? 'Add input' : 'Review timing'} →</span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+            {(current.missing.includes('renovationMonths') || current.missing.includes('sellingMonths')) && (
+              <p className="fine">
+                Months until sale plus any renovation months must fit within the comparison horizon.
+              </p>
+            )}
+          </>
+        )}
+        {current.available && comparison.inputs.cashReserves === null && (
+          <p className="fine">
+            Your reserve shortfall is still unknown.{' '}
+            <button className="text-button" onClick={() => onReviewInput('cashReserves')}>
+              Add available cash reserves
+            </button>
+          </p>
+        )}
+      </section>
       <p className="home-explainer">
         Compare {comparison.inputs.horizonMonths} months using the same assumptions. A blank input means unknown; enter
         0 only when you intend zero. These choices provide different housing arrangements.
@@ -57,11 +124,7 @@ export function HomeownerDecisions({ comparison }: { comparison: FinanceComparis
             {comparison.results.map(r => (
               <tr key={r.kind} aria-selected={selected === r.kind}>
                 <th scope="row">
-                  <button
-                    className="text-button"
-                    onClick={() => setSelected(r.kind)}
-                    aria-pressed={selected === r.kind}
-                  >
+                  <button className="text-button" onClick={() => onSelect(r.kind)} aria-pressed={selected === r.kind}>
                     {decisionLabels[r.kind]}
                   </button>
                 </th>

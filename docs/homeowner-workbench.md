@@ -1,5 +1,13 @@
 # Homeowner decision workbench
 
+## October 22: guided financial setup
+
+Compare Decisions now starts with a choice selector and an actionable input checklist. Each item opens the financial assumptions and focuses its field, including on mobile and with a keyboard. The checklist uses the existing engine's missing-input results, so a zero mortgage balance is distinct from an unknown balance, and a sale outside the chosen horizon requests a timing review. Optional cash reserves remain explicitly unknown even when a scenario can be calculated.
+
+Fields identify validation errors inline and link to them from an error summary. Recovery also works from Ask Ascent or Reports & History, and the selected decision survives invalid inputs and panel changes. Readiness only means the calculation has the inputs it needs; it does not verify the assumptions or recommend a choice. Financial formulas, storage formats and data sources are unchanged.
+
+Verification: all 407 unit tests, TypeScript checking and the production build pass. Focused browser coverage checks the guided flow at 1440px and 390px, keyboard focus, zero versus unknown, timeline conflicts, error recovery, and accessibility with axe.
+
 ## Repository audit and implementation map · October 18, 2026
 
 The starting revision is `a574e4c` on master. The audit inventoried all tracked application, test, documentation, migration, dataset and historical evidence files; inspected the public routes, authenticated API boundaries, calculation modules and provider contracts; and read the README, AGENTS, engineering, product, valuation, evidence-history and production-readiness material. Historical reports and datasets remain immutable inputs to this work.
