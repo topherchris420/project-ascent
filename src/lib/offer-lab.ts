@@ -13,6 +13,8 @@ import { saleNetBeforePayoff } from './selling-costs';
  * payments use the workbench's fixed-rate mortgage formula, so the three never disagree about the same inputs.
  */
 export const OFFER_LAB_VERSION = 'ascent-offer-lab-1';
+/** Storage remains compatible; deadline semantics changed independently of the saved input format. */
+export const OFFER_CALCULATION_VERSION = 'ascent-offer-calculation-2';
 export const MAX_OFFERS = 6;
 export const offerSides = ['seller', 'buyer'] as const;
 export type OfferSide = (typeof offerSides)[number];
@@ -40,7 +42,10 @@ const percent = (max: number) => z.number().min(0).max(max).nullable();
 const day = z
   .string()
   .regex(/^\d{4}-\d{2}-\d{2}$/)
-  .refine(value => Number.isFinite(Date.parse(`${value}T00:00:00Z`)), 'Enter a real date.');
+  .refine(value => {
+    const timestamp = Date.parse(`${value}T00:00:00Z`);
+    return Number.isFinite(timestamp) && new Date(timestamp).toISOString().slice(0, 10) === value;
+  }, 'Enter a real date.');
 const contingency = z
   .object({
     /** true included, false waived, null not stated in the offer. */
@@ -474,10 +479,10 @@ function buyerFigures(offer: LabOffer, settings: LabSettings) {
 }
 
 function deadlinesFor(offer: LabOffer, settings: LabSettings): OfferDeadline[] {
-  const accepted = settings.assumedAcceptance ?? settings.asOf;
-  const assumedNote = settings.assumedAcceptance
+  const accepted = settings.assumedAcceptance;
+  const assumedNote = accepted
     ? `days counted from the acceptance date you assumed (${longDay(accepted)})`
-    : `days counted from ${longDay(accepted)}, because no acceptance date was assumed`;
+    : 'days entered; add an assumed acceptance date to calculate the date';
   const deadlines: OfferDeadline[] = [];
   deadlines.push(
     offer.offerExpires
@@ -494,8 +499,8 @@ function deadlinesFor(offer: LabOffer, settings: LabSettings): OfferDeadline[] {
     deadlines.push({
       key: 'earnest',
       label: 'Earnest money due',
-      date: addDays(accepted, offer.earnestDueDays),
-      basis: 'calculated',
+      date: accepted ? addDays(accepted, offer.earnestDueDays) : null,
+      basis: accepted ? 'calculated' : 'missing',
       note: `${offer.earnestDueDays} ${assumedNote}.`,
     });
   for (const key of contingencyKeys) {
@@ -504,8 +509,8 @@ function deadlinesFor(offer: LabOffer, settings: LabSettings): OfferDeadline[] {
       deadlines.push({
         key,
         label: `${contingencyLabels[key]} contingency ends`,
-        date: addDays(accepted, term.days),
-        basis: 'calculated',
+        date: accepted ? addDays(accepted, term.days) : null,
+        basis: accepted ? 'calculated' : 'missing',
         note: `${term.days} ${assumedNote}.`,
       });
     else if (term.included)
@@ -541,6 +546,26 @@ function deadlinesFor(offer: LabOffer, settings: LabSettings): OfferDeadline[] {
   );
 }
 
+/** Flags inconsistent entered dates without interpreting any contract's legal effect. */
+export function offerScheduleIssues(offer: LabOffer, settings: LabSettings): string[] {
+  const issues: string[] = [];
+  const accepted = settings.assumedAcceptance;
+  if (accepted && offer.offerExpires && accepted > offer.offerExpires)
+    issues.push('The assumed acceptance date is after the entered offer expiration. Check both dates.');
+  if (accepted && offer.closingDate && accepted > offer.closingDate)
+    issues.push('The entered closing date is before the assumed acceptance date. Check both dates.');
+  for (const deadline of deadlinesFor(offer, settings)) {
+    if (
+      deadline.date &&
+      offer.closingDate &&
+      deadline.date > offer.closingDate &&
+      (deadline.key === 'earnest' || contingencyKeys.some(key => key === deadline.key))
+    )
+      issues.push(`${deadline.label} falls after the entered closing date. Check the dates and terms with your agent.`);
+  }
+  return issues;
+}
+
 export function analyzeOffer(offer: LabOffer, settings: LabSettings): OfferAnalysis {
   const side = settings.side === 'seller' ? sellerFigures(offer, settings) : buyerFigures(offer, settings);
   const missing = [...side.missing];
@@ -550,7 +575,14 @@ export function analyzeOffer(offer: LabOffer, settings: LabSettings): OfferAnaly
   for (const key of contingencyKeys)
     if (offer.contingencies[key].included === null)
       missing.push(`Whether there is a ${contingencyLabels[key].toLowerCase()} contingency`);
-  const notes: string[] = [];
+  const deadlines = deadlinesFor(offer, settings);
+  if (
+    !settings.assumedAcceptance &&
+    (offer.earnestDueDays !== null ||
+      contingencyKeys.some(key => offer.contingencies[key].included && offer.contingencies[key].days !== null))
+  )
+    missing.push('Assumed acceptance date for relative deadlines');
+  const notes: string[] = offerScheduleIssues(offer, settings);
   if (offer.financing !== 'cash' && offer.financing !== 'unknown')
     notes.push(
       'A financed offer depends on the lender’s approval and appraisal. Ascent does not estimate whether either will happen; ask about the pre-approval and the lender.',
@@ -579,7 +611,7 @@ export function analyzeOffer(offer: LabOffer, settings: LabSettings): OfferAnaly
     missing,
     figures: side.figures,
     headline: side.headline,
-    deadlines: deadlinesFor(offer, settings),
+    deadlines,
     contingencies: contingencyKeys.map(key => ({
       key,
       label: contingencyLabels[key],
@@ -600,6 +632,7 @@ export type ValueContext = { verdict: 'supported' | 'limited' | 'declined'; esti
 
 export type OfferComparison = {
   version: typeof OFFER_LAB_VERSION;
+  calculationVersion: typeof OFFER_CALCULATION_VERSION;
   side: OfferSide;
   calculationHash: string;
   referenceOfferId: string | null;
@@ -786,9 +819,16 @@ export function compareOfferLab(lab: OfferLab, value: ValueContext | null): Offe
         }.`,
       );
   const missing = [...new Set(analyses.flatMap(analysis => analysis.missing))];
-  const hashInput = { version: OFFER_LAB_VERSION, settings, offers, value: stated ? value : null };
+  const hashInput = {
+    version: OFFER_LAB_VERSION,
+    calculationVersion: OFFER_CALCULATION_VERSION,
+    settings,
+    offers,
+    value: stated ? value : null,
+  };
   return {
     version: OFFER_LAB_VERSION,
+    calculationVersion: OFFER_CALCULATION_VERSION,
     side: settings.side,
     calculationHash: calculationChecksum(hashInput),
     referenceOfferId: reference?.id ?? null,

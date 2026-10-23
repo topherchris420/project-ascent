@@ -43,11 +43,21 @@ Code: [`src/components/homeowner-os.tsx`](../src/components/homeowner-os.tsx) an
   - Cash to close, and cash remaining from what is available.
   - The mortgage payment, using the workbench's payment function.
   - The housing payment: mortgage, tax, insurance and dues.
-- **Deadlines** are entered, or counted from the assumed acceptance date (or today), and sorted.
+- **Deadlines** are entered, or counted from an explicitly assumed acceptance date, and sorted. Without an acceptance date, relative deadlines remain unknown. Calendar validation rejects impossible dates; chronology checks flag acceptance after expiration, closing before acceptance, and earnest-money or contingency dates after closing. These checks do not interpret a contract.
 - **Sensitivity** shows how each headline moves if the price is renegotiated lower, the credit rises, the commission is half a point lower, closing slips 30 days or (for a buyer) the interest rate rises.
 - **Comparison with the estimate** appears only when a value is stated.
 
 Hand-checked figures are in [`tests/offer-lab.test.ts`](../tests/offer-lab.test.ts).
+
+### Offer portability and calendar handoff
+
+**Private export → Restore private export** works between browsers without an account. Open the same home, choose the exported JSON, review its side, offers, export date and assumptions, and explicitly replace that home's comparison. Cancel leaves the current comparison untouched. Restore validates the file format, both property identifiers, every input, unique offer IDs and the comparison reference. Files above 512 KB, unsupported formats and invalid terms are rejected. A failed storage write leaves the current comparison in place. This is an unencrypted private file, separate from the saved-home backup; it contains financial inputs and notes and should not be posted publicly.
+
+Only offer inputs are restored. Archived result objects, hashes and valuation claims are ignored; the comparison is recalculated using the current engine and the current home's valuation restrictions. A withheld estimate therefore remains withheld. Existing version-1 exports remain supported when their inputs pass validation. The saved-input format stays `ascent-offer-lab-1`; calculation version `ascent-offer-calculation-2` is included in new comparisons and their calculation hashes to distinguish the corrected deadline behavior. Saved dates are preserved, not silently advanced to today; the restore preview asks the homeowner to review them.
+
+**Download calendar dates** exports one selected offer as an RFC 5545 `.ics` file. Every entry is a tentative all-day review marker, labeled as entered or calculated; what-if offers are explicitly labeled. Missing dates are omitted, and conflicting dates must be resolved before download. Calendar-day calculations do not account for contract-specific counting, holidays, time zones or times of day. Confirm those with the agent before relying on the dates. The file contains the offer label and property identifier but excludes prices, mortgage balances and free-text notes. It sends no invitation, configures no alarms and provides no synchronization; calendar imports can duplicate entries depending on the client.
+
+Unit coverage: [`tests/offer-transfer.test.ts`](../tests/offer-transfer.test.ts). Browser coverage: [`tests/e2e/offer-transfer.spec.ts`](../tests/e2e/offer-transfer.spec.ts), including preview/cancel/replace, reload, wrong-home rejection, storage failures, mobile accessibility and actual downloads. This feature adds no data-provider costs, account requirement or network upload.
 
 ## Transaction Room security model
 

@@ -1,6 +1,9 @@
 /** Called only from an explicit browser export action; no upload or public URL is created. */
 export function downloadJson(value: unknown, name: string) {
-  const url = URL.createObjectURL(new Blob([JSON.stringify(value, null, 2)], { type: 'application/json' }));
+  downloadText(JSON.stringify(value, null, 2), name, 'application/json');
+}
+export function downloadText(value: string, name: string, type: string) {
+  const url = URL.createObjectURL(new Blob([value], { type }));
   const anchor = document.createElement('a');
   anchor.href = url;
   anchor.download = name;

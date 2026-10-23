@@ -102,7 +102,7 @@ The **Homeowner OS** (`/home/{market}/{parcel}`, linked from My Home and from ea
 
 - **My Property:** the brief and a **Property Evidence Timeline** of recorded sales, permits, assessments, tax and flood mapping. Each record keeps its own date apart from when it was recorded, published and checked.
 - **Market Watch:** an opt-in watch on the home's public records and recorded sales nearby, with deduplicated in-app notifications, freshness and pause, delete and export controls.
-- **Compare Offers:** seller proceeds or buyer cash to close, deadlines, contingency differences, missing terms and sensitivity for up to six offers, plus a printable Offer Comparison Brief.
+- **Compare Offers:** seller proceeds or buyer cash to close, deadlines, contingency differences, missing terms and sensitivity for up to six offers, plus a printable Offer Comparison Brief. Restore a private offer export on another device after a preview, and download one offer’s dates for your calendar. Missing acceptance dates stay unknown; conflicting dates are flagged before calendar export.
 - **My Decisions:** the homeowner workbench above.
 - **Transaction Room:** milestones, deadlines, encrypted documents, inspection items, checklists, notes and decisions, under your control. It needs a free account.
 - **Share With My Agent:** a packet you download and send yourself, with private parts off by default, and expiring, revocable invitations to the parts of your room you choose.

@@ -108,8 +108,9 @@ test('deadlines are entered or counted from the assumed acceptance date, and mis
   );
   lab.settings.assumedAcceptance = null;
   const unassumed = analyzeOffer(lab.offers[0], lab.settings).deadlines.find(item => item.key === 'inspection')!;
-  assert.equal(unassumed.date, '2026-11-01');
-  assert.match(unassumed.note, /no acceptance date was assumed/);
+  assert.equal(unassumed.date, null);
+  assert.equal(unassumed.basis, 'missing');
+  assert.match(unassumed.note, /add an assumed acceptance date/);
   const b = analyzeOffer(lab.offers[1], lab.settings).deadlines;
   assert.equal(b.find(item => item.key === 'expires')!.basis, 'missing');
 });

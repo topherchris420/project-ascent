@@ -22,6 +22,7 @@ import {
   type ValueContext,
 } from '@/lib/offer-lab';
 import { offerComparisonHtml } from '@/lib/os-reports';
+import { OfferTransfer } from './offer-transfer';
 import { Kind, NumberField, OsPanel, readLocal, SelectField, TextField, writeLocal } from './shared';
 
 export const offerLabKey = (propertyKey: string) => `ascent.offer-lab.v1:${propertyKey}`;
@@ -214,7 +215,7 @@ function Comparison({ comparison }: { comparison: OfferComparison }) {
           <li key={text}>{text}</li>
         ))}
       </ul>
-      <div className="table-wrap">
+      <div className="table-wrap" role="region" aria-label="Offer comparison figures" tabIndex={0}>
         <table className="os-compare">
           <caption>Every figure says whether you entered it, assumed it or Ascent calculated it.</caption>
           <thead>
@@ -380,7 +381,13 @@ export function CompareOffers({
   const [status, setStatus] = useState('');
   const [confirmClear, setConfirmClear] = useState(false);
   useEffect(() => {
-    const saved = readLocal(offerLabKey(propertyKey), raw => offerLabSchema.parse(JSON.parse(raw)));
+    const saved = readLocal(offerLabKey(propertyKey), raw => {
+      const parsed = offerLabSchema.parse(JSON.parse(raw));
+      if (parsed.propertyKey !== propertyKey) throw new Error('This comparison belongs to another home.');
+      return parsed;
+    });
+    setStatus('');
+    setConfirmClear(false);
     if (saved.error)
       setStatus(
         'A saved comparison on this device could not be read, so a new one was started. The old one was left as it was.',
@@ -616,6 +623,25 @@ export function CompareOffers({
             </button>
           )}
         </div>
+        <OfferTransfer
+          key={propertyKey}
+          lab={lab}
+          valid={!!result.comparison}
+          address={address}
+          onRestore={restored => {
+            const checked = offerLabSchema.safeParse(restored);
+            if (!checked.success || checked.data.propertyKey !== propertyKey)
+              return 'This comparison could not be restored for this home.';
+            const next = { ...checked.data, updatedAt: new Date().toISOString() };
+            const failure = writeLocal(offerLabKey(propertyKey), next);
+            if (failure)
+              return 'Device storage is unavailable or full. Nothing was replaced; keep your export and try again.';
+            setLab(next);
+            setStatus('Restored and saved on this device.');
+            setConfirmClear(false);
+            return '';
+          }}
+        />
         <ul className="fine">
           {OFFER_LAB_BOUNDARIES.map(item => (
             <li key={item}>{item}</li>
