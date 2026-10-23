@@ -103,7 +103,6 @@ No API key is needed: every public source in use is keyless, and nothing here ca
 
 | Item | Blocked by |
 | --- | --- |
-| Rooms on the hosted database | Applying migration 005 to production and granting the runtime role the four new tables. Both need the owner's approval. |
 | Email watch alerts | An account-based server-side watch, a configured email provider and recorded consent. In-app notifications only for now. |
 | Prince George's permits | No open license is stated. |
 | Northern Virginia | Written county permissions ([drafted requests](data-permissions/virginia-requests.md), unsent). |

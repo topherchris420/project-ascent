@@ -15,9 +15,10 @@ Delivered: the [Homeowner OS](homeowner-os.md) at `/home/{market}/{parcel}`, wit
 
 It also adds a [refreshable public-data network](public-data-network.md) with permission records, a dated ingestion record with data-quality metrics (`npm run sources:refresh`), and a disabled, permission-aware MLS Bridge. No estimate, snapshot, fingerprint or published result changed.
 
+With the owner's approval, migrations 004 and 005 were applied to the hosted database on October 22, 2026, and the runtime role was granted their eight tables. Migration 004 had been merged on October 18 but never applied, and the app refuses PostgreSQL requests until its tables exist; production `/api/health` returned 503 until then and has returned 200 since.
+
 Still open:
 
-- **Apply migration 005 to the hosted database** and grant the runtime role its four tables. This needs the owner's go-ahead; until then rooms return 503 in production.
 - **Email watch alerts** need an account-based server-side watch, an email provider and recorded consent. Notifications are in-app only.
 - **Prince George's permits** need a stated open license. **Northern Virginia** needs the drafted county permissions to be sent and answered.
 - **MLS listings** need a written IDX, VOW or data-license agreement through a participating broker.
