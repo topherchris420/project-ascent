@@ -5,7 +5,7 @@ import revisedJson from './valuation-benchmark-maryland-v2.json';
 
 export const marylandBenchmark = benchmarkJson as unknown as ValuationBenchmark;
 export const marylandRevisedBenchmark = revisedJson as unknown as ValuationBenchmark;
-export const MD_PARCEL_PATTERN = /^\d{10,12}$/;
+export { MD_PARCEL_PATTERN } from './home-routes';
 export const MD_GRADE_MAX = 9;
 export const MD_GRADE_LABELS: Record<number, string> = {
   1: 'Low',

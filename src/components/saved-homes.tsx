@@ -5,6 +5,7 @@ import {
   HOME_STORAGE_KEY,
   parseProfiles,
   evidencePassport,
+  homeOsHref,
   studioStorageKey,
   type HomeProfile,
 } from '@/lib/homeowner-passport';
@@ -127,6 +128,7 @@ export function SavedHomes() {
           <div className="saved-homes">
             {profiles.map(profile => {
               const last = profile.snapshots.at(-1)!;
+              const os = homeOsHref(last.evidence.subject);
               return (
                 <article className="panel" key={profile.propertyId}>
                   <span className="eyebrow">
@@ -143,6 +145,11 @@ export function SavedHomes() {
                     <Link className="button primary" href={`${profile.href}#homeowner-workbench`}>
                       Open home & decisions
                     </Link>
+                    {os && (
+                      <Link className="button" href={os}>
+                        Open Homeowner OS
+                      </Link>
+                    )}
                     <button
                       className="button small"
                       onClick={() =>

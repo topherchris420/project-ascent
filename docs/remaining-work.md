@@ -2,6 +2,28 @@
 
 # Remaining work and production gates
 
+## October 22 (continued): the Homeowner OS
+
+Delivered: the [Homeowner OS](homeowner-os.md) at `/home/{market}/{parcel}`, with six areas:
+
+- My Property, with the Property Evidence Timeline
+- Market Watch, with the opt-in Property Watchtower
+- Compare Offers (the Offer Lab)
+- My Decisions
+- the owner-controlled Transaction Room, with least-privilege invitations
+- Share With My Agent, with a local agent packet
+
+It also adds a [refreshable public-data network](public-data-network.md) with permission records, a dated ingestion record with data-quality metrics (`npm run sources:refresh`), and a disabled, permission-aware MLS Bridge. No estimate, snapshot, fingerprint or published result changed.
+
+Still open:
+
+- **Apply migration 005 to the hosted database** and grant the runtime role its four tables. This needs the owner's go-ahead; until then rooms return 503 in production.
+- **Email watch alerts** need an account-based server-side watch, an email provider and recorded consent. Notifications are in-app only.
+- **Prince George's permits** need a stated open license. **Northern Virginia** needs the drafted county permissions to be sent and answered.
+- **MLS listings** need a written IDX, VOW or data-license agreement through a participating broker.
+- **Comprehension of the OS** is unmeasured. It is not part of the registered study, which has no participants yet.
+- **Refreshed records in an estimate** need a new registered protocol and an untouched holdout.
+
 ## October 22: a replication kit, a runnable comprehension study and better property records
 
 Delivered. The parts that need people are ready, but no person has taken part yet:

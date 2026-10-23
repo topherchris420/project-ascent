@@ -10,6 +10,7 @@ import {
   marylandRevisedBenchmark as marylandBenchmark,
   marylandVerdict,
 } from '@/lib/maryland-studio';
+import { MISSING_EVIDENCE } from '@/lib/home-markets';
 import { AccuracyScorecard } from './accuracy-scorecard';
 import type { PropertyFacts } from '@/lib/property-facts';
 import type { CmaAssumptions, Source, ValuationProperty } from '@/lib/types';
@@ -286,8 +287,7 @@ export function MarylandPricingStudio() {
             "Address, structure area, location and dwelling quality grade come from Maryland state records, with dwelling type, exterior construction, lot and the assessor's last review. Montgomery County permits since 2016 are listed in the brief. Comparable prices and dates are private arm's-length improved transfers. Bedrooms and bathrooms are unavailable.",
           assumptions:
             'Rates and filters were fitted on earlier Maryland transfers. Room adjustments are fixed to zero. The 1–9 quality grade measures construction quality, not interior condition or renovation.',
-          missing:
-            'No bedrooms, bathrooms, MLS listing history, concessions, interior condition or owner information. The state condition field is blank for almost every home here. Prince George’s permits carry no open license, so none are shown. Only the latest three transfers per parcel are retained; older history is incomplete. Condominiums and multi-unit homes are excluded. Current assessor facts can postdate sales.',
+          missing: MISSING_EVIDENCE.maryland,
           footnote: `${data.attribution} Ascent joined and filtered these records; see the provenance files in the repository.`,
         }}
         reportNote="Draft · Maryland public records · not reviewed by a licensed professional"
