@@ -19,6 +19,7 @@ import {
   studioStateSchema,
 } from '@/lib/demo-studio';
 import { buildHomeDecisionBrief } from '@/lib/home-decision-brief';
+import { homeOsHref } from '@/lib/homeowner-passport';
 import type { StudySession } from '@/lib/study-states';
 import type { FinanceInputs } from '@/lib/homeowner-finance';
 import { positionLabel } from '@/lib/pricing-narrative';
@@ -85,6 +86,7 @@ export type StudioConfig = {
 export function PricingStudio(config: StudioConfig) {
   const { evidence, conditionMax } = config;
   const SubjectHeading = config.resultFirst ? 'h1' : 'h2';
+  const osHref = homeOsHref(evidence.subject);
   const schema = useMemo(
     () =>
       studioStateSchema(
@@ -339,6 +341,12 @@ export function PricingStudio(config: StudioConfig) {
             : ''}
         </p>
         <small>{config.evidenceNote}</small>
+        {osHref && (
+          <p className="fine">
+            <Link href={osHref}>Open this home’s Homeowner OS</Link>: records timeline, market watch, offers,
+            transaction room and agent sharing.
+          </p>
+        )}
       </div>
       <div className="studio-estimate" aria-live="polite">
         <span>Comparable-supported estimate</span>

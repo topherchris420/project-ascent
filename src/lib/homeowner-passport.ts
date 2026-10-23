@@ -191,6 +191,21 @@ export function propertyHref(subject: ValuationProperty) {
   const parcel = subject.id.replace(/^(dc-condo-parcel-|dc-parcel-|md-parcel-)/, '');
   return `${base}?parcel=${encodeURIComponent(parcel)}`;
 }
+/** The Homeowner OS page for a real covered home; none for the fictional sample or a study state. */
+export function homeOsHref(subject: ValuationProperty) {
+  if (subject.sourceId === 'source-synthetic-landing') return null;
+  const market =
+    subject.sourceId === 'source-maryland-public-records'
+      ? 'maryland'
+      : subject.sourceId === 'source-dc-condo-public-records'
+        ? 'dc-condos'
+        : subject.sourceId === 'source-dc-public-records'
+          ? 'dc'
+          : null;
+  if (!market) return null;
+  const parcel = subject.id.replace(/^(dc-condo-parcel-|dc-parcel-|md-parcel-)/, '');
+  return `/home/${market}/${encodeURIComponent(parcel)}`;
+}
 export function createHomeSnapshot(
   evidence: StudioEvidence,
   state: StudioState,

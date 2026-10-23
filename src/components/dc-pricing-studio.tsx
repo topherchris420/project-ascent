@@ -6,6 +6,7 @@ import { DC_CONDITION_LABELS, DC_CONDITION_MAX, dcDefaultState, dcReportHref } f
 import { dcBenchmark } from '@/lib/valuation-safeguards';
 import { condoBenchmark, condoDefaultState, condoReportHref, CONDO_ACCURACY_NOTICE } from '@/lib/dc-condo-studio';
 import { AccuracyScorecard } from './accuracy-scorecard';
+import { MISSING_EVIDENCE } from '@/lib/home-markets';
 import type { PropertyFacts } from '@/lib/property-facts';
 import type { CmaAssumptions, Source, ValuationProperty } from '@/lib/types';
 import { PricingStudio } from './pricing-studio';
@@ -302,9 +303,7 @@ export function DcPricingStudio({ condos = false }: { condos?: boolean }) {
           assumptions: condos
             ? 'Condo-specific fitted rates and search filters. Condition adjustment is fixed to zero. The condo holdout failed acceptance; DC single-family accuracy does not apply.'
             : "Adjustment rates, the trend and the search filters start at the DC-validated settings fitted on earlier recorded sales. The assessor's condition grade is not an inspection.",
-          missing: condos
-            ? CONDO_ACCURACY_NOTICE
-            : 'No MLS listing history, active competition, concessions, interior condition or owner information. Permits show authorized work, not finished work, and never unpermitted work. Condominiums and multi-unit buildings are not covered, and recent sales can take weeks to be recorded.',
+          missing: MISSING_EVIDENCE[condos ? 'dc-condos' : 'dc'],
           footnote: `${data.attribution} Ascent joined and filtered these records; see the provenance files in the repository.`,
         }}
         reportNote="Draft · District public records · not reviewed by a licensed professional"

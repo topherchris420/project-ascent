@@ -32,6 +32,10 @@ CREATE TABLE IF NOT EXISTS account_security(user_id TEXT PRIMARY KEY REFERENCES 
 CREATE TABLE IF NOT EXISTS session_assurance(hash TEXT PRIMARY KEY REFERENCES sessions(hash) ON DELETE CASCADE,mfa_at TEXT NOT NULL);
 CREATE TABLE IF NOT EXISTS password_resets(hash TEXT PRIMARY KEY,user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,expires_at TEXT NOT NULL);
 CREATE TABLE IF NOT EXISTS auth_mail_outbox(id TEXT PRIMARY KEY,payload TEXT NOT NULL,created_at TEXT NOT NULL,expires_at TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS homeowner_rooms(id TEXT PRIMARY KEY,tenant_id TEXT NOT NULL REFERENCES tenants(id),owner_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,property_key TEXT NOT NULL,address TEXT NOT NULL,data BLOB NOT NULL,encrypted INTEGER NOT NULL DEFAULT 0,version INTEGER NOT NULL DEFAULT 1,created_at TEXT NOT NULL,updated_at TEXT NOT NULL,UNIQUE(tenant_id,owner_id,property_key));
+CREATE TABLE IF NOT EXISTS room_grants(id TEXT PRIMARY KEY,tenant_id TEXT NOT NULL REFERENCES tenants(id),room_id TEXT NOT NULL REFERENCES homeowner_rooms(id) ON DELETE CASCADE,email TEXT NOT NULL,role TEXT NOT NULL,permissions TEXT NOT NULL,token_hash TEXT NOT NULL UNIQUE,invite_expires_at TEXT NOT NULL,access_expires_at TEXT NOT NULL,user_id TEXT,accepted_at TEXT,revoked_at TEXT,created_by TEXT NOT NULL,created_at TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS room_events(id TEXT PRIMARY KEY,tenant_id TEXT NOT NULL REFERENCES tenants(id),room_id TEXT NOT NULL REFERENCES homeowner_rooms(id) ON DELETE CASCADE,sequence INTEGER NOT NULL,at TEXT NOT NULL,actor_id TEXT NOT NULL,action TEXT NOT NULL,detail TEXT NOT NULL,previous_hash TEXT NOT NULL,hash TEXT NOT NULL,UNIQUE(room_id,sequence));
+CREATE TABLE IF NOT EXISTS room_memberships(user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,room_id TEXT NOT NULL,tenant_id TEXT NOT NULL REFERENCES tenants(id),grant_id TEXT NOT NULL,PRIMARY KEY(user_id,room_id));
 `;
 
 function localDb() {
@@ -214,39 +218,52 @@ function encryptionKey(): Buffer | null {
   return key;
 }
 
-export async function storeDocument(tx: DbTransaction, tenantId: string, id: string, bytes: Buffer) {
+/** AES-256-GCM with a fresh IV when APP_ENCRYPTION_KEY is set (required in production); plain bytes otherwise. */
+export function sealBytes(bytes: Buffer): { data: Buffer; encrypted: 0 | 1 } {
   const key = encryptionKey();
-  let data = bytes;
-  if (key) {
-    const iv = randomBytes(12);
-    const cipher = createCipheriv('aes-256-gcm', key, iv);
-    const encrypted = Buffer.concat([cipher.update(bytes), cipher.final()]);
-    data = Buffer.concat([iv, cipher.getAuthTag(), encrypted]);
-  }
+  if (!key) return { data: bytes, encrypted: 0 };
+  const iv = randomBytes(12);
+  const cipher = createCipheriv('aes-256-gcm', key, iv);
+  const encrypted = Buffer.concat([cipher.update(bytes), cipher.final()]);
+  return { data: Buffer.concat([iv, cipher.getAuthTag(), encrypted]), encrypted: 1 };
+}
+
+export function openBytes(stored: Uint8Array, encrypted: number | boolean): Buffer {
+  const data = Buffer.from(stored);
+  if (!encrypted) return data;
+  const key = encryptionKey();
+  if (!key) throw new Error('Document encryption key unavailable');
+  const decipher = createDecipheriv('aes-256-gcm', key, data.subarray(0, 12));
+  decipher.setAuthTag(data.subarray(12, 28));
+  return Buffer.concat([decipher.update(data.subarray(28)), decipher.final()]);
+}
+
+export async function storeDocument(tx: DbTransaction, tenantId: string, id: string, bytes: Buffer) {
+  const sealed = sealBytes(bytes);
   await tx.query('INSERT INTO documents(id,tenant_id,data,encrypted,created_at) VALUES($1,$2,$3,$4,$5)', [
     id,
     tenantId,
-    data,
-    key ? 1 : 0,
+    sealed.data,
+    sealed.encrypted,
     new Date().toISOString(),
   ]);
 }
 
+/** Reads a document inside an existing tenant transaction, so an access check and the read cannot be split. */
+export async function readDocumentIn(tx: DbTransaction, tenantId: string, id: string): Promise<Buffer | null> {
+  const rows = await tx.query<{ data: Uint8Array; encrypted: number }>(
+    'SELECT data,encrypted FROM documents WHERE id=$1 AND tenant_id=$2',
+    [id, tenantId],
+  );
+  return rows[0] ? openBytes(rows[0].data, rows[0].encrypted) : null;
+}
+
 export async function readDocument(tenantId: string, id: string): Promise<Buffer | null> {
-  return transaction(tenantId, async tx => {
-    const rows = await tx.query<{ data: Uint8Array; encrypted: number }>(
-      'SELECT data,encrypted FROM documents WHERE id=$1 AND tenant_id=$2',
-      [id, tenantId],
-    );
-    if (!rows[0]) return null;
-    const data = Buffer.from(rows[0].data);
-    if (!rows[0].encrypted) return data;
-    const key = encryptionKey();
-    if (!key) throw new Error('Document encryption key unavailable');
-    const decipher = createDecipheriv('aes-256-gcm', key, data.subarray(0, 12));
-    decipher.setAuthTag(data.subarray(12, 28));
-    return Buffer.concat([decipher.update(data.subarray(28)), decipher.final()]);
-  });
+  return transaction(tenantId, tx => readDocumentIn(tx, tenantId, id));
+}
+
+export async function deleteDocumentIn(tx: DbTransaction, tenantId: string, id: string) {
+  await tx.query('DELETE FROM documents WHERE id=$1 AND tenant_id=$2', [id, tenantId]);
 }
 
 export async function closeDatabase() {

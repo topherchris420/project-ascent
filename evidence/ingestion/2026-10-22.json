@@ -1,0 +1,4351 @@
+{
+  "version": "ascent-ingestion-record-1",
+  "registryVersion": "ascent-source-registry-1",
+  "createdAt": "2026-10-22T21:35:28.266Z",
+  "command": "npm run sources:refresh",
+  "policy": "Observations are shown and monitored only. They are never added to an estimate; the bundled snapshots and their fingerprints are unchanged.",
+  "snapshots": {
+    "dcHouses": "2026-10-07",
+    "dcCondos": "2026-10-07",
+    "maryland": "2026-09-24"
+  },
+  "runs": [
+    {
+      "label": "District qualified sales after the earlier snapshot",
+      "market": "dc and dc-condos",
+      "sourceId": "dc-property-sales",
+      "scope": "qualified sales dated after 2026-10-07",
+      "attribution": "Contains District of Columbia open data licensed under CC BY 4.0. Tax System Property Sales (CAMA).",
+      "manifest": {
+        "version": "ascent-ingestion-manifest-1",
+        "registryVersion": "ascent-source-registry-1",
+        "sourceId": "dc-property-sales",
+        "sourceName": "District Tax System Property Sales (CAMA)",
+        "license": "Creative Commons Attribution 4.0 International (CC BY 4.0)",
+        "scope": "qualified sales dated after 2026-10-07",
+        "status": "complete",
+        "startedAt": "2026-10-22T21:35:28.266Z",
+        "finishedAt": "2026-10-22T21:35:28.266Z",
+        "requests": 1,
+        "pages": 1,
+        "received": 64,
+        "valid": 64,
+        "invalid": {},
+        "duplicates": 0,
+        "conflicts": [],
+        "observations": 64,
+        "publishedAt": "2026-10-22T09:16:12.000Z",
+        "contentSha256": "9bca519daa8c319f4bf0aedaa756683f4892135d4a8a75e8f15b57908b25f506",
+        "errors": []
+      },
+      "quality": {
+        "received": 64,
+        "valid": 64,
+        "invalidByReason": {},
+        "fieldCompleteness": 1,
+        "duplicates": 0,
+        "conflicts": 0,
+        "coveredHomes": 48,
+        "unresolvedIdentities": 16,
+        "unresolvedNote": "An unresolved identity is a lot outside Ascent’s covered homes (commercial, multi-unit, outside the counties or filtered when the snapshot was built), not necessarily an error.",
+        "newestTransaction": "2026-10-14",
+        "newestTransactionAgeDays": 8,
+        "sourcePublishedAt": "2026-10-22T09:16:12.000Z"
+      },
+      "observations": [
+        {
+          "sourceId": "dc-property-sales",
+          "kind": "recorded-transfer",
+          "parcelId": "0158____0802",
+          "identity": "0158____0802:2026-10-09",
+          "values": {
+            "price": 565316,
+            "qualified": true,
+            "saleCode": "01"
+          },
+          "dates": {
+            "transaction": "2026-10-09",
+            "recorded": null,
+            "effective": null,
+            "published": "2026-10-22T09:16:12.000Z",
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "c6fe4daeb6d073ac158af97642d24b4f295ce94371ff4dceb7f189a47238bdf8"
+        },
+        {
+          "sourceId": "dc-property-sales",
+          "kind": "recorded-transfer",
+          "parcelId": "0176____2006",
+          "identity": "0176____2006:2026-10-08",
+          "values": {
+            "price": 800000,
+            "qualified": true,
+            "saleCode": "01"
+          },
+          "dates": {
+            "transaction": "2026-10-08",
+            "recorded": null,
+            "effective": null,
+            "published": "2026-10-22T09:16:12.000Z",
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "8fe5dd8863283b6bf36fa0db337ef2b6b21d569060c120f562d356557f84441e"
+        },
+        {
+          "sourceId": "dc-property-sales",
+          "kind": "recorded-transfer",
+          "parcelId": "0203____0081",
+          "identity": "0203____0081:2026-10-09",
+          "values": {
+            "price": 8518750,
+            "qualified": true,
+            "saleCode": "01"
+          },
+          "dates": {
+            "transaction": "2026-10-09",
+            "recorded": null,
+            "effective": null,
+            "published": "2026-10-22T09:16:12.000Z",
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "70738f22852e1ae04a9a1df33e0e8a6440ba6efd01e24f4b89938b1f89cc1ca2"
+        },
+        {
+          "sourceId": "dc-property-sales",
+          "kind": "recorded-transfer",
+          "parcelId": "0237____0134",
+          "identity": "0237____0134:2026-10-08",
+          "values": {
+            "price": 1325000,
+            "qualified": true,
+            "saleCode": "01"
+          },
+          "dates": {
+            "transaction": "2026-10-08",
+            "recorded": null,
+            "effective": null,
+            "published": "2026-10-22T09:16:12.000Z",
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "b7401ce47b8f03af7969afcf8ec716da4069206e1c6311235c1442e8fec6350c"
+        },
+        {
+          "sourceId": "dc-property-sales",
+          "kind": "recorded-transfer",
+          "parcelId": "0238____0849",
+          "identity": "0238____0849:2026-10-09",
+          "values": {
+            "price": 1350000,
+            "qualified": true,
+            "saleCode": "01"
+          },
+          "dates": {
+            "transaction": "2026-10-09",
+            "recorded": null,
+            "effective": null,
+            "published": "2026-10-22T09:16:12.000Z",
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "1f3fcbcdce8581a210a6428ec02cc5c80c63988dc8d8cfe245b039ca04f27826"
+        },
+        {
+          "sourceId": "dc-property-sales",
+          "kind": "recorded-transfer",
+          "parcelId": "0272____0895",
+          "identity": "0272____0895:2026-10-13",
+          "values": {
+            "price": 1030000,
+            "qualified": true,
+            "saleCode": "01"
+          },
+          "dates": {
+            "transaction": "2026-10-13",
+            "recorded": null,
+            "effective": null,
+            "published": "2026-10-22T09:16:12.000Z",
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "d63de59fd7b8201a246a1c7c486eb5286184b3878cab1046a9106e016f2ceab4"
+        },
+        {
+          "sourceId": "dc-property-sales",
+          "kind": "recorded-transfer",
+          "parcelId": "0358____0057",
+          "identity": "0358____0057:2026-10-13",
+          "values": {
+            "price": 850000,
+            "qualified": true,
+            "saleCode": "01"
+          },
+          "dates": {
+            "transaction": "2026-10-13",
+            "recorded": null,
+            "effective": null,
+            "published": "2026-10-22T09:16:12.000Z",
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "6b9101628111e681c082e5fe4a00fbe6db56c3e2d0e2a91b90d9f6c5276436d2"
+        },
+        {
+          "sourceId": "dc-property-sales",
+          "kind": "recorded-transfer",
+          "parcelId": "0459____2064",
+          "identity": "0459____2064:2026-10-13",
+          "values": {
+            "price": 527500,
+            "qualified": true,
+            "saleCode": "01"
+          },
+          "dates": {
+            "transaction": "2026-10-13",
+            "recorded": null,
+            "effective": null,
+            "published": "2026-10-22T09:16:12.000Z",
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "d02bcfd7aeaffd31ae85d3367af7cfad958c930672a0ec3a6e7bec6cdaba497f"
+        },
+        {
+          "sourceId": "dc-property-sales",
+          "kind": "recorded-transfer",
+          "parcelId": "0504____2006",
+          "identity": "0504____2006:2026-10-14",
+          "values": {
+            "price": 290000,
+            "qualified": true,
+            "saleCode": "01"
+          },
+          "dates": {
+            "transaction": "2026-10-14",
+            "recorded": null,
+            "effective": null,
+            "published": "2026-10-22T09:16:12.000Z",
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "0930f35339f6e7cf7fcef68bcee176cdd6d2d1438a3d5eb9bf9b6e642629bed9"
+        },
+        {
+          "sourceId": "dc-property-sales",
+          "kind": "recorded-transfer",
+          "parcelId": "0674____0438",
+          "identity": "0674____0438:2026-10-14",
+          "values": {
+            "price": 34596930,
+            "qualified": true,
+            "saleCode": "01"
+          },
+          "dates": {
+            "transaction": "2026-10-14",
+            "recorded": null,
+            "effective": null,
+            "published": "2026-10-22T09:16:12.000Z",
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "0b319fe62abf8a7bd3571c55545ef750bbdd6d133af7d8ad69d4b69c55dd38c0"
+        },
+        {
+          "sourceId": "dc-property-sales",
+          "kind": "recorded-transfer",
+          "parcelId": "0779____0170",
+          "identity": "0779____0170:2026-10-09",
+          "values": {
+            "price": 1100000,
+            "qualified": true,
+            "saleCode": "01"
+          },
+          "dates": {
+            "transaction": "2026-10-09",
+            "recorded": null,
+            "effective": null,
+            "published": "2026-10-22T09:16:12.000Z",
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "aeeff58e6bf6eed726f9b56fcb714513acdc0567a08682c42b9b0ee121d05179"
+        },
+        {
+          "sourceId": "dc-property-sales",
+          "kind": "recorded-transfer",
+          "parcelId": "0790____0010",
+          "identity": "0790____0010:2026-10-14",
+          "values": {
+            "price": 1400000,
+            "qualified": true,
+            "saleCode": "01"
+          },
+          "dates": {
+            "transaction": "2026-10-14",
+            "recorded": null,
+            "effective": null,
+            "published": "2026-10-22T09:16:12.000Z",
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "2bd6a1fa30b6a062643c38ad059b20a4f8ec8de06e19d2d6356c932ca0ccb1b4"
+        },
+        {
+          "sourceId": "dc-property-sales",
+          "kind": "recorded-transfer",
+          "parcelId": "0855____2036",
+          "identity": "0855____2036:2026-10-09",
+          "values": {
+            "price": 850000,
+            "qualified": true,
+            "saleCode": "01"
+          },
+          "dates": {
+            "transaction": "2026-10-09",
+            "recorded": null,
+            "effective": null,
+            "published": "2026-10-22T09:16:12.000Z",
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "543ff9b25b75b5f879dd51dc21b91097c5d4dc14e7d00bf22db80fe6d4159bcb"
+        },
+        {
+          "sourceId": "dc-property-sales",
+          "kind": "recorded-transfer",
+          "parcelId": "0862____0118",
+          "identity": "0862____0118:2026-10-09",
+          "values": {
+            "price": 1310000,
+            "qualified": true,
+            "saleCode": "01"
+          },
+          "dates": {
+            "transaction": "2026-10-09",
+            "recorded": null,
+            "effective": null,
+            "published": "2026-10-22T09:16:12.000Z",
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "65b11b614c6cead1e0743080253bd89fed457eef5939d6a74d8d3625f5dcb758"
+        },
+        {
+          "sourceId": "dc-property-sales",
+          "kind": "recorded-transfer",
+          "parcelId": "0865____0095",
+          "identity": "0865____0095:2026-10-08",
+          "values": {
+            "price": 3250000,
+            "qualified": true,
+            "saleCode": "01"
+          },
+          "dates": {
+            "transaction": "2026-10-08",
+            "recorded": null,
+            "effective": null,
+            "published": "2026-10-22T09:16:12.000Z",
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "3f5180394807dcf93175a5284df38d6bd68f44f0f47e6268bc8e79ed0089f26a"
+        },
+        {
+          "sourceId": "dc-property-sales",
+          "kind": "recorded-transfer",
+          "parcelId": "0946____0007",
+          "identity": "0946____0007:2026-10-14",
+          "values": {
+            "price": 1485000,
+            "qualified": true,
+            "saleCode": "01"
+          },
+          "dates": {
+            "transaction": "2026-10-14",
+            "recorded": null,
+            "effective": null,
+            "published": "2026-10-22T09:16:12.000Z",
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "812ae0bd9c7f09c656f9c178cdd82d0529c72da67da7c7196e244dce03d72943"
+        },
+        {
+          "sourceId": "dc-property-sales",
+          "kind": "recorded-transfer",
+          "parcelId": "0952____0022",
+          "identity": "0952____0022:2026-10-09",
+          "values": {
+            "price": 510000,
+            "qualified": true,
+            "saleCode": "01"
+          },
+          "dates": {
+            "transaction": "2026-10-09",
+            "recorded": null,
+            "effective": null,
+            "published": "2026-10-22T09:16:12.000Z",
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "95d57987a451abd1acde596ab3d90c79fcd056b1cb25ed86b686785686ccb5b5"
+        },
+        {
+          "sourceId": "dc-property-sales",
+          "kind": "recorded-transfer",
+          "parcelId": "1058____2017",
+          "identity": "1058____2017:2026-10-09",
+          "values": {
+            "price": 377500,
+            "qualified": true,
+            "saleCode": "01"
+          },
+          "dates": {
+            "transaction": "2026-10-09",
+            "recorded": null,
+            "effective": null,
+            "published": "2026-10-22T09:16:12.000Z",
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "f580ceefd5f3473559bd6bd3ecddff0b4604eaec6e7ed2a96e5b30ae95b1aa9f"
+        },
+        {
+          "sourceId": "dc-property-sales",
+          "kind": "recorded-transfer",
+          "parcelId": "1282____0184",
+          "identity": "1282____0184:2026-10-09",
+          "values": {
+            "price": 1579000,
+            "qualified": true,
+            "saleCode": "01"
+          },
+          "dates": {
+            "transaction": "2026-10-09",
+            "recorded": null,
+            "effective": null,
+            "published": "2026-10-22T09:16:12.000Z",
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "962b2ce9c138ef34cf021b61b5729bf64615031102074cda681563ff8ad6a081"
+        },
+        {
+          "sourceId": "dc-property-sales",
+          "kind": "recorded-transfer",
+          "parcelId": "1367____0078",
+          "identity": "1367____0078:2026-10-14",
+          "values": {
+            "price": 1790000,
+            "qualified": true,
+            "saleCode": "01"
+          },
+          "dates": {
+            "transaction": "2026-10-14",
+            "recorded": null,
+            "effective": null,
+            "published": "2026-10-22T09:16:12.000Z",
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "6ad11bae4ad1c94bf873fb20c327d9f28e4a1c5127e1e9982d0b88277bc1e60f"
+        },
+        {
+          "sourceId": "dc-property-sales",
+          "kind": "recorded-transfer",
+          "parcelId": "1526____0817",
+          "identity": "1526____0817:2026-10-09",
+          "values": {
+            "price": 1100000,
+            "qualified": true,
+            "saleCode": "01"
+          },
+          "dates": {
+            "transaction": "2026-10-09",
+            "recorded": null,
+            "effective": null,
+            "published": "2026-10-22T09:16:12.000Z",
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "c07f65a7fad1c81af14c2e8aa93baac7362691c6ef604a2f4f3c11759b9e8f97"
+        },
+        {
+          "sourceId": "dc-property-sales",
+          "kind": "recorded-transfer",
+          "parcelId": "1590____0810",
+          "identity": "1590____0810:2026-10-09",
+          "values": {
+            "price": 1277000,
+            "qualified": true,
+            "saleCode": "01"
+          },
+          "dates": {
+            "transaction": "2026-10-09",
+            "recorded": null,
+            "effective": null,
+            "published": "2026-10-22T09:16:12.000Z",
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "04b88e553196f19c7d50de163ada04532e38a8951827a5816610db96eac81cc2"
+        },
+        {
+          "sourceId": "dc-property-sales",
+          "kind": "recorded-transfer",
+          "parcelId": "1649____0818",
+          "identity": "1649____0818:2026-10-13",
+          "values": {
+            "price": 2025000,
+            "qualified": true,
+            "saleCode": "01"
+          },
+          "dates": {
+            "transaction": "2026-10-13",
+            "recorded": null,
+            "effective": null,
+            "published": "2026-10-22T09:16:12.000Z",
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "598c5d767660d852fd4009ee99e5ed6a05669192646b93cd7aa743d810d37f65"
+        },
+        {
+          "sourceId": "dc-property-sales",
+          "kind": "recorded-transfer",
+          "parcelId": "1930____2013",
+          "identity": "1930____2013:2026-10-13",
+          "values": {
+            "price": 980000,
+            "qualified": true,
+            "saleCode": "01"
+          },
+          "dates": {
+            "transaction": "2026-10-13",
+            "recorded": null,
+            "effective": null,
+            "published": "2026-10-22T09:16:12.000Z",
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "5aebbcff74d7cbb9ec6ae4cc72f08e77fb76f5916a119259910366d3644dc074"
+        },
+        {
+          "sourceId": "dc-property-sales",
+          "kind": "recorded-transfer",
+          "parcelId": "1977____2028",
+          "identity": "1977____2028:2026-10-13",
+          "values": {
+            "price": 203000,
+            "qualified": true,
+            "saleCode": "01"
+          },
+          "dates": {
+            "transaction": "2026-10-13",
+            "recorded": null,
+            "effective": null,
+            "published": "2026-10-22T09:16:12.000Z",
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "bd365b2680fc9939efb8588b7939f8631fa7be08590ac38de46b61971121b6ed"
+        },
+        {
+          "sourceId": "dc-property-sales",
+          "kind": "recorded-transfer",
+          "parcelId": "2235____0061",
+          "identity": "2235____0061:2026-10-08",
+          "values": {
+            "price": 1000000,
+            "qualified": true,
+            "saleCode": "01"
+          },
+          "dates": {
+            "transaction": "2026-10-08",
+            "recorded": null,
+            "effective": null,
+            "published": "2026-10-22T09:16:12.000Z",
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "d7befb3de83d05aec9ce4e80fb340ac27a255c1c022c779b678a5d64aa5b67c3"
+        },
+        {
+          "sourceId": "dc-property-sales",
+          "kind": "recorded-transfer",
+          "parcelId": "2258____0037",
+          "identity": "2258____0037:2026-10-13",
+          "values": {
+            "price": 3700000,
+            "qualified": true,
+            "saleCode": "01"
+          },
+          "dates": {
+            "transaction": "2026-10-13",
+            "recorded": null,
+            "effective": null,
+            "published": "2026-10-22T09:16:12.000Z",
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "e42a41fc9eb215f694646a7759c6c83504b72f966df30d736e9f8ae579f61bb5"
+        },
+        {
+          "sourceId": "dc-property-sales",
+          "kind": "recorded-transfer",
+          "parcelId": "2292____0025",
+          "identity": "2292____0025:2026-10-09",
+          "values": {
+            "price": 1995000,
+            "qualified": true,
+            "saleCode": "01"
+          },
+          "dates": {
+            "transaction": "2026-10-09",
+            "recorded": null,
+            "effective": null,
+            "published": "2026-10-22T09:16:12.000Z",
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "6a86a1679eb0c6e18082d6e6834082b4b5b367137bca6ce7e26e8509b09504be"
+        },
+        {
+          "sourceId": "dc-property-sales",
+          "kind": "recorded-transfer",
+          "parcelId": "2337____0150",
+          "identity": "2337____0150:2026-10-13",
+          "values": {
+            "price": 1400000,
+            "qualified": true,
+            "saleCode": "01"
+          },
+          "dates": {
+            "transaction": "2026-10-13",
+            "recorded": null,
+            "effective": null,
+            "published": "2026-10-22T09:16:12.000Z",
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "df750cc40a5b70d75c4014818c9220f393f057ba490314f1dc604c6db9ec7f70"
+        },
+        {
+          "sourceId": "dc-property-sales",
+          "kind": "recorded-transfer",
+          "parcelId": "2519____0292",
+          "identity": "2519____0292:2026-10-13",
+          "values": {
+            "price": 3350000,
+            "qualified": true,
+            "saleCode": "01"
+          },
+          "dates": {
+            "transaction": "2026-10-13",
+            "recorded": null,
+            "effective": null,
+            "published": "2026-10-22T09:16:12.000Z",
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "aae62b597620e93b27d9f250996818bfa7e7278dd2e098923e17b7389bee23a2"
+        },
+        {
+          "sourceId": "dc-property-sales",
+          "kind": "recorded-transfer",
+          "parcelId": "2528____2041",
+          "identity": "2528____2041:2026-10-08",
+          "values": {
+            "price": 760000,
+            "qualified": true,
+            "saleCode": "01"
+          },
+          "dates": {
+            "transaction": "2026-10-08",
+            "recorded": null,
+            "effective": null,
+            "published": "2026-10-22T09:16:12.000Z",
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "e63669db15d926d8c5bd6b69f5f4b252aef1c4bb7c9f53e84197a0956d274261"
+        },
+        {
+          "sourceId": "dc-property-sales",
+          "kind": "recorded-transfer",
+          "parcelId": "2615____0071",
+          "identity": "2615____0071:2026-10-13",
+          "values": {
+            "price": 1450256,
+            "qualified": true,
+            "saleCode": "01"
+          },
+          "dates": {
+            "transaction": "2026-10-13",
+            "recorded": null,
+            "effective": null,
+            "published": "2026-10-22T09:16:12.000Z",
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "409a45e13e1cacc4b6e9119b4ccf78a08959db65f2050194a20dd12d2441fc9f"
+        },
+        {
+          "sourceId": "dc-property-sales",
+          "kind": "recorded-transfer",
+          "parcelId": "2657____0031",
+          "identity": "2657____0031:2026-10-08",
+          "values": {
+            "price": 1350000,
+            "qualified": true,
+            "saleCode": "01"
+          },
+          "dates": {
+            "transaction": "2026-10-08",
+            "recorded": null,
+            "effective": null,
+            "published": "2026-10-22T09:16:12.000Z",
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "e1982c13ce69bccecef0ae0f7c38a21208191533e90094916f8f216a927fb706"
+        },
+        {
+          "sourceId": "dc-property-sales",
+          "kind": "recorded-transfer",
+          "parcelId": "2736____0015",
+          "identity": "2736____0015:2026-10-08",
+          "values": {
+            "price": 1395000,
+            "qualified": true,
+            "saleCode": "01"
+          },
+          "dates": {
+            "transaction": "2026-10-08",
+            "recorded": null,
+            "effective": null,
+            "published": "2026-10-22T09:16:12.000Z",
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "fe8d0e214264f73695fa1bfb8ed21f6fa430df4787ca6448ec6c6461f7f1896c"
+        },
+        {
+          "sourceId": "dc-property-sales",
+          "kind": "recorded-transfer",
+          "parcelId": "2776____0823",
+          "identity": "2776____0823:2026-10-13",
+          "values": {
+            "price": 1215000,
+            "qualified": true,
+            "saleCode": "01"
+          },
+          "dates": {
+            "transaction": "2026-10-13",
+            "recorded": null,
+            "effective": null,
+            "published": "2026-10-22T09:16:12.000Z",
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "4fb9ae4375783d7060186bb08c86270bccc3b358d5bddec5cc3954b8c29b8033"
+        },
+        {
+          "sourceId": "dc-property-sales",
+          "kind": "recorded-transfer",
+          "parcelId": "2798____0016",
+          "identity": "2798____0016:2026-10-14",
+          "values": {
+            "price": 1237000,
+            "qualified": true,
+            "saleCode": "01"
+          },
+          "dates": {
+            "transaction": "2026-10-14",
+            "recorded": null,
+            "effective": null,
+            "published": "2026-10-22T09:16:12.000Z",
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "0b2b649c774c8b3104115bca34562d5d0535ecf509710d63e26c1810269cce48"
+        },
+        {
+          "sourceId": "dc-property-sales",
+          "kind": "recorded-transfer",
+          "parcelId": "2897____0053",
+          "identity": "2897____0053:2026-10-13",
+          "values": {
+            "price": 1075000,
+            "qualified": true,
+            "saleCode": "01"
+          },
+          "dates": {
+            "transaction": "2026-10-13",
+            "recorded": null,
+            "effective": null,
+            "published": "2026-10-22T09:16:12.000Z",
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "35e001b4fede74629fd46528268f2aeff84ca444ee9e9f67f2ec2fc4c5fe5fa6"
+        },
+        {
+          "sourceId": "dc-property-sales",
+          "kind": "recorded-transfer",
+          "parcelId": "2900____0031",
+          "identity": "2900____0031:2026-10-14",
+          "values": {
+            "price": 380000,
+            "qualified": true,
+            "saleCode": "01"
+          },
+          "dates": {
+            "transaction": "2026-10-14",
+            "recorded": null,
+            "effective": null,
+            "published": "2026-10-22T09:16:12.000Z",
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "585f6270827f824b681764781d19089b98a77d732beab9622ef1840ffba645ca"
+        },
+        {
+          "sourceId": "dc-property-sales",
+          "kind": "recorded-transfer",
+          "parcelId": "2906____2048",
+          "identity": "2906____2048:2026-10-09",
+          "values": {
+            "price": 315000,
+            "qualified": true,
+            "saleCode": "01"
+          },
+          "dates": {
+            "transaction": "2026-10-09",
+            "recorded": null,
+            "effective": null,
+            "published": "2026-10-22T09:16:12.000Z",
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "ead82f6b1271b759678531c9123c13151db9838f8ea64b932e4b08572787c1e3"
+        },
+        {
+          "sourceId": "dc-property-sales",
+          "kind": "recorded-transfer",
+          "parcelId": "2908____0823",
+          "identity": "2908____0823:2026-10-13",
+          "values": {
+            "price": 611000,
+            "qualified": true,
+            "saleCode": "01"
+          },
+          "dates": {
+            "transaction": "2026-10-13",
+            "recorded": null,
+            "effective": null,
+            "published": "2026-10-22T09:16:12.000Z",
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "9132e7d571498a5c31af981f7becfe8adc1083988e1e5e97ed51eeee36cfbc66"
+        },
+        {
+          "sourceId": "dc-property-sales",
+          "kind": "recorded-transfer",
+          "parcelId": "2947____0091",
+          "identity": "2947____0091:2026-10-14",
+          "values": {
+            "price": 870000,
+            "qualified": true,
+            "saleCode": "01"
+          },
+          "dates": {
+            "transaction": "2026-10-14",
+            "recorded": null,
+            "effective": null,
+            "published": "2026-10-22T09:16:12.000Z",
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "37dd05d12ca84ec1fc1ffd7392e759ec78a569895ab2e6a2755f3f3b1242646f"
+        },
+        {
+          "sourceId": "dc-property-sales",
+          "kind": "recorded-transfer",
+          "parcelId": "2950____1120",
+          "identity": "2950____1120:2026-10-09",
+          "values": {
+            "price": 1074990,
+            "qualified": true,
+            "saleCode": "01"
+          },
+          "dates": {
+            "transaction": "2026-10-09",
+            "recorded": null,
+            "effective": null,
+            "published": "2026-10-22T09:16:12.000Z",
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "41f791add1efe48f7f69d9e4ad9516b70403f146a14bdcb62691ede2cd2abeaf"
+        },
+        {
+          "sourceId": "dc-property-sales",
+          "kind": "recorded-transfer",
+          "parcelId": "3044____0063",
+          "identity": "3044____0063:2026-10-14",
+          "values": {
+            "price": 777000,
+            "qualified": true,
+            "saleCode": "01"
+          },
+          "dates": {
+            "transaction": "2026-10-14",
+            "recorded": null,
+            "effective": null,
+            "published": "2026-10-22T09:16:12.000Z",
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "2e96e23c12c978e2efe54bada126e94ee5494634263db85e40c27dfe82fdb432"
+        },
+        {
+          "sourceId": "dc-property-sales",
+          "kind": "recorded-transfer",
+          "parcelId": "3102____0083",
+          "identity": "3102____0083:2026-10-09",
+          "values": {
+            "price": 670000,
+            "qualified": true,
+            "saleCode": "01"
+          },
+          "dates": {
+            "transaction": "2026-10-09",
+            "recorded": null,
+            "effective": null,
+            "published": "2026-10-22T09:16:12.000Z",
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "7d1c2dcf5f6cb0013ff86a19afaf1b639cbc1de49e5ee3076a7b30185f415029"
+        },
+        {
+          "sourceId": "dc-property-sales",
+          "kind": "recorded-transfer",
+          "parcelId": "3111____0007",
+          "identity": "3111____0007:2026-10-09",
+          "values": {
+            "price": 1450000,
+            "qualified": true,
+            "saleCode": "01"
+          },
+          "dates": {
+            "transaction": "2026-10-09",
+            "recorded": null,
+            "effective": null,
+            "published": "2026-10-22T09:16:12.000Z",
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "67155bbecf5fbd4bd46555a0b47461afdf77417f1678b14c56dce7bc22499a21"
+        },
+        {
+          "sourceId": "dc-property-sales",
+          "kind": "recorded-transfer",
+          "parcelId": "3128____0858",
+          "identity": "3128____0858:2026-10-14",
+          "values": {
+            "price": 996208,
+            "qualified": true,
+            "saleCode": "01"
+          },
+          "dates": {
+            "transaction": "2026-10-14",
+            "recorded": null,
+            "effective": null,
+            "published": "2026-10-22T09:16:12.000Z",
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "2542e97ce9d5224b64f7d56301a78114b70cd431c4f7713707d85cc6f84b997a"
+        },
+        {
+          "sourceId": "dc-property-sales",
+          "kind": "recorded-transfer",
+          "parcelId": "3128____0889",
+          "identity": "3128____0889:2026-10-09",
+          "values": {
+            "price": 1700921,
+            "qualified": true,
+            "saleCode": "01"
+          },
+          "dates": {
+            "transaction": "2026-10-09",
+            "recorded": null,
+            "effective": null,
+            "published": "2026-10-22T09:16:12.000Z",
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "fb5766c6c39bfdce3df9e7188f7c04d5a559a58d9ec194ff47773fc33b8ea12a"
+        },
+        {
+          "sourceId": "dc-property-sales",
+          "kind": "recorded-transfer",
+          "parcelId": "3154____0024",
+          "identity": "3154____0024:2026-10-09",
+          "values": {
+            "price": 550000,
+            "qualified": true,
+            "saleCode": "01"
+          },
+          "dates": {
+            "transaction": "2026-10-09",
+            "recorded": null,
+            "effective": null,
+            "published": "2026-10-22T09:16:12.000Z",
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "adeb24739d6390d7be431447d4ecbd61c66f625b321306efafbc5a97cd97cb89"
+        },
+        {
+          "sourceId": "dc-property-sales",
+          "kind": "recorded-transfer",
+          "parcelId": "3194____0047",
+          "identity": "3194____0047:2026-10-14",
+          "values": {
+            "price": 890000,
+            "qualified": true,
+            "saleCode": "01"
+          },
+          "dates": {
+            "transaction": "2026-10-14",
+            "recorded": null,
+            "effective": null,
+            "published": "2026-10-22T09:16:12.000Z",
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "f0a4afa4271c85167f9863995a6ff3c1e74052dc906f842c8cd30b9759f4cc9c"
+        },
+        {
+          "sourceId": "dc-property-sales",
+          "kind": "recorded-transfer",
+          "parcelId": "3248____0075",
+          "identity": "3248____0075:2026-10-09",
+          "values": {
+            "price": 799900,
+            "qualified": true,
+            "saleCode": "01"
+          },
+          "dates": {
+            "transaction": "2026-10-09",
+            "recorded": null,
+            "effective": null,
+            "published": "2026-10-22T09:16:12.000Z",
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "001014389f967f4ce51e2535e7184726887e05161916e07c8ef4be7c395bf883"
+        },
+        {
+          "sourceId": "dc-property-sales",
+          "kind": "recorded-transfer",
+          "parcelId": "3258____0068",
+          "identity": "3258____0068:2026-10-13",
+          "values": {
+            "price": 895000,
+            "qualified": true,
+            "saleCode": "01"
+          },
+          "dates": {
+            "transaction": "2026-10-13",
+            "recorded": null,
+            "effective": null,
+            "published": "2026-10-22T09:16:12.000Z",
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "32418b5335ea605ae9956c8c7cffb08d6d23c21539218535e13074db6889e588"
+        },
+        {
+          "sourceId": "dc-property-sales",
+          "kind": "recorded-transfer",
+          "parcelId": "3297____0001",
+          "identity": "3297____0001:2026-10-13",
+          "values": {
+            "price": 530000,
+            "qualified": true,
+            "saleCode": "01"
+          },
+          "dates": {
+            "transaction": "2026-10-13",
+            "recorded": null,
+            "effective": null,
+            "published": "2026-10-22T09:16:12.000Z",
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "3f9344bb541aa52bd0e2f5a6288913534599838dee54b099562fac5db347ad8e"
+        },
+        {
+          "sourceId": "dc-property-sales",
+          "kind": "recorded-transfer",
+          "parcelId": "3501____0030",
+          "identity": "3501____0030:2026-10-09",
+          "values": {
+            "price": 305000,
+            "qualified": true,
+            "saleCode": "01"
+          },
+          "dates": {
+            "transaction": "2026-10-09",
+            "recorded": null,
+            "effective": null,
+            "published": "2026-10-22T09:16:12.000Z",
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "67a827e39e252918cc9d7959e0c636533cf1bf3d1e01e808e86be1eb58610b64"
+        },
+        {
+          "sourceId": "dc-property-sales",
+          "kind": "recorded-transfer",
+          "parcelId": "3563____0133",
+          "identity": "3563____0133:2026-10-09",
+          "values": {
+            "price": 287000,
+            "qualified": true,
+            "saleCode": "01"
+          },
+          "dates": {
+            "transaction": "2026-10-09",
+            "recorded": null,
+            "effective": null,
+            "published": "2026-10-22T09:16:12.000Z",
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "48acfb60ea8c2ad47b30efdb2fd4c94b51944b00ac42b278bf4bec8ce964c2ab"
+        },
+        {
+          "sourceId": "dc-property-sales",
+          "kind": "recorded-transfer",
+          "parcelId": "3884____2001",
+          "identity": "3884____2001:2026-10-13",
+          "values": {
+            "price": 466000,
+            "qualified": true,
+            "saleCode": "01"
+          },
+          "dates": {
+            "transaction": "2026-10-13",
+            "recorded": null,
+            "effective": null,
+            "published": "2026-10-22T09:16:12.000Z",
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "4221833e5e6ccc2e4e6494856b2c71e3e730861340e2907732ddc50a518d120b"
+        },
+        {
+          "sourceId": "dc-property-sales",
+          "kind": "recorded-transfer",
+          "parcelId": "3889____0069",
+          "identity": "3889____0069:2026-10-09",
+          "values": {
+            "price": 1200000,
+            "qualified": true,
+            "saleCode": "01"
+          },
+          "dates": {
+            "transaction": "2026-10-09",
+            "recorded": null,
+            "effective": null,
+            "published": "2026-10-22T09:16:12.000Z",
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "cf80148fe8cb1a10a942df7e41ff78fd5c9ff31d4b235269cac0e8e409c37a8e"
+        },
+        {
+          "sourceId": "dc-property-sales",
+          "kind": "recorded-transfer",
+          "parcelId": "3936____0021",
+          "identity": "3936____0021:2026-10-08",
+          "values": {
+            "price": 865000,
+            "qualified": true,
+            "saleCode": "01"
+          },
+          "dates": {
+            "transaction": "2026-10-08",
+            "recorded": null,
+            "effective": null,
+            "published": "2026-10-22T09:16:12.000Z",
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "4f76ab68ad705bd3a620a3f2d76f180c865b49eb42b994f5e6ba7aefef84fab0"
+        },
+        {
+          "sourceId": "dc-property-sales",
+          "kind": "recorded-transfer",
+          "parcelId": "3994____0019",
+          "identity": "3994____0019:2026-10-13",
+          "values": {
+            "price": 750000,
+            "qualified": true,
+            "saleCode": "01"
+          },
+          "dates": {
+            "transaction": "2026-10-13",
+            "recorded": null,
+            "effective": null,
+            "published": "2026-10-22T09:16:12.000Z",
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "2f2e1cde24ad4523e3b76c9a58884d7434bb31a1d1c669988de1f3c60c02de7b"
+        },
+        {
+          "sourceId": "dc-property-sales",
+          "kind": "recorded-transfer",
+          "parcelId": "4243____0810",
+          "identity": "4243____0810:2026-10-08",
+          "values": {
+            "price": 475000,
+            "qualified": true,
+            "saleCode": "01"
+          },
+          "dates": {
+            "transaction": "2026-10-08",
+            "recorded": null,
+            "effective": null,
+            "published": "2026-10-22T09:16:12.000Z",
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "61dd9929b145ef494c80c3924dad2fb80ce0ac795df21d95227e72475fe7fa46"
+        },
+        {
+          "sourceId": "dc-property-sales",
+          "kind": "recorded-transfer",
+          "parcelId": "5143____0038",
+          "identity": "5143____0038:2026-10-08",
+          "values": {
+            "price": 371000,
+            "qualified": true,
+            "saleCode": "01"
+          },
+          "dates": {
+            "transaction": "2026-10-08",
+            "recorded": null,
+            "effective": null,
+            "published": "2026-10-22T09:16:12.000Z",
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "012b43f0ad336dc1cc5f3a7b03f7a34fce2fa9aa3739fe85b2fb1c96453b3831"
+        },
+        {
+          "sourceId": "dc-property-sales",
+          "kind": "recorded-transfer",
+          "parcelId": "5168____0018",
+          "identity": "5168____0018:2026-10-13",
+          "values": {
+            "price": 545000,
+            "qualified": true,
+            "saleCode": "01"
+          },
+          "dates": {
+            "transaction": "2026-10-13",
+            "recorded": null,
+            "effective": null,
+            "published": "2026-10-22T09:16:12.000Z",
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "40188cdd14bc5379f3db31fd292d35ae5e5206bea9f529ca47c28931628e81f9"
+        },
+        {
+          "sourceId": "dc-property-sales",
+          "kind": "recorded-transfer",
+          "parcelId": "5544____0025",
+          "identity": "5544____0025:2026-10-09",
+          "values": {
+            "price": 350000,
+            "qualified": true,
+            "saleCode": "01"
+          },
+          "dates": {
+            "transaction": "2026-10-09",
+            "recorded": null,
+            "effective": null,
+            "published": "2026-10-22T09:16:12.000Z",
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "776b8ac453f69cd858faf4e5ec18100e8e4adbebf038542eabe07231826c7171"
+        },
+        {
+          "sourceId": "dc-property-sales",
+          "kind": "recorded-transfer",
+          "parcelId": "5672____2312",
+          "identity": "5672____2312:2026-10-09",
+          "values": {
+            "price": 70000,
+            "qualified": true,
+            "saleCode": "01"
+          },
+          "dates": {
+            "transaction": "2026-10-09",
+            "recorded": null,
+            "effective": null,
+            "published": "2026-10-22T09:16:12.000Z",
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "b5b872cb0a97f8c5db59392799c64266d7cad7c8ae81021d2d8ecde4904ff6f1"
+        },
+        {
+          "sourceId": "dc-property-sales",
+          "kind": "recorded-transfer",
+          "parcelId": "5890____0137",
+          "identity": "5890____0137:2026-10-13",
+          "values": {
+            "price": 460000,
+            "qualified": true,
+            "saleCode": "01"
+          },
+          "dates": {
+            "transaction": "2026-10-13",
+            "recorded": null,
+            "effective": null,
+            "published": "2026-10-22T09:16:12.000Z",
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "a275933ad9245e5a0c2082453a295d1f19bda56d6a3b509333f60bfb7f432511"
+        }
+      ]
+    },
+    {
+      "label": "Montgomery and Prince George’s transfers after the Maryland snapshot",
+      "market": "maryland",
+      "sourceId": "md-sdat-assessments",
+      "scope": "Montgomery and Prince George’s transfers after 2026-09-24",
+      "attribution": "Maryland SDAT and MDP real property assessment data (public domain).",
+      "manifest": {
+        "version": "ascent-ingestion-manifest-1",
+        "registryVersion": "ascent-source-registry-1",
+        "sourceId": "md-sdat-assessments",
+        "sourceName": "Maryland SDAT/MDP Real Property Assessments (owner names hidden)",
+        "license": "Public Domain",
+        "scope": "Montgomery and Prince George’s transfers after 2026-09-24",
+        "status": "complete",
+        "startedAt": "2026-10-22T21:35:28.266Z",
+        "finishedAt": "2026-10-22T21:35:28.266Z",
+        "requests": 2,
+        "pages": 1,
+        "received": 0,
+        "valid": 0,
+        "invalid": {},
+        "duplicates": 0,
+        "conflicts": [],
+        "observations": 0,
+        "publishedAt": "2026-10-06T17:25:20.000Z",
+        "contentSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "errors": []
+      },
+      "quality": {
+        "received": 0,
+        "valid": 0,
+        "invalidByReason": {},
+        "fieldCompleteness": null,
+        "duplicates": 0,
+        "conflicts": 0,
+        "coveredHomes": 0,
+        "unresolvedIdentities": 0,
+        "unresolvedNote": "An unresolved identity is a lot outside Ascent’s covered homes (commercial, multi-unit, outside the counties or filtered when the snapshot was built), not necessarily an error.",
+        "newestTransaction": null,
+        "newestTransactionAgeDays": null,
+        "sourcePublishedAt": "2026-10-06T17:25:20.000Z"
+      },
+      "observations": []
+    },
+    {
+      "label": "Price index for Washington, DC-MD metropolitan division",
+      "market": "regional",
+      "sourceId": "fhfa-purchase-only-index",
+      "scope": "purchase-only index for CBSA 47764",
+      "attribution": "U.S. Federal Housing Finance Agency, purchase-only house price index (quarterly, metropolitan divisions).",
+      "manifest": {
+        "version": "ascent-ingestion-manifest-1",
+        "registryVersion": "ascent-source-registry-1",
+        "sourceId": "fhfa-purchase-only-index",
+        "sourceName": "FHFA purchase-only house price index, metropolitan divisions",
+        "license": "U.S. Government work",
+        "scope": "purchase-only index for CBSA 47764",
+        "status": "complete",
+        "startedAt": "2026-10-22T21:35:28.266Z",
+        "finishedAt": "2026-10-22T21:35:28.266Z",
+        "requests": 1,
+        "pages": 1,
+        "received": 14200,
+        "valid": 142,
+        "invalid": {
+          "other area": 14058
+        },
+        "duplicates": 0,
+        "conflicts": [],
+        "observations": 142,
+        "publishedAt": null,
+        "contentSha256": "a3769e2b0a316a7e2f0f39947c6133477d45b504e47ef7ba8efd3cf35ef2701b",
+        "errors": []
+      },
+      "quality": {
+        "received": 14200,
+        "valid": 142,
+        "invalidByReason": {
+          "other area": 14058
+        },
+        "fieldCompleteness": null,
+        "duplicates": 0,
+        "conflicts": 0,
+        "coveredHomes": 0,
+        "unresolvedIdentities": 0,
+        "unresolvedNote": "An unresolved identity is a lot outside Ascent’s covered homes (commercial, multi-unit, outside the counties or filtered when the snapshot was built), not necessarily an error.",
+        "newestTransaction": null,
+        "newestTransactionAgeDays": null,
+        "sourcePublishedAt": null
+      },
+      "observations": [
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:1991Q1",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 100,
+            "indexSa": 100,
+            "year": 1991,
+            "quarter": 1
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "1991-03-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "32adc4c936beacd53d924bdcb57146cbb01aaca7b763cb2579c9526c0896c95b"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:1991Q2",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 100.87,
+            "indexSa": 100.24,
+            "year": 1991,
+            "quarter": 2
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "1991-06-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "f0517b1e8be3ef7b86ebb2649d170f724f5a09f9f30d53ed793128ecb0d09790"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:1991Q3",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 99.38,
+            "indexSa": 98.71,
+            "year": 1991,
+            "quarter": 3
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "1991-09-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "f14bdfb7523ea69fabb8d4df792fa38336a5c4888a2b6dcdd56ac81cedbfc489"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:1991Q4",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 101.58,
+            "indexSa": 101,
+            "year": 1991,
+            "quarter": 4
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "1991-12-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "aee668bc7d6d6b3905335a257417dd91ff7c28690acf4884420f49a2012fe3da"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:1992Q1",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 102.38,
+            "indexSa": 102.31,
+            "year": 1992,
+            "quarter": 1
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "1992-03-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "ee780c51d3dbb067201c9641680139d46efcb897072016397b0e1c8f5f0b865e"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:1992Q2",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 100.67,
+            "indexSa": 100.1,
+            "year": 1992,
+            "quarter": 2
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "1992-06-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "3b623490f643876eb88a0cb07b0a035f9e2e0691595f71dee7f011cd0fddb1db"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:1992Q3",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 101.74,
+            "indexSa": 101,
+            "year": 1992,
+            "quarter": 3
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "1992-09-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "7561d8ad5a300d0ad095ece444dd75aeb2356efdd289ff3faea623021c814a6a"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:1992Q4",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 100.89,
+            "indexSa": 100.39,
+            "year": 1992,
+            "quarter": 4
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "1992-12-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "9d49cd6bc94b44c384b7926dee27ef2442d6b69f18cc7a47bfdb8dda7be12e08"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:1993Q1",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 97.27,
+            "indexSa": 97.12,
+            "year": 1993,
+            "quarter": 1
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "1993-03-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "45745e39cdd50ef82529acb719e7645be46ac0e4a8b3aff5819354c38778ec9e"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:1993Q2",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 99.48,
+            "indexSa": 98.98,
+            "year": 1993,
+            "quarter": 2
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "1993-06-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "d64110729640833fed0bfc04080980b5444eb19177c46b123cc13cf89d9a9a8e"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:1993Q3",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 99.45,
+            "indexSa": 98.65,
+            "year": 1993,
+            "quarter": 3
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "1993-09-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "6ea6c145418402ea815c9e548b745ce77cc43ab81e5d7c3020b2028a27d8289b"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:1993Q4",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 98.47,
+            "indexSa": 98.02,
+            "year": 1993,
+            "quarter": 4
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "1993-12-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "6a212984869d7a497ee3d6bcdd90eb33f926c66c952031a02e44bbeb6c852f17"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:1994Q1",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 99.53,
+            "indexSa": 99.44,
+            "year": 1994,
+            "quarter": 1
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "1994-03-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "c1efe0efa1d423d74d3411955ef96eb8890652717ab3eaf04c2efeb78012a0b7"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:1994Q2",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 99.77,
+            "indexSa": 99.22,
+            "year": 1994,
+            "quarter": 2
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "1994-06-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "742c86f61de11e324700146f1888b17cbbf27bbc6948ad99c8929eff55e06e45"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:1994Q3",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 99.04,
+            "indexSa": 98.16,
+            "year": 1994,
+            "quarter": 3
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "1994-09-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "1df4c3c11b3377684f1d2b859bb2d8e161b276c5381c1189be76a7bf6b3f0b58"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:1994Q4",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 96.55,
+            "indexSa": 96.23,
+            "year": 1994,
+            "quarter": 4
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "1994-12-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "6c1326ccf6d50e2677e8ce4447edf7de03177f1ef3eb6e4abdaad3ed6ddd3894"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:1995Q1",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 95.91,
+            "indexSa": 95.81,
+            "year": 1995,
+            "quarter": 1
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "1995-03-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "50b2131a1914636cc8c54f12d5bc600cb42ad06a4f4e0197db43410888f486c8"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:1995Q2",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 91.01,
+            "indexSa": 90.51,
+            "year": 1995,
+            "quarter": 2
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "1995-06-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "d080376b3639b983114521612d373e895ec722fda4f2c966e98325d757d77a9d"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:1995Q3",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 96.65,
+            "indexSa": 95.74,
+            "year": 1995,
+            "quarter": 3
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "1995-09-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "75975c5147af2e8f4c6759dd0324d20edeb382649e94f8105d98741f30062ef8"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:1995Q4",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 95.01,
+            "indexSa": 94.7,
+            "year": 1995,
+            "quarter": 4
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "1995-12-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "0c690d2c1089b02d9c1e390cf7c9899d20a04774240d9918338ad9ab2cdde8ac"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:1996Q1",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 95.81,
+            "indexSa": 95.81,
+            "year": 1996,
+            "quarter": 1
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "1996-03-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "1d42d614760202c15b83b07596fd7f06f6313669fd08cac082d168b094c1c4d1"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:1996Q2",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 96.67,
+            "indexSa": 96.09,
+            "year": 1996,
+            "quarter": 2
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "1996-06-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "ee74b6e6953509dfa17f28a0eb9d73647a64bc7467394e5fcd66dea08b7c924f"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:1996Q3",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 95.75,
+            "indexSa": 94.76,
+            "year": 1996,
+            "quarter": 3
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "1996-09-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "95f2fbe945cbe027e7c074c0cf2216b456021ac24ef31d8a31f2442d55de37d0"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:1996Q4",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 96.93,
+            "indexSa": 96.68,
+            "year": 1996,
+            "quarter": 4
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "1996-12-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "5cf4ad53b37ae4168ec06750d01d06d966ab0ba739600dbc4a0de387d25be062"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:1997Q1",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 94.11,
+            "indexSa": 94.16,
+            "year": 1997,
+            "quarter": 1
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "1997-03-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "89714ed555af9dc579b12f83382f97782c5f3256346ffae523168c73c5cf2b3e"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:1997Q2",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 95.57,
+            "indexSa": 94.98,
+            "year": 1997,
+            "quarter": 2
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "1997-06-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "9ab17513b6bec6fc50cff93e6a7ac82d5ef3b44be4500d462bfe185d1230fb4d"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:1997Q3",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 95.12,
+            "indexSa": 94.06,
+            "year": 1997,
+            "quarter": 3
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "1997-09-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "03556e42f75257a728a98280b8f02f8d7b44c6edd54c5ada5fd43b43faefd674"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:1997Q4",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 92.39,
+            "indexSa": 92.12,
+            "year": 1997,
+            "quarter": 4
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "1997-12-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "bd632255e6809731691f49047aca3ea0076b48741189b0fd6dd358ad0b5ca85d"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:1998Q1",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 94.69,
+            "indexSa": 94.93,
+            "year": 1998,
+            "quarter": 1
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "1998-03-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "15f08a3cc93cfb3946607e9281388fbf98eb8f0c8c923ca34c4f82ecf8a3c4fd"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:1998Q2",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 95.25,
+            "indexSa": 94.57,
+            "year": 1998,
+            "quarter": 2
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "1998-06-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "02569d086c62860566e6f6be5b3cca5eaae1c2a809e2212e6452e8093b27df25"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:1998Q3",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 98.44,
+            "indexSa": 97.17,
+            "year": 1998,
+            "quarter": 3
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "1998-09-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "eae89e0f9d5a7b12a5d71ec04849991c1ea39827bd8054e34c4b534e8eb879da"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:1998Q4",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 100.53,
+            "indexSa": 100.41,
+            "year": 1998,
+            "quarter": 4
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "1998-12-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "f6339b0230be67cd0a74258bd61f7df22b2bc799c6599384b7fe81aa4090e219"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:1999Q1",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 99.13,
+            "indexSa": 99.48,
+            "year": 1999,
+            "quarter": 1
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "1999-03-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "ec1540e8b53fb19ed21a5bbfa86738760746c050a642843629e7a5389be05a24"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:1999Q2",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 102.37,
+            "indexSa": 101.54,
+            "year": 1999,
+            "quarter": 2
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "1999-06-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "86e2296ba91234d59e10cbfed6d47ac0836f604dd383a44e8055ef422015ae94"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:1999Q3",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 105.06,
+            "indexSa": 103.58,
+            "year": 1999,
+            "quarter": 3
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "1999-09-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "c1d6b523f758d64542d617c093902c61b8dd565265558436c5c8d64d01aae0ae"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:1999Q4",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 105.55,
+            "indexSa": 105.49,
+            "year": 1999,
+            "quarter": 4
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "1999-12-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "1e6c2c38ea1cf5f39f3e9c675abbdbf2ceb8e79deb12c8a36b35b76eceb9da6d"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2000Q1",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 108.3,
+            "indexSa": 108.87,
+            "year": 2000,
+            "quarter": 1
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2000-03-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "8b6e36a2d672236ed10e76e2afcef33355aa770851d75073e913d3657e9c72bb"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2000Q2",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 112.09,
+            "indexSa": 111.05,
+            "year": 2000,
+            "quarter": 2
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2000-06-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "3120e7923561e2ab370526e423789eadc8f8b98e73735a925f03831efd1d27a9"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2000Q3",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 114.37,
+            "indexSa": 112.55,
+            "year": 2000,
+            "quarter": 3
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2000-09-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "0daf69d99120b1ab654def16fc23ff08ac51692775b0a90d9b2793122e85e8aa"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2000Q4",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 113.08,
+            "indexSa": 113.22,
+            "year": 2000,
+            "quarter": 4
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2000-12-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "afa4c6e18eef541ff21a226e0bbb5927aa7f07689b955c0bf09236ce271561a7"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2001Q1",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 117.06,
+            "indexSa": 117.79,
+            "year": 2001,
+            "quarter": 1
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2001-03-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "d22ceab0654c17666bda7bae3e9955a9fc71be246586436701a683963db95f7b"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2001Q2",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 122.42,
+            "indexSa": 121.18,
+            "year": 2001,
+            "quarter": 2
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2001-06-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "b9c52c3699c462ec08f41ff8e520e01ad10624b864017106b4a9fd81de581d0f"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2001Q3",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 127.3,
+            "indexSa": 125.13,
+            "year": 2001,
+            "quarter": 3
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2001-09-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "ac1aebdb18ff1bed0fdde66e966e687039af250a3e0bdbe2771de503dc2c3959"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2001Q4",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 130.37,
+            "indexSa": 130.64,
+            "year": 2001,
+            "quarter": 4
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2001-12-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "ca326b17bc1fc459df603627da1098287844b1c4f09c1c70a2041c76d1dfbb3c"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2002Q1",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 133.75,
+            "indexSa": 134.76,
+            "year": 2002,
+            "quarter": 1
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2002-03-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "01e928f364bf01e83dffa45c89c7376db59d06c4045a58e309eba62d7a96a6a4"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2002Q2",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 141.86,
+            "indexSa": 140.35,
+            "year": 2002,
+            "quarter": 2
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2002-06-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "c1d18d602bcf555d0862bb605f8c48612e1390e86dafaffe2226781cfb798774"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2002Q3",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 146.48,
+            "indexSa": 143.71,
+            "year": 2002,
+            "quarter": 3
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2002-09-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "c277a6ae6aa656abc4cb2c23acb9bb30b00c1e97913439b89270e2c5e42c8cc2"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2002Q4",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 151.86,
+            "indexSa": 152.45,
+            "year": 2002,
+            "quarter": 4
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2002-12-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "988ee9b1573600ee9f1efaea55efac5c914eb1e8f5868b6f73ec3e926c6689d9"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2003Q1",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 151.2,
+            "indexSa": 152.27,
+            "year": 2003,
+            "quarter": 1
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2003-03-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "658bfe73b465a704c33376ddb592a003c6b6bcf1201ee07726d8e278e3670153"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2003Q2",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 161.3,
+            "indexSa": 159.69,
+            "year": 2003,
+            "quarter": 2
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2003-06-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "174bcc4f798bb1166afbbcb26aff8e2241abedce4d19f1e9be94db50e54dd7e0"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2003Q3",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 171.36,
+            "indexSa": 167.95,
+            "year": 2003,
+            "quarter": 3
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2003-09-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "1811ced34bc07c8c8e8361c41fda0ac1028690faa43e3e501707af8d8e6d896b"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2003Q4",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 171.28,
+            "indexSa": 171.92,
+            "year": 2003,
+            "quarter": 4
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2003-12-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "e3735d6041fa308f13be72df681037c89f01afa62ecf7dddbd9ff9edacb509ab"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2004Q1",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 184.35,
+            "indexSa": 185.72,
+            "year": 2004,
+            "quarter": 1
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2004-03-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "d0718908315e8c5d315bf946213130e0cb22d8b189dbb7764d23bbd446bab3c3"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2004Q2",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 195.38,
+            "indexSa": 193.64,
+            "year": 2004,
+            "quarter": 2
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2004-06-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "8550ffd1b769b34cec06bbce214052697822e119d9df23c772d7408af37a5502"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2004Q3",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 207.87,
+            "indexSa": 203.56,
+            "year": 2004,
+            "quarter": 3
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2004-09-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "14ee42ebdd0d792c952a9276f61abb22f3f36d2eab4cc42e9cf509b8dbce09b6"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2004Q4",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 214.86,
+            "indexSa": 215.54,
+            "year": 2004,
+            "quarter": 4
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2004-12-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "6c4dfb17d4d4f0aa1e1ef55095fcaf7fe3abb6645db442590ab348fe52082e71"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2005Q1",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 228.14,
+            "indexSa": 229.77,
+            "year": 2005,
+            "quarter": 1
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2005-03-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "012e60023177cc708c552e0353293a78b23050a1a180a566799dd5247543d6db"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2005Q2",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 249.02,
+            "indexSa": 247.28,
+            "year": 2005,
+            "quarter": 2
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2005-06-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "cd37e5251e5e1067d83710b6c35b6219e8fb4bf6ca1fc23f187e4bae343371a2"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2005Q3",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 266.16,
+            "indexSa": 260.53,
+            "year": 2005,
+            "quarter": 3
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2005-09-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "91021e03bea16d9d71600f956efc7ac20a90e599f58de2a34bde431191a550a9"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2005Q4",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 261.49,
+            "indexSa": 261.74,
+            "year": 2005,
+            "quarter": 4
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2005-12-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "ea131eb7ac69aafba4a2dfda1ffff66681f09d4186833f59aefbf57bac7feb1f"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2006Q1",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 268.8,
+            "indexSa": 270.97,
+            "year": 2006,
+            "quarter": 1
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2006-03-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "2de5054e5bb19326ed9ee790d7e17c2d65130d4cb250654207f1ea2cc69c5051"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2006Q2",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 272.27,
+            "indexSa": 270.91,
+            "year": 2006,
+            "quarter": 2
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2006-06-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "b35950f64b18366b88799a93f4d43b328814cb69335fe4bd1144932cf8f5b99b"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2006Q3",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 274.71,
+            "indexSa": 268.68,
+            "year": 2006,
+            "quarter": 3
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2006-09-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "fbc75f02188455316053798ef5970fa81368e8d201813a638ebb498555279dad"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2006Q4",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 286.78,
+            "indexSa": 286.36,
+            "year": 2006,
+            "quarter": 4
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2006-12-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "6d752a26a568d9b2e6aa4696c8a5b51be0a62ae5bfd1b3526d55636a8ef087ba"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2007Q1",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 284.19,
+            "indexSa": 286.91,
+            "year": 2007,
+            "quarter": 1
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2007-03-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "e5e96236c5abb4ed9cdf2a01dfc47ac262db971989cc7b3516c1f88c9e8debc5"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2007Q2",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 287.02,
+            "indexSa": 286.02,
+            "year": 2007,
+            "quarter": 2
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2007-06-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "d4c92ab9875f85391d11384fe6350f15d496805d779399c3acbc83c6f918c69d"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2007Q3",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 282.45,
+            "indexSa": 276.24,
+            "year": 2007,
+            "quarter": 3
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2007-09-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "539b75dfdce450b28b246637d6bbb6534a2d0250084726a195ed50b48234fbbc"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2007Q4",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 269.93,
+            "indexSa": 268.49,
+            "year": 2007,
+            "quarter": 4
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2007-12-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "c61b83dd0b3b366b81e99126a8fa04d7ec9391bc385a61dfe029f93dd6e77ece"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2008Q1",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 253.33,
+            "indexSa": 256.73,
+            "year": 2008,
+            "quarter": 1
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2008-03-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "2d0432b230e2ae123f85524d8a081958276116fd974b9eee2bbfe8d5254f1763"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2008Q2",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 242.17,
+            "indexSa": 241.21,
+            "year": 2008,
+            "quarter": 2
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2008-06-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "0cd43470ab7c5f78c6924170a44da62c15c22ddcfa93c9c2f599bbada94c83da"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2008Q3",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 243.51,
+            "indexSa": 238.12,
+            "year": 2008,
+            "quarter": 3
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2008-09-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "91610693c5b9f6bda5a6d78c2ae8f8594e32337840498153167cb6fe6009c602"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2008Q4",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 228.83,
+            "indexSa": 227.04,
+            "year": 2008,
+            "quarter": 4
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2008-12-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "8f38ee76f247b04315a514c7ff844a5c838561ada853ae376db911a112b700dc"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2009Q1",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 216.02,
+            "indexSa": 219.84,
+            "year": 2009,
+            "quarter": 1
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2009-03-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "ed0236fef065500a5db299063e7e1c697066abb790b08d41c28c37c66caf1ca7"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2009Q2",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 216.72,
+            "indexSa": 215.28,
+            "year": 2009,
+            "quarter": 2
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2009-06-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "049e0d20a8fa51d4696c8855a8773557a61b16aa9e26603e9b44c872e0346009"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2009Q3",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 223.54,
+            "indexSa": 218.75,
+            "year": 2009,
+            "quarter": 3
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2009-09-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "8a9c5ee13823a33f120226e199d9cdd995b345bd300ff783492d890c61a08829"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2009Q4",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 221.12,
+            "indexSa": 219.13,
+            "year": 2009,
+            "quarter": 4
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2009-12-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "b19f456d7dc4a54799fdd091d24316e3c99a2532866b7bbd091203488e477f44"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2010Q1",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 214.46,
+            "indexSa": 219.11,
+            "year": 2010,
+            "quarter": 1
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2010-03-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "8ac3a26981660e9bb49d4c142fcf974b1c08de9d987a03d514830d3f63abd470"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2010Q2",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 217.64,
+            "indexSa": 215.23,
+            "year": 2010,
+            "quarter": 2
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2010-06-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "cb977ec37bba8ca5fd4755ac6ae55626c595d5a1824149787b14aa4a4cdda66c"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2010Q3",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 217.7,
+            "indexSa": 213.35,
+            "year": 2010,
+            "quarter": 3
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2010-09-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "ea38650833d7b2e5f5687d6a9a2c401176d4509f42d4e995a0d6adf7af09e295"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2010Q4",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 215.01,
+            "indexSa": 213.28,
+            "year": 2010,
+            "quarter": 4
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2010-12-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "fbc642aa530e6cec7647bf50a5c5c9c59a7942e652f6e3fa120d57ce6a349878"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2011Q1",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 203.82,
+            "indexSa": 208.5,
+            "year": 2011,
+            "quarter": 1
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2011-03-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "cec5ebbcce8feabc7270a45f8805fe02c28365c1f1ea52a006f0e5bf5a65b007"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2011Q2",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 212.76,
+            "indexSa": 209.34,
+            "year": 2011,
+            "quarter": 2
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2011-06-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "c3fb0f0088930b7db52039f6b8dcab3794de4f973dc325f220bc24171fac2683"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2011Q3",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 213.05,
+            "indexSa": 209.62,
+            "year": 2011,
+            "quarter": 3
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2011-09-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "a97937ced1214ac5391c0a1af2adc43b18602f794b6181a6cbf5825738106569"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2011Q4",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 211.86,
+            "indexSa": 210.25,
+            "year": 2011,
+            "quarter": 4
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2011-12-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "9a159395ba0e633826c6629e8e79e89024c78e4555dd195e791470fdc31263e1"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2012Q1",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 208.51,
+            "indexSa": 213.29,
+            "year": 2012,
+            "quarter": 1
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2012-03-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "b6b94f88b264084459e1e6b688ea798e1faf9168ce0e5b6a8e0ce810dcf43a3d"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2012Q2",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 230.08,
+            "indexSa": 225.39,
+            "year": 2012,
+            "quarter": 2
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2012-06-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "9c75c2203387206ee1e5e3060bae50823409cb41d926ed5f2c739f138dd2506f"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2012Q3",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 230.82,
+            "indexSa": 228.04,
+            "year": 2012,
+            "quarter": 3
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2012-09-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "86f31edca10389c8883bad4e6fef5114d4578bdbfbe3d85ee74a943379b173e2"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2012Q4",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 233.54,
+            "indexSa": 231.97,
+            "year": 2012,
+            "quarter": 4
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2012-12-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "c14bbf5c3457f39e110484291c4a73d5693448ecd149bf8f652bdd3718b4564c"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2013Q1",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 234.27,
+            "indexSa": 239.3,
+            "year": 2013,
+            "quarter": 1
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2013-03-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "11fc7d505f2e1bfc25292d9d5fc18912cccc47d405fd72efb7ea517e656c8b7c"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2013Q2",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 250.85,
+            "indexSa": 244.91,
+            "year": 2013,
+            "quarter": 2
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2013-06-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "5b39b1ad73841af6eae24f4b3b6b3c286c2e1b801e37c4a6d8ddc4a8eeeb25f4"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2013Q3",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 258.61,
+            "indexSa": 256.58,
+            "year": 2013,
+            "quarter": 3
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2013-09-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "eacda73241f2ad57d2fdc5cce680ec7f86d965dd997bd53b85a6106cd38ca47d"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2013Q4",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 251.67,
+            "indexSa": 250.12,
+            "year": 2013,
+            "quarter": 4
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2013-12-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "d24e73e4f292ff3e62036518b1fb804169912b72de3b376a872ee1f99457d5ee"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2014Q1",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 258.31,
+            "indexSa": 263.2,
+            "year": 2014,
+            "quarter": 1
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2014-03-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "f1ea46b11303d119d6191a79181f37d5d650bbf30c019f58babcf5ef7233c152"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2014Q2",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 264.74,
+            "indexSa": 258.25,
+            "year": 2014,
+            "quarter": 2
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2014-06-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "5a3523925be5bb9644098b763b7d59546920d378db76d0d5200e06c0e5b2efb6"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2014Q3",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 256.25,
+            "indexSa": 254.75,
+            "year": 2014,
+            "quarter": 3
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2014-09-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "5b239d8bf4514180cf47fa5e4440ae5cd1e82cafdc51f2cc6347873e69ae12c5"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2014Q4",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 266.33,
+            "indexSa": 265.03,
+            "year": 2014,
+            "quarter": 4
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2014-12-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "1f52bb6c1029ba2c492761ea840f28742103c1f50c10aed0ec965981a0254104"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2015Q1",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 262.35,
+            "indexSa": 266.54,
+            "year": 2015,
+            "quarter": 1
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2015-03-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "ff4e3b2d712e23226554267f62039737bae29bb51303db42f0ee6b2b425ad341"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2015Q2",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 278.88,
+            "indexSa": 272.01,
+            "year": 2015,
+            "quarter": 2
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2015-06-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "749976388538ecd7bab0320ae8517ffa58f8793c56ed48632d4263c242eb806f"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2015Q3",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 278.77,
+            "indexSa": 277.64,
+            "year": 2015,
+            "quarter": 3
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2015-09-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "f0d99c8725b86b0eaacc1c2c1dac37a84c68ac9972fe27a9939cd17f16aa41f4"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2015Q4",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 277.01,
+            "indexSa": 275.82,
+            "year": 2015,
+            "quarter": 4
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2015-12-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "05be09e6bfd87f2fadec3f3d0b98f9f7798512ce1d838aff21d8ed211e6d8857"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2016Q1",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 276.15,
+            "indexSa": 279.94,
+            "year": 2016,
+            "quarter": 1
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2016-03-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "02305254c0d22a635d8760f4f50db5c67aba91ae8672c062faf7edfb142f475e"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2016Q2",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 294.7,
+            "indexSa": 287.63,
+            "year": 2016,
+            "quarter": 2
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2016-06-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "bc23c46e73ccc232d58c5672f3a2f694dc76a83e8c35e0e645ce528ccb98fbc1"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2016Q3",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 291.4,
+            "indexSa": 290.17,
+            "year": 2016,
+            "quarter": 3
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2016-09-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "a3b18a08a8d7f30b625710dcf5a74ffd7f3a9494f8c39e06b0d1629d43d903b3"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2016Q4",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 297.49,
+            "indexSa": 296.85,
+            "year": 2016,
+            "quarter": 4
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2016-12-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "60c51133e884f54a8b8b2888dd5cde0cae1d83d1f0b21173d2f009244170ee5c"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2017Q1",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 294.11,
+            "indexSa": 297.43,
+            "year": 2017,
+            "quarter": 1
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2017-03-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "d3a827aa56330cd8298a78afd624098d05cabf637d7243ab9040c4d569925214"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2017Q2",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 304.79,
+            "indexSa": 297.54,
+            "year": 2017,
+            "quarter": 2
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2017-06-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "016a6c6396f063f63c8ffc7663c048a3e95f3bd5944ce53471abf0b85205144c"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2017Q3",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 305.89,
+            "indexSa": 304.52,
+            "year": 2017,
+            "quarter": 3
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2017-09-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "8c258be9449297db392405a49cbdc2f9a6ffab1d40c92776b07f722459f6099c"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2017Q4",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 307.36,
+            "indexSa": 307.61,
+            "year": 2017,
+            "quarter": 4
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2017-12-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "d33e8751da118370936d33ecccb7fa7d30f48cb9413063b2e0a1269576fd1e91"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2018Q1",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 307.46,
+            "indexSa": 309.89,
+            "year": 2018,
+            "quarter": 1
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2018-03-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "800d8aef99a4e68d1023c89f674cab1a49ed263cdc66b298badf02e2fd5075bd"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2018Q2",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 319.92,
+            "indexSa": 312.54,
+            "year": 2018,
+            "quarter": 2
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2018-06-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "7b1f910377f6b53b2af5c4550f34e5e048708ef93c01e9e90d24722678a5b534"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2018Q3",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 306.52,
+            "indexSa": 304.86,
+            "year": 2018,
+            "quarter": 3
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2018-09-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "2169aabce698db5edf06e6d54ceb7963abc4a602769937cd210ceb75f2477015"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2018Q4",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 316.92,
+            "indexSa": 318.62,
+            "year": 2018,
+            "quarter": 4
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2018-12-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "b69bc9cad98e1a3746cebff0e572c4f665edea66e0ea76a5103f58351a42767f"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2019Q1",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 312.81,
+            "indexSa": 313.8,
+            "year": 2019,
+            "quarter": 1
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2019-03-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "7c471d99f76a45b2abd7fc7ccd311eba50ca6cb36293f9d0184f34f6c6a9f5bc"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2019Q2",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 327.43,
+            "indexSa": 319.99,
+            "year": 2019,
+            "quarter": 2
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2019-06-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "d8860fed45fc66edfe7b20364a1b46d23735b883aafd1afa2e14d53524785999"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2019Q3",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 328.17,
+            "indexSa": 326.46,
+            "year": 2019,
+            "quarter": 3
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2019-09-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "4aae9da2fbf54edc1521f790660f220a035a3cd0f0b85606fc2c65a2fffbcbe3"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2019Q4",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 331.08,
+            "indexSa": 334.24,
+            "year": 2019,
+            "quarter": 4
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2019-12-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "d0b11c3d305470d66a17320241fe7622452828f3736368e4b5e31e4adce1350d"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2020Q1",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 340.92,
+            "indexSa": 340.44,
+            "year": 2020,
+            "quarter": 1
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2020-03-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "43f9b22d26b571ddc9b82f4ce463c2832526d9cb92c0906df05c3d08b2be9966"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2020Q2",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 345.46,
+            "indexSa": 337.73,
+            "year": 2020,
+            "quarter": 2
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2020-06-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "3d748422cae155e6831960b2d7aaa1bc71b8e0580ed5c98ea482d1457e35c890"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2020Q3",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 360.45,
+            "indexSa": 358.61,
+            "year": 2020,
+            "quarter": 3
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2020-09-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "350f8cfb16afb74a75c5e192cf22d63429f4465835d6b5657e9dd7d7fc5d638e"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2020Q4",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 361.57,
+            "indexSa": 366.3,
+            "year": 2020,
+            "quarter": 4
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2020-12-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "9a4c480430d1cd1ec4c9e26251a5306c200fd54deee687140c096c3c6c7ae9f4"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2021Q1",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 378.42,
+            "indexSa": 376.6,
+            "year": 2021,
+            "quarter": 1
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2021-03-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "f78c6ae2792a4c1ece593a94cbcba6bbaac044fa8fac74295291f18650740df3"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2021Q2",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 393.73,
+            "indexSa": 384.94,
+            "year": 2021,
+            "quarter": 2
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2021-06-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "841e3ce1bbf754900218fed10a127fb27e92299e35d47c50aa5b5677545cfd59"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2021Q3",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 391.74,
+            "indexSa": 389.8,
+            "year": 2021,
+            "quarter": 3
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2021-09-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "067e62ac96b2ad14bc21525967d273f67a184445f9cd40c675b8f9e546d2276f"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2021Q4",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 390.22,
+            "indexSa": 396.14,
+            "year": 2021,
+            "quarter": 4
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2021-12-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "ae3102af87834d5e86dc76c525a1573b0095c1e2d628033dead2e3c2e71d067c"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2022Q1",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 410.07,
+            "indexSa": 407.26,
+            "year": 2022,
+            "quarter": 1
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2022-03-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "00eb587eb1679eaf314c256b299aa66d79f498e58976c7cc5e6d9e9f69662702"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2022Q2",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 413.33,
+            "indexSa": 404.5,
+            "year": 2022,
+            "quarter": 2
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2022-06-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "96c94152ebadf4c73406d8f218af396ec5587356eb2d1174a5ab453add04122c"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2022Q3",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 398.69,
+            "indexSa": 396.49,
+            "year": 2022,
+            "quarter": 3
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2022-09-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "3dc3a3777da1a3d8dc8cc0f3cb2eb28fe8c9210b8249f0767662abc1c3549630"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2022Q4",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 388.43,
+            "indexSa": 394.15,
+            "year": 2022,
+            "quarter": 4
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2022-12-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "603b75e712e8e137224372a5909b134acfbd763d81cd326526b0c3653f3b44b6"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2023Q1",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 405.16,
+            "indexSa": 402.77,
+            "year": 2023,
+            "quarter": 1
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2023-03-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "944f1c62e8ea6a3eae65326a11f06226b4c259115eb11e8c01a0a313504980f7"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2023Q2",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 415.25,
+            "indexSa": 406.6,
+            "year": 2023,
+            "quarter": 2
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2023-06-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "b5a5ba6ca637abf19fccd44fdc8614641f4dcb6c94a7f63b305a8a121d08170d"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2023Q3",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 412.94,
+            "indexSa": 410.35,
+            "year": 2023,
+            "quarter": 3
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2023-09-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "56360c636e303323cbb54ce9486bcdc56412b019c91a4fb5d4b18fb6223471d6"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2023Q4",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 416.95,
+            "indexSa": 422.24,
+            "year": 2023,
+            "quarter": 4
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2023-12-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "576f638dc6a56510e0b56a457ba99129573369694d311ef8bbdb1768bd243545"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2024Q1",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 400.14,
+            "indexSa": 398.68,
+            "year": 2024,
+            "quarter": 1
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2024-03-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "65e8a7ce0201473e21e35b6c2e05b32c8382b8093cdec3325aff37175ebeff3e"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2024Q2",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 426.85,
+            "indexSa": 418.43,
+            "year": 2024,
+            "quarter": 2
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2024-06-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "5de0d2ec968bfa566642d1957328fe5df14549a37816ff621b9637cd549fb396"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2024Q3",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 421.71,
+            "indexSa": 418.63,
+            "year": 2024,
+            "quarter": 3
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2024-09-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "a97045d13b3d6402c9761763ebc14af50185397c359ef1e19446a37643489d94"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2024Q4",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 414.63,
+            "indexSa": 418.48,
+            "year": 2024,
+            "quarter": 4
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2024-12-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "780b3c84e24facb0af45afc4db52368649030357b0f2b9c6faf24fedd9a225b1"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2025Q1",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 427.18,
+            "indexSa": 427.16,
+            "year": 2025,
+            "quarter": 1
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2025-03-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "bd979bcb00bebf509f44ab9bfc436d90419266b334be6e3cdfbe900bd8de4f84"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2025Q2",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 424.63,
+            "indexSa": 416.54,
+            "year": 2025,
+            "quarter": 2
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2025-06-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "348329dced526a8c97c23bdb8c31d1d01e1c12a4fa4f2470d8250bda5c75e71f"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2025Q3",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 431.79,
+            "indexSa": 428.14,
+            "year": 2025,
+            "quarter": 3
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2025-09-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "274df44dd5765e4bc76bc4a12dd0fbadbfb62028201c553f78fbd5bd03f73e7f"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2025Q4",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 422.28,
+            "indexSa": 425.21,
+            "year": 2025,
+            "quarter": 4
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2025-12-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "843f62e0d285b3623b04b2aaf16c887455f995f233970bb798fd650ccda12589"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2026Q1",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 405.07,
+            "indexSa": 405.91,
+            "year": 2026,
+            "quarter": 1
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2026-03-31",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "96e73fbb40f04da1d0ee0b117f94b1d6f9bb34b590fa78b8c3849b6ae88ecbaf"
+        },
+        {
+          "sourceId": "fhfa-purchase-only-index",
+          "kind": "price-index",
+          "parcelId": null,
+          "identity": "47764:2026Q2",
+          "values": {
+            "area": "Washington, DC-MD (MSAD)",
+            "indexNsa": 419.87,
+            "indexSa": 412.3,
+            "year": 2026,
+            "quarter": 2
+          },
+          "dates": {
+            "transaction": null,
+            "recorded": null,
+            "effective": "2026-06-30",
+            "published": null,
+            "observed": "2026-10-22T21:35:28.266Z"
+          },
+          "fingerprint": "a1efb8629347fd6d2d3ab0c9058fe6bb1d9c70cb1204af26a264f2ec7aa87283"
+        }
+      ]
+    }
+  ],
+  "contentSha256": "3de469ca8b877fb298bba2f7b4d784a2ac37db2630bb409e87d7a5958e195809"
+}

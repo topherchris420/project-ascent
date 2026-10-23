@@ -26,6 +26,7 @@
     "usability:register": "tsx scripts/usability/register.ts",
     "usability:analyze": "tsx scripts/usability/analyze.ts",
     "usability:answer-key": "tsx scripts/usability/answer-key.ts",
+    "sources:refresh": "tsx scripts/sources/refresh.ts",
     "format": "prettier --write \"src/**/*.{ts,tsx,css}\" \"tests/**/*.ts\" \"scripts/**/*.{ts,mjs}\" \"*.ts\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,css}\" \"tests/**/*.ts\" \"scripts/**/*.{ts,mjs}\" \"*.ts\""
   },

@@ -90,11 +90,24 @@ These are **illustrative, pre-tax comparisons**, not financial advice or predict
 
 A **Property Evidence Passport** brings the property's public evidence, your saved decisions, assumptions, and calculation versions into one reproducible history. It carries the brief as a research record: the sales selected, ruled out and excluded, the settings you changed, the reliability checks, missing facts and next steps. The readable report opens with an executive summary. Compare saved versions, see whether records or assumptions actually changed, and export a privacy-filtered JSON or standalone printable HTML report. Use your browser's Print command to save a PDF.
 
-The **Decision Time Machine** distinguishes changed comparable evidence from changed homeowner assumptions. Its on-demand checks do **not** mean Ascent monitors the live market, fetches listings in the background, or sends price alerts.
+The **Decision Time Machine** distinguishes changed comparable evidence from changed homeowner assumptions. Its on-demand checks do **not** mean Ascent fetches listings in the background or sends price alerts. Watching a home's public records is a separate opt-in (below), and it runs only when you open Ascent.
 
 ### 05 · Ask for the explanation
 
 **Ask Ascent** can explain the calculations and evidence in context. Questions about value and evidence are answered from the brief's own figures, with references to the calculation, study and records behind each answer. Core pricing and homeowner financial computations are deterministic; **AI does not set the home's price**. Optional Groq/OpenAI integrations are separately configured, and production external-model synthesis remains blocked pending independent review.
+
+### 06 · Run the whole move from one place
+
+The **Homeowner OS** (`/home/{market}/{parcel}`, linked from My Home and from each studio) brings one home into six areas:
+
+- **My Property:** the brief and a **Property Evidence Timeline** of recorded sales, permits, assessments, tax and flood mapping. Each record keeps its own date apart from when it was recorded, published and checked.
+- **Market Watch:** an opt-in watch on the home's public records and recorded sales nearby, with deduplicated in-app notifications, freshness and pause, delete and export controls.
+- **Compare Offers:** seller proceeds or buyer cash to close, deadlines, contingency differences, missing terms and sensitivity for up to six offers, plus a printable Offer Comparison Brief.
+- **My Decisions:** the homeowner workbench above.
+- **Transaction Room:** milestones, deadlines, encrypted documents, inspection items, checklists, notes and decisions, under your control. It needs a free account.
+- **Share With My Agent:** a packet you download and send yourself, with private parts off by default, and expiring, revocable invitations to the parts of your room you choose.
+
+Live public records are shown and watched, never priced, and an estimate that is withheld stays withheld everywhere. Ascent does not rank offers, estimate the chance one closes, interpret legal terms or show recorded sales as listings. Its MLS Bridge is built but disabled: no agreement is on file. [How the Homeowner OS works](docs/homeowner-os.md) · [The public-data network, its permissions and refresh](docs/public-data-network.md)
 
 ## Our accuracy is public. So are the misses.
 

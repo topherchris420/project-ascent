@@ -13,7 +13,7 @@ export const DC_CONDITION_LABELS: Record<number, string> = {
   5: 'Very good',
   6: 'Excellent',
 };
-export const DC_PARCEL_PATTERN = /^[A-Za-z0-9_]{4,32}$/;
+export { DC_PARCEL_PATTERN } from './home-routes';
 export const dcDefaultState = (): StudioState =>
   defaultStudioState(validatedAssumptions(dcBenchmark) as CmaAssumptions);
 

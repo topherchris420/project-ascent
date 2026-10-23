@@ -3,6 +3,7 @@ import { authenticate, digest, HttpError } from './auth';
 import { consumeRateLimit, DatabaseConfigurationError } from './db';
 import { allowedAppOrigins } from './deployment';
 import type { Actor } from './types';
+import { DOCUMENT_LIMIT_LABEL, MAX_MULTIPART_BYTES } from './upload-limits';
 
 export function json(value: unknown, status = 200, headers?: HeadersInit) {
   const response = Response.json(value, { status, headers });
@@ -34,6 +35,33 @@ export async function readJson<T>(request: Request, schema: z.ZodType<T>): Promi
   } catch (error) {
     if (error instanceof SyntaxError) throw new HttpError(400, 'Invalid JSON request.');
     throw error;
+  }
+}
+
+/** Multipart form data, capped on Content-Length and on streamed bytes to resist chunked oversized requests. */
+export async function readMultipart(request: Request, limit = MAX_MULTIPART_BYTES): Promise<FormData> {
+  if (Number(request.headers.get('content-length') || 0) > limit)
+    throw new HttpError(413, `Document exceeds the ${DOCUMENT_LIMIT_LABEL} upload limit.`);
+  if (!request.body) throw new HttpError(400, 'Document upload is empty.');
+  const reader = request.body.getReader();
+  const chunks: Uint8Array[] = [];
+  let total = 0;
+  while (true) {
+    const item = await reader.read();
+    if (item.done) break;
+    total += item.value.byteLength;
+    if (total > limit) {
+      await reader.cancel();
+      throw new HttpError(413, `Document exceeds the ${DOCUMENT_LIMIT_LABEL} upload limit.`);
+    }
+    chunks.push(item.value);
+  }
+  const body = Buffer.concat(chunks);
+  const parsed = new Request(request.url, { method: 'POST', headers: request.headers, body: new Uint8Array(body) });
+  try {
+    return await parsed.formData();
+  } catch {
+    throw new HttpError(400, 'Use multipart form data.');
   }
 }
 
