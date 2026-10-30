@@ -4,38 +4,45 @@
 
 ### Your home is more than a number. Your decisions deserve the evidence.
 
-**A home estimate should begin a conversation, not end one.**
+**Research the market. Understand your options. Make a decision you can explain.**
 
-Ascent is a **free, open-source home decision studio**. Investigate recorded sales, see how a valuation was calculated, challenge its assumptions, compare the financial consequences of your options, and keep a reproducible record of your reasoning.
+Ascent is a **free, open-source home decision studio** for buyers, homeowners and sellers in **Washington, DC and Montgomery / Prince George's counties, Maryland**. Explore recorded sales, check homebuyer assistance rules, inspect the evidence behind a home estimate, and compare the financial consequences of your next move.
 
-**No account, subscription, or professional license is needed to explore the public pricing studios.**
+**Start with public tools. No account, payment card or professional license required.**
 
-**[Find your home](https://project-ascent-theta.vercel.app/#find-home)** · **[Try the interactive demo](https://project-ascent-theta.vercel.app/demo)** · **[See the published accuracy studies](https://project-ascent-theta.vercel.app/accuracy)**
+**[Explore Ascent](https://project-ascent-theta.vercel.app/)** · **[Search recorded sales](https://project-ascent-theta.vercel.app/sales)** · **[Check buyer assistance](https://project-ascent-theta.vercel.app/programs)** · **[Try the interactive demo](https://project-ascent-theta.vercel.app/demo)**
 
-[DC homes](https://project-ascent-theta.vercel.app/dc) · [Maryland homes](https://project-ascent-theta.vercel.app/maryland) · [DC condos](https://project-ascent-theta.vercel.app/dc/condos) · [My Home](https://project-ascent-theta.vercel.app/home) · [Free-service promise](https://project-ascent-theta.vercel.app/free)
+[Find your home](https://project-ascent-theta.vercel.app/#find-home) · [See accuracy studies, including failures](https://project-ascent-theta.vercel.app/accuracy) · [Read the free-service promise](https://project-ascent-theta.vercel.app/free)
 
 [![CI](https://github.com/topherchris420/project-ascent/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/topherchris420/project-ascent/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-24344d.svg)](LICENSE) [![Node.js 24](https://img.shields.io/badge/Node.js-24.x-24344d.svg)](package.json)
 
 </div>
-
 ---
 
 > **The principle:** A recorded fact is not an assumption. An assumption is not an estimate. An estimate is not a guarantee. And an unknown should stay unknown.
 
-## Start here
+## Start here: choose a question
 
-| I want to… | Start with… | What to expect |
+You don't need to learn the whole platform. Pick the question that brought you here.
+
+| Your question | Open this free tool | What you get |
 | --- | --- | --- |
-| Understand the evidence behind a **DC house** estimate | [DC Pricing Studio](https://project-ascent-theta.vercel.app/dc) | Eligible single-family and rowhouse records from a bounded public-data snapshot |
-| Research a home in **Montgomery or Prince George's County, MD** | [Maryland Pricing Studio](https://project-ascent-theta.vercel.app/maryland) | Public-record comparisons; bedroom and bathroom counts are unavailable in this source |
-| Explore a **DC condominium** | [Condo Studio](https://project-ascent-theta.vercel.app/dc/condos) | Unit-level recorded sales; the condo model **failed overall validation acceptance** |
-| See the full experience without entering a real address | [Fictional interactive demo](https://project-ascent-theta.vercel.app/demo) | Illustrative Arlington home, real pricing mechanics, fictional evidence |
-| Return to research I saved | [My Home](https://project-ascent-theta.vercel.app/home) | Local browser storage, with backup and restore; no account sync |
-| Review the tests rather than the marketing | [Accuracy & validation](https://project-ascent-theta.vercel.app/accuracy) | Published holdouts, criteria, failures and limitations |
+| **What have homes actually sold for?** | [Recorded-sales search](https://project-ascent-theta.vercel.app/sales) | Search historical DC and Maryland sales in plain English; see the filters applied, price distributions and source dates. **Not active listings.** |
+| **Could homebuyer assistance help me?** | [Homebuyer program screener](https://project-ascent-theta.vercel.app/programs) | Check your answers against 10 published DC and Maryland programs. Results are **not an eligibility determination**. |
+| **What supports this home's estimated value?** | [Find a covered home](https://project-ascent-theta.vercel.app/#find-home) | Review recorded comparable sales, adjustments, missing information and the Home Decision Brief. |
+| **Should I sell, stay, rent or refinance?** | [Interactive fictional demo](https://project-ascent-theta.vercel.app/demo) | Change financial assumptions, examine different choices and see why conclusions change. Fictional home; real calculation methods. |
+| **How would competing offers affect my finances?** | [My Home / Homeowner OS](https://project-ascent-theta.vercel.app/home) | Compare offer terms and closing costs, review deadlines and prepare a private handoff. Start with a covered property. |
+| **Can I trust the valuation studies?** | [Published accuracy and limitations](https://project-ascent-theta.vercel.app/accuracy) | Inspect study sizes, evaluation criteria, recorded failures and what has **not** been independently verified. |
 
-**A first visit in four steps:** choose a covered home (or the fictional demo), read the **Home Decision Brief**, inspect or change the comparable-sales assumptions, then explore decisions and export a **Property Evidence Passport**. No provider key is required for the bundled public studios.
+### A first visit in three steps
 
-**Jump to:** [What it does](#what-ascent-actually-does) · [Evidence flow](#how-the-evidence-flows) · [Accuracy](#published-accuracy-including-failures) · [Limits](#limits-that-matter) · [Privacy](#privacy-and-ownership) · [Local setup](#run-it-locally) · [Verification](#verify-the-work) · [Contributing](#contribute-to-the-evidence)
+1. **Explore the market.** Try [recorded-sales search](https://project-ascent-theta.vercel.app/sales) with `2 bed condos in 20009 under $700k in the last 6 months`. Read back the applied filters and the snapshot date.
+2. **Test a decision.** Open the [fictional demo](https://project-ascent-theta.vercel.app/demo), inspect the supporting sales, change one assumption and see the calculation respond.
+3. **Keep or challenge the evidence.** Open a real covered home, explore the Home Decision Brief, then save or export a Property Evidence Passport. Public research works without signing in.
+
+**Coverage matters:** these tools use public records and published rules for supported DC and Maryland areas. They do not search current MLS listings, approve assistance, produce an appraisal or replace professional advice. See [the boundaries](#limits-that-matter).
+
+**Jump to:** [Capabilities](#what-ascent-actually-does) · [How calculations work](#how-the-evidence-flows) · [Validation](#published-accuracy-including-failures) · [Free commitment](#free-is-part-of-the-design) · [Privacy](#privacy-and-ownership) · [Run locally](#run-it-locally) · [Contribute](#contribute-to-the-evidence)
 
 ## What Ascent actually does
 
@@ -43,12 +50,23 @@ Ascent is designed for a homeowner asking more than *“What is my house worth?�
 
 | Capability | What you can investigate | Important boundary |
 | --- | --- | --- |
+| **Recorded-sales search** | Natural-language filters over 118,868 historical DC and Maryland sales; counts, distributions and linked property pages | These are recorded transactions, **not live homes for sale**; unsupported filters are disclosed |
+| **Homebuyer program screener** | Compare entered details with 10 DC and Maryland assistance programs; each published rule marked met, unmet or unknown | Screening is not approval; funding, lender and administrator requirements must be verified |
 | **Home Decision Brief** | Seven plain-language answers about value, supporting sales, reliability, freshness, missing facts, choices, sensitivities and next steps | If evidence is inadequate, the answer is **Not stated**, not a made-up figure |
 | **Explainable pricing** | Closed comparable sales, adjustments, weights, exclusions, source records, price and condition sensitivity | Adjusted-sale ranges are **not** automatically calibrated confidence intervals |
 | **Homeowner Workbench** | Six ownership choices, cash flow, debt, equity, cash requirements and break-even points | User-supplied inputs; **illustrative, pre-tax arithmetic**, not forecasts |
 | **Property Evidence Passport** | Save versions of evidence, assumptions, decisions and calculations; compare changes and export JSON or printable HTML | Private copies require care; browser storage is not encrypted or synced |
 | **Ask Ascent** | Ask questions grounded in the brief's figures, calculations and source references | **AI does not set a home's price**; external model synthesis is gated |
+| **Offer Lab and closing costs** | Compare up to six offers, seller proceeds or buyer cash to close, deadlines, transfer/recordation taxes and seller-credit limits | Tax estimates and loan assumptions need professional confirmation; no offer ranking or closing prediction |
 | **Homeowner OS** | Property timeline, public-record watch, offer comparisons, decisions, transaction planning and selective agent sharing | Public functions are account-free; private transaction-room services require configured accounts |
+
+### Research before you commit
+
+The [sales search](https://project-ascent-theta.vercel.app/sales) uses a dated, provenance-checked snapshot of **118,868 recorded transactions**, not an MLS feed. Its records currently reach **October 7, 2026** in DC and **September 24, 2026** in Maryland. It reads each search back as explicit filters and says which requests the data cannot answer, such as interior renovations, schools or active listings.
+
+The [buyer program screener](https://project-ascent-theta.vercel.app/programs) checks **10 published programs** across DC, Montgomery County and Prince George's County. It shows which requirements appear satisfied, unsatisfied or unknown, with administrator links. It does not submit applications, store answers or promise eligibility. Published rules were checked **October 30, 2026** and can change.
+
+**[Search sales](https://project-ascent-theta.vercel.app/sales)** · **[Explore buyer assistance](https://project-ascent-theta.vercel.app/programs)** · [Current implementation notes](docs/remaining-work.md#october-30-free-homeowner-tools-for-searching-sales-buyer-programs-and-closing-taxes)
 
 ### Make a number explain itself
 
@@ -141,6 +159,8 @@ The [independent replication kit](docs/independent-replication.md) invites outsi
 Ascent is **not** an appraisal, brokerage, live MLS feed, tax or legal adviser, or autonomous transaction agent.
 
 - **Geography:** Public address-based pricing covers eligible Washington, DC houses and condos, plus homes in Montgomery and Prince George's counties in Maryland. It is **not nationwide**. Virginia public-record pricing is unavailable pending written source-use permission.
+- **Recorded sales are not listings:** The free search shows completed, recorded transactions from dated snapshots, not active, pending or newly listed homes. An MLS agreement is not in place.
+- **Program and closing-cost checks are not approvals or quotes:** Program administrators and lenders decide eligibility; tax exemptions, contract allocations and settlement costs require professional verification.
 - **What records cannot tell you:** Interior condition, concessions, title, current listings, unpermitted work, condo dues and reserves, and other decision-critical facts may be missing. A recorded permit does not prove work was completed. DC and Montgomery permit data are contextual, not direct price adjustments.
 - **When the model declines:** Fewer than three eligible sales, or applicable release-gate failures, cause a **Not stated** value verdict. A withheld estimate stays withheld in the brief, offers, reports and sharing.
 - **What a scenario is not:** Seller proceeds and ownership scenarios do not predict market response, timing, appreciation or returns. The app does not rank homeowner choices.
@@ -163,9 +183,9 @@ For the public studios, **My Home** stores saved property decisions and addition
 
 ## Free is part of the design
 
-Public property research, basic comparable analysis, reports, and core client, offer and deadline workflows are committed to staying **free**, without a payment card or subscription. There are no current paid plans or new subscription checkout.
+**Free is a product commitment, not a limited-time beta.** Public recorded-sales research, buyer-program screening, basic comparable analysis, homeowner decision tools, reports, and core client, offer and deadline workflows are committed to staying **free**, without a payment card or subscription. There are no current paid plans or new subscription checkout.
 
-External data services, hosting and optional models have independent costs, permissions and quotas. Ascent will not silently charge you when a provider limit is reached, and an open-source license does not guarantee permanent hosted availability.
+That promise covers Ascent's public and core tools; it does **not** make third-party MLS access, external data licenses, hosting or optional models cost-free. Those providers have independent costs, permissions and quotas. Ascent will not silently charge you when a provider limit is reached, and an open-source license does not guarantee permanent hosted availability.
 
 [Read the free-service promise](https://project-ascent-theta.vercel.app/free)
 
@@ -247,7 +267,7 @@ Released under the **[MIT License](LICENSE)**. You can use, inspect, modify and 
 
 ### The best real estate decision is one you can explain.
 
-**[Open Ascent](https://project-ascent-theta.vercel.app/)** · **[Inspect the evidence](https://project-ascent-theta.vercel.app/accuracy)** · **[Explore the code](https://github.com/topherchris420/project-ascent)**
+**[Open Ascent](https://project-ascent-theta.vercel.app/)** · **[Search sales](https://project-ascent-theta.vercel.app/sales)** · **[Check buyer programs](https://project-ascent-theta.vercel.app/programs)** · **[Inspect the evidence](https://project-ascent-theta.vercel.app/accuracy)**
 
 <sub>Open source. Evidence first. Your decision remains yours.</sub>
 
