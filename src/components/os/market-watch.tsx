@@ -134,7 +134,8 @@ export function MarketWatch({
                 <label key={topic} className="os-check-row">
                   <input type="checkbox" checked={topics.includes(topic)} onChange={() => toggle(topic)} />
                   <span>
-                    <strong>{watchTopicLabels[topic].label}</strong> {watchTopicLabels[topic].detail}
+                    <strong>{watchTopicLabels[topic].label}</strong>
+                    <span className="os-check-detail">{watchTopicLabels[topic].detail}</span>
                   </span>
                 </label>
               ))}

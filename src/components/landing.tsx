@@ -840,6 +840,22 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAv
                   action: 'Explore DC condos',
                 },
                 {
+                  question: 'What did homes like mine sell for?',
+                  detail:
+                    'Ask in plain words, such as “2 bed condos in 20009 under $700k”. See your question read back as filters, then medians, price bands and every recorded sale.',
+                  scope: 'DC and Maryland · Recorded sales',
+                  href: '/sales',
+                  action: 'Search recorded sales',
+                },
+                {
+                  question: 'Can I get help buying a home?',
+                  detail:
+                    'Compare your situation with the posted rules of DC, Maryland, Montgomery and Prince George’s homebuyer programs. Every rule is dated and linked to its source.',
+                  scope: 'Buyer assistance · Nothing saved',
+                  href: '/programs',
+                  action: 'Find programs to ask about',
+                },
+                {
                   question: 'What if I change the asking price?',
                   detail:
                     'Practice with a clearly fictional Arlington home. Compare prices and illustrative proceeds, then inspect the math.',
@@ -1035,6 +1051,13 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAv
           </Link>
           <p>Free, open-source real estate intelligence for homeowners.</p>
           <p>Decision aid, not an appraisal. Sample data is fictional.</p>
+          <nav className="lp-footer-links" aria-label="Ascent pages">
+            <Link href="/home">My Home</Link>
+            <Link href="/sales">Recorded sales</Link>
+            <Link href="/programs">Buyer programs</Link>
+            <Link href="/accuracy">Accuracy</Link>
+            <Link href="/free">Free forever</Link>
+          </nav>
         </div>
       </footer>
     </div>

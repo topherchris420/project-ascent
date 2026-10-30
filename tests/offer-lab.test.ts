@@ -223,3 +223,17 @@ test('the private record carries every term, the comparison and a privacy notice
   assert.equal(record.lab.offers.length, 2);
   assert.equal(record.comparison.analyses.length, 2);
 });
+
+test('an over-limit seller credit is flagged in the offer notes', () => {
+  const lab = sellerLab();
+  const offer: LabOffer = {
+    ...lab.offers[0],
+    price: 500_000,
+    financing: 'conventional',
+    downPaymentPercent: 5,
+    sellerCredit: 20_000,
+  };
+  assert.ok(analyzeOffer(offer, lab.settings).notes.some(note => /over the 3% limit/.test(note)));
+  const within = { ...offer, sellerCredit: 5_000 };
+  assert.ok(!analyzeOffer(within, lab.settings).notes.some(note => /% limit/.test(note)));
+});

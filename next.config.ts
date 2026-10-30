@@ -6,6 +6,7 @@ const config: NextConfig = {
     '/api/dc/*': ['./src/datasets/dc/**/*'],
     '/api/dc-condos/*': ['./src/datasets/dc-condos/**/*'],
     '/api/maryland/*': ['./src/datasets/maryland/**/*'],
+    '/sales': ['./src/datasets/sales-search/**/*'],
   },
   outputFileTracingExcludes: {
     '/*': ['./.data/**/*', './evidence/**/*', './tests/**/*', './test-results/**/*', './playwright-report/**/*'],

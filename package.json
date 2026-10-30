@@ -21,6 +21,7 @@
     "evaluate:domain": "tsx scripts/evaluate-domain.ts",
     "evaluate:ai": "tsx scripts/evaluate-ai.ts",
     "validate:valuation": "tsx scripts/validate-valuation.ts",
+    "datasets:sales-search": "tsx scripts/build-sales-search.ts",
     "replicate": "tsx scripts/replicate.ts",
     "replication:sign": "tsx scripts/replication/sign-record.ts",
     "usability:register": "tsx scripts/usability/register.ts",

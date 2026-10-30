@@ -18,6 +18,7 @@ import {
 } from '../property-facts';
 import { dcBenchmark, validatedAssumptions } from '../valuation-safeguards';
 import type { CmaAssumptions, Source, ValuationProperty } from '../types';
+import { displayDcAddress } from '../address-format';
 
 /**
  * District of Columbia public-record adapter. Server-only: it reads two bundled CC BY 4.0 snapshots.
@@ -258,12 +259,8 @@ export function normalizeDcAddress(value: string) {
   return normalized;
 }
 
-/** District records are upper case; show them as people write addresses, keeping quadrants upper case. */
-export const displayDcAddress = (address: string) =>
-  address
-    .toLowerCase()
-    .replace(/\b([a-z])/g, c => c.toUpperCase())
-    .replace(/\b(Nw|Ne|Sw|Se)\b/g, q => q.toUpperCase());
+// Kept in its own module so pages that only format addresses do not bundle these snapshots.
+export { displayDcAddress };
 
 let cache:
   | {

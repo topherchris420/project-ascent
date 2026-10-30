@@ -1,0 +1,244 @@
+/* Homebuyer program screener (/programs): the answers form beside the program cards. */
+.programs-main {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 36px 24px 72px;
+}
+.programs-intro h1 {
+  margin: 0 0 10px;
+  font-size: clamp(28px, 4vw, 40px);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+.programs-intro p {
+  max-width: 760px;
+  margin: 0 0 28px;
+  color: var(--muted);
+  font-size: 17px;
+}
+.programs-layout {
+  display: grid;
+  grid-template-columns: minmax(280px, 340px) minmax(0, 1fr);
+  align-items: start;
+  gap: 24px;
+}
+.programs-form {
+  position: sticky;
+  top: 16px;
+  display: grid;
+  gap: 16px;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: #fff;
+}
+/* Sticky only when the whole form fits, so its last questions are never stuck below the fold. */
+@media (min-width: 861px) {
+  .programs-form {
+    max-height: calc(100vh - 32px);
+    overflow-y: auto;
+  }
+}
+.programs-field {
+  display: grid;
+  gap: 4px;
+}
+.programs-field label,
+.programs-choice legend {
+  font-weight: 650;
+}
+.programs-field input,
+.programs-field select {
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid #8a9883;
+  border-radius: 10px;
+  background: #fff;
+  color: var(--ink);
+  font-size: 16px;
+}
+.programs-hint {
+  color: var(--muted);
+  font-size: 13px;
+}
+.programs-error {
+  color: #a3412b;
+  font-size: 13px;
+  font-weight: 600;
+}
+.programs-field input[aria-invalid='true'] {
+  border-color: #a3412b;
+}
+.programs-clear {
+  justify-self: start;
+  min-height: 44px;
+}
+.programs-choice {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.programs-choice > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  margin-top: 6px;
+}
+.programs-choice label {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  min-height: 36px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+}
+/* Global text-input styles (full width, padding) would otherwise apply to radios. */
+.programs-choice label > input[type='radio'] {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  padding: 0;
+  accent-color: var(--green);
+}
+.programs-limits a,
+.programs-card p a {
+  color: var(--green);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.programs-results {
+  display: grid;
+  gap: 16px;
+}
+.programs-results > h2 {
+  margin: 0;
+  font-size: 21px;
+}
+.programs-tally {
+  margin: -8px 0 0;
+  color: var(--muted);
+}
+.programs-card,
+.programs-limits {
+  padding: 20px 22px;
+  border: 1px solid var(--line);
+  border-left-width: 5px;
+  border-radius: var(--radius);
+  background: #fff;
+}
+.programs-worth-checking {
+  border-left-color: var(--green);
+}
+.programs-ask {
+  border-left-color: #c58b2b;
+}
+.programs-does-not-fit {
+  border-left-color: #a5aea0;
+  background: #fbfbf8;
+}
+.programs-limits {
+  border-left-width: 1px;
+}
+.programs-card header h3 {
+  margin: 4px 0 2px;
+  font-size: 19px;
+}
+.programs-card h4 {
+  margin: 16px 0 6px;
+  font-size: 14px;
+}
+.programs-card p {
+  margin: 8px 0;
+}
+.programs-card ul,
+.programs-limits ul {
+  margin: 0;
+  padding-left: 20px;
+}
+.programs-card li,
+.programs-limits li {
+  margin: 4px 0;
+}
+.programs-verdict {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: var(--pale);
+  color: var(--green-dark);
+  font-size: 13px;
+  font-weight: 650;
+}
+.programs-ask .programs-verdict {
+  background: #fbf0dc;
+  color: #6b4a12;
+}
+.programs-does-not-fit .programs-verdict {
+  background: #eceee9;
+  color: #4a5245;
+}
+.programs-admin,
+.programs-source,
+.programs-status {
+  color: var(--muted);
+  font-size: 14px;
+}
+.programs-card .programs-admin {
+  margin: 0;
+}
+.programs-amount {
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--pale);
+}
+.programs-card .programs-checks {
+  padding-left: 0;
+  list-style: none;
+}
+.programs-checks li {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+.programs-checks svg {
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+.programs-meets {
+  color: var(--green);
+}
+.programs-fails {
+  color: #a3412b;
+}
+.programs-unknown {
+  color: #9a6a12;
+}
+.programs-source a {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  min-height: 44px;
+  color: var(--green);
+  font-weight: 600;
+}
+@media (max-width: 860px) {
+  .programs-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .programs-form {
+    position: static;
+  }
+}
+@media (max-width: 520px) {
+  .programs-main {
+    padding: 24px 16px 56px;
+  }
+  .programs-card,
+  .programs-limits,
+  .programs-form {
+    padding: 16px;
+  }
+}

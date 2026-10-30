@@ -9,7 +9,7 @@ import { executeFabricAction, getFabricSnapshot } from '../src/lib/fabric-servic
 import { createDemoWorkspace, createEmptyWorkspace } from '../src/lib/seed';
 import { calculateCma, DEMO_AS_OF, replayCma } from '../src/lib/analytics';
 import { verifyAudit } from '../src/lib/service';
-import { POST as authPost } from '../src/app/api/auth/[action]/route';
+import { GET as authGet, POST as authPost } from '../src/app/api/auth/[action]/route';
 import { GET as workspaceGet } from '../src/app/api/workspace/route';
 
 process.env.SQLITE_PATH = resolve('.data', `workspace-start-test-${randomUUID()}.sqlite`);
@@ -157,4 +157,21 @@ test('replay reproduces every frozen demo CMA from its archived evidence and exp
   assert.equal(replayCma(workspace.cmas[0]).reproduced, true);
   const fresh = calculateCma(workspace.properties[0], workspace.properties, {}, DEMO_AS_OF);
   assert.notEqual(fresh.calculationHash, workspace.cmas[0].result.calculationHash);
+});
+
+test('/api/auth/me: no session is signed out, a stale session is 401, a real one is the user', async () => {
+  const me = (cookie?: string) =>
+    authGet(new Request('http://localhost:3040/api/auth/me', { headers: cookie ? { cookie } : {} }), {
+      params: Promise.resolve({ action: 'me' }),
+    });
+  const anonymous = await me();
+  assert.equal(anonymous.status, 200);
+  assert.deepEqual(await anonymous.json(), { user: null });
+  // A cookie that is not a session token at all is treated as signed out (see the route's comment).
+  assert.equal((await me('ascent_session=short')).status, 200);
+  assert.equal((await me(sessionCookie('A'.repeat(43)).split(';')[0])).status, 401);
+  const account = await register({ ...credentials(), organization: 'Me Endpoint Brokerage' });
+  const signedIn = await me(sessionCookie(account.token).split(';')[0]);
+  assert.equal(signedIn.status, 200);
+  assert.equal(((await signedIn.json()) as { user: { id: string } }).user.id, account.user.id);
 });

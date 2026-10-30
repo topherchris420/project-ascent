@@ -6,4 +6,15 @@ export function siteOrigin() {
 }
 
 /** Account-free public pages, in the order a homeowner meets them. */
-export const PUBLIC_PAGES = ['/', '/dc', '/maryland', '/dc/condos', '/demo', '/home', '/accuracy', '/free'] as const;
+export const PUBLIC_PAGES = [
+  '/',
+  '/dc',
+  '/maryland',
+  '/dc/condos',
+  '/sales',
+  '/programs',
+  '/demo',
+  '/home',
+  '/accuracy',
+  '/free',
+] as const;

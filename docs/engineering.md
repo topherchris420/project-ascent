@@ -49,6 +49,7 @@ All session endpoints use same-origin cookies and no-store responses. Writes req
 | Endpoint | Purpose |
 |---|---|
 | `POST /api/auth/register`, `/login`, `/demo`, `/logout` | Account/session lifecycle; isolated persistent demo |
+| `GET /api/auth/me` | Current actor: `{ user }` when signed in; `{ user: null }` with no session cookie (or one that is not a session token); 401 for an expired or revoked session |
 | `GET /api/workspace` | Authorized workspace and actor |
 | `GET /api/properties?q=&status=&maxPrice=&lat=&lng=&radiusMiles=` | Property filters and geographic query |
 | `POST /api/actions` | Typed CMA/client/search/offer/draft/transaction/milestone/outcome/retention operations |

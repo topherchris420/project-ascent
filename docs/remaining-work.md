@@ -2,6 +2,22 @@
 
 # Remaining work and production gates
 
+## October 30: free homeowner tools for searching sales, buyer programs and closing taxes
+
+Delivered, all free and without an account:
+
+- **Recorded-sales search** at `/sales`. A plain-English question ("3 bedroom houses in Silver Spring under $700k last 6 months") is read back as filters before any result. Words it cannot search (basements, schools, views, active listings, rentals) are listed as not searched, never guessed. Results: count, median and quartile prices, price per square foot, breakdowns by market, price band, bedrooms, month and ZIP (medians hidden for groups under 5 sales), and up to 50 sales linked to each home's page. Maryland records have no room counts, so room filters exclude Maryland and say so. Maryland sales under $50,000 are left out, the same floor comparable selection uses. The page reads one precomputed snapshot, `src/datasets/sales-search/` (118,868 sales, 3.3 MB), joined from the bundled DC, condo and Maryland snapshots. After any of those changes, run `npm run datasets:sales-search`; `tests/sales-search-snapshot.test.ts` fails until you do. `market-search.ts`, `market-search-data.ts`, `sales-search-build.ts`, `tests/market-search.test.ts`.
+- **Homebuyer program screener** at `/programs`. Ten DC, Montgomery and Prince George's programs (DC HPAP, DC Open Doors, DC EAHP, Maryland Mortgage Program, Montgomery's Homeownership Assistance Fund, HOC, MPDU, and Prince George's Pathway, Equity and Workforce programs). Each rule is shown as met, not met or unknown, with the administrator's page and the date it was checked (October 30, 2026). Nothing is saved or sent. `homebuyer-programs.ts`, `tests/homebuyer-programs.test.ts`.
+- **Transfer and recordation taxes and seller-credit limits** in Compare Offers. Details are in [the Homeowner OS](homeowner-os.md#offer-lab-arithmetic).
+- **Plainer pages.** The pricing pages and the Home Decision Brief no longer lead with checksums, "held-out", "arm's-length", "CAMA" or "SDAT/MDP". Reference IDs remain in "References for reproducing this brief". A visitor who never signed in no longer triggers a 401 from `/api/auth/me`. Market Watch checkboxes sit beside their labels.
+
+Still open:
+
+- **Mortgage rates.** The terms of Freddie Mac's PMMS do not clearly allow redisplay, so Ascent links to it and shows no rate. The owner should decide before any rate is displayed.
+- **Unconfirmed program limits.** The Prince George's Pathway price cap and Montgomery HOC's current income limits were not published in a form Ascent could confirm. Those rules show as "ask the administrator".
+- **Annual changes.** DC sets first-time buyer recordation limits each October 1; the FY2027 Form ROD 11 (revised October 2026: $794,000 price ceiling, income limits effective October 1, 2026) is reflected in Offer Lab's note. Prince George's County Code §10-187 could not be read directly; its rates come from the county's Finance Affidavit instructions and the Maryland DLS table.
+- **Comprehension** of the new pages is unmeasured.
+
 ## October 22 (continued): the Homeowner OS
 
 Delivered: the [Homeowner OS](homeowner-os.md) at `/home/{market}/{parcel}`, with six areas:

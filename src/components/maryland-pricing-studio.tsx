@@ -259,9 +259,9 @@ export function MarylandPricingStudio() {
           <>
             <AddressSearch compact onPick={pick} />
             <p className="error-box" data-testid="maryland-verdict">
-              {marylandVerdict()} Median error {(marylandBenchmark.primary.mdape * 100).toFixed(1)}%. Bedrooms and
-              bathrooms unavailable; prices use size, quality grade, location and sale timing only.{' '}
-              <a href="#maryland-accuracy">Read the published test</a>.
+              {marylandVerdict()} Typical (median) error {(marylandBenchmark.primary.mdape * 100).toFixed(1)}%. Maryland
+              records have no bedroom or bathroom counts, so prices use size, quality grade, location and sale timing
+              only. <a href="#maryland-accuracy">Read the published test</a>.
             </p>
             <details id="maryland-accuracy" className="panel">
               <summary>Maryland accuracy: full results and missed criteria</summary>
@@ -270,13 +270,13 @@ export function MarylandPricingStudio() {
           </>
         }
         intro={{
-          eyebrow: 'MARYLAND SDAT/MDP PUBLIC RECORDS',
+          eyebrow: 'MARYLAND STATE PUBLIC RECORDS',
           titleTop: 'Price a real Maryland home.',
           titleBottom: 'See the sales behind the price.',
           lede: 'Price from size, assessor quality grade, location and sale timing. Bedroom and bathroom counts are unavailable. Not MLS data or an appraisal.',
           badgeTitle: 'Real public records',
           badgeLines: [
-            'Maryland SDAT/MDP data, public domain',
+            'Maryland state property records, public domain',
             `Sales recorded through ${data.snapshot.lastRecordedSale ? date(data.snapshot.lastRecordedSale) : 'the snapshot date'}`,
           ],
         }}
@@ -284,14 +284,14 @@ export function MarylandPricingStudio() {
         evidenceNote={`Recorded sales as of ${date(data.asOf)} · the newest weeks may not be recorded yet · ${data.candidates.length} recorded sales within 3 miles in the past year`}
         passport={{
           facts:
-            "Address, structure area, location and dwelling quality grade come from Maryland state records, with dwelling type, exterior construction, lot and the assessor's last review. Montgomery County permits since 2016 are listed in the brief. Comparable prices and dates are private arm's-length improved transfers. Bedrooms and bathrooms are unavailable.",
+            "Address, structure area, location and dwelling quality grade come from Maryland state records, with dwelling type, exterior construction, lot and the assessor's last review. Montgomery County permits since 2016 are listed in the brief. Comparable prices and dates are ordinary market sales of homes between unrelated parties. Bedrooms and bathrooms are unavailable.",
           assumptions:
             'Rates and filters were fitted on earlier Maryland transfers. Room adjustments are fixed to zero. The 1–9 quality grade measures construction quality, not interior condition or renovation.',
           missing: MISSING_EVIDENCE.maryland,
           footnote: `${data.attribution} Ascent joined and filtered these records; see the provenance files in the repository.`,
         }}
         reportNote="Draft · Maryland public records · not reviewed by a licensed professional"
-        footerNote="Maryland SDAT/MDP public records (public domain) · deterministic engine · no account required"
+        footerNote="Maryland state property records (public domain) · same inputs, same result · no account required"
       />
     );
   return (
@@ -311,7 +311,7 @@ export function MarylandPricingStudio() {
       <main id="studio-main" className="studio-main dc-start">
         <div className="studio-intro">
           <div>
-            <span className="eyebrow">MARYLAND SDAT/MDP PUBLIC RECORDS</span>
+            <span className="eyebrow">MARYLAND STATE PUBLIC RECORDS</span>
             <h1>
               Price a real Maryland home.
               <br />
@@ -326,7 +326,7 @@ export function MarylandPricingStudio() {
             <ShieldCheck size={20} />
             <strong>Real public records</strong>
             <span>
-              Maryland SDAT/MDP data, public domain
+              Maryland state property records, public domain
               <br />
               Free to explore · no account needed
             </span>
@@ -354,15 +354,14 @@ export function MarylandPricingStudio() {
           <ul className="studio-findings">
             <li>
               <strong>Covered:</strong> single-unit homes and townhouses in Montgomery and Prince George’s counties with
-              a usable state address, priced from private arm&apos;s-length improved transfers in Maryland state
-              records.
+              a usable state address, priced from ordinary market sales of homes in Maryland state records.
             </li>
             <li>
-              <strong>Measured:</strong> with the Maryland-tested settings, the median error was{' '}
+              <strong>Measured:</strong> with the tested Maryland settings, the typical (median) error was{' '}
               {(marylandBenchmark.primary.mdape * 100).toFixed(1)}% on{' '}
-              {marylandBenchmark.holdout.sales.toLocaleString('en-US')} held-out sales. {marylandVerdict()} Editing a
-              setting leaves that measured configuration. The displayed price range is an uncalibrated comparable
-              envelope.
+              {marylandBenchmark.holdout.sales.toLocaleString('en-US')} past sales kept out of building the method.{' '}
+              {marylandVerdict()} Changing a setting means that figure no longer applies. The price range shown is the
+              spread of adjusted sales, not a tested range.
             </li>
             <li>
               <strong>Not covered:</strong> condominiums, multi-unit buildings, other Maryland counties and Virginia,
@@ -370,7 +369,7 @@ export function MarylandPricingStudio() {
             </li>
           </ul>
           <p className="fine">
-            Virginia awaits written permission. Want to practise first?{' '}
+            Virginia awaits written permission. Want to practice first?{' '}
             <Link href="/demo">Open the fictional sample</Link> instead.
           </p>
         </section>

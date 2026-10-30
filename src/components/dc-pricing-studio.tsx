@@ -298,8 +298,8 @@ export function DcPricingStudio({ condos = false }: { condos?: boolean }) {
         evidenceNote={`Recorded sales as of ${date(data.asOf)} · the newest weeks may not be recorded yet · ${data.candidates.length} recorded sales within ${condos ? 3 : 2} miles in the past year`}
         passport={{
           facts: condos
-            ? 'Unit address, recorded bedrooms, baths and living area come from Condominium CAMA and Condo Relate, joined to building address points, with the condominium’s name and units, rooms, systems and permits for the unit and its building since 2016. Prices are District-qualified recorded transfers. No condition field is provided.'
-            : "Address, coordinates, living area, bedrooms, baths and the assessor's condition grade come from District records, with structure type, construction grade, effective age, systems and lot. Building permits since 2016 are listed in the brief. Comparable prices and dates are recorded deed transfers the District marks as arm's-length.",
+            ? 'Unit address, recorded bedrooms, baths and living area come from the District’s condominium assessment records, joined to building address points, with the condominium’s name and units, rooms, systems and permits for the unit and its building since 2016. Prices are District-qualified recorded transfers. No condition field is provided.'
+            : "Address, coordinates, living area, bedrooms, baths and the assessor's condition grade come from District records, with structure type, construction grade, effective age, systems and lot. Building permits since 2016 are listed in the brief. Comparable prices and dates are recorded deed transfers the District marks as ordinary market sales.",
           assumptions: condos
             ? 'Condo-specific fitted rates and search filters. Condition adjustment is fixed to zero. The condo holdout failed acceptance; DC single-family accuracy does not apply.'
             : "Adjustment rates, the trend and the search filters start at the DC-validated settings fitted on earlier recorded sales. The assessor's condition grade is not an inspection.",
@@ -376,7 +376,7 @@ export function DcPricingStudio({ condos = false }: { condos?: boolean }) {
               ) : (
                 <>
                   single-family homes in Washington, DC with an active street address, priced from recorded sales the
-                  District marks as arm&apos;s-length.
+                  District marks as ordinary market sales (not between relatives or other related parties).
                 </>
               )}
             </li>
@@ -387,9 +387,9 @@ export function DcPricingStudio({ condos = false }: { condos?: boolean }) {
                 </>
               ) : (
                 <>
-                  <strong>Measured:</strong> with the DC-validated settings, the median error was{' '}
+                  <strong>Measured:</strong> with the tested DC settings, the typical (median) error was{' '}
                   {(dcBenchmark.primary.mdape * 100).toFixed(1)}% on {dcBenchmark.holdout.sales.toLocaleString('en-US')}{' '}
-                  held-out sales. Editing a setting leaves that measured configuration.
+                  past sales kept out of building the method. Changing a setting means that figure no longer applies.
                 </>
               )}
             </li>
@@ -406,7 +406,7 @@ export function DcPricingStudio({ condos = false }: { condos?: boolean }) {
             ) : (
               <Link href="/dc/condos">Search DC condos (unvalidated)</Link>
             )}
-            . In Maryland? <Link href="/maryland">Search Montgomery and Prince George’s homes</Link>. Want to practise
+            . In Maryland? <Link href="/maryland">Search Montgomery and Prince George’s homes</Link>. Want to practice
             first? <Link href="/demo">Open the fictional sample</Link> instead.
           </p>
         </section>

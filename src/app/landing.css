@@ -1428,6 +1428,20 @@
 .landing .lp-footer p {
   font-size: 14px;
 }
+.landing .lp-footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 18px;
+  margin-left: auto;
+  font-size: 14px;
+}
+.landing .lp-footer-links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  color: var(--green);
+  font-weight: 600;
+}
 .landing .lp-footer-fine {
   margin-left: auto;
   display: inline-flex;
@@ -1598,7 +1612,8 @@
   .landing .lp-final-actions .lp-btn {
     width: 100%;
   }
-  .landing .lp-footer-fine {
+  .landing .lp-footer-fine,
+  .landing .lp-footer-links {
     margin-left: 0;
   }
 }

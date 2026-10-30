@@ -22,6 +22,8 @@ import {
   type ValueContext,
 } from '@/lib/offer-lab';
 import { offerComparisonHtml } from '@/lib/os-reports';
+import { jurisdictionFor } from '@/lib/closing-taxes';
+import { ClosingTaxPanel } from './closing-tax-panel';
 import { OfferTransfer } from './offer-transfer';
 import { Kind, NumberField, OsPanel, readLocal, SelectField, TextField, writeLocal } from './shared';
 
@@ -425,6 +427,11 @@ export function CompareOffers({
   const settings = lab.settings;
   const setSettings = (patch: Partial<LabSettings>) => update({ ...lab, settings: { ...settings, ...patch } });
   const seller = settings.side === 'seller';
+  const jurisdiction = jurisdictionFor(propertyKey);
+  const offerPrices = lab.offers.map(offer => offer.price).filter((price): price is number => price !== null);
+  const taxPrice = offerPrices.length
+    ? { price: Math.max(...offerPrices), source: 'the highest offer entered' }
+    : { price: value.estimate, source: 'the evidence-supported estimate' };
   return (
     <>
       <OsPanel
@@ -519,6 +526,15 @@ export function CompareOffers({
             onChange={value => setSettings({ assumedAcceptance: value || null })}
           />
         </div>
+        {seller && jurisdiction && (
+          <ClosingTaxPanel
+            jurisdiction={jurisdiction}
+            price={taxPrice.price}
+            priceSource={taxPrice.source}
+            closingPercent={settings.closingPercent}
+            onUsePercent={closingPercent => setSettings({ closingPercent })}
+          />
+        )}
         <h3>Offers</h3>
         {lab.offers.map((offer, index) => (
           <OfferCard
