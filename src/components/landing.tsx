@@ -1,18 +1,14 @@
 'use client';
 import '@/app/landing.css';
 import Link from 'next/link';
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Activity,
   ArrowRight,
   ArrowUpRight,
   CalendarClock,
   Check,
-  CheckCircle2,
-  FileText,
   Fingerprint,
-  Handshake,
-  Layers3,
   Lock,
   Menu,
   Scale,
@@ -27,6 +23,7 @@ import { assessCmaEvidence, compareCmaDecisions } from '@/lib/decision-review';
 import type { ValuationProperty } from '@/lib/types';
 import { valuationBenchmark } from '@/lib/valuation-safeguards';
 import { AccuracyScorecard } from './accuracy-scorecard';
+import { AsciiSphere } from './ascii-sphere';
 import { HomeSearch } from './home-search';
 import { marylandRevisedBenchmark as marylandBenchmark, marylandVerdict } from '@/lib/maryland-studio';
 
@@ -228,7 +225,7 @@ function PricingCard() {
         <summary>
           <ShieldCheck size={14} aria-hidden="true" /> Inspect evidence fitness and a sample revision
         </summary>
-        <div className="lp-math-body">
+        <div className="lp-math-body" tabIndex={0} role="region" aria-label="Evidence fitness detail">
           <p>
             <strong>{evidenceAssessment.label}.</strong> {evidenceAssessment.comparableCount} eligible fictional sales,{' '}
             {evidenceAssessment.effectiveComparableCount.toFixed(1)} effective after weighting, largest weight{' '}
@@ -655,16 +652,353 @@ const faqs = [
   },
 ];
 
+const homeownerPaths = [
+  {
+    question: 'What is my DC home worth?',
+    detail:
+      'Search eligible DC houses and rowhomes. Inspect recorded sales, adjustments and the validated settings behind the estimate.',
+    scope: 'DC houses · Public-record snapshot',
+    href: '/dc',
+    action: 'Explore DC homes',
+    visual: 'house',
+  },
+  {
+    question: 'What about my Maryland home?',
+    detail:
+      'Explore homes in Montgomery or Prince George’s County, with transparent limitations on property fields and accuracy.',
+    scope: 'Two MD counties · Limited property fields',
+    href: '/maryland',
+    action: 'Explore Maryland',
+    visual: 'pin',
+  },
+  {
+    question: 'How does my DC condo compare?',
+    detail:
+      'Inspect unit-level recorded sales. Condo testing missed acceptance criteria, so this studio does not offer a calibrated range.',
+    scope: 'DC condos · Experimental estimates',
+    href: '/dc/condos',
+    action: 'Explore DC condos',
+    visual: 'tower',
+  },
+  {
+    question: 'What did homes like mine sell for?',
+    detail:
+      'Ask in plain words, such as “2 bed condos in 20009 under $700k”. See your question read back as filters, then medians, price bands and every recorded sale.',
+    scope: 'DC and Maryland · Recorded sales',
+    href: '/sales',
+    action: 'Search recorded sales',
+    visual: 'bars',
+  },
+  {
+    question: 'Can I get help buying a home?',
+    detail:
+      'Compare your situation with the posted rules of DC, Maryland, Montgomery and Prince George’s homebuyer programs. Every rule is dated and linked to its source.',
+    scope: 'Buyer assistance · Nothing saved',
+    href: '/programs',
+    action: 'Find programs to ask about',
+    visual: 'checklist',
+  },
+  {
+    question: 'What if I change the asking price?',
+    detail:
+      'Practice with a clearly fictional Arlington home. Compare prices and illustrative proceeds, then inspect the math.',
+    scope: 'Fictional example · No sign-in',
+    href: '/demo',
+    action: 'Try the interactive sample',
+    visual: 'range',
+  },
+] as const;
+
+/** Line drawings in the template's style; motion is CSS so reduced-motion preferences stop it. */
+function PathVisual({ kind }: { kind: (typeof homeownerPaths)[number]['visual'] }) {
+  const common = { viewBox: '0 0 160 120', className: `lp-visual lp-visual-${kind}`, 'aria-hidden': true } as const;
+  if (kind === 'house')
+    return (
+      <svg {...common}>
+        <path d="M30 56 80 18l50 38" />
+        <path d="M40 48v56h80V48" />
+        {[0, 1, 2, 3].map(i => (
+          <rect
+            key={i}
+            x={i % 2 ? 90 : 52}
+            y={i < 2 ? 58 : 80}
+            width="18"
+            height="14"
+            style={{ animationDelay: `${i * 0.35}s` }}
+          />
+        ))}
+      </svg>
+    );
+  if (kind === 'pin')
+    return (
+      <svg {...common}>
+        <circle className="lp-ring" cx="80" cy="96" r="10" />
+        <circle className="lp-ring" cx="80" cy="96" r="10" style={{ animationDelay: '1s' }} />
+        <path d="M80 96s-24-26-24-44a24 24 0 0 1 48 0c0 18-24 44-24 44Z" />
+        <circle className="lp-fill" cx="80" cy="52" r="7" />
+      </svg>
+    );
+  if (kind === 'tower')
+    return (
+      <svg {...common}>
+        <path d="M50 108V14h60v94" />
+        {Array.from({ length: 12 }, (_, i) => (
+          <rect
+            key={i}
+            x={58 + (i % 3) * 16}
+            y={22 + Math.floor(i / 3) * 20}
+            width="12"
+            height="12"
+            style={{ animationDelay: `${((i * 7) % 12) * 0.2}s` }}
+          />
+        ))}
+      </svg>
+    );
+  if (kind === 'bars')
+    return (
+      <svg {...common}>
+        <path d="M24 104h112" />
+        {[44, 70, 58, 88, 64, 78].map((height, i) => (
+          <rect
+            key={i}
+            x={30 + i * 17}
+            y={104 - height}
+            width="10"
+            height={height}
+            style={{ animationDelay: `${i * 0.15}s` }}
+          />
+        ))}
+      </svg>
+    );
+  if (kind === 'checklist')
+    return (
+      <svg {...common}>
+        {[0, 1, 2].map(i => (
+          <g key={i}>
+            <rect x="34" y={22 + i * 30} width="18" height="18" />
+            <path className="lp-tick" d={`M38 ${31 + i * 30}l4 4 7-8`} style={{ animationDelay: `${i * 0.5}s` }} />
+            <path d={`M64 ${31 + i * 30}h${62 - i * 14}`} />
+          </g>
+        ))}
+      </svg>
+    );
+  return (
+    <svg {...common}>
+      <path d="M20 66h120" />
+      <rect className="lp-band" x="46" y="60" width="68" height="12" />
+      {[52, 66, 79, 95, 108].map(x => (
+        <circle key={x} cx={x} cy="66" r="4" />
+      ))}
+      <g className="lp-marker">
+        <path d="M80 50 88 58 80 66 72 58Z" />
+        <path d="M80 66v16" />
+      </g>
+    </svg>
+  );
+}
+
+const processSteps = [
+  {
+    numeral: 'I',
+    title: 'See the evidence',
+    body: 'Inspect the sales and adjustments behind the estimate.',
+    href: '/demo#studio-evidence',
+    action: 'Inspect a sale',
+    file: 'evidence.ts',
+  },
+  {
+    numeral: 'II',
+    title: 'Test the decision',
+    body: 'Change an assumption. See what moves the price.',
+    href: '/demo#studio-assumptions',
+    action: 'Test an assumption',
+    file: 'assumptions.ts',
+  },
+  {
+    numeral: 'III',
+    title: 'Tell the whole story',
+    body: 'Keep the price, sources and assumptions in one report.',
+    href: '/demo#studio-report',
+    action: 'Build a report',
+    file: 'report.json',
+  },
+] as const;
+const STEP_MS = 6000;
+
+/** Each code panel prints values the real engine computes from the fictional sample. */
+function ProcessSection() {
+  const cma = useMemo(() => calculateCma(subject, candidates, defaultAssumptions, SAMPLE_AS_OF), []);
+  const [active, setActive] = useState(0);
+  const [chosen, setChosen] = useState(false);
+  const [paused, setPaused] = useState(false);
+  const [inView, setInView] = useState(false);
+  const section = useRef<HTMLElement>(null);
+  useEffect(() => {
+    const observer = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting), { threshold: 0.25 });
+    if (section.current) observer.observe(section.current);
+    return () => observer.disconnect();
+  }, []);
+  const cycling = inView && !chosen && !paused;
+  useEffect(() => {
+    if (!cycling || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const timer = window.setTimeout(() => setActive(index => (index + 1) % processSteps.length), STEP_MS);
+    return () => window.clearTimeout(timer);
+  }, [active, cycling]);
+
+  const a = cma.assumptions;
+  const top = [...cma.comps].sort((x, y) => y.weight - x.weight)[0];
+  const code = [
+    [
+      '// Fictional Arlington sample · real engine',
+      'const cma = calculateCma(subject, sales)',
+      '',
+      `cma.comps.length   // ${cma.comps.length} closed sales`,
+      `cma.excluded       // ${cma.excluded.length} considered, then excluded`,
+      `cma.estimate       // ${money(cma.estimate)}`,
+    ],
+    [
+      '// Every input is yours to change',
+      'const assumptions = {',
+      `  sqftRate: ${a.sqftRate},          // $ per sq ft`,
+      `  bathroomValue: ${a.bathroomValue},`,
+      `  maxDistanceMiles: ${a.maxDistanceMiles},`,
+      '}',
+      `// Heaviest sale carries ${(top.weight * 100).toFixed(1)}% of the weight`,
+    ],
+    [
+      '{',
+      `  "estimate": ${Math.round(cma.estimate)},`,
+      `  "range": [${Math.round(cma.low)}, ${Math.round(cma.high)}],`,
+      `  "sales": ${cma.comps.length},`,
+      `  "checksum": "${cma.calculationHash.slice(0, 12)}…"`,
+      '}',
+    ],
+  ];
+  const current = processSteps[active];
+  return (
+    <section
+      ref={section}
+      className="lp-process"
+      aria-labelledby="lp-process-title"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+      onFocus={() => setPaused(true)}
+      onBlur={() => setPaused(false)}
+    >
+      <div className="lp-wrap">
+        <div className="lp-head">
+          <span className="lp-eyebrow">From evidence to a decision</span>
+          <h2 id="lp-process-title">
+            Three steps.
+            <br />
+            <span>Nothing hidden.</span>
+          </h2>
+        </div>
+        <div className="lp-process-grid">
+          <ol className="lp-steps">
+            {processSteps.map((step, index) => (
+              <li key={step.numeral} className="lp-step" data-active={index === active || undefined}>
+                <span className="lp-step-num" aria-hidden="true">
+                  {step.numeral}
+                </span>
+                <div>
+                  <h3>
+                    <button
+                      type="button"
+                      aria-pressed={index === active}
+                      aria-controls="lp-process-code"
+                      onClick={() => {
+                        setActive(index);
+                        setChosen(true);
+                      }}
+                    >
+                      {step.title}
+                    </button>
+                  </h3>
+                  <p>{step.body}</p>
+                  <Link className="lp-step-link" href={step.href}>
+                    {step.action} <ArrowRight size={14} aria-hidden="true" />
+                  </Link>
+                  {index === active && cycling && (
+                    <span className="lp-step-progress" aria-hidden="true">
+                      <i key={active} style={{ animationDuration: `${STEP_MS}ms` }} />
+                    </span>
+                  )}
+                </div>
+              </li>
+            ))}
+          </ol>
+          <figure className="lp-code" id="lp-process-code" aria-labelledby="lp-code-caption">
+            <div className="lp-code-bar">
+              <span className="lp-code-dots" aria-hidden="true">
+                <i />
+                <i />
+                <i />
+              </span>
+              <figcaption id="lp-code-caption">{current.file}</figcaption>
+            </div>
+            <pre className="lp-code-body" tabIndex={0}>
+              <code key={active}>
+                {code[active].map((line, index) => {
+                  const at = line.indexOf('//');
+                  return (
+                    <span key={index} className="lp-code-line">
+                      {at < 0 ? line : line.slice(0, at)}
+                      {at >= 0 && <span className="lp-code-comment">{line.slice(at)}</span>}
+                    </span>
+                  );
+                })}
+              </code>
+            </pre>
+            <div className="lp-code-foot">
+              <i aria-hidden="true" /> Computed in your browser · checksum {cma.calculationHash.slice(0, 8)}
+            </div>
+          </figure>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAvailable = true }: LandingProps) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const menuButton = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    const update = () => setScrolled(window.scrollY > 20);
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+    return () => window.removeEventListener('scroll', update);
+  }, []);
+  const stats = [
+    {
+      value: valuationBenchmark.holdout.sales.toLocaleString('en-US'),
+      label: 'DC sales held out for testing',
+      source: 'Published test',
+    },
+    {
+      value: `${(valuationBenchmark.primary.mdape * 100).toFixed(1)}%`,
+      label: 'median pricing error',
+      source: 'DC houses',
+    },
+    {
+      value: `${(valuationBenchmark.primary.ppe10 * 100).toFixed(1)}%`,
+      label: 'within ±10% of the sale price',
+      source: 'DC houses',
+    },
+    { value: '$0', label: 'no account, no paywall', source: 'Public studios' },
+    { value: '3', label: 'covered areas', source: 'DC · Montgomery · Prince George’s' },
+    { value: 'MIT', label: 'open-source license', source: 'Read every line' },
+  ];
+  const headlineWord = 'homeowners.';
   return (
-    <div className="landing">
+    <div className="landing" data-menu-open={menuOpen || undefined}>
       <a className="lp-skip" href="#lp-main">
         Skip to content
       </a>
       <header
         className="lp-nav"
+        data-scrolled={scrolled || undefined}
         onKeyDown={event => {
           if (event.key === 'Escape' && menuOpen) {
             setMenuOpen(false);
@@ -672,9 +1006,9 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAv
           }
         }}
       >
-        <div className="lp-wrap lp-nav-inner">
-          <Link className="brand lp-brand" href="/" aria-label="Ascent home">
-            <span className="brand-mark">A</span>ascent<span className="brand-dot">.</span>
+        <div className="lp-nav-bar">
+          <Link className="lp-brand" href="/" aria-label="Ascent home">
+            ascent<span className="lp-brand-tag">DC·MD</span>
           </Link>
           <nav className="lp-links" aria-label="Sections">
             <Link href="/home">My Home</Link>
@@ -684,7 +1018,7 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAv
             <a href="#faq">Questions</a>
           </nav>
           <div className="lp-nav-actions">
-            <button type="button" className="lp-btn lp-btn-ghost lp-nav-login" onClick={onSignIn}>
+            <button type="button" className="lp-nav-login" onClick={onSignIn}>
               Log in
             </button>
             <a className="lp-btn lp-btn-primary lp-btn-sm" href="#find-home" onClick={() => setMenuOpen(false)}>
@@ -725,22 +1059,42 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAv
 
       <main id="lp-main">
         <section className="lp-hero" aria-labelledby="lp-hero-title">
-          <div className="lp-hero-bg" aria-hidden="true" />
-          <div className="lp-wrap lp-hero-grid">
-            <div className="lp-hero-copy">
-              <span className="lp-eyebrow">
-                <span className="lp-pulse" aria-hidden="true" /> Real estate intelligence for everyone.
+          <div className="lp-hero-lines" aria-hidden="true" />
+          <div className="lp-hero-sphere">
+            <AsciiSphere />
+          </div>
+          <div className="lp-wrap lp-hero-inner">
+            <span className="lp-eyebrow lp-rise">Real estate intelligence for everyone</span>
+            <h1 id="lp-hero-title" className="lp-rise">
+              Real estate intelligence
+              <br />
+              <span>
+                belongs to{' '}
+                <span className="lp-hero-word">
+                  <span className="sr-only">{headlineWord}</span>
+                  <span className="lp-hero-chars" aria-hidden="true">
+                    {headlineWord.split('').map((char, index) => (
+                      <span key={index} style={{ animationDelay: `${350 + index * 45}ms` }}>
+                        {char}
+                      </span>
+                    ))}
+                  </span>
+                </span>
               </span>
-              <h1 id="lp-hero-title">
-                Real estate intelligence
-                <br />
-                <span>belongs to homeowners.</span>
-              </h1>
-              <p className="lp-lede">
-                Understand what supports your home’s price, explore your next move, and keep the evidence behind your
-                decision. Start with an address. We’ll show you the recorded sales and the reasoning.
-              </p>
-              <div className="lp-find" id="find-home">
+            </h1>
+            <div className="lp-hero-row">
+              <div className="lp-rise lp-rise-2">
+                <p className="lp-lede">
+                  Understand what supports your home’s price, explore your next move, and keep the evidence behind your
+                  decision. Start with an address. We’ll show you the recorded sales and the reasoning.
+                </p>
+                <ul className="lp-hero-points" aria-label="Highlights">
+                  <li>Inspect every sale</li>
+                  <li>Adjust the assumptions</li>
+                  <li>Keep the reasoning</li>
+                </ul>
+              </div>
+              <div className="lp-find lp-rise lp-rise-3" id="find-home">
                 <HomeSearch />
                 <p className="lp-find-alt">
                   No address in mind?{' '}
@@ -748,129 +1102,61 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAv
                     Try the sample
                   </Link>
                 </p>
-              </div>
-              <p className="lp-fine">
-                Free, with no account. Covers houses and condos in Washington, DC, and houses and townhouses in
-                Montgomery and Prince George’s counties, Maryland. Built from public records, not live MLS listings.
-              </p>
-              <ul className="lp-hero-points" aria-label="Highlights">
-                <li>
-                  <CheckCircle2 size={16} aria-hidden="true" /> Inspect every sale
-                </li>
-                <li>
-                  <CheckCircle2 size={16} aria-hidden="true" /> Adjust the assumptions
-                </li>
-                <li>
-                  <CheckCircle2 size={16} aria-hidden="true" /> Keep the reasoning
-                </li>
-              </ul>
-              <div className="lp-workspace-entry">
-                <span className="lp-eyebrow">Need a place to keep the work?</span>
-                <p>
-                  Optional private workspaces collect pricing, contacts, offers and deadlines. Public studios need no
-                  sign-in.
+                <p className="lp-fine">
+                  Free, with no account. Covers houses and condos in Washington, DC, and houses and townhouses in
+                  Montgomery and Prince George’s counties, Maryland. Built from public records, not live MLS listings.
                 </p>
-                {workspaceAvailable ? (
-                  <div className="lp-workspace-links">
-                    <button type="button" className="lp-link" onClick={onDemo} disabled={busy}>
-                      {busy ? 'Opening workspace…' : 'Explore the working demo'}{' '}
-                      <ArrowUpRight size={14} aria-hidden="true" />
-                    </button>
-                    <button type="button" className="lp-link" onClick={onRegister}>
-                      Create an account
-                    </button>
-                  </div>
-                ) : (
-                  <p className="lp-fine">Workspaces are being set up. Every public pricing studio is ready to use.</p>
-                )}
-                <p className="lp-fine">Demo: fictional records. Your account: your own evidence.</p>
-                {error && (
-                  <div role="alert" className="lp-error">
-                    {error} <Link href="/demo">Continue with the sample</Link>
-                  </div>
-                )}
               </div>
             </div>
-            <div className="lp-hero-visual" id="pricing-example">
-              <p className="lp-interaction-hint">
-                <SlidersHorizontal size={15} aria-hidden="true" /> Move the price. Watch the reasoning change.
-              </p>
-              <PricingCard />
-              <Link className="lp-card-open" href="/demo">
-                Take this decision apart in the studio <ArrowRight size={16} aria-hidden="true" />
-              </Link>
+          </div>
+          <div className="lp-marquee" aria-label="At a glance" role="region">
+            <div className="lp-marquee-track">
+              {[0, 1].map(copy => (
+                <ul key={copy} className="lp-marquee-group" aria-hidden={copy === 1 || undefined}>
+                  {stats.map(stat => (
+                    <li key={stat.label}>
+                      <strong>{stat.value}</strong>
+                      <span>
+                        {stat.label}
+                        <small>{stat.source}</small>
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              ))}
             </div>
           </div>
         </section>
 
         <section id="homeowners" className="lp-section lp-homeowners" aria-labelledby="lp-homeowners-title">
           <div className="lp-wrap">
-            <div className="lp-section-head">
+            <div className="lp-head">
               <span className="lp-eyebrow">Start with your question</span>
-              <h2 id="lp-homeowners-title">Your next home decision deserves an explanation.</h2>
+              <h2 id="lp-homeowners-title">
+                Your next home decision
+                <br />
+                <span>deserves an explanation.</span>
+              </h2>
               <p>
                 You do not need to be an agent to examine pricing evidence. Choose a covered market, or learn with a
                 fictional example before exploring a real address.
               </p>
             </div>
-            <div className="lp-homeowner-grid">
-              {[
-                {
-                  question: 'What is my DC home worth?',
-                  detail:
-                    'Search eligible DC houses and rowhomes. Inspect recorded sales, adjustments and the validated settings behind the estimate.',
-                  scope: 'DC houses · Public-record snapshot',
-                  href: '/dc',
-                  action: 'Explore DC homes',
-                },
-                {
-                  question: 'What about my Maryland home?',
-                  detail:
-                    'Explore homes in Montgomery or Prince George’s County, with transparent limitations on property fields and accuracy.',
-                  scope: 'Two MD counties · Limited property fields',
-                  href: '/maryland',
-                  action: 'Explore Maryland',
-                },
-                {
-                  question: 'How does my DC condo compare?',
-                  detail:
-                    'Inspect unit-level recorded sales. Condo testing missed acceptance criteria, so this studio does not offer a calibrated range.',
-                  scope: 'DC condos · Experimental estimates',
-                  href: '/dc/condos',
-                  action: 'Explore DC condos',
-                },
-                {
-                  question: 'What did homes like mine sell for?',
-                  detail:
-                    'Ask in plain words, such as “2 bed condos in 20009 under $700k”. See your question read back as filters, then medians, price bands and every recorded sale.',
-                  scope: 'DC and Maryland · Recorded sales',
-                  href: '/sales',
-                  action: 'Search recorded sales',
-                },
-                {
-                  question: 'Can I get help buying a home?',
-                  detail:
-                    'Compare your situation with the posted rules of DC, Maryland, Montgomery and Prince George’s homebuyer programs. Every rule is dated and linked to its source.',
-                  scope: 'Buyer assistance · Nothing saved',
-                  href: '/programs',
-                  action: 'Find programs to ask about',
-                },
-                {
-                  question: 'What if I change the asking price?',
-                  detail:
-                    'Practice with a clearly fictional Arlington home. Compare prices and illustrative proceeds, then inspect the math.',
-                  scope: 'Fictional example · No sign-in',
-                  href: '/demo',
-                  action: 'Try the interactive sample',
-                },
-              ].map(item => (
-                <Link className="lp-homeowner-card" key={item.href} href={item.href}>
-                  <span className="lp-homeowner-scope">{item.scope}</span>
-                  <h3>{item.question}</h3>
-                  <p>{item.detail}</p>
-                  <span className="lp-homeowner-action">
-                    {item.action} <ArrowRight size={16} aria-hidden="true" />
+            <div className="lp-rows">
+              {homeownerPaths.map((item, index) => (
+                <Link className="lp-row" key={item.href} href={item.href}>
+                  <span className="lp-row-num" aria-hidden="true">
+                    {String(index + 1).padStart(2, '0')}
                   </span>
+                  <span className="lp-row-body">
+                    <span className="lp-row-scope">{item.scope}</span>
+                    <h3>{item.question}</h3>
+                    <p>{item.detail}</p>
+                    <span className="lp-row-action">
+                      {item.action} <ArrowRight size={16} aria-hidden="true" />
+                    </span>
+                  </span>
+                  <PathVisual kind={item.visual} />
                 </Link>
               ))}
             </div>
@@ -881,72 +1167,97 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAv
           </div>
         </section>
 
-        <section className="lp-proof" aria-label="From evidence to a decision">
-          <ol className="lp-wrap lp-proof-grid lp-loop">
-            {[
-              {
-                icon: Layers3,
-                title: 'See the evidence',
-                body: 'Inspect the sales and adjustments behind the estimate.',
-                href: '/demo#studio-evidence',
-                action: 'Inspect a sale',
-              },
-              {
-                icon: SlidersHorizontal,
-                title: 'Test the decision',
-                body: 'Change an assumption. See what moves the price.',
-                href: '/demo#studio-assumptions',
-                action: 'Test an assumption',
-              },
-              {
-                icon: FileText,
-                title: 'Tell the whole story',
-                body: 'Keep the price, sources and assumptions in one report.',
-                href: '/demo#studio-report',
-                action: 'Build a report',
-              },
-            ].map((item, index) => (
-              <li key={item.title} className="lp-proof-item">
-                <item.icon size={20} aria-hidden="true" />
-                <div>
-                  <span className="lp-loop-verb">0{index + 1}</span>
-                  <h3>{item.title}</h3>
-                  <p>{item.body}</p>
-                  <Link className="lp-loop-link" href={item.href}>
-                    {item.action} <ArrowRight size={13} aria-hidden="true" />
-                  </Link>
-                </div>
-              </li>
-            ))}
-          </ol>
+        <ProcessSection />
+
+        <section id="pricing-example" className="lp-section" aria-labelledby="lp-example-title">
+          <div className="lp-wrap lp-split">
+            <div className="lp-split-copy">
+              <span className="lp-eyebrow">Try it on this page</span>
+              <h2 id="lp-example-title">
+                Move the price.
+                <br />
+                <span>Watch the reasoning change.</span>
+              </h2>
+              <p>
+                This card runs the same calculation engine as the studios, on a clearly fictional Arlington home. Drag
+                the asking price, then open the math to see every adjustment and weight.
+              </p>
+              <p className="lp-interaction-hint">
+                <SlidersHorizontal size={15} aria-hidden="true" /> No sign-in, no network request, no model.
+              </p>
+              <Link className="lp-btn lp-btn-outline" href="/demo">
+                Take this decision apart in the studio <ArrowRight size={16} aria-hidden="true" />
+              </Link>
+            </div>
+            <PricingCard />
+          </div>
         </section>
 
-        <section id="workflow" className="lp-section" aria-labelledby="lp-workflow-title">
+        <section id="workflow" className="lp-section lp-section-tint" aria-labelledby="lp-workflow-title">
           <div className="lp-wrap">
-            <div className="lp-section-head">
-              <span className="lp-eyebrow">Optional workspace tools</span>
-              <h2 id="lp-workflow-title">Keep the reasoning as your plans change.</h2>
+            <div className="lp-head lp-head-split">
+              <div>
+                <span className="lp-eyebrow">Optional workspace tools</span>
+                <h2 id="lp-workflow-title">
+                  Keep the reasoning
+                  <br />
+                  <span>as your plans change.</span>
+                </h2>
+              </div>
               <p>
                 Public pricing works without an account. Configured private workspaces can connect saved analyses,
                 contacts, offers and deadlines. Some market features require authorized provider data.
               </p>
             </div>
             <Journey />
+            <div className="lp-workspace-entry">
+              <div>
+                <span className="lp-eyebrow">Need a place to keep the work?</span>
+                <p>
+                  Optional private workspaces collect pricing, contacts, offers and deadlines. Public studios need no
+                  sign-in. Demo: fictional records. Your account: your own evidence.
+                </p>
+              </div>
+              {workspaceAvailable ? (
+                <div className="lp-workspace-links">
+                  <button type="button" className="lp-btn lp-btn-primary" onClick={onDemo} disabled={busy}>
+                    {busy ? 'Opening workspace…' : 'Explore the working demo'}{' '}
+                    <ArrowUpRight size={15} aria-hidden="true" />
+                  </button>
+                  <button type="button" className="lp-btn lp-btn-outline" onClick={onRegister}>
+                    Create an account
+                  </button>
+                </div>
+              ) : (
+                <p className="lp-fine">Workspaces are being set up. Every public pricing studio is ready to use.</p>
+              )}
+              {error && (
+                <div role="alert" className="lp-error">
+                  {error} <Link href="/demo">Continue with the sample</Link>
+                </div>
+              )}
+            </div>
           </div>
         </section>
 
-        <section id="assistant" className="lp-section lp-section-tint" aria-labelledby="lp-assistant-title">
+        <section id="assistant" className="lp-section" aria-labelledby="lp-assistant-title">
           <div className="lp-wrap lp-split">
             <div className="lp-split-copy">
               <span className="lp-eyebrow">Ask Ascent</span>
               <h2 id="lp-assistant-title">
                 Ask why.
                 <br />
-                Get the working.
+                <span>Get the working.</span>
               </h2>
               <p>
                 Ask about the record on screen. See the facts, calculations, assumptions and unknowns behind the answer.
               </p>
+              <ul className="lp-badges" aria-label="Answer parts">
+                <li>Recorded fact</li>
+                <li>Calculation</li>
+                <li>Assumption</li>
+                <li>Unknown</li>
+              </ul>
               <p className="lp-note">
                 <Lock size={14} aria-hidden="true" /> You review the draft. You make the decision.
               </p>
@@ -960,12 +1271,20 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAv
           </div>
         </section>
 
-        <section id="accuracy" className="lp-section" aria-labelledby="lp-accuracy-title">
+        <section id="accuracy" className="lp-section lp-section-line" aria-labelledby="lp-accuracy-title">
           <div className="lp-wrap">
-            <div className="lp-section-head">
-              <span className="lp-eyebrow">The published test</span>
-              <h2 id="lp-accuracy-title">Useful evidence. Visible limits.</h2>
-              <p>DC-validated settings, tested on recorded sales held out from development.</p>
+            <div className="lp-head lp-head-split">
+              <div>
+                <span className="lp-eyebrow">The published test</span>
+                <h2 id="lp-accuracy-title">
+                  Useful evidence.
+                  <br />
+                  <span>Visible limits.</span>
+                </h2>
+              </div>
+              <p className="lp-status">
+                <i aria-hidden="true" /> DC-validated settings, tested on recorded sales held out from development.
+              </p>
             </div>
             <div className="lp-evidence-stats">
               <div>
@@ -981,19 +1300,21 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAv
                 <span>within ±10% of the sale price</span>
               </div>
             </div>
-            <p className="lp-fine">
-              Results apply to this market, period and configuration. They do not guarantee the price of your home. Some
-              acceptance thresholds were met narrowly.
-            </p>
-            <p className="lp-fine">
-              <Link href="/maryland">Maryland is available: Montgomery and Prince George’s counties</Link>.{' '}
-              {marylandVerdict()} Size, quality grade, location and sale timing only; bedrooms and bathrooms are
-              unavailable. Virginia awaits permission.
-            </p>
-            <p className="lp-fine">
-              <Link href="/dc/condos">DC condo pricing is available</Link> with a separate unit-level snapshot. Condo
-              accuracy was tested separately and failed. <Link href="/accuracy">See all published experiments</Link>.
-            </p>
+            <div className="lp-accuracy-notes">
+              <p className="lp-fine">
+                Results apply to this market, period and configuration. They do not guarantee the price of your home.
+                Some acceptance thresholds were met narrowly.
+              </p>
+              <p className="lp-fine">
+                <Link href="/maryland">Maryland is available: Montgomery and Prince George’s counties</Link>.{' '}
+                {marylandVerdict()} Size, quality grade, location and sale timing only; bedrooms and bathrooms are
+                unavailable. Virginia awaits permission.
+              </p>
+              <p className="lp-fine">
+                <Link href="/dc/condos">DC condo pricing is available</Link> with a separate unit-level snapshot. Condo
+                accuracy was tested separately and failed. <Link href="/accuracy">See all published experiments</Link>.
+              </p>
+            </div>
             <details className="lp-methodology">
               <summary>Maryland accuracy: results and missed criteria</summary>
               <AccuracyScorecard benchmark={marylandBenchmark} />
@@ -1007,15 +1328,22 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAv
 
         <section id="faq" className="lp-section lp-section-tint" aria-labelledby="lp-faq-title">
           <div className="lp-wrap lp-faq-grid">
-            <div className="lp-section-head lp-faq-head">
+            <div className="lp-head lp-faq-head">
               <span className="lp-eyebrow">Before you start</span>
-              <h2 id="lp-faq-title">Straight answers.</h2>
+              <h2 id="lp-faq-title">
+                Straight
+                <br />
+                <span>answers.</span>
+              </h2>
               <p>What you can do, where the data comes from, and what stays yours.</p>
             </div>
             <div className="lp-faq">
-              {faqs.map(item => (
+              {faqs.map((item, index) => (
                 <details key={item.q}>
                   <summary>
+                    <span className="lp-faq-num" aria-hidden="true">
+                      {String(index + 1).padStart(2, '0')}
+                    </span>
                     <span>{item.q}</span>
                   </summary>
                   <p>{item.a}</p>
@@ -1028,36 +1356,91 @@ export function Landing({ onDemo, onSignIn, onRegister, busy, error, workspaceAv
         <section className="lp-final" aria-labelledby="lp-final-title">
           <div className="lp-wrap">
             <div className="lp-final-inner">
-              <div>
-                <h2 id="lp-final-title">Never accept a number you cannot understand.</h2>
+              <div className="lp-final-copy">
+                <h2 id="lp-final-title">
+                  Never accept a number
+                  <br />
+                  you cannot understand.
+                </h2>
                 <p>Start with comparable evidence. Keep a report you can question, share and explain.</p>
+                <div className="lp-cta-row">
+                  <a className="lp-btn lp-btn-primary lp-btn-lg" href="#find-home">
+                    Find your home <ArrowRight size={17} aria-hidden="true" />
+                  </a>
+                  <Link className="lp-btn lp-btn-outline lp-btn-lg" href="/demo">
+                    Try the sample
+                  </Link>
+                </div>
+                <p className="lp-final-fine">No account required</p>
               </div>
-              <div className="lp-cta-row">
-                <a className="lp-btn lp-btn-light lp-btn-lg" href="#find-home">
-                  Find your home <ArrowRight size={17} aria-hidden="true" />
-                </a>
-                <Link className="lp-btn lp-btn-outline lp-btn-lg" href="/demo">
-                  Try the sample
-                </Link>
+              <div className="lp-final-sphere">
+                <AsciiSphere />
               </div>
             </div>
           </div>
         </section>
       </main>
       <footer className="lp-footer">
-        <div className="lp-wrap lp-footer-inner">
-          <Link className="brand lp-brand" href="/" aria-label="Ascent home">
-            <span className="brand-mark">A</span>ascent<span className="brand-dot">.</span>
-          </Link>
-          <p>Free, open-source real estate intelligence for homeowners.</p>
-          <p>Decision aid, not an appraisal. Sample data is fictional.</p>
-          <nav className="lp-footer-links" aria-label="Ascent pages">
-            <Link href="/home">My Home</Link>
-            <Link href="/sales">Recorded sales</Link>
-            <Link href="/programs">Buyer programs</Link>
-            <Link href="/accuracy">Accuracy</Link>
-            <Link href="/free">Free forever</Link>
-          </nav>
+        <div className="lp-wrap">
+          <div className="lp-footer-top">
+            <div className="lp-footer-brand">
+              <Link className="lp-brand" href="/" aria-label="Ascent home">
+                ascent<span className="lp-brand-tag">DC·MD</span>
+              </Link>
+              <p>Free, open-source real estate intelligence for homeowners.</p>
+              <p>Decision aid, not an appraisal. Sample data is fictional.</p>
+            </div>
+            <nav className="lp-footer-links" aria-label="Ascent pages">
+              <div>
+                <h2>Explore</h2>
+                <ul>
+                  <li>
+                    <Link href="/dc">DC homes</Link>
+                  </li>
+                  <li>
+                    <Link href="/maryland">Maryland homes</Link>
+                  </li>
+                  <li>
+                    <Link href="/dc/condos">DC condos</Link>
+                  </li>
+                  <li>
+                    <Link href="/sales">Recorded sales</Link>
+                  </li>
+                </ul>
+              </div>
+              <div>
+                <h2>Decide</h2>
+                <ul>
+                  <li>
+                    <Link href="/home">My Home</Link>
+                  </li>
+                  <li>
+                    <Link href="/programs">Buyer programs</Link>
+                  </li>
+                  <li>
+                    <Link href="/demo">Interactive sample</Link>
+                  </li>
+                </ul>
+              </div>
+              <div>
+                <h2>Trust</h2>
+                <ul>
+                  <li>
+                    <Link href="/accuracy">Accuracy</Link>
+                  </li>
+                  <li>
+                    <Link href="/free">Free forever</Link>
+                  </li>
+                </ul>
+              </div>
+            </nav>
+          </div>
+          <div className="lp-footer-bottom">
+            <p>Built from public records, not live MLS listings.</p>
+            <p className="lp-status">
+              <i aria-hidden="true" /> Public studios need no account
+            </p>
+          </div>
         </div>
       </footer>
     </div>
