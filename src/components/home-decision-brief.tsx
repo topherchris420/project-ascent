@@ -12,7 +12,6 @@ const traceKinds: Record<Trace['kind'], string> = {
   assumption: 'Assumption',
   calculation: 'Calculation',
 };
-const shortRef = (ref: string) => (ref.length > 22 ? `${ref.slice(0, 19)}…` : ref);
 /** "Monthly gross rent ($)" → "monthly gross rent" inside a sentence. */
 const inline = (label: string) => label.replace(/\s*\([^)]*\)$/, '').replace(/^./, c => c.toLowerCase());
 const verdictIcons = { supported: CircleCheck, limited: CircleAlert, declined: CircleSlash };
@@ -34,15 +33,8 @@ function Traces({ traces }: { traces: Trace[] }) {
       {traces.map((trace, index) => (
         <li key={`${trace.kind}-${index}`} data-kind={trace.kind}>
           <span className="brief-trace-kind">{traceKinds[trace.kind]}</span>
-          <span>
-            {trace.text}
-            {trace.ref && trace.kind !== 'record' ? (
-              <>
-                {' '}
-                <code title={trace.ref}>{shortRef(trace.ref)}</code>
-              </>
-            ) : null}
-          </span>
+          {/* Reference IDs stay in "References for reproducing this brief"; inline they read as noise. */}
+          <span title={trace.ref && trace.kind !== 'record' ? `Reference ${trace.ref}` : undefined}>{trace.text}</span>
         </li>
       ))}
     </ul>

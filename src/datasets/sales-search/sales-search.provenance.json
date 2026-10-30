@@ -1,0 +1,36 @@
+{
+  "datasetId": "sales-search",
+  "title": "Recorded sales with their addresses, joined from the bundled DC, DC condo and Maryland snapshots",
+  "builtBy": "npm run datasets:sales-search (src/lib/sales-search-build.ts)",
+  "sources": {
+    "dc": {
+      "sales": "eebe47197b9c815ffc9c2c98f27dd8226bc588418b06d3b3db5d245353650b1f",
+      "properties": "11abe9d2cad7a87a7aeb1fc03db5d7ef11b6b3a0b78450374dd304241d97d913"
+    },
+    "dc-condos": {
+      "sales": "394bbe83d64df42f2cfa75e541722778b5fef3767fbcd421719c3780c1b923a0",
+      "properties": "cc21edf4d434de8355068a9891ad1bf4ce4f428be1f4c6a78a1a6e2e712c65c6"
+    },
+    "maryland": {
+      "sales": "53b08d04f7444618d640cce1848aac7cf87276e1092f80e65377be013aa6850b",
+      "properties": "7dfa303d54ba32beb251fda96e71a101495e87e4bad6cae4a4b39d1eaf5035e8"
+    }
+  },
+  "attribution": {
+    "dc": "Contains District of Columbia open data licensed under CC BY 4.0: Tax System Property Sales (CAMA), Computer Assisted Mass Appraisal - Residential, Address Points.",
+    "dc-condos": "Contains District of Columbia open data licensed under CC BY 4.0: Condominium CAMA, Condo Relate Table, Address Points and Tax System Property Sales. Joined and filtered by Ascent.",
+    "maryland": "Maryland SDAT/MDP public-domain real property assessments (ed4q-f8tm), filtered and transformed by Ascent."
+  },
+  "firstSale": {
+    "dc": "2022-01-03",
+    "dc-condos": "2022-01-03",
+    "maryland": "2020-01-02"
+  },
+  "lastSale": {
+    "dc": "2026-10-07",
+    "dc-condos": "2026-10-07",
+    "maryland": "2026-09-24"
+  },
+  "rows": 118868,
+  "jsonSha256": "48327618064be71aeb75ae8148c71b30223d3ba79160797fbc9722aeada82ee7"
+}

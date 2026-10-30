@@ -265,8 +265,10 @@
   color: var(--muted);
   font-size: 12px;
 }
+/* The global label rule stacks its children; a check row keeps the box beside its text. */
 .os-check-row {
   display: flex;
+  flex-direction: row;
   align-items: flex-start;
   gap: 10px;
   padding: 6px 0;
@@ -277,6 +279,12 @@
   width: 20px;
   height: 20px;
   margin-top: 1px;
+}
+.os-check-detail {
+  display: block;
+  margin-top: 2px;
+  color: var(--muted);
+  font-weight: 400;
 }
 .os-check-grid {
   display: grid;
@@ -542,6 +550,68 @@
 .os-page th[scope='row'] {
   font-weight: 600;
   min-width: 140px;
+}
+.os-tax {
+  margin: 16px 0;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #fbfcf9;
+}
+.os-tax h3 {
+  margin-top: 0;
+}
+.os-tax-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 20px;
+}
+/* On a phone each tax becomes a short card instead of a five-column table. */
+@media (max-width: 600px) {
+  .os-page .os-tax-table table {
+    min-width: 0;
+  }
+  .os-tax-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+  }
+  .os-tax-table tr,
+  .os-tax-table th,
+  .os-tax-table td {
+    display: block;
+  }
+  .os-tax-table tr {
+    padding: 8px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .os-page .os-tax-table th,
+  .os-page .os-tax-table td {
+    border: 0;
+    padding: 2px 0;
+  }
+  .os-tax-table td::before {
+    content: attr(data-label) ': ';
+    color: var(--muted);
+  }
+}
+.os-tax-warning {
+  padding: 10px 12px;
+  border-left: 3px solid #b7734e;
+  background: #fbf3ed;
+}
+/* The fix is the warning's main action: its own line, and a full-size target on phones. */
+.os-tax-warning .button {
+  display: flex;
+  width: fit-content;
+  margin: 8px 0;
+}
+@media (max-width: 600px) {
+  .os-tax-warning .button {
+    min-height: 44px;
+  }
 }
 .os-compare thead th {
   position: sticky;

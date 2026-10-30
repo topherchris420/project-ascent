@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { calculationChecksum } from './analytics';
 import { cents, mortgagePayment } from './homeowner-finance';
+import { creditLimitNote } from './credit-limits';
 import { saleNetBeforePayoff } from './selling-costs';
 
 /**
@@ -588,6 +589,8 @@ export function analyzeOffer(offer: LabOffer, settings: LabSettings): OfferAnaly
       'A financed offer depends on the lender’s approval and appraisal. Ascent does not estimate whether either will happen; ask about the pre-approval and the lender.',
     );
   if (offer.financing === 'cash') notes.push('A cash offer still needs proof of funds. Ascent does not verify it.');
+  const creditNote = creditLimitNote(offer);
+  if (creditNote) notes.push(creditNote);
   if (offer.contingencies.inspection.included === false)
     notes.push(
       'The inspection contingency is waived: the buyer would have no contractual right to withdraw over inspection findings.',

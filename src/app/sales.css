@@ -1,0 +1,318 @@
+/* Recorded-sales search (/sales): one question box, the read-back, summary tiles, breakdowns and the sale list. */
+.sales-main {
+  display: grid;
+  gap: 28px;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 36px 24px 72px;
+}
+/* Grid children default to their content's width; the wide sale table scrolls inside its own region instead. */
+.sales-main > *,
+.sales-breakdowns > * {
+  min-width: 0;
+}
+.sales-intro h1 {
+  margin: 0 0 10px;
+  font-size: clamp(28px, 4vw, 40px);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+.sales-intro > p {
+  max-width: 720px;
+  margin: 0 0 22px;
+  color: var(--muted);
+  font-size: 17px;
+}
+.sales-form label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 650;
+}
+.sales-field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 760px;
+  min-height: 58px;
+  padding: 6px 6px 6px 16px;
+  border: 1px solid #8a9883;
+  border-radius: var(--radius);
+  background: #fff;
+  color: var(--muted);
+  box-shadow: 0 10px 28px -18px #213f3380;
+}
+.sales-field:focus-within {
+  border-color: var(--green);
+  outline: 3px solid #ba825c;
+  outline-offset: 2px;
+}
+.sales-field input {
+  flex: 1;
+  min-width: 0;
+  padding: 12px 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font-size: 17px;
+}
+.sales-field input:focus-visible {
+  outline: none;
+}
+.sales-field input::placeholder {
+  color: #6b7764;
+}
+.sales-field > svg {
+  flex-shrink: 0;
+}
+.sales-field .button {
+  flex-shrink: 0;
+  min-height: 44px;
+}
+.sales-examples {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+  font-size: 14px;
+}
+.sales-examples > span {
+  color: var(--muted);
+}
+.sales-examples a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 4px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--green);
+  text-decoration: none;
+}
+.sales-examples a:hover {
+  border-color: var(--green);
+}
+.sales-readback,
+.sales-summary,
+.sales-list,
+.sales-limits,
+.sales-breakdown {
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: #fff;
+}
+.sales-readback h2,
+.sales-list h2,
+.sales-limits h2 {
+  margin: 0 0 12px;
+  font-size: 19px;
+}
+.sales-readback h3,
+.sales-limits h3,
+.sales-breakdown h3 {
+  margin: 16px 0 8px;
+  font-size: 15px;
+}
+.sales-breakdown h3 {
+  margin-top: 0;
+}
+.sales-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.sales-chips li {
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--pale);
+  color: var(--green-dark);
+  font-size: 14px;
+  font-weight: 600;
+}
+.sales-ignored ul,
+.sales-limits ul {
+  margin: 0;
+  padding-left: 20px;
+}
+.sales-ignored li,
+.sales-limits li {
+  margin: 4px 0;
+}
+.sales-note {
+  margin: 12px 0 0;
+  padding: 10px 14px;
+  border-left: 3px solid var(--peach);
+  background: #fbf3ed;
+}
+.sales-tiles {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin: 0;
+}
+.sales-tiles > div {
+  display: grid;
+  gap: 2px;
+}
+.sales-tiles dt {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 600;
+}
+.sales-tiles dd {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.sales-tiles small,
+.sales-fine,
+.sales-muted {
+  color: var(--muted);
+  font-size: 13px;
+}
+.sales-empty {
+  margin: 16px 0 0;
+}
+.sales-breakdowns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+.sales-breakdown table,
+.sales-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+.sales-breakdown th,
+.sales-breakdown td,
+.sales-table th,
+.sales-table td {
+  padding: 8px 10px 8px 0;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+.sales-breakdown thead th,
+.sales-table thead th {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+.sales-breakdown tbody th {
+  font-weight: 600;
+}
+.sales-breakdown td:nth-child(2) {
+  width: 45%;
+}
+.sales-bar {
+  display: block;
+  height: 8px;
+  margin-bottom: 4px;
+  border-radius: 4px;
+  background: var(--pale);
+  overflow: hidden;
+}
+.sales-bar > span {
+  display: block;
+  height: 100%;
+  border-radius: 4px;
+  background: var(--green);
+}
+.sales-list-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+.sales-sort {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 14px;
+}
+.sales-sort a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 4px 10px;
+  border-radius: 8px;
+  color: var(--green);
+}
+.sales-sort a[aria-current='true'] {
+  background: var(--pale);
+  color: var(--green-dark);
+  font-weight: 650;
+  text-decoration: none;
+}
+.sales-table-wrap {
+  margin-top: 8px;
+  overflow-x: auto;
+}
+.sales-table-wrap:focus-visible {
+  outline: 3px solid #ba825c;
+  outline-offset: 2px;
+}
+.sales-table {
+  min-width: 720px;
+}
+.sales-table tbody th {
+  font-weight: 600;
+}
+.sales-table tbody th small {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 400;
+}
+.sales-sources li {
+  font-size: 14px;
+}
+.sales-table tbody th a,
+.sales-limits a {
+  color: var(--green);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+@media (max-width: 860px) {
+  .sales-tiles {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .sales-breakdowns {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 520px) {
+  .sales-main {
+    padding: 24px 16px 56px;
+  }
+  .sales-field {
+    flex-wrap: wrap;
+    padding: 8px 12px;
+  }
+  .sales-field input {
+    flex-basis: calc(100% - 34px);
+  }
+  .sales-field .button {
+    width: 100%;
+  }
+  .sales-readback,
+  .sales-summary,
+  .sales-list,
+  .sales-limits,
+  .sales-breakdown {
+    padding: 16px;
+  }
+  .sales-tiles dd {
+    font-size: 22px;
+  }
+}

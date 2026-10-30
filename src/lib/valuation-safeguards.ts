@@ -379,8 +379,8 @@ export function assessValuationRelease(
     integrity.passed ? 'pass' : 'review',
     'Engine matches validated build',
     integrity.passed
-      ? `Engine fingerprint ${integrity.fingerprint} is the one measured in validation report ${benchmark.reportDigest.slice(0, 19)}.`
-      : `Engine fingerprint ${integrity.fingerprint} differs from the validated ${integrity.expected}; published accuracy figures do not describe this build until validation is re-run.`,
+      ? 'The calculation engine is the exact version the published study measured.'
+      : `This calculation engine differs from the version the published study measured (engine ${integrity.fingerprint}, expected ${integrity.expected}), so the published accuracy figures do not describe this build until the study is re-run.`,
   );
   const comps = result.comps;
   const n = comps.length;

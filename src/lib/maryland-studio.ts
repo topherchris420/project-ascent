@@ -21,7 +21,7 @@ export const MD_GRADE_LABELS: Record<number, string> = {
 export const marylandDefaultState = () => defaultStudioState(validatedAssumptions(marylandRevisedBenchmark));
 export const marylandVerdict = () => {
   const met = marylandRevisedBenchmark.acceptance.filter(item => item.passed).length;
-  return `${met} of 9 accuracy criteria met${marylandRevisedBenchmark.accepted ? '' : ' — did not meet the acceptance criteria'}.`;
+  return `${met} of 9 accuracy criteria met${marylandRevisedBenchmark.accepted ? '' : ', so the method did not pass its published test'}.`;
 };
 export function marylandReportHref(parcel: string, state: StudioState, format?: 'json') {
   const query = new URLSearchParams({ parcel, state: JSON.stringify(state) });

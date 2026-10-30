@@ -327,7 +327,7 @@ export function briefValuationVerdict(input: {
     const reasons = gate.checks.filter(check => check.status === 'block').map(check => check.detail);
     if (n < BRIEF_POLICY.minComparables)
       reasons.unshift(
-        `Only ${n} eligible recorded sale${n === 1 ? '' : 's'}. Ascent states a value only when at least ${BRIEF_POLICY.minComparables} recorded sales pass its rules.`,
+        `Only ${n} eligible recorded sale${n === 1 ? '' : 's'}. Ascent states a value only when at least ${BRIEF_POLICY.minComparables} recorded sales pass its rules; sales outside the tested comparison limits are not used.`,
       );
     return { verdict: 'declined', reasons, gate };
   }
@@ -610,7 +610,7 @@ export function buildHomeDecisionBrief(input: BriefInput): HomeDecisionBrief {
       : null;
   const study = benchmark
     ? {
-        text: `Published ${market.label} study: ${benchmark.holdout.sales.toLocaleString('en-US')} held-out sales from ${day(benchmark.holdout.from)} to ${day(benchmark.holdout.to)}; median error ${pct(benchmark.primary.mdape, 2)}; ${benchmark.acceptance.filter(item => item.passed).length} of ${benchmark.acceptance.length} accuracy criteria met${benchmark.accepted ? '' : ', so it did not pass'}. A study of many past sales, not a guarantee for this home.`,
+        text: `Published ${market.label} study: tested on ${benchmark.holdout.sales.toLocaleString('en-US')} past sales from ${day(benchmark.holdout.from)} to ${day(benchmark.holdout.to)} that were kept out of building the method; median error ${pct(benchmark.primary.mdape, 2)}; ${benchmark.acceptance.filter(item => item.passed).length} of ${benchmark.acceptance.length} accuracy criteria met${benchmark.accepted ? '' : ', so it did not pass'}. A study of many past sales, not a guarantee for this home.`,
         traces: [
           {
             kind: 'calculation' as const,
@@ -688,7 +688,7 @@ export function buildHomeDecisionBrief(input: BriefInput): HomeDecisionBrief {
   }));
   const ownSale = evidence.subject.history?.find(entry => entry.price !== undefined);
   const comparablesAnswer = result
-    ? `${result.comps.length} recorded sale${result.comps.length === 1 ? '' : 's'} passed the rules (${review!.effectiveComparableCount.toFixed(1)} effective after weighting). ${
+    ? `${result.comps.length} recorded sale${result.comps.length === 1 ? '' : 's'} passed the rules${result.comps.length > 1 ? ` (their weights count like ${review!.effectiveComparableCount.toFixed(1)} equally weighted sales)` : ''}. ${
         leading[0]
           ? `${leading[0].address} carries the most weight, ${leading[0].weightPercent}%, adjusting to ${usd(leading[0].adjustedPrice.value)}.`
           : ''
@@ -707,7 +707,7 @@ export function buildHomeDecisionBrief(input: BriefInput): HomeDecisionBrief {
   const newestSaleDays = result?.comps.length ? Math.round(Math.min(...result.comps.map(comp => comp.ageDays))) : null;
   const tierReference =
     gate?.reference && benchmark && market.market !== 'demo'
-      ? `For held-out sales with ${gate.reference.tier} evidence like this (${gate.reference.holdoutSales.toLocaleString('en-US')} sales), the study’s median error was ${gate.reference.mdape === null ? 'not measured' : pct(gate.reference.mdape)}.`
+      ? `In the published test, homes with ${gate.reference.tier} evidence like this (${gate.reference.holdoutSales.toLocaleString('en-US')} sales) had a median error of ${gate.reference.mdape === null ? 'not measured' : pct(gate.reference.mdape)}.`
       : null;
   const passing = checks.filter(check => check.status === 'pass').length;
   const later = evidence.facts?.later;
@@ -1044,7 +1044,7 @@ export function buildHomeDecisionBrief(input: BriefInput): HomeDecisionBrief {
             traces: [
               {
                 kind: 'calculation',
-                text: `Held ${pct(calibrated.holdoutCoverage)} of held-out sales with ${calibrated.tier} evidence in the published study`,
+                text: `Contained ${pct(calibrated.holdoutCoverage)} of the test sales with ${calibrated.tier} evidence in the published study`,
                 ref: calibrated.reportDigest,
               },
             ],

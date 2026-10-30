@@ -6,14 +6,17 @@ import { requestJson, TextField } from './shared';
 
 export type AccountState = { user: Actor | null; loading: boolean; message: string; refresh: () => void };
 
-/** The signed-in account, if any. A 401 means signed out; a 403 carries the security step that is required. */
+/**
+ * The signed-in account, if any. `{ user: null }` means signed out; a 401 means the session expired or was revoked;
+ * a 403 carries the security step that is required.
+ */
 export function useAccount(): AccountState {
   const [user, setUser] = useState<Actor | null>(null);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState('');
   const refresh = useCallback(() => {
     setLoading(true);
-    requestJson<{ user: Actor }>('/api/auth/me')
+    requestJson<{ user: Actor | null }>('/api/auth/me')
       .then(body => {
         setUser(body.user);
         setMessage('');

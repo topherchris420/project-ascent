@@ -2,7 +2,17 @@ import { z } from 'zod';
 import { after } from 'next/server';
 import { consumeRateLimit } from '@/lib/db';
 import { endpoint, json, rateLimit, readJson, verifyOrigin } from '@/lib/api';
-import { authenticate, demoSession, digest, HttpError, login, logout, register, sessionCookie } from '@/lib/auth';
+import {
+  authenticate,
+  demoSession,
+  digest,
+  HttpError,
+  login,
+  logout,
+  register,
+  sessionCookie,
+  sessionToken,
+} from '@/lib/auth';
 import { deliverAuthMail, requestPasswordReset, resetPassword, securityStatus } from '@/lib/account-security';
 export const runtime = 'nodejs';
 const loginSchema = z.object({
@@ -68,6 +78,9 @@ export async function POST(request: Request, context: { params: Promise<{ action
 export async function GET(request: Request, context: { params: Promise<{ action: string }> }) {
   return endpoint(async () => {
     if ((await context.params).action !== 'me') throw new HttpError(404, 'Not found.');
+    // No session cookie, or a cookie that is not a session token at all, is a signed-out visitor: an answer, not an
+    // error. A well-formed token that has expired or was revoked still returns 401.
+    if (!sessionToken(request)) return json({ user: null });
     return json({ user: await authenticate(request) });
   });
 }
