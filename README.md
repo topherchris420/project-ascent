@@ -2,175 +2,174 @@
 
 # ascent.
 
-### Your home is more than a number. Understand the evidence behind it.
+### Your home is more than a number. Your decisions deserve the evidence.
 
 **A home estimate should begin a conversation, not end one.**
 
-Ascent is a **free, open-source real estate intelligence tool built for homeowners**. Explore recorded sales, understand how a price was calculated, test the financial consequences of a decision, and take the reasoning with you.
+Ascent is a **free, open-source home decision studio**. Investigate recorded sales, see how a valuation was calculated, challenge its assumptions, compare the financial consequences of your options, and keep a reproducible record of your reasoning.
 
-No professional license. No subscription. No account required for the public pricing studios.
+**No account, subscription, or professional license is needed to explore the public pricing studios.**
 
-**[Look up your home](https://project-ascent-theta.vercel.app/#find-home)**: one address box searches every covered market.
+**[Find your home](https://project-ascent-theta.vercel.app/#find-home)** · **[Try the interactive demo](https://project-ascent-theta.vercel.app/demo)** · **[See the published accuracy studies](https://project-ascent-theta.vercel.app/accuracy)**
 
-**[Explore DC homes](https://project-ascent-theta.vercel.app/dc)** · **[Explore Maryland homes](https://project-ascent-theta.vercel.app/maryland)** · **[Explore DC condos](https://project-ascent-theta.vercel.app/dc/condos)** · **[Try a fictional example](https://project-ascent-theta.vercel.app/demo)**
+[DC homes](https://project-ascent-theta.vercel.app/dc) · [Maryland homes](https://project-ascent-theta.vercel.app/maryland) · [DC condos](https://project-ascent-theta.vercel.app/dc/condos) · [My Home](https://project-ascent-theta.vercel.app/home) · [Free-service promise](https://project-ascent-theta.vercel.app/free)
 
-[My Home](https://project-ascent-theta.vercel.app/home) · [Published accuracy](https://project-ascent-theta.vercel.app/accuracy) · [Free-service promise](https://project-ascent-theta.vercel.app/free) · [Live application](https://project-ascent-theta.vercel.app/)
-
-[![CI](https://github.com/topherchris420/project-ascent/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/topherchris420/project-ascent/actions/workflows/ci.yml)
+[![CI](https://github.com/topherchris420/project-ascent/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/topherchris420/project-ascent/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-24344d.svg)](LICENSE) [![Node.js 24](https://img.shields.io/badge/Node.js-24.x-24344d.svg)](package.json)
 
 </div>
 
 ---
 
-## The question isn't just "What is my home worth?"
+> **The principle:** A recorded fact is not an assumption. An assumption is not an estimate. An estimate is not a guarantee. And an unknown should stay unknown.
 
-It's **why**, **compared with what**, and **what happens if I choose differently?**
+## Start here
 
-Imagine you are considering selling. Someone gives you a number. Usually, that's where the explanation stops.
-
-Ascent lets you investigate the number instead:
-
-1. **Read your Home Decision Brief.** Seven plain-language answers come first: what the evidence suggests about value (or why it declines to state one), which sales support it, how reliable and current the evidence is, which facts are missing, what each choice would mean financially, which assumptions move each outcome, and what to obtain before deciding. Every figure is marked as a recorded fact, an assumption or a calculation you can reproduce.
-2. **See the sales.** Inspect the recorded comparable properties, their differences, their adjustments, and how much each one influences the estimate.
-3. **Challenge the assumptions.** Test a different condition rating, exclude a questionable comparable with a reason, or explore another asking price.
-4. **Explore the decision.** Examine illustrative selling proceeds and, with your own financial inputs, compare selling, holding, renting, renovating before sale, refinancing, or buying while keeping your current home.
-5. **Keep the evidence.** Save a versioned Property Evidence Passport on your device, revisit changed assumptions, and export a report you can examine, print, or share.
-
-You see **recorded facts, calculated estimates, your assumptions, and unknowns as different things**. Ascent does not present an adjusted-sale range as a statistical confidence interval or a scenario as a forecast.
-
-## Find your starting point
-
-The homepage and **My Home** share one address search. Try a DC house, Maryland home, or DC condo with the example buttons, use the arrow keys to browse matches, and press Escape or **Clear address** to start again. If one market is unavailable, successful results stay usable and a retry is offered. The mobile menu keeps saved homes, accuracy results, and help within reach.
-
-| Your question | Where to go | Coverage and caution |
+| I want to… | Start with… | What to expect |
 | --- | --- | --- |
-| What supports the price of a DC house? | **[DC Pricing Studio](https://project-ascent-theta.vercel.app/dc)** | Eligible District single-family and rowhouse sales in a bounded public-record snapshot |
-| What about my Maryland home? | **[Maryland Pricing Studio](https://project-ascent-theta.vercel.app/maryland)** | Montgomery and Prince George's counties; bedroom/bathroom details are not available in this source |
-| How do DC condo prices compare? | **[DC Condo Studio](https://project-ascent-theta.vercel.app/dc/condos)** | Unit-level condo sales; the published condo accuracy study did **not** meet overall acceptance |
-| Can I try this without a real address? | **[Interactive sample](https://project-ascent-theta.vercel.app/demo)** | Clearly fictional Arlington property; real pricing engine, illustrative evidence and assumptions |
-| Where are my saved decisions? | **[My Home](https://project-ascent-theta.vercel.app/home)** | Saved in this browser on this device; no account synchronization |
-| What if I manage clients or offers? | **[Workspace entry](https://project-ascent-theta.vercel.app/)** | Fictional workspace demo or an empty private workspace when account services are configured |
+| Understand the evidence behind a **DC house** estimate | [DC Pricing Studio](https://project-ascent-theta.vercel.app/dc) | Eligible single-family and rowhouse records from a bounded public-data snapshot |
+| Research a home in **Montgomery or Prince George's County, MD** | [Maryland Pricing Studio](https://project-ascent-theta.vercel.app/maryland) | Public-record comparisons; bedroom and bathroom counts are unavailable in this source |
+| Explore a **DC condominium** | [Condo Studio](https://project-ascent-theta.vercel.app/dc/condos) | Unit-level recorded sales; the condo model **failed overall validation acceptance** |
+| See the full experience without entering a real address | [Fictional interactive demo](https://project-ascent-theta.vercel.app/demo) | Illustrative Arlington home, real pricing mechanics, fictional evidence |
+| Return to research I saved | [My Home](https://project-ascent-theta.vercel.app/home) | Local browser storage, with backup and restore; no account sync |
+| Review the tests rather than the marketing | [Accuracy & validation](https://project-ascent-theta.vercel.app/accuracy) | Published holdouts, criteria, failures and limitations |
 
-**Start with the public studios.** They work without a provider key, paid plan, or sign-in.
+**A first visit in four steps:** choose a covered home (or the fictional demo), read the **Home Decision Brief**, inspect or change the comparable-sales assumptions, then explore decisions and export a **Property Evidence Passport**. No provider key is required for the bundled public studios.
 
-## Built for decisions, not just estimates
+**Jump to:** [What it does](#what-ascent-actually-does) · [Evidence flow](#how-the-evidence-flows) · [Accuracy](#published-accuracy-including-failures) · [Limits](#limits-that-matter) · [Privacy](#privacy-and-ownership) · [Local setup](#run-it-locally) · [Verification](#verify-the-work) · [Contributing](#contribute-to-the-evidence)
 
-### 01 · Start with your Home Decision Brief
+## What Ascent actually does
 
-After you choose a property, the brief answers seven questions before any professional tables. It states a value only when the evidence supports one: with fewer than three eligible recorded sales, or when the release checks withhold the result, it says **Not stated** and explains why instead of showing a number. Estimates with known weaknesses say which checks they missed. Financial answers appear once you add your own inputs, and the choices are never ranked.
+Ascent is designed for a homeowner asking more than *“What is my house worth?”* It also asks: *Compared with which sales? Under which assumptions? How trustworthy is the evidence? What changes if I sell, stay or rent?*
 
-It also shows what public records say about the home beyond the estimate's inputs: structure and systems, building permits since 2016 (DC and Montgomery County), the condominium a unit belongs to, and how old the newest recorded sale is today. Permitted work after the last recorded remodel is flagged as something the recorded condition may not reflect. None of these facts changes the estimate.
+| Capability | What you can investigate | Important boundary |
+| --- | --- | --- |
+| **Home Decision Brief** | Seven plain-language answers about value, supporting sales, reliability, freshness, missing facts, choices, sensitivities and next steps | If evidence is inadequate, the answer is **Not stated**, not a made-up figure |
+| **Explainable pricing** | Closed comparable sales, adjustments, weights, exclusions, source records, price and condition sensitivity | Adjusted-sale ranges are **not** automatically calibrated confidence intervals |
+| **Homeowner Workbench** | Six ownership choices, cash flow, debt, equity, cash requirements and break-even points | User-supplied inputs; **illustrative, pre-tax arithmetic**, not forecasts |
+| **Property Evidence Passport** | Save versions of evidence, assumptions, decisions and calculations; compare changes and export JSON or printable HTML | Private copies require care; browser storage is not encrypted or synced |
+| **Ask Ascent** | Ask questions grounded in the brief's figures, calculations and source references | **AI does not set a home's price**; external model synthesis is gated |
+| **Homeowner OS** | Property timeline, public-record watch, offer comparisons, decisions, transaction planning and selective agent sharing | Public functions are account-free; private transaction-room services require configured accounts |
 
-[How the brief works, its verdict policy and its limits](docs/home-decision-brief.md) · [Property records and freshness](docs/property-data.md)
+### Make a number explain itself
 
-### 02 · Make the price explain itself
+A comparable is not simply a dot on a map. See which recorded sales qualified, what differs from the subject property, the explicit adjustments made, the weight each sale receives, and why a sale was excluded. Change a condition assumption, remove a questionable comparable with a reason, or examine another asking price. The calculation changes visibly; it is not replaced by an opaque AI opinion.
 
-Inspect closed sales, distance, size, age, weighting, adjustments, exclusions, and source provenance. Explore sensitivity to individual inputs and compare asking-price scenarios. A changed assumption produces a changed calculation, not a hidden AI opinion.
+The **Home Decision Brief** puts conclusions before technical tables, but never hides their foundations. It separates **recorded fact**, **your assumption**, **computed figure**, and **unknown**. With fewer than three eligible recorded sales, or where release checks withhold a result, it declines to state a value. Additional public property facts, including permitted work and record freshness, are contextual information and do not silently alter the price model.
 
-### 03 · Follow the money
+[Brief methodology](docs/home-decision-brief.md) · [Pricing design](docs/pricing-studio.md) · [Property data and freshness](docs/property-data.md)
 
-The homeowner workbench connects property evidence to **six deterministic ownership choices**:
+### Follow the financial consequences
 
-- Sell now
-- Continue owning
-- Rent the property
-- Renovate before selling
-- Refinance
-- Buy another home while retaining this one
+The workbench compares six choices **without ranking them**: **sell now**, **continue owning**, **rent out**, **renovate then sell**, **refinance**, or **buy another home while retaining this one**. You supply financing, costs, rent and other inputs. Missing figures remain unknown.
 
-Enter your own debt, rates, expenses, rents, and other assumptions. The workbench calculates applicable payment schedules, monthly cash flow, equity, cash requirements, and break-even comparisons. Missing inputs stay **unknown**; Ascent does not quietly manufacture your mortgage, tax bill, rent, or renovation costs.
+It shows 1-, 3-, 5-, 10- and 20-year calculations, tests one input at a time, and solves five break-even questions: selling versus holding price, property-value change, rent versus sale, zero-cash-flow vacancy and refinance rate versus keeping the current loan. These are calculations **conditional on your assumptions**, not predictions of home appreciation, loan eligibility, buyer behavior or renovation returns.
 
-**What would change these results** re-runs the same calculation one input at a time to show which of your inputs moves each choice most, shows every choice at 1, 3, 5, 10 and 20 years, and solves five break-even thresholds: the sale price at which selling matches continuing to own, the annual property change at which owning matches selling, the rent at which renting matches selling, the vacancy at which rental cash flow reaches zero, and the refinance rate at which refinancing matches keeping your loan. These are arithmetic under your inputs, not forecasts.
+The choices do not imply equivalent housing outcomes. Taxes, replacement housing, financing availability and other personal circumstances are excluded from the core comparison.
 
-These are **illustrative, pre-tax comparisons**, not financial advice or predictions. They exclude important household considerations including replacement housing, tax effects, loan qualification, and financing availability. The choices do not represent equivalent housing outcomes and are not ranked as the best option for you.
+[How the workbench calculates and abstains](docs/homeowner-workbench.md)
 
-[How the homeowner workbench calculates and abstains](docs/homeowner-workbench.md)
+### Keep the history, not just the result
 
-### 04 · Remember what changed
+A **Property Evidence Passport** preserves the selected and excluded sales, changed inputs, checks, missing facts, report versions and next steps. The **Decision Time Machine** distinguishes changes in recorded comparable evidence from changes in your own assumptions.
 
-A **Property Evidence Passport** brings the property's public evidence, your saved decisions, assumptions, and calculation versions into one reproducible history. It carries the brief as a research record: the sales selected, ruled out and excluded, the settings you changed, the reliability checks, missing facts and next steps. The readable report opens with an executive summary. Compare saved versions, see whether records or assumptions actually changed, and export a privacy-filtered JSON or standalone printable HTML report. Use your browser's Print command to save a PDF.
+Export a privacy-filtered JSON record or standalone HTML report and print it to PDF from your browser. On-demand evidence comparisons are **not** background listing searches or price alerts.
 
-The **Decision Time Machine** distinguishes changed comparable evidence from changed homeowner assumptions. Its on-demand checks do **not** mean Ascent fetches listings in the background or sends price alerts. Watching a home's public records is a separate opt-in (below), and it runs only when you open Ascent.
+[Evidence history and replay](docs/evidence-and-decision-time-machine.md) · [Backup and restore](docs/homeowner-backups.md)
 
-### 05 · Ask for the explanation
+### A home has a workflow, not just a price
 
-**Ask Ascent** can explain the calculations and evidence in context. Questions about value and evidence are answered from the brief's own figures, with references to the calculation, study and records behind each answer. Core pricing and homeowner financial computations are deterministic; **AI does not set the home's price**. Optional Groq/OpenAI integrations are separately configured, and production external-model synthesis remains blocked pending independent review.
+From a covered property's studio or **My Home**, open the **Homeowner OS** at `/home/{market}/{parcel}`.
 
-### 06 · Run the whole move from one place
+| Area | Purpose |
+| --- | --- |
+| **My Property** | Read the brief and a dated property evidence timeline for recorded sales, permits, assessments, tax and flood information |
+| **Market Watch** | Opt into browser-local checks of public records and newer nearby sales; checks occur when you use Ascent, not in the background |
+| **Compare Offers** | Examine up to six offers, missing terms, cash-to-close or seller proceeds, dates, sensitivities and printable comparisons |
+| **My Decisions** | Revisit the six-choice workbench and saved decision versions |
+| **Transaction Room** | Manage milestones, deadlines, encrypted server documents, inspection items and notes in a private account workspace |
+| **Share With My Agent** | Download a selective packet or use expiring, revocable invitations for chosen room content |
 
-The **Homeowner OS** (`/home/{market}/{parcel}`, linked from My Home and from each studio) brings one home into six areas:
+Offer analysis presents financial and term differences, **not a recommended winning offer, legal interpretation or predicted closing probability**. Unknown acceptance dates remain unknown, and conflicting dates are checked before calendar export. An MLS Bridge exists in code but remains **disabled without an agreement**.
 
-- **My Property:** the brief and a **Property Evidence Timeline** of recorded sales, permits, assessments, tax and flood mapping. Each record keeps its own date apart from when it was recorded, published and checked.
-- **Market Watch:** an opt-in watch on the home's public records and recorded sales nearby, with deduplicated in-app notifications, freshness and pause, delete and export controls.
-- **Compare Offers:** seller proceeds or buyer cash to close, deadlines, contingency differences, missing terms and sensitivity for up to six offers, plus a printable Offer Comparison Brief. Restore a private offer export on another device after a preview, and download one offer’s dates for your calendar. Missing acceptance dates stay unknown; conflicting dates are flagged before calendar export.
-- **My Decisions:** the homeowner workbench above.
-- **Transaction Room:** milestones, deadlines, encrypted documents, inspection items, checklists, notes and decisions, under your control. It needs a free account.
-- **Share With My Agent:** a packet you download and send yourself, with private parts off by default, and expiring, revocable invitations to the parts of your room you choose.
+[Homeowner OS and feature boundaries](docs/homeowner-os.md) · [Public-data permissions and refresh](docs/public-data-network.md) · [Account-security requirements](docs/account-security.md)
 
-Live public records are shown and watched, never priced, and an estimate that is withheld stays withheld everywhere. Ascent does not rank offers, estimate the chance one closes, interpret legal terms or show recorded sales as listings. Its MLS Bridge is built but disabled: no agreement is on file. [How the Homeowner OS works](docs/homeowner-os.md) · [The public-data network, its permissions and refresh](docs/public-data-network.md)
+## How the evidence flows
 
-## Our accuracy is public. So are the misses.
+```mermaid
+flowchart TD
+    A["Recorded public sales<br/>and property records"] --> B["Source provenance<br/>and eligibility rules"]
+    B --> C["Comparable analysis<br/>and validation gates"]
+    C --> D{"Enough support<br/>to state a value?"}
+    D -->|Yes| E["Home Decision Brief<br/>value + limitations"]
+    D -->|No| F["Not stated<br/>missing evidence explained"]
+    E --> G["Homeowner scenarios<br/>your own inputs"]
+    F --> G
+    G --> H["Evidence Passport<br/>versioned, exportable record"]
+```
 
-An impressive-looking price is not proof of accuracy. Ascent publishes reproducible retrospective tests, including criteria the models failed.
+**The pricing engine and homeowner financial calculations are deterministic.** Explaining evidence and computing a number are separate responsibilities. Records are shown with their provenance and date; uncertainties and failed checks travel with the result rather than disappearing between screens.
 
-| Market and model | Held-out sales | Median absolute percentage error | Estimates within ±10% of recorded sale price | Criteria met |
-| --- | ---: | ---: | ---: | ---: |
-| **DC single-family / rowhouses** | 2,254 | **9.98%** | 50.2% | **9/9**, several narrowly |
-| **Maryland, revised model** | 2,812 | **9.52%** | 52.0% | **8/9**; price-related bias criterion failed |
+[Technical architecture](docs/engineering.md) · [AI architecture and gates](docs/ai-architecture.md)
+
+## Published accuracy, including failures
+
+**Do not mistake a plausible price for a validated price.** Ascent publishes retrospective, reproducible internal tests, including models that did not meet their acceptance criteria.
+
+| Market / test | Held-out sales | Median absolute percentage error | Within ±10% of recorded price | Criteria met |
+| --- | ---: | ---: | ---: | --- |
+| **DC single-family and rowhouses** | 2,254 | **9.98%** | 50.2% | **9/9**; several narrow passes |
+| **Montgomery + Prince George's, revised model** | 2,812 | **9.52%** | 52.0% | **8/9**; price-related bias failed |
 | **DC condominiums** | 1,434 | **12.95%** | 41.16% | **4/9**; overall acceptance failed |
-| **Maryland method, four other counties** (registered before download) | 19,039 | **12.26%** | 42.49% | **5/9**; overall acceptance failed |
+| **External Maryland study: four unserved counties** | 19,039 | **12.26%** | 42.49% | **5/9**; overall acceptance failed |
 
-*Published internal holdout studies as of October 21, 2026. Median error describes a tested group, **not** the expected error of your individual home. These are not independently certified results, appraisals, or guarantees.*
+*Published internal holdout results as of October 21, 2026. Median error describes the group tested, **not** the likely error for any particular property. These are not independently certified results, appraisals or guarantees.*
 
-A few distinctions matter:
+What those numbers **do and do not** mean:
 
-- **DC houses:** Results depend on the exact validated configuration. Only that unmodified eligible configuration may display a calibrated interval; custom changes or insufficient evidence remove that claim. Several acceptance bars were met narrowly.
-- **Maryland:** The revised study used a different holdout from an earlier failed model. Its improved headline number is **not** a like-for-like before/after comparison. One of nine criteria still fails; no current-home calibrated interval is released.
-- **DC condos:** Five of nine acceptance criteria failed. Important building attributes such as HOA fees, floor, view, parking, and amenities are unmodeled. No calibrated interval is released.
-- **External Maryland test:** Before the data was downloaded, the method, bars and analysis were committed and pushed for four counties Ascent does not serve: Anne Arundel, Baltimore County, Frederick and Howard. The method failed there, so Ascent claims nothing beyond Montgomery and Prince George’s. The same registration tested the Home Decision Brief’s verdicts on those untouched sales. Estimates the brief would not state had 16.8% median error, limited estimates 13.1% and supported estimates 9.0%. Both pre-registered hypotheses were supported.
-- **All markets:** Public records may be delayed or incomplete. An adjusted comparable-price envelope is not automatically a calibrated probability interval.
-- **No outside replication yet:** Every result above is reproducible internal validation. A [replication kit](docs/independent-replication.md) is ready for an outside quantitative researcher: one command re-checks every study, a standard-library Python script re-derives every published figure, and a signed record of their findings, favorable or not, would appear on the accuracy page unedited.
+- **DC houses:** Only the unmodified, eligible validated configuration may show a calibrated interval. Custom assumptions or insufficient evidence remove that claim. Several criteria were met narrowly.
+- **Maryland:** The revised model used a **different holdout** than the original failed study; the headline change is not a like-for-like improvement comparison. The price-related bias criterion still fails. No calibrated current-home interval is released.
+- **DC condos:** Overall acceptance failed, and key building features such as HOA costs, floor, view, parking and amenities are not modeled. No calibrated interval is released.
+- **Four-county external test:** The protocol was registered before those additional Maryland data were downloaded. Acceptance failed, so Ascent does not claim coverage there. The registered supplementary study supported both Home Decision Brief verdict-policy hypotheses: withheld cases had 16.8% median error, limited cases 13.1%, and supported cases 9.0%.
+- **All studies:** Public records can lag, observed sales can be correlated, and an adjusted comparable-price envelope is not by itself a probability interval. **No independent replication has been completed.**
 
-**[Read the full results](https://project-ascent-theta.vercel.app/accuracy)** · [Methodology, protocols and historical findings](docs/valuation-validation.md) · [Latest release and validation gates](docs/production-readiness.md)
+The [independent replication kit](docs/independent-replication.md) invites outside quantitative researchers to re-derive all published reports, inspect the protocols, evaluate methodological weaknesses and publish findings, including unfavorable ones. The [homeowner comprehension study](docs/usability/README.md) is registered but has **no participants or outcomes yet**.
 
-## What Ascent does not pretend to know
+**[Read the full accuracy report](https://project-ascent-theta.vercel.app/accuracy)** · [Validation methods and historical results](docs/valuation-validation.md) · [Release gates](docs/production-readiness.md)
 
-Ascent is **not a live MLS feed, licensed appraisal, brokerage, or automatic transaction agent**.
+## Limits that matter
 
-- Public address research currently covers qualifying **Washington, DC houses and condos** and **Montgomery / Prince George's County, Maryland** homes. It does not provide nationwide coverage.
-- **Virginia public-record pricing is not available**. Written source-use permission remains unresolved. Neither an open-source license nor public website access creates MLS or provider redistribution rights.
-- Listing status, concessions, interior condition, unpermitted renovations, condominium dues and reserves, title details, and other decisive facts can be missing. Recorded permits show authorized work, not finished work or current condition. The brief lists the facts that matter for your home and how to obtain them.
-- When fewer than three eligible recorded sales remain, or the release checks withhold the result, Ascent states no value for the home.
-- Seller scenarios do not predict buyer response, time on market, future prices, or renovation return on investment.
-- Ascent does not autonomously message clients, make offers, sign contracts, or decide what someone should do.
+Ascent is **not** an appraisal, brokerage, live MLS feed, tax or legal adviser, or autonomous transaction agent.
 
-Ascent is designed to make the **limits visible alongside the evidence**, not hide them in small print.
+- **Geography:** Public address-based pricing covers eligible Washington, DC houses and condos, plus homes in Montgomery and Prince George's counties in Maryland. It is **not nationwide**. Virginia public-record pricing is unavailable pending written source-use permission.
+- **What records cannot tell you:** Interior condition, concessions, title, current listings, unpermitted work, condo dues and reserves, and other decision-critical facts may be missing. A recorded permit does not prove work was completed. DC and Montgomery permit data are contextual, not direct price adjustments.
+- **When the model declines:** Fewer than three eligible sales, or applicable release-gate failures, cause a **Not stated** value verdict. A withheld estimate stays withheld in the brief, offers, reports and sharing.
+- **What a scenario is not:** Seller proceeds and ownership scenarios do not predict market response, timing, appreciation or returns. The app does not rank homeowner choices.
+- **Source rights:** Public visibility and this repository's MIT license do **not** authorize redistribution of third-party MLS, vendor or restricted data. External providers need their own credentials, rights and review.
 
-[DC source scope](docs/dc-public-records.md) · [Maryland source scope](docs/maryland-public-records.md) · [Condo model and limitations](docs/dc-condominiums.md) · [Homeowner-first roadmap](docs/homeowner-first.md)
+The goal is **inspectable uncertainty**, not manufactured confidence.
 
-## Your decisions stay yours
+[DC coverage](docs/dc-public-records.md) · [Maryland coverage](docs/maryland-public-records.md) · [Condominium limitations](docs/dc-condominiums.md) · [Source and use permissions](docs/public-data-network.md)
 
-**My Home** stores private ownership inputs and Property Evidence Passports locally in your browser, not in an Ascent account. You explicitly save the additional financial inputs and history you want to keep. The storage supports up to **10 homes and 10 versions per home**, subject to browser limits.
+## Privacy and ownership
 
-- No account synchronization or encryption of browser storage is provided. Shared devices and cleared browser data matter.
-- **Back up & restore:** My Home can download a private backup of every saved home and version, then restore it in another browser after a preview. Restore skips duplicates, preserves existing working decisions and rejects the entire restore if storage limits would be exceeded. Files stay in your browser and are not uploaded. Backups contain unencrypted private finances and notes; keep them private. Earlier passport and history reports remain reference documents, not restorable backups.
-- Privacy-filtered exports **exclude private finances and notes by default**; sharing them intentionally requires an explicit private export.
-- Downloaded reports or JSON copies cannot be recalled once shared.
-- Removing a saved home asks you to confirm the address and history being deleted. Cancel or press Escape to keep it; export a private history first if you need an independent copy.
-- Public pricing drafts separately autosave selected asking price, selling fees, and payoff in the browser. Additional ownership inputs are explicitly saved.
-- Optional account-based workspaces have a separate data, authentication, and deployment model.
+For the public studios, **My Home** stores saved property decisions and additional financial inputs **in your browser**. You can save up to **10 homes and 10 versions per home**, subject to browser limits. This is not encrypted browser storage or cloud synchronization.
 
-[Read the calculation and privacy boundaries](docs/homeowner-workbench.md) · [Account security and deployment requirements](docs/account-security.md)
+- **Back up and restore:** Export a private backup and preview restoration on another device. The backup contains **unencrypted** finances and notes; protect it. Exports made for reference are not automatically restorable backups.
+- **Share deliberately:** Privacy-filtered JSON and HTML reports exclude private finances and notes by default. Choose a private export only when you intend to include them. Once a download is shared, it cannot be recalled.
+- **Understand device risks:** Clearing browser data can erase local work. Anyone with access to a shared browser profile may access saved data. Export before deleting a home or switching devices.
+- **Know the separate boundary:** Optional account-backed transaction rooms use server-side identity, encryption, tenant isolation and deployment requirements. Their security depends on correct production configuration.
 
-## Free is a product decision
+[Browser storage and calculations](docs/homeowner-workbench.md) · [Backup design](docs/homeowner-backups.md) · [Production account security](docs/account-security.md)
 
-Ascent's public research, basic comparable analysis, reports, and core client, offer, and deadline workflows are committed to remaining **free**, with no subscription or payment card. There are no current paid plans or new subscription checkout.
+## Free is part of the design
 
-Outside data services and hosted AI have their own costs, quotas, and permission requirements. If a configured limit is reached, the corresponding external request stops; Ascent does not charge you automatically. Free software does not guarantee unrestricted third-party data or perpetual hosted availability.
+Public property research, basic comparable analysis, reports, and core client, offer and deadline workflows are committed to staying **free**, without a payment card or subscription. There are no current paid plans or new subscription checkout.
+
+External data services, hosting and optional models have independent costs, permissions and quotas. Ascent will not silently charge you when a provider limit is reached, and an open-source license does not guarantee permanent hosted availability.
 
 [Read the free-service promise](https://project-ascent-theta.vercel.app/free)
 
-## Run Ascent locally
+## Run it locally
 
 **Requirements:** Node.js **24.x** and npm.
 
@@ -182,17 +181,17 @@ cp .env.example .env.local
 npm run dev
 ```
 
-Open **http://localhost:3040**. In Windows PowerShell, replace the copy step with `Copy-Item .env.example .env.local`.
+Open **http://localhost:3040**. For Windows PowerShell, use `Copy-Item .env.example .env.local` in place of `cp`.
 
-Bundled public-record studios, the fictional sample, and deterministic calculations do **not** require a RentCast, Groq, or OpenAI key. Local workspaces use SQLite under the ignored `.data/` directory. A production workspace needs properly configured PostgreSQL, migrations, account services, and security controls.
+The bundled DC/Maryland studios, fictional demo and deterministic calculations do **not** need RentCast, Groq or OpenAI keys. Local workspaces use SQLite under the ignored `.data/` directory. A production account workspace requires PostgreSQL, migrations, configured account services and the documented security controls.
 
-Keep `.env.local`, `.data/`, and provider credentials private. Optional integrations include authorized **RentCast** property research and separately gated **Groq/OpenAI** model-assisted workflows; keys must remain server-side.
+**Never commit** `.env.local`, `.data/` or provider credentials. Optional RentCast research and gated Groq/OpenAI integrations require authorized, server-side configuration.
 
-[Engineering guide](docs/engineering.md) · [Provider configuration](docs/rentcast-integration.md) · [PostgreSQL setup](docs/postgres-connection.md) · [Vercel deployment](docs/vercel-hobby.md)
+[Engineering setup](docs/engineering.md) · [Provider integration](docs/rentcast-integration.md) · [PostgreSQL](docs/postgres-connection.md) · [Vercel deployment](docs/vercel-hobby.md)
 
-## Verify it. Improve it.
+## Verify the work
 
-Ascent uses **Next.js 16, React 19, TypeScript, and Node.js 24**. Core code lives in `src/`, tests in `tests/`, database migrations in `migrations/`, and research/provenance documentation in `docs/` and `evidence/`.
+Ascent uses **Next.js 16, React 19, TypeScript and Node.js 24**. The calculation and data paths are testable without depending on a hosted AI model.
 
 ```bash
 npm run typecheck
@@ -200,25 +199,56 @@ npm test
 npm run validate:valuation -- --check
 npm run build
 npm run test:e2e
-npm run replicate -- --quick   # an outside reviewer's starting point; see docs/independent-replication.md
+npm run replicate -- --quick
 ```
 
-Browser tests need Chromium installed and configured. CI additionally includes offline domain/AI checks and a disposable PostgreSQL restore drill; **check the actual run status** rather than treating the presence of tests as a certificate of production readiness.
+The browser suite requires Playwright Chromium to be installed and configured. CI also exercises offline domain and AI checks and a disposable PostgreSQL restore drill. **The existence of a test or workflow is not proof that the latest run passed or that deployment is production-ready.**
 
-**Contributions are welcome**, especially ones that improve homeowner comprehension, mobile accessibility, reproducible valuation, provenance, privacy, and authorized data coverage. Two need people rather than code: an [independent replication](docs/independent-replication.md) of the valuation studies, and sessions of the registered [homeowner comprehension study](docs/usability/README.md). Neither has a participant yet. Preserve the frozen evaluation history, source permissions, workspace isolation, and explicit unknowns. Do not improve a headline metric by concealing a failed test.
+| Where to look | What you will find |
+| --- | --- |
+| `src/app/` and `src/components/` | Next.js routes and homeowner interface |
+| `src/lib/` | Pricing, decision logic, provenance, account and data-service boundaries |
+| `src/datasets/` and `evidence/` | Bundled research inputs and documented validation evidence |
+| `migrations/` | Versioned database changes |
+| `tests/` and `scripts/` | Automated checks, data tooling and reproducibility commands |
+| `docs/` | Specifications, methods, permissions, threat boundaries and open work |
 
-[Current CI](https://github.com/topherchris420/project-ascent/actions/workflows/ci.yml) · [Verification history](docs/verification-results.md) · [Capability matrix](docs/capability-matrix.md) · [Production readiness](docs/production-readiness.md)
+[Current CI](https://github.com/topherchris420/project-ascent/actions/workflows/ci.yml) · [Verification results](docs/verification-results.md) · [Capability matrix](docs/capability-matrix.md) · [Production-readiness checklist](docs/production-readiness.md)
+
+## Contribute to the evidence
+
+Contributions are welcome, especially in homeowner clarity, accessibility, documentation, reliable public-data provenance, permission-aware integrations, deterministic financial modeling and reproducible evaluation.
+
+Two particularly valuable contributions need **independent people**, not another feature:
+
+1. **[Replicate the valuation studies](docs/independent-replication.md).** Reproduce the figures, question the methodology and publish a signed assessment. Unfavorable findings are welcome.
+2. **[Participate in or facilitate the homeowner comprehension study](docs/usability/README.md).** Help test whether real homeowners can distinguish estimates, assumptions, missing facts and risks. The study has not yet produced participant results.
+
+Please preserve frozen evaluation records, dataset/source permissions, tenant isolation, privacy defaults and visible abstentions. Improve the model by testing it, not by hiding a failed metric. For substantial changes, open an [issue](https://github.com/topherchris420/project-ascent/issues) to discuss the evidence and expected behavior.
+
+## Documentation map
+
+| Topic | Primary reference |
+| --- | --- |
+| Product experience and homeowner reasoning | [Home Decision Brief](docs/home-decision-brief.md) · [Homeowner OS](docs/homeowner-os.md) |
+| Estimation and historical validation | [Valuation validation](docs/valuation-validation.md) · [Independent replication](docs/independent-replication.md) |
+| Property sources, permitted uses and freshness | [Property data](docs/property-data.md) · [Public-data network](docs/public-data-network.md) |
+| Financial calculations and local history | [Homeowner Workbench](docs/homeowner-workbench.md) · [Backups](docs/homeowner-backups.md) |
+| Engineering and security | [Engineering](docs/engineering.md) · [Account security](docs/account-security.md) |
+| Evidence of completion and remaining gaps | [Verification results](docs/verification-results.md) · [Production readiness](docs/production-readiness.md) |
 
 ## License
 
-Ascent is released under the **[MIT License](LICENSE)**. You may use, study, modify, and distribute the software under its terms. **Third-party datasets, MLS content, APIs, and provider services retain their own rights and agreements**; MIT does not grant access to or redistribution rights for them.
+Released under the **[MIT License](LICENSE)**. You can use, inspect, modify and distribute Ascent's code under its terms. **Third-party datasets, MLS content, API responses and services keep their own licensing, access and redistribution rules.**
 
 ---
 
 <div align="center">
 
-**The best real estate decision is one you can explain.**
+### The best real estate decision is one you can explain.
 
-[Open Ascent](https://project-ascent-theta.vercel.app/) · [Explore the evidence](https://project-ascent-theta.vercel.app/dc) · [Study the code](https://github.com/topherchris420/project-ascent)
+**[Open Ascent](https://project-ascent-theta.vercel.app/)** · **[Inspect the evidence](https://project-ascent-theta.vercel.app/accuracy)** · **[Explore the code](https://github.com/topherchris420/project-ascent)**
+
+<sub>Open source. Evidence first. Your decision remains yours.</sub>
 
 </div>
