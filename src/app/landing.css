@@ -215,7 +215,7 @@
     max-width 0.5s var(--lp-ease),
     height 0.5s var(--lp-ease),
     padding 0.5s var(--lp-ease),
-    background-color 0.5s ease,
+    /* The background changes immediately to prevent transient low-contrast text while scrolling. */
     border-color 0.5s ease,
     border-radius 0.5s ease,
     box-shadow 0.5s ease;
@@ -225,7 +225,7 @@
   max-width: 1200px;
   height: 60px;
   padding: 0 24px;
-  background: #faf9f6f2;
+  background: var(--lp-bg);
   border-color: #1a171414;
   border-radius: 16px;
   box-shadow: 0 10px 30px -12px #1a171426;
@@ -248,7 +248,7 @@
   font-size: 10px;
   font-weight: 400;
   letter-spacing: 0;
-  color: var(--lp-muted);
+  color: #3f3a35;
 }
 .landing .lp-links {
   display: flex;
