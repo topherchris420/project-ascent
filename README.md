@@ -16,7 +16,12 @@ Ascent is a **free, open-source home decision studio** for buyers, homeowners an
 
 [![CI](https://github.com/topherchris420/project-ascent/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/topherchris420/project-ascent/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-24344d.svg)](LICENSE) [![Node.js 24](https://img.shields.io/badge/Node.js-24.x-24344d.svg)](package.json)
 
+<a href="docs/media/more-than-a-number.mp4"><img src="docs/media/more-than-a-number-poster.jpg" width="300" alt="Watch More Than a Number, a 58-second film about Ascent"></a>
+
+**[Watch *More Than a Number*](docs/media/more-than-a-number.mp4)** · 58-second film · sample home is fictional
+
 </div>
+
 ---
 
 > **The principle:** A recorded fact is not an assumption. An assumption is not an estimate. An estimate is not a guarantee. And an unknown should stay unknown.
