@@ -1,5 +1,5 @@
 .homeowner-workbench {
-  border-top: 4px solid #2b6656;
+  border-top: 4px solid var(--ui-primary, #2b6656);
   scroll-margin-top: 24px;
 }
 .homeowner-workbench h2 {
@@ -15,7 +15,7 @@
   flex-wrap: wrap;
   gap: 7px;
   font-size: 13px;
-  color: #496257;
+  color: var(--ui-muted, #496257);
 }
 .home-nav {
   display: flex;
@@ -25,9 +25,9 @@
   margin: 20px 0;
 }
 .home-nav .button[aria-pressed='true'] {
-  background: #2b5543;
+  background: var(--ui-primary, #2b5543);
   color: #fff;
-  border-color: #2b5543;
+  border-color: var(--ui-primary, #2b5543);
 }
 .home-nav a:not(.button) {
   font-size: 13px;
@@ -38,14 +38,14 @@
   margin: 0 0 14px;
   padding: 10px 12px;
   border-left: 4px solid #b7791f;
-  background: #fbf3e4;
-  color: #4a3510;
+  background: var(--ui-warn-soft, #fbf3e4);
+  color: var(--ui-warn, #4a3510);
   font-size: 14px;
 }
 .home-whatif {
   margin-top: 26px;
   padding-top: 18px;
-  border-top: 1px solid #dfe6dc;
+  border-top: 1px solid var(--ui-line, #dfe6dc);
 }
 .home-whatif h4 {
   margin: 20px 0 8px;
@@ -63,12 +63,12 @@
 }
 .home-breakevens > div {
   padding: 10px 12px;
-  border: 1px solid #dfe6dc;
+  border: 1px solid var(--ui-line, #dfe6dc);
   border-radius: 8px;
-  background: #fbfcfa;
+  background: var(--ui-surface-muted, #fbfcfa);
 }
 .home-breakevens > div[data-status='found'] {
-  border-color: #9cc2ae;
+  border-color: var(--ui-ok-line, #9cc2ae);
 }
 .home-breakevens dt {
   font-weight: 650;
@@ -83,7 +83,7 @@
   margin: 18px 0 -10px;
   font-size: 13px;
   font-weight: 650;
-  color: #2b4b3a;
+  color: var(--ui-muted, #2b4b3a);
 }
 .home-metrics {
   display: grid;
@@ -92,8 +92,8 @@
   margin: 20px 0;
 }
 .home-metrics > div {
-  background: #f2f6f1;
-  border: 1px solid #d9e4d7;
+  background: var(--ui-tint, #f2f6f1);
+  border: 1px solid var(--ui-line-strong, #d9e4d7);
   border-radius: 12px;
   padding: 18px;
   display: grid;
@@ -102,7 +102,7 @@
 }
 .home-metrics span {
   font-size: 13px;
-  color: #4e6156;
+  color: var(--ui-muted, #4e6156);
 }
 .home-metrics strong {
   font-size: clamp(20px, 2.3vw, 28px);
@@ -112,7 +112,7 @@
 .home-metrics small {
   font-size: 12px;
   line-height: 1.6;
-  color: #526357;
+  color: var(--ui-muted, #526357);
 }
 .home-evidence-summary {
   display: grid;
@@ -120,7 +120,7 @@
   gap: 28px;
 }
 .homeowner-workbench details {
-  border-top: 1px solid #dbe4d9;
+  border-top: 1px solid var(--ui-line-strong, #dbe4d9);
   padding-top: 14px;
   margin: 18px 0;
 }
@@ -130,7 +130,7 @@
   padding: 7px 0;
 }
 .homeowner-workbench fieldset {
-  border: 1px solid #d8e1d6;
+  border: 1px solid var(--ui-line-strong, #d8e1d6);
   padding: 18px;
   margin: 20px 0;
   border-radius: 12px;
@@ -166,7 +166,7 @@
 }
 .home-field-error {
   margin: 0;
-  color: #8a2420;
+  color: var(--ui-bad, #8a2420);
   font-size: 13px;
   line-height: 1.5;
 }
@@ -181,9 +181,9 @@
 .home-decision-setup {
   margin: 24px 0;
   padding: 22px;
-  border: 1px solid #c9d9cb;
+  border: 1px solid var(--ui-line-strong, #c9d9cb);
   border-radius: 14px;
-  background: #f5f8f2;
+  background: var(--ui-tint, #f5f8f2);
 }
 .home-decision-setup h3 {
   margin-top: 8px;
@@ -215,7 +215,7 @@
   padding: 12px;
   text-align: left;
   background: #fff;
-  border: 1px solid #c9d9cb;
+  border: 1px solid var(--ui-line-strong, #c9d9cb);
   border-radius: 8px;
 }
 .home-input-checklist .text-button span {
@@ -227,7 +227,7 @@
 .home-wide-label textarea {
   width: 100%;
   min-width: 0;
-  border: 1px solid #b8c8b7;
+  border: 1px solid var(--ui-control-line, #b8c8b7);
   background: white;
   padding: 10px;
   border-radius: 7px;
@@ -249,12 +249,12 @@
   width: 17px;
   height: 17px;
   flex-shrink: 0;
-  accent-color: #2b5543;
+  accent-color: var(--ui-primary, #2b5543);
 }
 .home-table-wrap {
   width: 100%;
   overflow: auto;
-  border: 1px solid #dae2d6;
+  border: 1px solid var(--ui-line-strong, #dae2d6);
   border-radius: 9px;
   margin: 15px 0;
   max-height: 480px;
@@ -269,22 +269,22 @@
 .home-table caption {
   text-align: left;
   padding: 14px;
-  color: #4d6356;
+  color: var(--ui-muted, #4d6356);
   font-size: 12px;
 }
 .home-table th,
 .home-table td {
   padding: 13px 14px;
-  border-bottom: 1px solid #e1e8dd;
+  border-bottom: 1px solid var(--ui-line, #e1e8dd);
   vertical-align: top;
   max-width: 340px;
   overflow-wrap: anywhere;
 }
 .home-table thead {
-  background: #eff3eb;
+  background: var(--ui-tint, #eff3eb);
 }
 .home-table tr[aria-selected='true'] {
-  background: #f0f7f2;
+  background: var(--ui-tint, #f0f7f2);
 }
 /* Few short numeric columns: fits a phone without sideways scrolling; the row label wraps instead. */
 .home-table-compact {
@@ -306,7 +306,7 @@
 .home-step {
   display: block;
   margin-top: 3px;
-  color: #4d6356;
+  color: var(--ui-muted, #4d6356);
   font-size: 12px;
   font-weight: 400;
 }
@@ -318,7 +318,7 @@
   margin: 26px 0;
   padding: 16px;
   border-radius: 12px;
-  background: #f2f6f1;
+  background: var(--ui-tint, #f2f6f1);
 }
 .home-chart figcaption {
   font-size: 14px;
@@ -338,14 +338,14 @@
 }
 .home-chart text {
   font: 12px sans-serif;
-  fill: #496052;
+  fill: var(--ui-muted, #496052);
 }
 .home-save {
   display: flex;
   gap: 14px;
   align-items: center;
   flex-wrap: wrap;
-  border-top: 1px solid #dbe4d9;
+  border-top: 1px solid var(--ui-line-strong, #dbe4d9);
   padding-top: 20px;
   margin-top: 26px;
 }
@@ -354,7 +354,7 @@
   min-height: 20px;
 }
 .home-monitor {
-  border-left: 3px solid #7b9177;
+  border-left: 3px solid var(--ui-line-strong, #7b9177);
   padding-left: 18px;
   margin: 28px 0;
 }
@@ -372,8 +372,8 @@
 .home-backup-preview {
   margin-top: 20px;
   padding: 18px;
-  background: #f2f6f1;
-  border: 1px solid #d9e4d7;
+  background: var(--ui-tint, #f2f6f1);
+  border: 1px solid var(--ui-line-strong, #d9e4d7);
   border-radius: 12px;
   overflow-wrap: anywhere;
 }
@@ -454,14 +454,14 @@
   overflow-y: auto;
   margin: auto;
   padding: 28px;
-  border: 1px solid #cad8cb;
+  border: 1px solid var(--ui-line-strong, #cad8cb);
   border-radius: 20px;
-  background: #fffdf8;
-  color: #213f33;
-  box-shadow: 0 24px 80px #13291c40;
+  background: var(--ui-warn-soft, #fffdf8);
+  color: var(--ui-ink, #213f33);
+  box-shadow: 0 24px 80px var(--ui-shadow, #13291c40);
 }
 .home-remove-dialog::backdrop {
-  background: #13291c80;
+  background: var(--ui-backdrop, #13291c80);
 }
 .home-remove-dialog h2 {
   margin-bottom: 12px;

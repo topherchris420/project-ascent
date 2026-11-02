@@ -1,6 +1,6 @@
 /* Your Home Decision Brief: the homeowner's first destination after choosing a property. */
 .home-brief {
-  border-top: 4px solid #2b5543;
+  border-top: 4px solid var(--ui-primary, #2b5543);
   /* Self-contained: the brief is also placed outside the studio layout, in the Homeowner OS. */
   padding: clamp(18px, 2.6vw, 28px);
   scroll-margin-top: 24px;
@@ -34,19 +34,19 @@
   flex-shrink: 0;
 }
 .brief-verdict[data-verdict='supported'] {
-  background: #e4f1e7;
-  border-color: #9cc5a9;
-  color: #1d4a33;
+  background: var(--ui-ok-soft, #e4f1e7);
+  border-color: var(--ui-ok-line, #9cc5a9);
+  color: var(--ui-ok, #1d4a33);
 }
 .brief-verdict[data-verdict='limited'] {
-  background: #fbf0dc;
-  border-color: #e3c48a;
-  color: #66460f;
+  background: var(--ui-warn-soft, #fbf0dc);
+  border-color: var(--ui-warn-line, #e3c48a);
+  color: var(--ui-warn, #66460f);
 }
 .brief-verdict[data-verdict='declined'] {
-  background: #f8e5e1;
-  border-color: #e0a597;
-  color: #772a1c;
+  background: var(--ui-bad-soft, #f8e5e1);
+  border-color: var(--ui-bad-line, #e0a597);
+  color: var(--ui-bad, #772a1c);
 }
 .brief-lede {
   margin: 16px 0 18px;
@@ -67,15 +67,15 @@
 }
 [data-kind='record'] > .brief-trace-kind,
 .brief-key[data-kind='record'] {
-  background: #e8f3ef;
-  border-color: #a8cdbf;
-  color: #1c5243;
+  background: var(--ui-ok-soft, #e8f3ef);
+  border-color: var(--ui-ok-line, #a8cdbf);
+  color: var(--ui-ok, #1c5243);
 }
 [data-kind='assumption'] > .brief-trace-kind,
 .brief-key[data-kind='assumption'] {
-  background: #fbf1e3;
-  border-color: #e2c49b;
-  color: #6e4614;
+  background: var(--ui-warn-soft, #fbf1e3);
+  border-color: var(--ui-warn-line, #e2c49b);
+  color: var(--ui-warn, #6e4614);
 }
 [data-kind='calculation'] > .brief-trace-kind,
 .brief-key[data-kind='calculation'] {
@@ -95,13 +95,13 @@
   align-items: center;
   gap: 7px;
   padding: 6px 11px 6px 6px;
-  border: 1px solid #dbe3d4;
+  border: 1px solid var(--ui-line-strong, #dbe3d4);
   border-radius: 999px;
   font-size: 13px;
-  background: #f7f9f4;
+  background: var(--ui-surface-muted, #f7f9f4);
 }
 .brief-jump a:hover {
-  background: #eef3e9;
+  background: var(--ui-tint, #eef3e9);
 }
 .brief-jump a > span {
   display: grid;
@@ -109,7 +109,7 @@
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  background: #2b5543;
+  background: var(--ui-primary, #2b5543);
   color: #fff;
   font-size: 11px;
   font-weight: 700;
@@ -141,7 +141,7 @@
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  background: #2b5543;
+  background: var(--ui-primary, #2b5543);
   color: #fff;
   font-size: 13px;
   font-weight: 700;
@@ -164,19 +164,19 @@
   align-content: start;
   gap: 6px;
   padding: 16px;
-  border: 1px solid #dfe6da;
+  border: 1px solid var(--ui-line, #dfe6da);
   border-radius: 12px;
-  background: #fafbf8;
+  background: var(--ui-surface-muted, #fafbf8);
   min-width: 0;
 }
 .brief-figure.lead {
-  border-color: #2b5543;
-  background: #f1f6f0;
-  box-shadow: inset 0 3px #2b5543;
+  border-color: var(--ui-primary, #2b5543);
+  background: var(--ui-surface, #f1f6f0);
+  box-shadow: var(--ui-lead-shadow, inset 0 3px #2b5543);
 }
 .brief-figure-label {
   font-size: 13px;
-  color: #4b5d50;
+  color: var(--ui-muted, #4b5d50);
 }
 .brief-figure strong {
   font-size: clamp(20px, 2.4vw, 27px);
@@ -192,7 +192,7 @@
   gap: 6px;
   font-size: 12.5px;
   line-height: 1.55;
-  color: #3f5145;
+  color: var(--ui-muted, #3f5145);
 }
 .brief-traces li {
   display: flex;
@@ -210,7 +210,7 @@
 .brief-traces code,
 .brief-references code {
   font-size: 11.5px;
-  background: #eef2ea;
+  background: var(--ui-tint, #eef2ea);
   border-radius: 4px;
   padding: 1px 5px;
   overflow-wrap: anywhere;
@@ -218,8 +218,8 @@
 .brief-reasons {
   margin: 14px 0;
   padding: 14px 16px;
-  border-left: 3px solid #b9c9b4;
-  background: #f7f9f4;
+  border-left: 3px solid var(--ui-line-strong, #b9c9b4);
+  background: var(--ui-surface-muted, #f7f9f4);
   border-radius: 0 10px 10px 0;
 }
 .brief-reasons h4,
@@ -253,7 +253,7 @@
   gap: 10px;
   align-content: start;
   padding: 16px;
-  border: 1px solid #dfe6da;
+  border: 1px solid var(--ui-line, #dfe6da);
   border-radius: 12px;
   min-width: 0;
 }
@@ -268,20 +268,20 @@
   overflow-wrap: anywhere;
 }
 .brief-sale-head span {
-  color: #4b5d50;
+  color: var(--ui-muted, #4b5d50);
   font-size: 13px;
   white-space: nowrap;
 }
 .brief-weight {
   height: 6px;
   border-radius: 6px;
-  background: #e8ede3;
+  background: var(--ui-tint, #e8ede3);
   overflow: hidden;
 }
 .brief-weight span {
   display: block;
   height: 100%;
-  background: #2b5543;
+  background: var(--ui-primary, #2b5543);
 }
 .brief-sale-figures {
   display: grid;
@@ -290,9 +290,9 @@
   column-gap: 12px;
   row-gap: 2px;
   padding: 12px 14px;
-  border: 1px solid #dfe6da;
+  border: 1px solid var(--ui-line, #dfe6da);
   border-radius: 10px;
-  background: #fafbf8;
+  background: var(--ui-surface-muted, #fafbf8);
 }
 /* Label, amount and date rows line up across both prices even when one label wraps. */
 .brief-sale-figure {
@@ -313,12 +313,12 @@
 }
 .brief-sale-date {
   font-size: 12.5px;
-  color: #4b5d50;
+  color: var(--ui-muted, #4b5d50);
 }
 .brief-sale-arrow {
   grid-row: 2;
   align-self: center;
-  color: #6b7a6e;
+  color: var(--ui-muted, #6b7a6e);
 }
 .brief-sales > li > .brief-traces {
   margin: 0;
@@ -330,7 +330,7 @@
   margin-top: 6px;
   font-size: 14px;
   font-weight: 600;
-  color: #22513f;
+  color: var(--ui-ink, #22513f);
   text-decoration: underline;
   text-underline-offset: 3px;
 }
@@ -347,7 +347,7 @@
   gap: 10px;
   align-items: flex-start;
   padding: 11px 12px;
-  border: 1px solid #e1e7dc;
+  border: 1px solid var(--ui-line, #e1e7dc);
   border-radius: 10px;
   min-width: 0;
 }
@@ -362,7 +362,7 @@
 .brief-next small {
   font-size: 12.5px;
   line-height: 1.55;
-  color: #44564a;
+  color: var(--ui-muted, #44564a);
   overflow-wrap: anywhere;
 }
 .brief-check-status,
@@ -377,19 +377,19 @@
   border: 1px solid;
 }
 .brief-checks [data-status='pass'] .brief-check-status {
-  background: #e4f1e7;
-  border-color: #9cc5a9;
-  color: #1d4a33;
+  background: var(--ui-ok-soft, #e4f1e7);
+  border-color: var(--ui-ok-line, #9cc5a9);
+  color: var(--ui-ok, #1d4a33);
 }
 .brief-checks [data-status='review'] .brief-check-status {
-  background: #fbf0dc;
-  border-color: #e3c48a;
-  color: #66460f;
+  background: var(--ui-warn-soft, #fbf0dc);
+  border-color: var(--ui-warn-line, #e3c48a);
+  color: var(--ui-warn, #66460f);
 }
 .brief-checks [data-status='block'] .brief-check-status {
-  background: #f8e5e1;
-  border-color: #e0a597;
-  color: #772a1c;
+  background: var(--ui-bad-soft, #f8e5e1);
+  border-color: var(--ui-bad-line, #e0a597);
+  color: var(--ui-bad, #772a1c);
 }
 .brief-missing,
 .brief-next {
@@ -403,7 +403,7 @@
   display: grid;
   gap: 4px;
   padding: 12px 14px;
-  border: 1px solid #e1e7dc;
+  border: 1px solid var(--ui-line, #e1e7dc);
   border-radius: 10px;
   font-size: 14px;
   line-height: 1.55;
@@ -418,7 +418,7 @@
 }
 .brief-choices > li {
   padding: 14px 16px;
-  border: 1px solid #dfe6da;
+  border: 1px solid var(--ui-line, #dfe6da);
   border-radius: 12px;
   min-width: 0;
 }
@@ -435,7 +435,7 @@
 }
 .brief-choices dt {
   font-size: 13px;
-  color: #3f5145;
+  color: var(--ui-muted, #3f5145);
 }
 .brief-choices dd {
   margin: 0;
@@ -447,7 +447,7 @@
   grid-column: 1 / -1;
   font-weight: 400;
   font-size: 12px;
-  color: #4f6155;
+  color: var(--ui-muted, #4f6155);
   text-align: left;
 }
 .brief-next li {
@@ -455,7 +455,7 @@
   gap: 12px;
   align-items: flex-start;
   padding: 12px 14px;
-  border: 1px solid #e1e7dc;
+  border: 1px solid var(--ui-line, #e1e7dc);
   border-radius: 10px;
 }
 .brief-next li > span:last-child {
@@ -465,9 +465,9 @@
   font-size: 14px;
 }
 .brief-priority {
-  background: #eef3e9;
-  border-color: #c9d6c3;
-  color: #2b4b3a;
+  background: var(--ui-tint, #eef3e9);
+  border-color: var(--ui-line-strong, #c9d6c3);
+  color: var(--ui-muted, #2b4b3a);
 }
 .brief-tags {
   display: flex;
@@ -479,9 +479,9 @@
   font-weight: 600;
   padding: 0 7px;
   border-radius: 5px;
-  background: #f1f4ee;
-  border: 1px solid #dae2d4;
-  color: #3c5043;
+  background: var(--ui-tint, #f1f4ee);
+  border: 1px solid var(--ui-line-strong, #dae2d4);
+  color: var(--ui-muted, #3c5043);
 }
 .brief-details {
   margin-top: 14px;
@@ -592,11 +592,11 @@
   grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
   gap: 10px;
   padding: 6px 0;
-  border-bottom: 1px solid #e6ece2;
+  border-bottom: 1px solid var(--ui-line, #e6ece2);
   font-size: 14px;
 }
 .brief-facts dt {
-  color: #3f5145;
+  color: var(--ui-muted, #3f5145);
 }
 .brief-facts dd {
   margin: 0;
@@ -623,7 +623,7 @@
   min-width: 0;
 }
 .brief-permits small {
-  color: #4f6155;
+  color: var(--ui-muted, #4f6155);
   font-size: 12px;
 }
 .brief-permit-kind {
@@ -631,8 +631,8 @@
   min-width: 120px;
   padding: 2px 8px;
   border-radius: 999px;
-  background: #eef3ea;
-  color: #2b4a3a;
+  background: var(--ui-tint, #eef3ea);
+  color: var(--ui-muted, #2b4a3a);
   font-size: 12px;
   font-weight: 600;
   text-align: center;
@@ -641,8 +641,8 @@
 .brief-permits li[data-kind='addition'] .brief-permit-kind,
 .brief-permits li[data-kind='new-construction'] .brief-permit-kind,
 .brief-permits li[data-kind='demolition'] .brief-permit-kind {
-  background: #fbefdc;
-  color: #6b4513;
+  background: var(--ui-warn-soft, #fbefdc);
+  color: var(--ui-warn, #6b4513);
 }
 .brief-sale-notes {
   margin: 0;
@@ -651,7 +651,7 @@
   gap: 4px;
   font-size: 13px;
   line-height: 1.5;
-  color: #34463a;
+  color: var(--ui-muted, #34463a);
 }
 @media (max-width: 480px) {
   .brief-permits li {
@@ -673,14 +673,14 @@
   border-radius: 10px;
   font-size: 14px;
   line-height: 1.55;
-  background: #eef3ea;
-  color: #23402f;
+  background: var(--ui-ok-soft, #eef3ea);
+  color: var(--ui-ok, #23402f);
 }
 .brief-freshness[data-status='aging'] {
-  background: #fbefdc;
-  color: #5c3a0f;
+  background: var(--ui-warn-soft, #fbefdc);
+  color: var(--ui-warn, #5c3a0f);
 }
 .brief-freshness[data-status='stale'] {
-  background: #f8e5e1;
-  color: #772a1c;
+  background: var(--ui-bad-soft, #f8e5e1);
+  color: var(--ui-bad, #772a1c);
 }

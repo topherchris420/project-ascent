@@ -35,9 +35,6 @@ export function AccountSecurity() {
     <main className="auth-page">
       <section className="auth-form">
         <div className="auth-form-inner">
-          <a href="/" className="brand">
-            ascent.
-          </a>
           <h1>Account security</h1>
           <p>
             Use an authenticator app and keep your recovery codes somewhere safe. Owners and agents must enroll before
@@ -178,9 +175,6 @@ export function AccountRecovery() {
     <main className="auth-page">
       <section className="auth-form">
         <div className="auth-form-inner">
-          <a href="/" className="brand">
-            ascent.
-          </a>
           <h1>{token ? 'Choose a new password' : 'Recover your password'}</h1>
           <p>
             {token

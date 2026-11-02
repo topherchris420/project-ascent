@@ -1,7 +1,7 @@
 'use client';
 import { useCallback, useDeferredValue, useEffect, useId, useMemo, useRef, useState, type KeyboardEvent } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, LoaderCircle, MessageCircleQuestion, Printer } from 'lucide-react';
+import { LoaderCircle, MessageCircleQuestion, Printer } from 'lucide-react';
 import { openHtmlReport } from '@/lib/browser-export';
 import { condoDefaultState } from '@/lib/dc-condo-studio';
 import { DC_CONDITION_MAX, dcDefaultState } from '@/lib/dc-studio';
@@ -46,6 +46,7 @@ import { MyProperty } from './os/my-property';
 import { readLocal, requestJson, writeLocal } from './os/shared';
 import { ShareWithAgent } from './os/share-agent';
 import { roomSummary, TransactionRoom, useOwnedRoom } from './os/transaction-room';
+import { SiteFooter, SiteHeader } from './site-chrome';
 import '@/app/pricing-studio.css';
 import '@/app/homeowner-os.css';
 
@@ -339,15 +340,7 @@ function Workspace({ market, data }: { market: OsMarket; data: PropertyPayload }
       <a className="skip-link" href="#os-main">
         Skip to the homeowner workspace
       </a>
-      <header className="studio-header">
-        <Link className="brand" href="/" aria-label="Ascent home">
-          <span className="brand-mark">A</span>ascent<span className="brand-dot">.</span>
-        </Link>
-        <span className="studio-header-label">HOMEOWNER OS</span>
-        <Link href="/home" className="button small">
-          <ArrowLeft size={15} aria-hidden="true" /> My homes
-        </Link>
-      </header>
+      <SiteHeader label="Homeowner OS" current="home" />
       <main id="os-main" className="os-main">
         <section className="os-hero" aria-labelledby="os-title">
           <span className="eyebrow">{config.label.toUpperCase()}</span>
@@ -494,13 +487,12 @@ function Workspace({ market, data }: { market: OsMarket; data: PropertyPayload }
             )}
           </div>
         ))}
-      </main>
-      <footer className="studio-footer">
-        <p className="fine">
+        <p className="fine os-attribution">
           {data.attribution} Ascent is free, works without an account and does not use an AI model for any figure here.
           Not an appraisal, legal review or financial advice.
         </p>
-      </footer>
+      </main>
+      <SiteFooter />
     </div>
   );
 }
@@ -524,12 +516,7 @@ export function HomeownerOS({ market, parcel }: { market: OsMarket; parcel: stri
   if (data) return <Workspace key={data.parcelId} market={market} data={data} />;
   return (
     <div className="studio-page os-page">
-      <header className="studio-header">
-        <Link className="brand" href="/" aria-label="Ascent home">
-          <span className="brand-mark">A</span>ascent<span className="brand-dot">.</span>
-        </Link>
-        <span className="studio-header-label">HOMEOWNER OS</span>
-      </header>
+      <SiteHeader label="Homeowner OS" current="home" />
       <main id="os-main" className="os-main">
         {error ? (
           <div className="error-box" role="alert">
@@ -545,6 +532,7 @@ export function HomeownerOS({ market, parcel }: { market: OsMarket; parcel: stri
           </p>
         )}
       </main>
+      <SiteFooter />
     </div>
   );
 }

@@ -1,11 +1,10 @@
 'use client';
 import { useCallback, useEffect, useState } from 'react';
-import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
 import type { RoomView } from '@/lib/rooms';
 import { AccountGate, useAccount } from './os/account';
 import { RoomViewer } from './os/room-view';
 import { OsPanel, requestJson, shortDay } from './os/shared';
+import { SiteFooter, SiteHeader } from './site-chrome';
 import '@/app/pricing-studio.css';
 import '@/app/homeowner-os.css';
 
@@ -51,15 +50,7 @@ export function SharedRooms() {
   };
   return (
     <div className="studio-page os-page">
-      <header className="studio-header">
-        <Link className="brand" href="/" aria-label="Ascent home">
-          <span className="brand-mark">A</span>ascent<span className="brand-dot">.</span>
-        </Link>
-        <span className="studio-header-label">SHARED ROOMS</span>
-        <Link href="/home" className="button small">
-          <ArrowLeft size={15} aria-hidden="true" /> My homes
-        </Link>
-      </header>
+      <SiteHeader label="Shared rooms" current="home" />
       <main id="os-main" className="os-main">
         <OsPanel eyebrow="TRANSACTION ROOMS SHARED WITH YOU" title="Rooms you were invited to." id="shared-rooms">
           {!account.user ? (
@@ -123,6 +114,7 @@ export function SharedRooms() {
           </OsPanel>
         )}
       </main>
+      <SiteFooter />
     </div>
   );
 }

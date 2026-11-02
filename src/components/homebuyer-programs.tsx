@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
-import { ArrowLeft, ArrowUpRight, CheckCircle2, CircleHelp, XCircle } from 'lucide-react';
+import { ArrowUpRight, CheckCircle2, CircleHelp, XCircle } from 'lucide-react';
 import {
   PROGRAM_BOUNDARIES,
   areaLabels,
@@ -15,6 +15,7 @@ import {
   type ProgramResult,
   type ProgramVerdict,
 } from '@/lib/homebuyer-programs';
+import { SiteFooter, SiteHeader } from './site-chrome';
 import '@/app/pricing-studio.css';
 import '@/app/programs.css';
 
@@ -32,6 +33,17 @@ const outcomeWords = { meets: 'Fits', fails: 'Does not fit', unknown: 'Unknown' 
 
 const usd = (value: number) =>
   new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(value);
+/** "page read 2026-10-30": the date stays on one line instead of breaking at its hyphens. */
+const keepDates = (text: string) =>
+  text.split(/(\d{4}-\d{2}-\d{2})/).map((part, index) =>
+    index % 2 ? (
+      <span key={index} className="programs-date">
+        {part}
+      </span>
+    ) : (
+      part
+    ),
+  );
 
 /**
  * Reads typed text as a whole number. Dollar fields accept "$75,000" and "75k". Out-of-range or unreadable text is
@@ -184,7 +196,7 @@ function ProgramCard({ result }: { result: ProgramResult }) {
         <strong>Status:</strong> {result.status}
       </p>
       <p className="programs-source">
-        {result.source}{' '}
+        {keepDates(result.source)}{' '}
         <a href={result.url} target="_blank" rel="noopener noreferrer">
           Official page <ArrowUpRight size={13} aria-hidden="true" />
           <span className="sr-only"> (opens in a new tab)</span>
@@ -217,15 +229,7 @@ export function HomebuyerPrograms() {
       <a className="skip-link" href="#programs-main">
         Skip to the program screener
       </a>
-      <header className="studio-header">
-        <Link className="brand" href="/" aria-label="Ascent home">
-          <span className="brand-mark">A</span>ascent<span className="brand-dot">.</span>
-        </Link>
-        <span className="studio-header-label">BUYING HELP</span>
-        <Link href="/" className="button small">
-          <ArrowLeft size={15} aria-hidden="true" /> Ascent
-        </Link>
-      </header>
+      <SiteHeader label="Buyer programs" current="programs" />
       <main id="programs-main" className="programs-main">
         <section className="programs-intro" aria-labelledby="programs-title">
           <h1 id="programs-title">Which homebuyer programs should you ask about?</h1>
@@ -385,6 +389,7 @@ export function HomebuyerPrograms() {
           </section>
         </div>
       </main>
+      <SiteFooter />
     </div>
   );
 }

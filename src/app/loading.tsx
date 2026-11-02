@@ -1,8 +1,12 @@
+import { SiteBrand } from '@/components/site-chrome';
+
 export default function Loading() {
   return (
-    <main className="error-page" aria-busy="true">
-      <div className="brand">△ ascent</div>
-      <p>Opening Ascent…</p>
-    </main>
+    <div className="studio-page">
+      <main className="public-main public-status public-loading" aria-busy="true">
+        <SiteBrand />
+        <p role="status">Opening Ascent…</p>
+      </main>
+    </div>
   );
 }
