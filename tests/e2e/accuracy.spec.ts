@@ -13,13 +13,19 @@ for (const width of [1440, 390]) {
     );
     await expect(replication.getByRole('link', { name: 'How to replicate these studies' })).toBeVisible();
     for (const name of [
+      'Washington, DC · houses and rowhomes',
       'Maryland · revised model',
       'Maryland · original failed experiment, unchanged',
       'Maryland method · four other counties, registered before download',
       'DC condominiums · separate population test',
     ])
       await expect(page.getByRole('heading', { level: 2, name })).toBeVisible();
-    const external = page.locator('.lp-accuracy').nth(2);
+    // The summary lists every study, failures included, and links to each one's full scorecard.
+    const summary = page.getByRole('table', { name: /pre-registered studies at a glance/ });
+    await expect(summary.getByRole('row')).toHaveCount(6);
+    await expect(summary.getByText('Did not meet acceptance')).toHaveCount(4);
+    await expect(summary.getByRole('link', { name: 'DC houses and rowhomes' })).toHaveAttribute('href', '#dc-houses');
+    const external = page.locator('#maryland-external .lp-accuracy');
     await expect(external).toContainText('19,039 unseen');
     await expect(external).toContainText('5 of 9 met');
     await expect(external).toContainText('It did not meet acceptance');

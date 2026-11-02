@@ -1780,6 +1780,7 @@
   justify-content: space-between;
   gap: 16px;
   min-height: 64px;
+  color: var(--lp-fg);
   font-size: 17px;
   font-weight: 500;
   list-style: none;
@@ -1990,6 +1991,114 @@
   text-decoration: underline;
   text-underline-offset: 4px;
 }
+/* /accuracy sits in the public tools' column, under their shared header. */
+.landing.accuracy-main {
+  min-height: 0;
+}
+.landing.accuracy-main > .lp-section {
+  padding: 72px 0 24px;
+}
+.landing.accuracy-main .lp-wrap {
+  max-width: 1240px;
+  padding: 0 24px;
+}
+.landing .accuracy-summary {
+  margin: 48px 0;
+}
+.landing .accuracy-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--lp-line);
+  border-radius: 6px;
+  background: #fff;
+}
+.landing .accuracy-table-wrap:focus-visible {
+  outline: 2px solid var(--lp-fg);
+  outline-offset: 3px;
+}
+.landing .accuracy-table {
+  width: 100%;
+  min-width: 760px;
+  border-collapse: collapse;
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+}
+.landing .accuracy-table caption {
+  padding: 22px 24px 10px;
+  caption-side: top;
+  text-align: left;
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--lp-fg);
+}
+.landing .accuracy-table :is(th, td) {
+  padding: 14px 24px 14px 0;
+  border-bottom: 1px solid var(--lp-line);
+  background: none;
+  text-align: left;
+  vertical-align: middle;
+}
+.landing .accuracy-table :is(th, td):first-child {
+  padding-left: 24px;
+}
+.landing .accuracy-table thead th {
+  border-bottom-color: var(--lp-line-strong);
+  font-family: var(--lp-mono);
+  font-size: 11.5px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--lp-faint);
+}
+.landing .accuracy-table tbody th {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--lp-fg);
+}
+.landing .accuracy-table tbody th a {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-color: #1a171459;
+}
+.landing .accuracy-table tbody th a:hover {
+  text-decoration-color: currentColor;
+}
+.landing .accuracy-table tbody tr:last-child > * {
+  border-bottom: 0;
+}
+.landing .accuracy-table .num {
+  text-align: right;
+  white-space: nowrap;
+}
+.landing .accuracy-result {
+  display: inline-flex;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-family: var(--lp-mono);
+  font-size: 12px;
+  white-space: nowrap;
+}
+.landing .accuracy-result.pass {
+  background: var(--lp-accent-soft);
+  color: #1f4a37;
+}
+.landing .accuracy-result.fail {
+  background: var(--lp-warn-soft);
+  color: #8a3f17;
+}
+.landing .accuracy-fine {
+  max-width: 760px;
+  margin-top: 14px;
+  font-size: 14px;
+}
+.landing .accuracy-study {
+  scroll-margin-top: 24px;
+}
+.landing .accuracy-study > h2 {
+  margin: 72px 0 20px;
+  font-size: clamp(26px, 2.6vw, 34px);
+  letter-spacing: -0.03em;
+}
 
 /* FAQ */
 .landing .lp-faq-grid {
@@ -2015,6 +2124,7 @@
   gap: 20px;
   min-height: 72px;
   padding: 18px 0;
+  color: var(--lp-fg);
   font-size: 18px;
   font-weight: 500;
   letter-spacing: -0.01em;
@@ -2380,6 +2490,15 @@
   }
 }
 @media (max-width: 760px) {
+  .landing.accuracy-main > .lp-section {
+    padding-top: 48px;
+  }
+  .landing.accuracy-main .lp-wrap {
+    padding: 0 16px;
+  }
+  .landing .accuracy-study > h2 {
+    margin-top: 56px;
+  }
   .landing .lp-wrap {
     padding: 0 16px;
   }
