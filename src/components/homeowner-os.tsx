@@ -1,5 +1,5 @@
 'use client';
-import { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react';
+import { useCallback, useDeferredValue, useEffect, useId, useMemo, useRef, useState, type KeyboardEvent } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, LoaderCircle, MessageCircleQuestion, Printer } from 'lucide-react';
 import { openHtmlReport } from '@/lib/browser-export';
@@ -12,7 +12,15 @@ import { buildHomeDecisionBrief } from '@/lib/home-decision-brief';
 import { MISSING_EVIDENCE } from '@/lib/home-markets';
 import type { OsMarket } from '@/lib/home-routes';
 import type { FinanceInputs } from '@/lib/homeowner-finance';
-import { buildOsBrief, osAnswers, osQuestions, valueContext, type OsInput, type OsQuestion } from '@/lib/homeowner-os';
+import {
+  buildOsBrief,
+  osAnswers,
+  osQuestions,
+  valueContext,
+  type OsInput,
+  type OsItem,
+  type OsQuestion,
+} from '@/lib/homeowner-os';
 import { HOME_STORAGE_KEY, parseProfiles, propertyHref, studioStorageKey } from '@/lib/homeowner-passport';
 import { marylandDefaultState, MD_GRADE_MAX } from '@/lib/maryland-studio';
 import type { OfferComparison, OfferLab } from '@/lib/offer-lab';
@@ -60,6 +68,49 @@ const TAB_LABELS: Record<OsTab, string> = {
   room: 'Transaction Room',
   share: 'Share With My Agent',
 };
+
+const SUMMARY_PREVIEW = 3;
+
+/** One of the four summary answers. Always visible, so no card ever reads as empty; long lists open on request. */
+function SummaryCard({ title, items }: { title: string; items: OsItem[] }) {
+  const [all, setAll] = useState(false);
+  const id = useId();
+  // A toggle that would reveal a single item is noise: show it.
+  const folds = items.length > SUMMARY_PREVIEW + 1;
+  const shown = all || !folds ? items : items.slice(0, SUMMARY_PREVIEW);
+  return (
+    <div className="os-summary-card">
+      <h2>
+        <span>{title}</span>{' '}
+        <span className="os-count">
+          {items.length}
+          <span className="sr-only"> {items.length === 1 ? 'item' : 'items'}</span>
+        </span>
+      </h2>
+      {items.length > 0 ? (
+        <ul id={`${id}-list`}>
+          {shown.map(item => (
+            <li key={item.text}>{item.text}</li>
+          ))}
+        </ul>
+      ) : (
+        <p className="fine">Nothing yet.</p>
+      )}
+      {folds && (
+        <button
+          type="button"
+          className="os-more"
+          aria-expanded={all}
+          aria-controls={`${id}-list`}
+          onClick={() => setAll(open => !open)}
+        >
+          {all ? 'Show fewer' : `Show ${items.length - SUMMARY_PREVIEW} more`}
+        </button>
+      )}
+    </div>
+  );
+}
+
 type PropertyPayload = {
   parcelId: string;
   subject: ValuationProperty;
@@ -313,17 +364,7 @@ function Workspace({ market, data }: { market: OsMarket; data: PropertyPayload }
         </section>
         <section className="os-summary" aria-label="Summary">
           {summary.map(block => (
-            <details key={block.key} className="os-summary-card" open={block.key === 'next' || block.key === 'missing'}>
-              <summary>
-                <span>{block.title}</span> <span className="os-count">{block.items.length}</span>
-              </summary>
-              <ul>
-                {block.items.slice(0, 6).map(item => (
-                  <li key={item.text}>{item.text}</li>
-                ))}
-              </ul>
-              {block.items.length > 6 && <p className="fine">{block.items.length - 6} more in the printable brief.</p>}
-            </details>
+            <SummaryCard key={block.key} title={block.title} items={block.items} />
           ))}
         </section>
         <section className="os-ask" aria-labelledby="os-ask-title">

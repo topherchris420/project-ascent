@@ -1,6 +1,8 @@
 /* Your Home Decision Brief: the homeowner's first destination after choosing a property. */
 .home-brief {
   border-top: 4px solid #2b5543;
+  /* Self-contained: the brief is also placed outside the studio layout, in the Homeowner OS. */
+  padding: clamp(18px, 2.6vw, 28px);
   scroll-margin-top: 24px;
 }
 .brief-heading {
@@ -194,13 +196,16 @@
 }
 .brief-traces li {
   display: flex;
-  align-items: flex-start;
-  gap: 7px;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 7px;
   min-width: 0;
 }
+/* Beside the badge when there is room for a phrase; otherwise on its own line. Words never split. */
 .brief-traces li > span:last-child {
+  flex: 1 1 18ch;
   min-width: 0;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 .brief-traces code,
 .brief-references code {
@@ -253,10 +258,10 @@
   min-width: 0;
 }
 .brief-sale-head {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
   gap: 10px;
-  flex-wrap: wrap;
   font-size: 14px;
 }
 .brief-sale-head strong {
@@ -265,6 +270,7 @@
 .brief-sale-head span {
   color: #4b5d50;
   font-size: 13px;
+  white-space: nowrap;
 }
 .brief-weight {
   height: 6px;
@@ -279,14 +285,43 @@
 }
 .brief-sale-figures {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr));
-  gap: 8px;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  grid-template-rows: auto auto auto;
+  column-gap: 12px;
+  row-gap: 2px;
+  padding: 12px 14px;
+  border: 1px solid #dfe6da;
+  border-radius: 10px;
+  background: #fafbf8;
 }
-.brief-sale-figures .brief-figure {
-  padding: 12px;
+/* Label, amount and date rows line up across both prices even when one label wraps. */
+.brief-sale-figure {
+  display: grid;
+  grid-row: 1 / span 3;
+  grid-template-rows: subgrid;
+  min-width: 0;
 }
-.brief-sale-figures .brief-figure strong {
-  font-size: 18px;
+.brief-sale-figure > .brief-figure-label {
+  align-self: end;
+}
+.brief-sale-figure strong {
+  font-size: 19px;
+  letter-spacing: -0.4px;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.brief-sale-date {
+  font-size: 12.5px;
+  color: #4b5d50;
+}
+.brief-sale-arrow {
+  grid-row: 2;
+  align-self: center;
+  color: #6b7a6e;
+}
+.brief-sales > li > .brief-traces {
+  margin: 0;
 }
 .brief-link {
   display: inline-flex;

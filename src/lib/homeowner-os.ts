@@ -73,6 +73,8 @@ const day = (iso: string) =>
     year: 'numeric',
     timeZone: 'UTC',
   });
+/** Ends a fragment with a full stop unless it already has terminal punctuation. */
+const sentence = (text: string) => (/[.!?]$/.test(text.trim()) ? text.trim() : `${text.trim()}.`);
 const usd = (value: number) =>
   new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(value);
 
@@ -217,8 +219,9 @@ export function buildOsBrief(input: OsInput): OsBrief {
       text: `${timeline.counts.transfers} recorded transfer${timeline.counts.transfers === 1 ? '' : 's'} and ${timeline.counts.permits} permit${timeline.counts.permits === 1 ? '' : 's'} are on this home’s evidence timeline${timeline.live ? `, checked against the public sources on ${day(timeline.live.checkedAt)}` : ''}.`,
       refs: ['timeline'],
     });
+  // A source's license is often several sentences; it follows the label and date rather than splitting them.
   const how: OsItem[] = brief.reliability.sources.map(source => ({
-    text: `${source.label}, ${source.license}, observed ${day(source.observedAt)}.`,
+    text: `${source.label}, observed ${day(source.observedAt)}. ${sentence(source.license)}`,
     refs: [`source ${source.label}`],
   }));
   for (const source of timeline?.sources ?? [])
@@ -240,7 +243,7 @@ export function buildOsBrief(input: OsInput): OsBrief {
   const due = upcoming(input);
   const next: OsItem[] = [
     ...due.slice(0, 5).map(item => ({ text: `${day(item.date)}: ${item.text}.`, refs: [item.ref] })),
-    ...brief.nextSteps.slice(0, 4).map(step => ({ text: `${step.item} ${step.why}`, refs: ['brief next steps'] })),
+    ...brief.nextSteps.slice(0, 4).map(step => ({ text: `${step.item} — ${step.why}`, refs: ['brief next steps'] })),
   ];
   const changes: OsItem[] = [];
   if (saved) {

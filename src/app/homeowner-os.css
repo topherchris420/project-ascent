@@ -41,15 +41,34 @@
 /* Always-visible summary: what we know, how, what is missing and what to do next. */
 .os-summary {
   display: grid;
-  gap: 10px;
+  align-items: start;
+  gap: 12px;
 }
 .os-summary-card {
   background: #fff;
   border: 1px solid var(--line);
   border-radius: 12px;
-  padding: 10px 14px;
+  padding: 14px 18px 16px;
+  min-width: 0;
 }
-.os-summary-card > summary,
+.os-summary-card > h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 15px;
+  font-weight: 650;
+  letter-spacing: -0.2px;
+}
+.os-more {
+  margin-top: 10px;
+  padding: 0;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--green);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
 .os-room-section > summary,
 .os-gaps > summary,
 .os-offer > summary {
@@ -61,9 +80,10 @@
   gap: 8px;
 }
 .os-summary-card ul {
-  margin: 6px 0 0;
+  margin: 10px 0 0;
   padding-left: 18px;
-  font-size: 13.5px;
+  font-size: 14px;
+  line-height: 1.55;
 }
 .os-summary-card li + li {
   margin-top: 6px;
@@ -730,9 +750,6 @@
 @media (min-width: 960px) {
   .os-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-  .os-summary {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
   .os-deadlines {
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));

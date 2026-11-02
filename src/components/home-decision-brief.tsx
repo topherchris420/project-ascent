@@ -51,6 +51,19 @@ function Figure({ figure, lead }: { figure: BriefFigure; lead?: boolean }) {
   );
 }
 
+/** A sale's two prices read left to right, recorded → adjusted; their sources are listed once, full width, below. */
+function SaleFigure({ figure }: { figure: BriefFigure }) {
+  // "$938,000 on Oct 7, 2026": keep the amount on one line and let the date wrap beneath it.
+  const at = figure.text.indexOf(' on ');
+  return (
+    <div className="brief-sale-figure">
+      <span className="brief-figure-label">{figure.label}</span>
+      <strong>{at < 0 ? figure.text : figure.text.slice(0, at)}</strong>
+      {at >= 0 && <span className="brief-sale-date">{figure.text.slice(at + 1)}</span>}
+    </div>
+  );
+}
+
 function Question({ index, children }: { index: number; children: ReactNode }) {
   const [id, title] = briefQuestions[index];
   return (
@@ -155,9 +168,15 @@ export function HomeDecisionBriefPanel({ brief }: { brief: HomeDecisionBrief }) 
                     <span style={{ width: `${Math.min(100, sale.weightPercent)}%` }} />
                   </div>
                   <div className="brief-sale-figures">
-                    {sale.soldPrice && <Figure figure={sale.soldPrice} />}
-                    <Figure figure={sale.adjustedPrice} />
+                    {sale.soldPrice && (
+                      <>
+                        <SaleFigure figure={sale.soldPrice} />
+                        <ArrowRight className="brief-sale-arrow" size={16} aria-hidden="true" />
+                      </>
+                    )}
+                    <SaleFigure figure={sale.adjustedPrice} />
                   </div>
+                  <Traces traces={[...(sale.soldPrice?.traces ?? []), ...sale.adjustedPrice.traces]} />
                   <p className="fine">
                     {sale.distanceMiles} miles away · closed {sale.ageDays} days before the data date
                     {sale.largestAdjustment ? ` · largest adjustment: ${sale.largestAdjustment}` : ''}
