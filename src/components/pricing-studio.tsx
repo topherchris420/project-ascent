@@ -1,7 +1,7 @@
 'use client';
 import { useDeferredValue, useEffect, useMemo, useState, type ReactNode } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, ArrowRight, Check, FileText, Plus, RotateCcw, ShieldCheck } from 'lucide-react';
+import { ArrowRight, Check, FileText, Plus, RotateCcw, ShieldCheck } from 'lucide-react';
 import { comparableExclusion, distanceMiles, simulatePricing } from '@/lib/analytics';
 import { decisionDrivers } from '@/lib/decision-drivers';
 import { assessCmaEvidence } from '@/lib/decision-review';
@@ -30,6 +30,7 @@ import { PricingQuestions } from './pricing-questions';
 import { HomeownerWorkbench } from './homeowner-workbench';
 import { HomeDecisionBriefPanel } from './home-decision-brief';
 import { money, number } from './format';
+import { SiteFooter, SiteHeader, type SiteSection } from './site-chrome';
 import '@/app/pricing-studio.css';
 
 const rateFields = [
@@ -51,6 +52,9 @@ const steps = [
 ] as const;
 
 export type StudioConfig = {
+  /** Where the page header says you are, and which tool it marks as current. */
+  label?: string;
+  section?: SiteSection;
   evidence: StudioEvidence;
   defaultState: StudioState;
   storageKey: string;
@@ -385,15 +389,7 @@ export function PricingStudio(config: StudioConfig) {
       <a className="skip-link" href="#studio-main">
         Skip to Pricing Studio
       </a>
-      <header className="studio-header">
-        <Link className="brand" href="/" aria-label="Ascent home">
-          <span className="brand-mark">A</span>ascent<span className="brand-dot">.</span>
-        </Link>
-        <span className="studio-header-label">PRICING STUDIO</span>
-        <Link href="/" className="button small">
-          <ArrowLeft size={15} /> All of Ascent
-        </Link>
-      </header>
+      <SiteHeader label={config.label ?? 'Pricing studio'} current={config.section ?? 'sample'} />
       <main id="studio-main" className="studio-main">
         {config.before}
         {config.resultFirst ? (
@@ -897,6 +893,7 @@ export function PricingStudio(config: StudioConfig) {
           <span>{config.footerNote}</span>
         </footer>
       </main>
+      <SiteFooter />
     </div>
   );
 }

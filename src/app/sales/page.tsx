@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { ArrowLeft, Search } from 'lucide-react';
+import { Search } from 'lucide-react';
 import { recordedSalesSources, searchRecordedSales } from '@/lib/market-search-data';
 import {
   MAX_QUERY_LENGTH,
@@ -14,6 +14,7 @@ import {
   type SortOrder,
 } from '@/lib/market-search';
 import { displayDcAddress } from '@/lib/address-format';
+import { SiteFooter, SiteHeader } from '@/components/site-chrome';
 import '../pricing-studio.css';
 import '../sales.css';
 
@@ -65,8 +66,12 @@ function Breakdown({ title, groups, caption }: { title: string; groups: SalesGro
         <thead>
           <tr>
             <th scope="col">Group</th>
-            <th scope="col">Sales</th>
-            <th scope="col">Median price</th>
+            <th scope="col" className="num">
+              Sales
+            </th>
+            <th scope="col" className="num">
+              Median price
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -74,12 +79,14 @@ function Breakdown({ title, groups, caption }: { title: string; groups: SalesGro
             <tr key={group.key}>
               <th scope="row">{group.label}</th>
               <td>
-                <span className="sales-bar" aria-hidden="true">
-                  <span style={{ width: `${Math.max(2, (group.count / most) * 100)}%` }} />
+                <span className="sales-count">
+                  <span className="sales-bar" aria-hidden="true">
+                    <span style={{ width: `${Math.max(2, (group.count / most) * 100)}%` }} />
+                  </span>
+                  <span>{group.count.toLocaleString('en-US')}</span>
                 </span>
-                {group.count.toLocaleString('en-US')}
               </td>
-              <td>
+              <td className="num">
                 {group.medianPrice === null ? <span className="sales-muted">Too few</span> : usd(group.medianPrice)}
               </td>
             </tr>
@@ -108,15 +115,7 @@ export default async function SalesSearchPage({
       <a className="skip-link" href="#sales-main">
         Skip to the sales search
       </a>
-      <header className="studio-header">
-        <Link className="brand" href="/" aria-label="Ascent home">
-          <span className="brand-mark">A</span>ascent<span className="brand-dot">.</span>
-        </Link>
-        <span className="studio-header-label">RECORDED SALES</span>
-        <Link href="/" className="button small">
-          <ArrowLeft size={15} aria-hidden="true" /> Ascent
-        </Link>
-      </header>
+      <SiteHeader label="Recorded sales" current="sales" />
       <main id="sales-main" className="sales-main">
         <section className="sales-intro" aria-labelledby="sales-title">
           <h1 id="sales-title">What did homes like this sell for?</h1>
@@ -273,10 +272,16 @@ export default async function SalesSearchPage({
                       <tr>
                         <th scope="col">Home</th>
                         <th scope="col">Sold</th>
-                        <th scope="col">Price</th>
+                        <th scope="col" className="num">
+                          Price
+                        </th>
                         <th scope="col">Rooms</th>
-                        <th scope="col">Living area</th>
-                        <th scope="col">$/sq ft</th>
+                        <th scope="col" className="num">
+                          Living area
+                        </th>
+                        <th scope="col" className="num">
+                          $/sq ft
+                        </th>
                       </tr>
                     </thead>
                     <tbody>
@@ -295,10 +300,12 @@ export default async function SalesSearchPage({
                             </small>
                           </th>
                           <td>{day(sale.soldOn)}</td>
-                          <td>{usd(sale.price)}</td>
+                          <td className="num">{usd(sale.price)}</td>
                           <td>{rooms(sale)}</td>
-                          <td>{sale.sqft ? `${sale.sqft.toLocaleString('en-US')} sq ft` : 'Not recorded'}</td>
-                          <td>{sale.sqft ? usd(sale.price / sale.sqft) : '—'}</td>
+                          <td className="num">
+                            {sale.sqft ? `${sale.sqft.toLocaleString('en-US')} sq ft` : 'Not recorded'}
+                          </td>
+                          <td className="num">{sale.sqft ? usd(sale.price / sale.sqft) : '—'}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -327,6 +334,7 @@ export default async function SalesSearchPage({
           </ul>
         </section>
       </main>
+      <SiteFooter />
     </div>
   );
 }

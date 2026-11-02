@@ -13,6 +13,7 @@ import { downloadJson } from '@/lib/browser-export';
 import { date } from './format';
 import { HomeSearch } from './home-search';
 import { createHomeBackup, parseHomeBackup, mergeHomeBackup, MAX_BACKUP_BYTES } from '@/lib/homeowner-backup';
+import { SiteFooter, SiteHeader } from './site-chrome';
 import '@/app/pricing-studio.css';
 import '@/app/homeowner.css';
 
@@ -96,15 +97,7 @@ export function SavedHomes() {
       <a className="skip-link" href="#homes-main">
         Skip to saved homes
       </a>
-      <header className="studio-header">
-        <Link className="brand" href="/" aria-label="Ascent home">
-          <span className="brand-mark">A</span>ascent<span className="brand-dot">.</span>
-        </Link>
-        <span className="studio-header-label">MY HOME</span>
-        <Link className="button small" href="/#find-home">
-          Explore a property
-        </Link>
-      </header>
+      <SiteHeader label="My Home" current="home" />
       <main id="homes-main" className="studio-main">
         <div className="studio-intro">
           <div>
@@ -347,6 +340,7 @@ export function SavedHomes() {
           <Link href="/accuracy">Review the published valuation studies</Link>
         </section>
       </main>
+      <SiteFooter />
     </div>
   );
 }

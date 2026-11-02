@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, ArrowRight, LoaderCircle, MapPin, Search, ShieldCheck } from 'lucide-react';
+import { ArrowRight, LoaderCircle, MapPin, Search, ShieldCheck } from 'lucide-react';
 import {
   MD_GRADE_LABELS,
   MD_GRADE_MAX,
@@ -17,6 +17,7 @@ import type { CmaAssumptions, Source, ValuationProperty } from '@/lib/types';
 import { PricingStudio } from './pricing-studio';
 import { warmAddressSearch } from '@/lib/address-search-client';
 import { date, number } from './format';
+import { SiteFooter, SiteHeader } from './site-chrome';
 import '@/app/pricing-studio.css';
 
 type SearchResult = { parcelId: string; address: string; zip: string; city: string; county: string; sqft: number };
@@ -248,6 +249,8 @@ export function MarylandPricingStudio() {
     return (
       <PricingStudio
         key={data.parcelId}
+        label="Pricing studio · Maryland"
+        section="find"
         resultFirst
         evidence={evidence}
         defaultState={defaultState}
@@ -299,15 +302,7 @@ export function MarylandPricingStudio() {
       <a className="skip-link" href="#studio-main">
         Skip to property search
       </a>
-      <header className="studio-header">
-        <Link className="brand" href="/" aria-label="Ascent home">
-          <span className="brand-mark">A</span>ascent<span className="brand-dot">.</span>
-        </Link>
-        <span className="studio-header-label">PRICING STUDIO · MARYLAND</span>
-        <Link href="/" className="button small">
-          <ArrowLeft size={15} /> All of Ascent
-        </Link>
-      </header>
+      <SiteHeader label="Pricing studio · Maryland" current="find" />
       <main id="studio-main" className="studio-main dc-start">
         <div className="studio-intro">
           <div>
@@ -378,6 +373,7 @@ export function MarylandPricingStudio() {
           <AccuracyScorecard benchmark={marylandBenchmark} />
         </section>
       </main>
+      <SiteFooter />
     </div>
   );
 }

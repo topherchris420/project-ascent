@@ -1,8 +1,11 @@
 /* Homebuyer program screener (/programs): the answers form beside the program cards. */
+.programs-date {
+  white-space: nowrap;
+}
 .programs-main {
-  max-width: 1180px;
+  max-width: 1240px;
   margin: 0 auto;
-  padding: 36px 24px 72px;
+  padding: 48px 24px 24px;
 }
 .programs-intro h1 {
   margin: 0 0 10px;
@@ -51,7 +54,7 @@
 .programs-field select {
   min-height: 44px;
   padding: 8px 12px;
-  border: 1px solid #8a9883;
+  border: 1px solid var(--ui-control-line, #8a9883);
   border-radius: 10px;
   background: #fff;
   color: var(--ink);
@@ -62,12 +65,12 @@
   font-size: 13px;
 }
 .programs-error {
-  color: #a3412b;
+  color: var(--ui-bad, #a3412b);
   font-size: 13px;
   font-weight: 600;
 }
 .programs-field input[aria-invalid='true'] {
-  border-color: #a3412b;
+  border-color: var(--ui-control-line, #a3412b);
 }
 .programs-clear {
   justify-self: start;
@@ -137,8 +140,8 @@
   border-left-color: #c58b2b;
 }
 .programs-does-not-fit {
-  border-left-color: #a5aea0;
-  background: #fbfbf8;
+  border-left-color: var(--ui-line-strong, #a5aea0);
+  background: var(--ui-surface-muted, #fbfbf8);
 }
 .programs-limits {
   border-left-width: 1px;
@@ -173,12 +176,12 @@
   font-weight: 650;
 }
 .programs-ask .programs-verdict {
-  background: #fbf0dc;
-  color: #6b4a12;
+  background: var(--ui-warn-soft, #fbf0dc);
+  color: var(--ui-warn, #6b4a12);
 }
 .programs-does-not-fit .programs-verdict {
-  background: #eceee9;
-  color: #4a5245;
+  background: var(--ui-tint, #eceee9);
+  color: var(--ui-muted, #4a5245);
 }
 .programs-admin,
 .programs-source,
@@ -211,10 +214,10 @@
   color: var(--green);
 }
 .programs-fails {
-  color: #a3412b;
+  color: var(--ui-bad, #a3412b);
 }
 .programs-unknown {
-  color: #9a6a12;
+  color: var(--ui-warn, #9a6a12);
 }
 .programs-source a {
   display: inline-flex;

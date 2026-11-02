@@ -1,0 +1,768 @@
+/*
+ * Public pages (studios, sales, programs, My Home, the Homeowner OS and the trust pages) share the landing
+ * page's palette and type. Everything here is scoped under .studio-page, the root of every public tool, so the
+ * signed-in workspace is unchanged. Shared component stylesheets read the --ui-* tokens with their original
+ * colours as fallbacks: outside a public page those fallbacks apply and nothing moves.
+ */
+.studio-page {
+  /* The landing palette: warm neutrals and ink. Green is kept for status and data, not chrome. */
+  --ui-ink: #1a1714;
+  --ui-muted: #5f5952;
+  --ui-faint: #6f6861;
+  /* Large type only: 4.4:1 on paper. */
+  --ui-heading-soft: #7a736b;
+  --ui-paper: #faf9f6;
+  --ui-surface: #fff;
+  --ui-surface-muted: #f8f6f2;
+  --ui-tint: #f3f1ec;
+  --ui-line: #e4e0d9;
+  --ui-line-strong: #cfc9c0;
+  /* Form field edges keep at least 3:1 against white and paper (WCAG 1.4.11). */
+  --ui-control-line: #8f877f;
+  --ui-primary: #1a1714;
+  --ui-primary-hover: #36302b;
+  --ui-on-primary: #faf9f6;
+  --ui-focus: #1a1714;
+  --ui-dark: #12100e;
+  --ui-dark-fg: #faf9f6;
+  --ui-dark-muted: #b9b2aa;
+  --ui-ok: #2f6b47;
+  --ui-ok-soft: #e8f1eb;
+  --ui-ok-line: #b5d0bd;
+  --ui-warn: #8a4a12;
+  --ui-warn-soft: #faefe2;
+  --ui-warn-line: #e6c79f;
+  --ui-bad: #8f2f1d;
+  --ui-bad-soft: #f9e8e3;
+  --ui-bad-line: #e5b3a6;
+  --ui-sans: 'Instrument Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --ui-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --ui-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --ui-lead-shadow: 0 18px 40px -30px #1a171466;
+  --ui-shadow: #1a171440;
+  --ui-backdrop: #1a171480;
+  /* The older component tokens, re-pointed as the landing page does for its nested components. */
+  --ink: var(--ui-ink);
+  --muted: var(--ui-muted);
+  --green: var(--ui-primary);
+  --green-dark: var(--ui-ink);
+  --pale: var(--ui-tint);
+  --peach: var(--ui-warn-line);
+  --paper: var(--ui-paper);
+  --line: var(--ui-line);
+  --white: var(--ui-surface);
+  --shadow: none;
+  --radius: 12px;
+  min-height: 100vh;
+  background: var(--ui-paper);
+  color: var(--ui-ink);
+  font-family: var(--ui-sans);
+  font-size: 15.5px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+/* Overscroll and short pages show the page colour, not the workspace's. */
+body:has(> .studio-page) {
+  background: #faf9f6;
+}
+:where(.studio-page) :is(h1, h2, h3) {
+  text-wrap: balance;
+}
+:where(.studio-page) h1 {
+  font-weight: 450;
+  letter-spacing: -0.035em;
+}
+:where(.studio-page) h2 {
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+:where(.studio-page) h3 {
+  font-weight: 550;
+  letter-spacing: -0.01em;
+}
+:where(.studio-page) p {
+  text-wrap: pretty;
+}
+:where(.studio-page) :is(a, button, summary, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--ui-focus);
+  outline-offset: 3px;
+}
+:where(.studio-page) ::selection {
+  background: #1a171426;
+}
+/* Plain links inside running text look like links. Styled links (buttons, chips, cards) carry a class. */
+:where(.studio-page main) :is(p, li, small, dd, td, figcaption, label) a:not([class]) {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: #1a171466;
+}
+:where(.studio-page main) :is(p, li, small, dd, td, figcaption, label) a:not([class]):hover {
+  text-decoration-color: currentColor;
+}
+/* globals.css sets every summary to 11px green-grey; components that size their own still win. */
+:where(.studio-page) summary {
+  color: var(--ui-ink);
+  font-size: 13px;
+}
+
+/* Header: the landing wordmark, where you are, and the same tools on every page. */
+.site-header {
+  border-bottom: 1px solid var(--ui-line);
+  background: var(--ui-paper);
+}
+.site-header-inner {
+  display: flex;
+  align-items: center;
+  gap: 16px 32px;
+  max-width: 1240px;
+  min-height: 72px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+.site-header-id {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  min-width: 0;
+}
+.site-brand {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 6px;
+  font-size: 26px;
+  font-weight: 500;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  color: var(--ui-ink);
+}
+.site-brand-tag {
+  margin-top: 2px;
+  font-family: var(--ui-mono);
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0;
+  color: #3f3a35;
+}
+.site-section {
+  padding-left: 20px;
+  border-left: 1px solid var(--ui-line-strong);
+  font-family: var(--ui-mono);
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--ui-faint);
+  white-space: nowrap;
+}
+.site-nav {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  margin-left: auto;
+}
+.site-nav a {
+  position: relative;
+  padding: 6px 0;
+  font-size: 14px;
+  color: #3f3a35;
+  white-space: nowrap;
+  transition: color 0.3s ease;
+}
+.site-nav a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 2px;
+  width: 0;
+  height: 1px;
+  background: currentColor;
+  transition: width 0.3s var(--ui-ease);
+}
+.site-nav a:hover,
+.site-nav a[aria-current='page'] {
+  color: var(--ui-ink);
+}
+.site-nav a:hover::after,
+.site-nav a[aria-current='page']::after {
+  width: 100%;
+}
+.site-header-action {
+  flex-shrink: 0;
+}
+
+/* Footer, as on the landing page. */
+.site-footer {
+  margin-top: 96px;
+  border-top: 1px solid var(--ui-line);
+  background: var(--ui-paper);
+}
+.site-footer-inner {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+.site-footer-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+  gap: 48px;
+  padding: 64px 0 48px;
+}
+.site-footer-brand p {
+  max-width: 320px;
+  margin-top: 14px;
+  font-size: 15px;
+}
+.site-footer-links {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 32px;
+}
+.site-footer-links h2 {
+  margin: 0 0 16px;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+.site-footer-links ul {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.site-footer-links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  font-size: 14px;
+  color: var(--ui-muted);
+  transition: color 0.2s ease;
+}
+.site-footer-links a:hover {
+  color: var(--ui-ink);
+}
+.site-footer-bottom {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px 24px;
+  padding: 24px 0 28px;
+  border-top: 1px solid var(--ui-line);
+}
+.site-footer-bottom p {
+  font-size: 14px;
+}
+.site-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--ui-mono);
+  font-size: 13px;
+}
+.site-status i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #3f9a63;
+}
+
+/* Simple public pages (the free-service promise, not found): the same column and heading rhythm as the tools. */
+.public-main {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 72px 24px 24px;
+}
+.public-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--ui-mono);
+  font-size: 13px;
+  color: var(--ui-faint);
+}
+.public-eyebrow::before {
+  content: '';
+  width: 32px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.6;
+}
+.public-title {
+  max-width: 900px;
+  margin: 24px 0 0;
+  font-size: clamp(40px, 6vw, 80px);
+  font-weight: 440;
+  line-height: 1;
+  letter-spacing: -0.045em;
+}
+.public-title span {
+  color: var(--ui-heading-soft);
+}
+.public-lede {
+  max-width: 680px;
+  margin-top: 28px;
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--ui-muted);
+}
+.public-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 36px;
+}
+.public-section {
+  margin-top: 96px;
+}
+.public-section > h2 {
+  max-width: 760px;
+  font-size: clamp(28px, 3.2vw, 44px);
+  font-weight: 450;
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+}
+.public-section > h2 span {
+  color: var(--ui-heading-soft);
+}
+.public-section > p {
+  max-width: 680px;
+  margin-top: 18px;
+  font-size: 16px;
+}
+/* Error and loading screens: the wordmark, one message, the way back. */
+.public-status {
+  display: grid;
+  align-content: center;
+  justify-items: start;
+  min-height: 70vh;
+}
+.public-status .public-title {
+  margin-top: 40px;
+  font-size: clamp(36px, 5vw, 64px);
+}
+.public-loading {
+  justify-items: center;
+  gap: 18px;
+  text-align: center;
+}
+.public-loading p {
+  font-family: var(--ui-mono);
+  font-size: 13px;
+  color: var(--ui-faint);
+}
+/* Hairline grid of numbered statements, as in the landing page's question list. */
+.public-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 270px), 1fr));
+  gap: 1px;
+  margin: 40px 0 0;
+  padding: 0;
+  border: 1px solid var(--ui-line);
+  background: var(--ui-line);
+  list-style: none;
+}
+.public-grid > li {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  padding: 28px 28px 32px;
+  background: var(--ui-paper);
+}
+.public-grid-num {
+  font-family: var(--ui-mono);
+  font-size: 12px;
+  color: var(--ui-faint);
+}
+.public-grid h3 {
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+}
+.public-grid p {
+  font-size: 15px;
+}
+.public-list {
+  display: grid;
+  gap: 0;
+  max-width: 900px;
+  margin: 32px 0 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--ui-line);
+}
+.public-list > li {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr);
+  gap: 12px;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--ui-line);
+  font-size: 16px;
+  color: var(--ui-muted);
+}
+.public-list > li > span:first-child {
+  font-family: var(--ui-mono);
+  font-size: 12px;
+  line-height: 1.9;
+  color: var(--ui-faint);
+}
+.public-links {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr));
+  gap: 12px;
+  margin-top: 48px;
+}
+.public-links a {
+  display: grid;
+  gap: 6px;
+  padding: 20px 22px;
+  border: 1px solid var(--ui-line);
+  border-radius: 10px;
+  background: var(--ui-surface);
+  transition:
+    border-color 0.2s ease,
+    transform 0.25s var(--ui-ease);
+}
+.public-links a:hover {
+  border-color: var(--ui-ink);
+}
+.public-links strong {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 16px;
+  font-weight: 500;
+}
+.public-links span {
+  font-size: 14px;
+  color: var(--ui-muted);
+}
+
+/* Account security and recovery: the shared form, in the public column. */
+:where(.studio-page) .auth-form {
+  min-height: 0;
+  padding: 72px 24px 24px;
+  background: none;
+}
+:where(.studio-page) .auth-form h1 {
+  margin: 0 0 12px;
+  font-size: clamp(32px, 4vw, 44px);
+  line-height: 1.05;
+}
+:where(.studio-page) .auth-form p {
+  font-size: 15px;
+}
+
+/* Base components from globals.css, in the landing's shapes: pill buttons, mono labels, flat hairline cards. */
+.studio-page .skip-link {
+  top: 12px;
+  left: 12px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: var(--ui-primary);
+  color: var(--ui-on-primary);
+  font-size: 14px;
+  /* Hidden by its own height, so a label that wraps can never peek into view. */
+  transform: translateY(calc(-100% - 24px));
+}
+.studio-page .skip-link:focus {
+  top: 12px;
+  transform: none;
+}
+:where(.studio-page) .button {
+  gap: 8px;
+  min-height: 40px;
+  padding: 9px 18px;
+  border: 1px solid #1a171433;
+  border-radius: 999px;
+  background: var(--ui-surface);
+  color: var(--ui-ink);
+  font-size: 14px;
+  font-weight: 500;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+:where(.studio-page) .button:hover:not(:disabled) {
+  background: #f3f1ec;
+  border-color: #1a171466;
+}
+:where(.studio-page) .button.primary {
+  background: var(--ui-primary);
+  border-color: var(--ui-primary);
+  color: var(--ui-on-primary);
+}
+:where(.studio-page) .button.primary:hover:not(:disabled) {
+  background: var(--ui-primary-hover);
+  border-color: var(--ui-primary-hover);
+}
+:where(.studio-page) .button.small {
+  min-height: 34px;
+  padding: 6px 14px;
+  font-size: 13px;
+}
+:where(.studio-page) .text-button {
+  color: var(--ui-ink);
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: #1a171459;
+}
+:where(.studio-page) .text-button:hover:not(:disabled) {
+  text-decoration-color: currentColor;
+}
+:where(.studio-page) input:not([type='checkbox']):not([type='range']),
+:where(.studio-page) select,
+:where(.studio-page) textarea {
+  border-color: var(--ui-control-line);
+  border-radius: 10px;
+}
+:where(.studio-page) input::placeholder,
+:where(.studio-page) textarea::placeholder {
+  color: var(--ui-faint);
+}
+:where(.studio-page) input[type='checkbox'],
+:where(.studio-page) input[type='radio'],
+:where(.studio-page) input[type='range'] {
+  accent-color: var(--ui-primary);
+}
+:where(.studio-page) input[type='file'] {
+  font-size: 14px;
+}
+:where(.studio-page) input[type='file']::file-selector-button {
+  margin-right: 12px;
+  padding: 7px 14px;
+  border: 1px solid #1a171433;
+  border-radius: 999px;
+  background: var(--ui-surface);
+  color: var(--ui-ink);
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+}
+:where(.studio-page) label {
+  font-weight: 500;
+}
+:where(.studio-page) .eyebrow {
+  font-family: var(--ui-mono);
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  color: var(--ui-faint);
+}
+:where(.studio-page) .fine {
+  color: var(--ui-muted);
+}
+/* globals.css indents fine print for the workspace's unpadded panels; public panels pad themselves. */
+:where(.studio-page) .panel > .fine {
+  padding-inline: 0;
+}
+/* Tables: globals.css sizes cells at 11.5px with green-grey headers; homeowners get readable figures. */
+:where(.studio-page) table {
+  font-size: 13.5px;
+}
+:where(.studio-page) th {
+  background: none;
+  border-color: var(--ui-line);
+  color: var(--ui-ink);
+}
+:where(.studio-page) thead th {
+  border-block-color: var(--ui-line-strong);
+  color: var(--ui-faint);
+  font-family: var(--ui-mono);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+:where(.studio-page) tbody th {
+  font-size: inherit;
+  font-weight: 500;
+  letter-spacing: normal;
+}
+:where(.studio-page) td {
+  border-bottom-color: var(--ui-line);
+  font-size: inherit;
+  font-variant-numeric: tabular-nums;
+}
+:where(.studio-page) td > small {
+  font-size: 12px;
+}
+:where(.studio-page) td > strong {
+  font-size: inherit;
+}
+/* Headline figures are large and light, as on the landing page. */
+.studio-page :is(.studio-estimate > strong, .brief-figure strong, .brief-sale-figure strong, .metric > strong) {
+  font-weight: 450;
+  letter-spacing: -0.03em;
+}
+.studio-page .studio-estimate > strong {
+  font-weight: 400;
+  letter-spacing: -0.04em;
+}
+:where(.studio-page) .panel {
+  border-color: var(--ui-line);
+  border-radius: var(--radius);
+  box-shadow: none;
+}
+/* The flat landing cards carry no heavy accent rule. */
+.studio-page :is(.home-brief, .homeowner-workbench) {
+  border-top: 1px solid var(--ui-line);
+}
+:where(.studio-page) .badge {
+  border-color: var(--ui-line);
+  border-radius: 999px;
+  background: var(--ui-surface-muted);
+  color: var(--ui-muted);
+}
+:where(.studio-page) .badge.green {
+  border-color: var(--ui-ok-line);
+  background: var(--ui-ok-soft);
+  color: var(--ui-ok);
+}
+:where(.studio-page) .badge.peach,
+:where(.studio-page) .badge.warn {
+  border-color: var(--ui-warn-line);
+  background: var(--ui-warn-soft);
+  color: var(--ui-warn);
+}
+:where(.studio-page) .metric {
+  border-color: var(--ui-line);
+  border-radius: var(--radius);
+  box-shadow: none;
+}
+:where(.studio-page) :is(.metric > span, .metric-label, .metric-label svg, .page-heading p, .record-facts span) {
+  color: var(--ui-muted);
+}
+:where(.studio-page) .error-box {
+  border-color: var(--ui-bad-line);
+  border-radius: 10px;
+  background: var(--ui-bad-soft);
+  color: var(--ui-bad);
+}
+:where(.studio-page) .error-box button {
+  color: var(--ui-bad);
+}
+:where(.studio-page)
+  :is(.empty, .empty h3, .caution-list li, .caution-list li svg, .offer-facts dt, .offer-card label) {
+  color: var(--ui-muted);
+}
+:where(.studio-page) .offer-facts dd,
+:where(.studio-page) .answer-text,
+:where(.studio-page) .body-note {
+  color: var(--ui-muted);
+}
+:where(.studio-page) .offer-facts > div {
+  border-color: var(--ui-line);
+}
+:where(.studio-page) .timeline li::before {
+  background: var(--ui-line);
+}
+:where(.studio-page) .timeline-dot {
+  background: var(--ui-faint);
+  border-color: var(--ui-tint);
+}
+:where(.studio-page) .cost-config {
+  border-color: var(--ui-line);
+  background: var(--ui-surface-muted);
+}
+:where(.studio-page) .intelligence-notice {
+  border-color: var(--ui-warn-line);
+  background: var(--ui-warn-soft);
+  color: var(--ui-warn);
+}
+:where(.studio-page) .intelligence-notice p {
+  color: var(--ui-warn);
+}
+:where(.studio-page) .anatomy-group h4 i {
+  color: var(--ui-faint);
+}
+:where(.studio-page) .spin {
+  color: var(--ui-faint);
+}
+
+@media (max-width: 1100px) {
+  .site-header-inner {
+    flex-wrap: wrap;
+    padding: 14px 24px 0;
+  }
+  .site-header-id {
+    flex: 1 1 auto;
+  }
+  /* Every tool stays one tap away: the links scroll sideways rather than hiding behind a menu. */
+  .site-nav {
+    order: 3;
+    flex: 1 0 100%;
+    gap: 24px;
+    margin: 0 -24px;
+    padding: 4px 24px 10px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .site-nav::-webkit-scrollbar {
+    display: none;
+  }
+}
+@media (max-width: 720px) {
+  .public-main {
+    padding: 48px 16px 16px;
+  }
+  .public-lede {
+    font-size: 17px;
+  }
+  .public-section {
+    margin-top: 64px;
+  }
+  .public-grid > li {
+    padding: 24px 20px 26px;
+  }
+  .site-header-inner {
+    gap: 8px 16px;
+    padding: 12px 16px 0;
+  }
+  .site-nav {
+    margin: 0 -16px;
+    padding: 2px 16px 8px;
+  }
+  .site-brand {
+    font-size: 23px;
+  }
+  .site-section {
+    padding-left: 14px;
+    font-size: 12px;
+    white-space: normal;
+  }
+  .site-header-id {
+    gap: 14px;
+  }
+  .site-footer {
+    margin-top: 64px;
+  }
+  .site-footer-inner {
+    padding: 0 16px;
+  }
+  .site-footer-top {
+    grid-template-columns: 1fr;
+    gap: 32px;
+    padding: 48px 0 32px;
+  }
+  .site-footer-links {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px 16px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .site-nav a,
+  .site-nav a::after,
+  .studio-page .button {
+    transition: none;
+  }
+}
+@media print {
+  .site-header,
+  .site-footer,
+  .studio-page .skip-link {
+    display: none !important;
+  }
+}

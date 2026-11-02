@@ -1,16 +1,8 @@
 /* Homeowner OS: mobile-first. Base rules target a phone; wider screens add columns. */
-.os-page .studio-header {
-  flex-wrap: wrap;
-  gap: 12px;
-  padding: 14px 16px;
-}
-.os-page .studio-header-label {
-  padding-left: 12px;
-}
 .os-main {
-  max-width: 1120px;
+  max-width: 1240px;
   margin: 0 auto;
-  padding: 20px 16px 48px;
+  padding: 20px 16px 24px;
 }
 .os-main > section,
 .os-main > div {
@@ -30,26 +22,45 @@
   border-left: 4px solid var(--green);
 }
 .os-verdict[data-verdict='limited'] {
-  background: #fff8ef;
+  background: var(--ui-warn-soft, #fff8ef);
   border-left-color: #b7734e;
 }
 .os-verdict[data-verdict='declined'] {
-  background: #fff2eb;
+  background: var(--ui-bad-soft, #fff2eb);
   border-left-color: #9d5a3e;
 }
 
 /* Always-visible summary: what we know, how, what is missing and what to do next. */
 .os-summary {
   display: grid;
-  gap: 10px;
+  align-items: start;
+  gap: 12px;
 }
 .os-summary-card {
   background: #fff;
   border: 1px solid var(--line);
   border-radius: 12px;
-  padding: 10px 14px;
+  padding: 14px 18px 16px;
+  min-width: 0;
 }
-.os-summary-card > summary,
+.os-summary-card > h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 15px;
+  font-weight: 650;
+  letter-spacing: -0.2px;
+}
+.os-more {
+  margin-top: 10px;
+  padding: 0;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--green);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
 .os-room-section > summary,
 .os-gaps > summary,
 .os-offer > summary {
@@ -61,9 +72,10 @@
   gap: 8px;
 }
 .os-summary-card ul {
-  margin: 6px 0 0;
+  margin: 10px 0 0;
   padding-left: 18px;
-  font-size: 13.5px;
+  font-size: 14px;
+  line-height: 1.55;
 }
 .os-summary-card li + li {
   margin-top: 6px;
@@ -230,8 +242,10 @@
   font-weight: 650;
   padding: 0 4px;
 }
+/* Rows never stretch: a field beside one with a hint keeps its own input height. */
 .os-field {
   display: grid;
+  align-content: start;
   gap: 4px;
   font-size: 13px;
 }
@@ -245,7 +259,7 @@
   width: 100%;
   min-height: 42px;
   padding: 8px 10px;
-  border: 1px solid #cdd5c6;
+  border: 1px solid var(--ui-control-line, #cdd5c6);
   border-radius: 8px;
   background: #fff;
 }
@@ -320,7 +334,7 @@
 }
 .os-inline select {
   min-height: 36px;
-  border: 1px solid #cdd5c6;
+  border: 1px solid var(--ui-control-line, #cdd5c6);
   border-radius: 8px;
   padding: 4px 8px;
 }
@@ -328,7 +342,7 @@
   padding: 12px 14px;
   border-radius: 10px;
   background: var(--pale);
-  border: 1px solid #d6e2cf;
+  border: 1px solid var(--ui-line-strong, #d6e2cf);
   margin: 10px 0;
 }
 .os-callout input {
@@ -355,7 +369,7 @@
 .os-source-status li {
   padding: 8px 10px;
   border-radius: 8px;
-  background: #f7f8f3;
+  background: var(--ui-tint, #f7f8f3);
   border-left: 3px solid var(--green);
 }
 .os-source-status li[data-status='failed'],
@@ -556,7 +570,7 @@
   padding: 16px;
   border: 1px solid var(--line);
   border-radius: 10px;
-  background: #fbfcf9;
+  background: var(--ui-surface-muted, #fbfcf9);
 }
 .os-tax h3 {
   margin-top: 0;
@@ -600,7 +614,7 @@
 .os-tax-warning {
   padding: 10px 12px;
   border-left: 3px solid #b7734e;
-  background: #fbf3ed;
+  background: var(--ui-warn-soft, #fbf3ed);
 }
 /* The fix is the warning's main action: its own line, and a full-size target on phones. */
 .os-tax-warning .button {
@@ -626,12 +640,12 @@
   letter-spacing: 0.04em;
   padding: 0 5px;
   border-radius: 4px;
-  background: #eef3e9;
+  background: var(--ui-tint, #eef3e9);
   color: var(--green);
 }
 .os-kind-assumption {
-  background: #fff1e6;
-  color: #8a5233;
+  background: var(--ui-warn-soft, #fff1e6);
+  color: var(--ui-warn, #8a5233);
 }
 .os-kind-entered {
   background: #eef0f6;
@@ -655,7 +669,7 @@
   font-size: 13px;
 }
 .os-deadlines li[data-basis='calculated'] small {
-  color: #8a5233;
+  color: var(--ui-warn, #8a5233);
 }
 
 /* Transaction Room */
@@ -678,7 +692,7 @@
 .os-notes li {
   padding: 8px 10px;
   border-radius: 8px;
-  background: #f7f8f3;
+  background: var(--ui-tint, #f7f8f3);
 }
 .os-notes p {
   margin: 4px 0 0;
@@ -699,8 +713,11 @@
 }
 
 @media (min-width: 640px) {
+  .os-form > .button {
+    justify-self: start;
+  }
   .os-main {
-    padding: 28px 24px 56px;
+    padding: 40px 24px 24px;
   }
   .os-tabs {
     margin: 0 -24px 16px;
@@ -731,9 +748,6 @@
   .os-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
-  .os-summary {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
   .os-deadlines {
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   }
@@ -746,8 +760,7 @@
 }
 @media print {
   .os-tabs,
-  .os-ask,
-  .studio-header {
+  .os-ask {
     display: none;
   }
 }

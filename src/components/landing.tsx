@@ -870,7 +870,7 @@ function ProcessSection() {
       `  "estimate": ${Math.round(cma.estimate)},`,
       `  "range": [${Math.round(cma.low)}, ${Math.round(cma.high)}],`,
       `  "sales": ${cma.comps.length},`,
-      `  "checksum": "${cma.calculationHash.slice(0, 12)}…"`,
+      `  "checksum": "${cma.calculationHash}"`,
       '}',
     ],
   ];
@@ -951,7 +951,7 @@ function ProcessSection() {
               </code>
             </pre>
             <div className="lp-code-foot">
-              <i aria-hidden="true" /> Computed in your browser · checksum {cma.calculationHash.slice(0, 8)}
+              <i aria-hidden="true" /> Computed in your browser · checksum {cma.calculationHash}
             </div>
           </figure>
         </div>
