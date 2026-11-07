@@ -45,9 +45,21 @@ You don't need to learn the whole platform. Pick the question that brought you h
 2. **Test a decision.** Open the [fictional demo](https://project-ascent-theta.vercel.app/demo), inspect the supporting sales, change one assumption and see the calculation respond.
 3. **Keep or challenge the evidence.** Open a real covered home, explore the Home Decision Brief, then save or export a Property Evidence Passport. Public research works without signing in.
 
+### Browse by market
+
+You can start with a street address on the homepage, or go straight to the public studio for your area:
+
+| Public studio | Explore | What to expect |
+| --- | --- | --- |
+| **Washington, DC houses and rowhouses** | [Open DC studio](https://project-ascent-theta.vercel.app/dc) | Recorded house sales, eligible comparables and a model with a separately published DC validation study |
+| **Washington, DC condominiums** | [Open condo studio](https://project-ascent-theta.vercel.app/dc/condos) | Unit-level evidence with important building features missing; **the condo validation did not meet overall acceptance** |
+| **Montgomery and Prince George's counties, Maryland** | [Open Maryland studio](https://project-ascent-theta.vercel.app/maryland) | Local recorded sales and a revised model that **still fails a price-related bias criterion** |
+
+**Designed for the device in your hand.** The seven-question Home Decision Brief now has a compact, accessible reading-position navigator. On small screens, recorded-sale results put the **sale price and date in view** instead of hiding them in a sideways-scrolling table. These refinements are described in [PR #19](https://github.com/topherchris420/project-ascent/pull/19); the public pages also share a consistent visual system ([PR #18](https://github.com/topherchris420/project-ascent/pull/18)).
+
 **Coverage matters:** these tools use public records and published rules for supported DC and Maryland areas. They do not search current MLS listings, approve assistance, produce an appraisal or replace professional advice. See [the boundaries](#limits-that-matter).
 
-**Jump to:** [Capabilities](#what-ascent-actually-does) · [How calculations work](#how-the-evidence-flows) · [Validation](#published-accuracy-including-failures) · [Free commitment](#free-is-part-of-the-design) · [Privacy](#privacy-and-ownership) · [Run locally](#run-it-locally) · [Contribute](#contribute-to-the-evidence)
+**Jump to:** [Capabilities](#what-ascent-actually-does) · [Evidence flow](#how-the-evidence-flows) · [Validation](#published-accuracy-including-failures) · [Limits](#limits-that-matter) · [Privacy](#privacy-and-ownership) · [Free commitment](#free-is-part-of-the-design) · [Run locally](#run-it-locally) · [Contribute](#contribute-to-the-evidence)
 
 ## What Ascent actually does
 
@@ -116,6 +128,17 @@ Offer analysis presents financial and term differences, **not a recommended winn
 
 [Homeowner OS and feature boundaries](docs/homeowner-os.md) · [Public-data permissions and refresh](docs/public-data-network.md) · [Account-security requirements](docs/account-security.md)
 
+### What works without an account?
+
+| Mode | What you can use | What it requires |
+| --- | --- | --- |
+| **Public, account-free** | Recorded-sales search, buyer-program screening, supported property studios, fictional demo, evidence explanation, homeowner scenarios and browser-local exports | A browser. No login, payment card or AI key |
+| **Browser-local homeowner history** | Save decisions and comparisons on your own device; export or restore private backups | Browser storage and deliberate backups; **not encrypted or synchronized** |
+| **Private transaction workspace** | Account-backed documents, deadlines, notes and selective invitations | A properly configured deployment with identity, database, encryption, migrations and security controls |
+| **Optional external providers** | Licensed property research or gated model-generated synthesis | Provider permissions, credentials, approved budgets and explicit operator configuration; **not necessary for the public studios** |
+
+A public demo being usable does not mean every account-backed feature is enabled on the hosted service. See the [production-readiness checklist](docs/production-readiness.md) before treating private workflows as production-ready.
+
 ## How the evidence flows
 
 ```mermaid
@@ -131,6 +154,17 @@ flowchart TD
 ```
 
 **The pricing engine and homeowner financial calculations are deterministic.** Explaining evidence and computing a number are separate responsibilities. Records are shown with their provenance and date; uncertainties and failed checks travel with the result rather than disappearing between screens.
+
+**Four labels protect the distinction:**
+
+| Label | Meaning |
+| --- | --- |
+| **Recorded fact** | A source-backed observation with a record and date |
+| **Your assumption** | An editable input such as condition, rent, costs or financing |
+| **Computed figure** | A reproducible calculation under stated rules and inputs |
+| **Unknown / Not stated** | Missing support, an unresolved dependency or a result withheld by an evidence gate |
+
+Changing an assumption should change the calculation, **not rewrite the recorded fact**. An external AI model may help explain grounded evidence, but it does not set prices or override a withheld value.
 
 [Technical architecture](docs/engineering.md) · [AI architecture and gates](docs/ai-architecture.md)
 
@@ -196,7 +230,7 @@ That promise covers Ascent's public and core tools; it does **not** make third-p
 
 ## Run it locally
 
-**Requirements:** Node.js **24.x** and npm.
+**Requirements:** Node.js **24.x** (use **24.15+** for the documented environment-file workflow) and npm. No paid API subscription is required for the public research experience or fictional demo.
 
 ```bash
 git clone https://github.com/topherchris420/project-ascent.git
@@ -206,7 +240,17 @@ cp .env.example .env.local
 npm run dev
 ```
 
-Open **http://localhost:3040**. For Windows PowerShell, use `Copy-Item .env.example .env.local` in place of `cp`.
+Open **http://localhost:3040**. For Windows PowerShell, use `Copy-Item .env.example .env.local` in place of `cp`. The development server binds to `127.0.0.1`, so it is local to your machine.
+
+**First checks after installation:**
+
+```bash
+npm run typecheck
+npm test
+npm run validate:valuation -- --check
+```
+
+If you change the bundled DC/Maryland source snapshots, regenerate the sales index with `npm run datasets:sales-search` and commit the updated generated snapshot alongside your source changes. The snapshot consistency test will detect a mismatch.
 
 The bundled DC/Maryland studios, fictional demo and deterministic calculations do **not** need RentCast, Groq or OpenAI keys. Local workspaces use SQLite under the ignored `.data/` directory. A production account workspace requires PostgreSQL, migrations, configured account services and the documented security controls.
 
@@ -227,7 +271,7 @@ npm run test:e2e
 npm run replicate -- --quick
 ```
 
-The browser suite requires Playwright Chromium to be installed and configured. CI also exercises offline domain and AI checks and a disposable PostgreSQL restore drill. **The existence of a test or workflow is not proof that the latest run passed or that deployment is production-ready.**
+The browser suite requires Playwright Chromium (`npx playwright install chromium`) or an explicitly configured supported Chrome executable. CI also exercises offline domain and AI checks and a disposable PostgreSQL restore drill. **The existence of a test or workflow is not proof that the latest run passed or that deployment is production-ready.**
 
 | Where to look | What you will find |
 | --- | --- |
@@ -260,7 +304,7 @@ Please preserve frozen evaluation records, dataset/source permissions, tenant is
 | Property sources, permitted uses and freshness | [Property data](docs/property-data.md) · [Public-data network](docs/public-data-network.md) |
 | Financial calculations and local history | [Homeowner Workbench](docs/homeowner-workbench.md) · [Backups](docs/homeowner-backups.md) |
 | Engineering and security | [Engineering](docs/engineering.md) · [Account security](docs/account-security.md) |
-| Evidence of completion and remaining gaps | [Verification results](docs/verification-results.md) · [Production readiness](docs/production-readiness.md) |
+| Evidence of completion and remaining gaps | [Verification results](docs/verification-results.md) · [Production readiness](docs/production-readiness.md) · [Remaining work](docs/remaining-work.md) |
 
 ## License
 
