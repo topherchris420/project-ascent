@@ -12,6 +12,11 @@ const questions = [
 ];
 const brief = (page: Page) => page.getByRole('region', { name: 'Your Home Decision Brief' });
 const accessible = async (page: Page) => {
+  // A just-pressed button fades its colours over 0.2s; sampled mid-fade, axe reports a contrast failure the
+  // settled page does not have. Let running CSS transitions finish (infinite animations are not transitions).
+  await page.waitForFunction(() =>
+    document.getAnimations().every(a => !(a instanceof CSSTransition) || a.playState !== 'running'),
+  );
   const axe = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze();
   expect(axe.violations.map(v => ({ id: v.id, nodes: v.nodes.map(n => n.target) }))).toEqual([]);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
@@ -45,6 +50,40 @@ for (const width of [1440, 390, 320]) {
     await expect(panel.getByRole('heading', { name: /Which facts about your home are missing/ })).toBeInViewport();
     await accessible(page);
     expect(errors).toEqual([]);
+  });
+}
+
+for (const width of [1440, 390]) {
+  test(`a question bar follows the reader through the brief at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto('/demo');
+    await expect(page.getByTestId('studio-estimate')).toHaveText('$963,010');
+    const bar = page.getByRole('navigation', { name: 'Brief progress' });
+    const scrollTo = (id: string) =>
+      page.evaluate(target => {
+        const el = document.getElementById(target)!;
+        window.scrollTo(0, el.getBoundingClientRect().top + window.scrollY - 40);
+      }, id);
+    // Hidden while the brief's own question links are on screen.
+    await expect(bar).toBeHidden();
+    await scrollTo('brief-reliability');
+    await expect(bar).toBeVisible();
+    await expect(bar).toBeInViewport();
+    await expect(bar.locator('[aria-current="location"]')).toHaveText('Reliability');
+    // A link lands on its question below the bar, not under it.
+    await bar.getByRole('link', { name: 'Before deciding' }).click();
+    await expect(page).toHaveURL(/#brief-next$/);
+    await expect(bar.locator('[aria-current="location"]')).toHaveText('Before deciding');
+    const heading = page.getByRole('heading', { name: /What should you get before deciding/ });
+    const [headingBox, barBox] = await Promise.all([heading.boundingBox(), bar.boundingBox()]);
+    expect(headingBox!.y).toBeGreaterThanOrEqual(barBox!.y + barBox!.height);
+    // It leaves with the brief, and stays out of the tab order while hidden.
+    await page.evaluate(() => {
+      const list = document.querySelector('.brief-questions')!;
+      window.scrollTo(0, list.getBoundingClientRect().bottom + window.scrollY + 200);
+    });
+    await expect(bar).toBeHidden();
+    await accessible(page);
   });
 }
 

@@ -5,6 +5,7 @@ import type { BriefFigure, HomeDecisionBrief, Trace } from '@/lib/home-decision-
 import { snapshotAge } from '@/lib/data-freshness';
 import { permitKindLabels } from '@/lib/property-facts';
 import { date } from './format';
+import { BriefQuestionBar } from './brief-question-bar';
 import '@/app/home-brief.css';
 
 const traceKinds: Record<Trace['kind'], string> = {
@@ -127,6 +128,7 @@ export function HomeDecisionBriefPanel({ brief }: { brief: HomeDecisionBrief }) 
           </a>
         ))}
       </nav>
+      <BriefQuestionBar questions={briefQuestions} />
       <ol className="brief-questions">
         <Question index={0}>
           <p className="brief-answer">{value.answer}</p>

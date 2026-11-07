@@ -457,7 +457,7 @@ export function assessValuationRelease(
       'independent-cross-check',
       divergence <= t.maxBaselineDivergence ? 'pass' : 'review',
       'Agrees with a simple independent check',
-      `Median $/sqft of the same sales implies ${Math.round(baseline).toLocaleString('en-US')}; the adjusted estimate differs by ${percent(divergence)} (review above ${percent(t.maxBaselineDivergence)}).`,
+      `Median $/sqft of the same sales implies $${Math.round(baseline).toLocaleString('en-US')}; the adjusted estimate differs by ${percent(divergence)} (review above ${percent(t.maxBaselineDivergence)}).`,
     );
     if (perSqft.length >= 4) {
       const center = median(perSqft.map(item => item.value));

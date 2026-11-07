@@ -182,11 +182,17 @@
   letter-spacing: -0.035em;
   font-variant-numeric: tabular-nums;
 }
-.sales-tiles small,
 .sales-fine,
 .sales-muted {
   color: var(--muted);
   font-size: 13px;
+}
+/* A tile's caption is a second definition of its term (a <dl> group may hold only <dt> and <dd>). */
+.sales-tiles .sales-tile-note {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.45;
+  letter-spacing: normal;
 }
 .sales-empty {
   margin: 16px 0 0;
@@ -343,6 +349,100 @@
 }
 .sales-table tbody tr:hover > * {
   background: var(--ui-surface-muted);
+}
+/* Inline labels only make sense once the column headers are gone (phone layout below). */
+.sales-cell-label {
+  display: none;
+}
+/* On a phone, a six-column table hid the price off to the right and cut the date in half.
+   Each sale becomes a compact card: the home and where it is on the left, the price and the
+   sale date on the right, and its size on one line underneath. */
+@media (max-width: 640px) {
+  .sales-table-wrap {
+    overflow-x: visible;
+  }
+  .sales-table {
+    min-width: 0;
+  }
+  .sales-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .sales-table,
+  .sales-table tbody {
+    display: block;
+  }
+  .sales-table tbody tr {
+    display: grid;
+    grid-template-columns: auto auto minmax(0, 1fr) auto;
+    column-gap: 12px;
+    row-gap: 2px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .sales-table tbody tr:last-child {
+    border-bottom: 0;
+  }
+  .sales-table tbody tr > * {
+    padding: 0;
+    border: 0;
+  }
+  .sales-table tbody tr:hover > * {
+    background: none;
+  }
+  .sales-table .sales-home {
+    grid-column: 1 / 4;
+    grid-row: 1 / 3;
+    min-width: 0;
+    white-space: normal;
+  }
+  .sales-table .sales-price {
+    grid-column: 4;
+    grid-row: 1;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .sales-table .sales-sold {
+    grid-column: 4;
+    grid-row: 2;
+    text-align: right;
+    white-space: nowrap;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .sales-table :is(.sales-rooms, .sales-area, .sales-psf) {
+    grid-row: 3;
+    margin-top: 6px;
+    text-align: left;
+    font-size: 13px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  /* The rooms phrase may wrap on the narrowest phones; the figures beside it never split. */
+  .sales-table .sales-rooms {
+    grid-column: 1;
+    white-space: normal;
+  }
+  .sales-table .sales-area {
+    grid-column: 2;
+  }
+  .sales-table .sales-psf {
+    grid-column: 3 / 5;
+  }
+  .sales-table .sales-psf.is-empty {
+    display: none;
+  }
+  .sales-cell-label {
+    display: inline;
+  }
+  .sales-cell-wide {
+    display: none;
+  }
 }
 @media (max-width: 860px) {
   .sales-tiles {

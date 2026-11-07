@@ -4,6 +4,9 @@
   /* Self-contained: the brief is also placed outside the studio layout, in the Homeowner OS. */
   padding: clamp(18px, 2.6vw, 28px);
   scroll-margin-top: 24px;
+  /* .panel clips with overflow: hidden, which makes a scroll container and pins the
+     sticky question bar inside it. clip rounds the corners the same way without one. */
+  overflow: clip;
 }
 .brief-heading {
   display: flex;
@@ -100,6 +103,98 @@
   font-size: 13px;
   background: var(--ui-surface-muted, #f7f9f4);
 }
+/* The question bar: a zero-height sticky anchor, so it takes no space until it slides in. */
+.brief-bar-anchor {
+  position: sticky;
+  top: var(--brief-bar-top, 0px);
+  z-index: 8;
+  height: 0;
+}
+.brief-bar {
+  position: absolute;
+  inset: 8px 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 6px 6px 14px;
+  border: 1px solid var(--ui-line-strong, #dbe3d4);
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.94);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 28px rgb(23 21 18 / 0.12);
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(-8px);
+  transition:
+    opacity 0.18s ease,
+    transform 0.18s ease,
+    visibility 0s linear 0.18s;
+}
+.brief-bar[data-visible] {
+  visibility: visible;
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 0.18s ease,
+    transform 0.18s ease;
+}
+.brief-bar-count {
+  flex-shrink: 0;
+  font: 600 13px/1 var(--ui-mono, ui-monospace, monospace);
+  font-variant-numeric: tabular-nums;
+  color: var(--ui-ink, #1a1714);
+}
+.brief-bar-count > span {
+  color: var(--ui-muted, #5f5952);
+  font-weight: 400;
+}
+.brief-bar ol {
+  display: flex;
+  gap: 4px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow-x: auto;
+  scrollbar-width: none;
+  scroll-behavior: smooth;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 10px, #000 calc(100% - 10px), transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 10px, #000 calc(100% - 10px), transparent);
+}
+.brief-bar ol::-webkit-scrollbar {
+  display: none;
+}
+.brief-bar-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 0 12px;
+  border-radius: 999px;
+  white-space: nowrap;
+  font-size: 13px;
+  color: var(--ui-muted, #5f5952);
+}
+.brief-bar-link:hover {
+  color: var(--ui-ink, #1a1714);
+  background: var(--ui-tint, #eef3e9);
+}
+.brief-bar-link[aria-current] {
+  color: #fff;
+  background: var(--ui-primary, #1a1714);
+}
+.brief-bar-link:focus-visible {
+  outline: 2px solid var(--ui-primary, #1a1714);
+  outline-offset: 2px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .brief-bar,
+  .brief-bar[data-visible] {
+    transition: none;
+  }
+  .brief-bar ol {
+    scroll-behavior: auto;
+  }
+}
 .brief-jump a:hover {
   background: var(--ui-tint, #eef3e9);
 }
@@ -122,7 +217,8 @@
 .brief-question {
   padding: 26px 0;
   border-bottom: 1px solid var(--line);
-  scroll-margin-top: 20px;
+  /* Clear the question bar (and any sticky header above it) when a link lands here. */
+  scroll-margin-top: calc(var(--brief-bar-top, 0px) + 68px);
   min-width: 0;
 }
 .brief-question > h3 {
@@ -559,6 +655,7 @@
 }
 @media print {
   .brief-jump,
+  .brief-bar-anchor,
   .brief-link {
     display: none !important;
   }

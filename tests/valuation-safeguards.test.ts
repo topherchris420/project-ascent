@@ -174,7 +174,10 @@ test('sparse, stale, disagreeing or anomalous evidence is held for named review'
     ),
     { release: enabled },
   );
-  assert.equal(divergent.checks.find(check => check.id === 'independent-cross-check')!.status, 'review');
+  const crossCheck = divergent.checks.find(check => check.id === 'independent-cross-check')!;
+  assert.equal(crossCheck.status, 'review');
+  // The implied figure is a price, so it reads as one.
+  assert.match(crossCheck.detail, /implies \$\d{1,3}(,\d{3})+;/);
 });
 
 test('the operator kill switch withholds release without disabling calculation', () => {

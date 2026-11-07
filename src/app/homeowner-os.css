@@ -168,6 +168,10 @@
 .os-tabpanel > * + * {
   margin-top: 16px;
 }
+/* The brief's question bar sticks below the sticky tabs (45px tall at every width), not under them. */
+.os-tabpanel {
+  --brief-bar-top: 46px;
+}
 .os-badge {
   display: inline-block;
   margin-left: 6px;
