@@ -55,6 +55,16 @@ const rooms = (sale: SalesRecord) =>
     ? 'Not recorded'
     : `${sale.beds === 0 ? (sale.market === 'dc-condos' ? 'Studio' : '0 bd') : `${sale.beds} bd`} · ${sale.baths} ba`;
 
+/** "Not recorded" under its column heading; on a phone, where headings are gone, a phrase that names the field. */
+function Unrecorded({ phone }: { phone: string }) {
+  return (
+    <>
+      <span className="sales-cell-wide">Not recorded</span>
+      <span className="sales-cell-label">{phone}</span>
+    </>
+  );
+}
+
 function Breakdown({ title, groups, caption }: { title: string; groups: SalesGroup[]; caption?: string }) {
   if (!groups.length) return null;
   const most = Math.max(...groups.map(group => group.count));
@@ -189,23 +199,25 @@ export default async function SalesSearchPage({
                 <div>
                   <dt>Recorded sales</dt>
                   <dd>{summary.count.toLocaleString('en-US')}</dd>
-                  <small>
+                  <dd className="sales-tile-note">
                     {day(summary.window.since)} – {day(summary.window.until)}
-                  </small>
+                  </dd>
                 </div>
                 <div>
                   <dt>Median sale price</dt>
                   <dd>{summary.medianPrice !== null ? usd(summary.medianPrice) : '—'}</dd>
-                  <small>
+                  <dd className="sales-tile-note">
                     {summary.lowerQuartile !== null && summary.upperQuartile !== null
                       ? `Middle half ${usd(summary.lowerQuartile)} – ${usd(summary.upperQuartile)}`
                       : `Shown from ${MIN_GROUP_FOR_MEDIAN} sales`}
-                  </small>
+                  </dd>
                 </div>
                 <div>
                   <dt>Median price per sq ft</dt>
                   <dd>{summary.medianPricePerSqft !== null ? usd(summary.medianPricePerSqft) : '—'}</dd>
-                  <small>{summary.withArea.toLocaleString('en-US')} sales with a recorded living area</small>
+                  <dd className="sales-tile-note">
+                    {summary.withArea.toLocaleString('en-US')} sales with a recorded living area
+                  </dd>
                 </div>
                 <div>
                   <dt>Median living area</dt>
@@ -214,7 +226,7 @@ export default async function SalesSearchPage({
                       ? `${Math.round(summary.medianSqft).toLocaleString('en-US')} sq ft`
                       : '—'}
                   </dd>
-                  <small>As recorded by the assessor</small>
+                  <dd className="sales-tile-note">As recorded by the assessor</dd>
                 </div>
               </dl>
               {summary.count === 0 && (
@@ -267,27 +279,34 @@ export default async function SalesSearchPage({
                   </nav>
                 </div>
                 <div className="sales-table-wrap" tabIndex={0} role="region" aria-labelledby="sales-list-title">
-                  <table className="sales-table">
-                    <thead>
-                      <tr>
-                        <th scope="col">Home</th>
-                        <th scope="col">Sold</th>
-                        <th scope="col" className="num">
+                  {/* Roles keep the table's semantics where a phone layout re-flows rows into stacked cards. */}
+                  <table className="sales-table" role="table">
+                    <thead role="rowgroup">
+                      <tr role="row">
+                        <th scope="col" role="columnheader">
+                          Home
+                        </th>
+                        <th scope="col" role="columnheader">
+                          Sold
+                        </th>
+                        <th scope="col" role="columnheader" className="num">
                           Price
                         </th>
-                        <th scope="col">Rooms</th>
-                        <th scope="col" className="num">
+                        <th scope="col" role="columnheader">
+                          Rooms
+                        </th>
+                        <th scope="col" role="columnheader" className="num">
                           Living area
                         </th>
-                        <th scope="col" className="num">
+                        <th scope="col" role="columnheader" className="num">
                           $/sq ft
                         </th>
                       </tr>
                     </thead>
-                    <tbody>
+                    <tbody role="rowgroup">
                       {summary.rows.map(sale => (
-                        <tr key={sale.saleId}>
-                          <th scope="row">
+                        <tr key={sale.saleId} role="row">
+                          <th scope="row" role="rowheader" className="sales-home">
                             {sale.address ? (
                               <Link href={`/home/${sale.market}/${encodeURIComponent(sale.parcelId)}`}>
                                 {displayDcAddress(sale.address)}
@@ -299,13 +318,33 @@ export default async function SalesSearchPage({
                               {place(sale)} · {salesMarketLabels[sale.market]}
                             </small>
                           </th>
-                          <td>{day(sale.soldOn)}</td>
-                          <td className="num">{usd(sale.price)}</td>
-                          <td>{rooms(sale)}</td>
-                          <td className="num">
-                            {sale.sqft ? `${sale.sqft.toLocaleString('en-US')} sq ft` : 'Not recorded'}
+                          <td role="cell" className="sales-sold">
+                            <span className="sales-cell-label">Sold </span>
+                            {day(sale.soldOn)}
                           </td>
-                          <td className="num">{sale.sqft ? usd(sale.price / sale.sqft) : '—'}</td>
+                          <td role="cell" className="num sales-price">
+                            {usd(sale.price)}
+                          </td>
+                          <td role="cell" className="sales-rooms">
+                            {sale.beds === null ? <Unrecorded phone="No room count" /> : rooms(sale)}
+                          </td>
+                          <td role="cell" className="num sales-area">
+                            {sale.sqft ? (
+                              `${sale.sqft.toLocaleString('en-US')} sq ft`
+                            ) : (
+                              <Unrecorded phone="No living area" />
+                            )}
+                          </td>
+                          <td role="cell" className={`num sales-psf${sale.sqft ? '' : ' is-empty'}`}>
+                            {sale.sqft ? (
+                              <>
+                                {usd(sale.price / sale.sqft)}
+                                <span className="sales-cell-label">/sq ft</span>
+                              </>
+                            ) : (
+                              '—'
+                            )}
+                          </td>
                         </tr>
                       ))}
                     </tbody>
