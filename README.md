@@ -256,7 +256,7 @@ The bundled DC/Maryland studios, fictional demo and deterministic calculations d
 
 **Never commit** `.env.local`, `.data/` or provider credentials. Optional RentCast research and gated Groq/OpenAI integrations require authorized, server-side configuration.
 
-[Engineering setup](docs/engineering.md) · [Provider integration](docs/rentcast-integration.md) · [PostgreSQL](docs/postgres-connection.md) · [Vercel deployment](docs/vercel-hobby.md)
+[Engineering setup](docs/engineering.md) · [Provider integration](docs/rentcast-integration.md) · [PostgreSQL](docs/postgres-connection.md) · [Hostinger deployment](docs/hostinger.md) · [Vercel deployment](docs/vercel-hobby.md)
 
 ## Verify the work
 
