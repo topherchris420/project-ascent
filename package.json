@@ -8,7 +8,7 @@
   "scripts": {
     "dev": "next dev --webpack -H 127.0.0.1 -p 3040",
     "build": "next build --webpack",
-    "start": "next start -H 127.0.0.1 -p 3040",
+    "start": "next start -H 0.0.0.0",
     "typecheck": "tsc --noEmit",
     "test": "tsx --test tests/*.test.ts",
     "test:e2e": "playwright test",
