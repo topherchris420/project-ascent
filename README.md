@@ -2,9 +2,7 @@
 
 # ascent.
 
-### Your home is more than a number. Your decisions deserve the evidence.
-
-**Research the market. Understand your options. Make a decision you can explain.**
+**Start with recorded sales. Follow the evidence to a decision you can explain.**
 
 Ascent is a **free, open-source home decision studio** for buyers, homeowners and sellers in **Washington, DC and Montgomery / Prince George's counties, Maryland**. Explore recorded sales, check homebuyer assistance rules, inspect the evidence behind a home estimate, and compare the financial consequences of your next move.
 
@@ -18,7 +16,7 @@ Ascent is a **free, open-source home decision studio** for buyers, homeowners an
 
 <a href="docs/media/more-than-a-number.mp4"><img src="docs/media/more-than-a-number-poster.jpg" width="300" alt="Watch More Than a Number, a 58-second film about Ascent"></a>
 
-**[Watch *More Than a Number*](docs/media/more-than-a-number.mp4)** · 58-second film · sample home is fictional
+*[More Than a Number](docs/media/more-than-a-number.mp4), a 58-second film featuring a fictional home.*
 
 </div>
 
